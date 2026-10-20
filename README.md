@@ -1,30 +1,42 @@
-# AI 기반 퇴원·지역사회 통합돌봄 전환관리 플랫폼
+# AI 기반 퇴원·지역사회 돌봄 전환관리 플랫폼
 
-## 프로젝트 소개
+> **현재 제품 방향(2026-10-20): 환자·보호자 중심 퇴원안내·돌봄관리 서비스** / 사업·MVP 기획 단계 / 가상 데이터 전용
 
-국내 의료기관의 퇴원환자를 대상으로 AI 기반 위험·돌봄 필요도 평가, 의료진 검토, 지역사회 서비스 연계 및 성과 관리를 지원하는 B2B2C 헬스케어 플랫폼입니다.
+국내 퇴원환자가 자신의 상태와 퇴원 후 **오늘 해야 할 일, 승인된 복약·자가관리 안내, 다음 외래 일정, 주의 상황과 문의처, 필요시 지역사회 돌봄 정보**를 이해하고 실천하도록 돕는 서비스를 설계하고 있습니다.
 
-## 현재 단계
+의료진이 가상 퇴원정보에서 계획 초안을 작성·검토·승인하면, 환자·보호자에게 이해하기 쉬운 행동 중심 안내를 제공하는 **B2B2C 사업 가설**을 검증합니다. 병원 및 지자체의 공식 진료·지원계획과 제품의 연구용 평가·안내는 명확히 구분합니다.
 
-간호 창업 과제를 위한 초기 사업기획 단계입니다. 실제 의료기관과 공식적으로 제휴하거나 임상적 성능을 검증한 제품이 아닙니다.
+**현재 한계:** 실제 의료기관 제휴/유료 고객/실환자정보/임상 성능 검증은 없으며, 아직 MVP 코드·Firebase·실제 연계망이 구현된 상태가 아닙니다. 공개 저장소는 연구·기획 문서만 보유합니다.
 
+## 현재 기준 문서 (ACTIVE DRAFT)
 
-## 기획·연구 문서 (초안)
+1. [환자 중심 사업계획서 — 교수님 기본정보 5개 + 필수정보 12개](docs/ASSIGNMENT_BM_PATIENT_FIRST_DRAFT_v0.2.md)
+2. [R00~R18 환자 중심 검증 로드맵 v0.2](docs/RESEARCH_ROADMAP_PATIENT_FIRST_v0.2.md)
+3. [R00 환자·보호자 문제 및 사용성 검증 시작안](docs/R00_PATIENT_AND_CAREGIVER_DISCOVERY_v0.1.md)
+4. [환자 중심 MVP PRD v0.2 — HTML/CSS/JavaScript](docs/PATIENT_FIRST_MVP_PRD_DRAFT_v0.2.md)
+5. [환자 중심 피벗 배경·사업모델 비교](docs/PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md)
+6. [2026년 4월 통합돌봄 개정 HWPX 검증 결과](docs/R01C_APRIL_2026_AMENDMENT_VERIFIED_v0.2.md)
+7. [기술 아키텍처 — Vanilla JS → 향후 Firebase](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
 
-- [과제 BM 기본정보 5항목 + 필수정보 12항목 작성 초안](docs/ASSIGNMENT_BM_5PLUS12_DRAFT_v0.1.md)
-- [사업모델·3개년 재무 가설](docs/BUSINESS_MODEL_DRAFT_v0.5.md)
-- [R01 퇴원환자 연계 제도 검증](docs/R01_DISCHARGE_WORKFLOW_VERIFICATION_v0.1.md)
-- [R02 기존 공공시스템·경쟁 기능 비교](docs/R02_EXISTING_SYSTEM_AND_COMPETITOR_REVIEW_v0.1.md)
-- [R05 합성 환자군·문헌·공식통계 사용 전략](docs/R05_SYNTHETIC_COHORT_STRATEGY_DRAFT_v0.1.md)
-- [MVP 제품 요구사항 초안](docs/MVP_PRD_DRAFT_v0.1.md)
-- [MVP 업무흐름·서식 자동화·데이터 계약 v0.2](docs/MVP_WORKFLOW_AND_DATA_CONTRACT_DRAFT_v0.2.md)
-- [HTML/CSS/JavaScript → 향후 Firebase 기술 방향](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
-- [연구·근거·발표 검증 목록](docs/RESEARCH_AND_EVIDENCE_PLAN_v0.1.md)
+## 보존한 연구·이전 설계 (LEGACY / REFERENCE)
 
-- [환자·보호자 중심 제품전략 전환 제안 (미확정)](docs/PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md)
-- [R01-C 2026.4 개정 안내 원문 신구 검증](docs/R01C_APRIL_2026_AMENDMENT_VERIFIED_v0.2.md)
-- [R03 국내 퇴원연계 실증·실무자 인터뷰 근거](docs/R03_DOMESTIC_FIELD_EVIDENCE_v0.1.md)
-- [R04 공공의료 정보시스템 구매·가격 근거](docs/R04_PROCUREMENT_AND_PRICING_EVIDENCE_v0.1.md)
-- [발표·사업모델 주장별 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
+- [기존 병원 업무 중심 BM 5+12 v0.1](docs/ASSIGNMENT_BM_5PLUS12_DRAFT_v0.1.md)
+- [기존 병원 업무지원 수익모델 v0.5](docs/BUSINESS_MODEL_DRAFT_v0.5.md) — **가격·3개년 매출 가정은 새 BM에 유효하지 않음**
+- [이전 R01~R18 연구 로드맵](docs/RESEARCH_AND_EVIDENCE_PLAN_v0.1.md)
+- [R01 퇴원연계 제도](docs/R01_DISCHARGE_WORKFLOW_VERIFICATION_v0.1.md)
+- [R02 기존 공공의료연계망·경쟁](docs/R02_EXISTING_SYSTEM_AND_COMPETITOR_REVIEW_v0.1.md)
+- [R03 국내 병원 실증](docs/R03_DOMESTIC_FIELD_EVIDENCE_v0.1.md)
+- [R04 병원 구매·공공조달](docs/R04_PROCUREMENT_AND_PRICING_EVIDENCE_v0.1.md)
+- [R05 합성 환자군 전략](docs/R05_SYNTHETIC_COHORT_STRATEGY_DRAFT_v0.1.md)
+- [기존 MVP PRD v0.1](docs/MVP_PRD_DRAFT_v0.1.md)
+- [병원 중심 업무·서식·데이터 계약 v0.2](docs/MVP_WORKFLOW_AND_DATA_CONTRACT_DRAFT_v0.2.md)
+- [기존 발표 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
 
-문서는 모두 검증 중인 초안이며, 외부 기관과의 계약·제휴, 실환자 의료정보, 임상적으로 검증된 AI, 실제 서비스 운영을 의미하지 않습니다. 현재는 가상 데이터 기반 MVP를 설계하는 단계입니다.
+## 운영·안전 원칙
+
+- 확인된 근거/출처, 사용자 인터뷰 실측, 사업·가격 가설, 향후 목표를 구분.
+- 환자·보호자에게 공개하는 정보는 **가상 의료진의 검토·승인을 거친 가상 안내**로 제한.
+- 기존 규칙기반 자동화나 템플릿만으로 임상적 AI 성능이 검증됐다고 주장하지 않음.
+- 실환자 차트/식별정보, 병원 내부 정보, 외부 저작물 원문, Firebase 비밀키를 Public GitHub에 업로드하지 않음.
+- 최초 구현은 HTML/CSS/JavaScript(ES modules), 서버는 향후 **별도 Firebase 프로젝트·모의 데이터**에서만 검증.
+- 실제 수익모델과 의료기관 구매 가능성은 검증되지 않았음.
