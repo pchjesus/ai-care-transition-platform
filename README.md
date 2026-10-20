@@ -21,6 +21,8 @@
 - [HTML/CSS/JavaScript → 향후 Firebase 기술 방향](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
 - [연구·근거·발표 검증 목록](docs/RESEARCH_AND_EVIDENCE_PLAN_v0.1.md)
 
+- [환자·보호자 중심 제품전략 전환 제안 (미확정)](docs/PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md)
+- [R01-C 2026.4 개정 안내 원문 신구 검증](docs/R01C_APRIL_2026_AMENDMENT_VERIFIED_v0.2.md)
 - [R03 국내 퇴원연계 실증·실무자 인터뷰 근거](docs/R03_DOMESTIC_FIELD_EVIDENCE_v0.1.md)
 - [R04 공공의료 정보시스템 구매·가격 근거](docs/R04_PROCUREMENT_AND_PRICING_EVIDENCE_v0.1.md)
 - [발표·사업모델 주장별 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
