@@ -1,5 +1,7 @@
 # 사업모델 초안 v0.5 — AI Care Transition Platform
 
+> **문서 상태 업데이트 (2026-10-20):** 현재 방향은 [환자 중심 전략](./PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md) 및 [BM v0.2](./ASSIGNMENT_BM_PATIENT_FIRST_DRAFT_v0.2.md)로 변경. 연 1,800만 원 및 3개년 수치는 과거 사업구조의 계산 가정이며 **현재 매출전망 아님**.
+
 - 상태: **DRAFT / 검증 전 / 창업 과제 연구용**
 - 작성 기준일: 2026-10-19
 - 저장소: `pchjesus/ai-care-transition-platform`
