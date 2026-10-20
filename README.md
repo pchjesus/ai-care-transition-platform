@@ -21,4 +21,8 @@
 - [HTML/CSS/JavaScript → 향후 Firebase 기술 방향](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
 - [연구·근거·발표 검증 목록](docs/RESEARCH_AND_EVIDENCE_PLAN_v0.1.md)
 
+- [R03 국내 퇴원연계 실증·실무자 인터뷰 근거](docs/R03_DOMESTIC_FIELD_EVIDENCE_v0.1.md)
+- [R04 공공의료 정보시스템 구매·가격 근거](docs/R04_PROCUREMENT_AND_PRICING_EVIDENCE_v0.1.md)
+- [발표·사업모델 주장별 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
+
 문서는 모두 검증 중인 초안이며, 외부 기관과의 계약·제휴, 실환자 의료정보, 임상적으로 검증된 AI, 실제 서비스 운영을 의미하지 않습니다. 현재는 가상 데이터 기반 MVP를 설계하는 단계입니다.
