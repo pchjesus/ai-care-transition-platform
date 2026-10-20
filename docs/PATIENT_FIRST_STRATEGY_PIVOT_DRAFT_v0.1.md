@@ -1,5 +1,7 @@
 # 제품전략 전환 제안 v0.1 — 환자·보호자 중심 퇴원 후 관리
 
+> **문서 상태 업데이트 (2026-10-20):** 사용자가 2026-10-20 **환자·보호자 중심 퇴원 후 행동 안내**로 방향 전환을 승인함. 이후 최신 실무 기준 문서는 [환자 중심 BM v0.2](./ASSIGNMENT_BM_PATIENT_FIRST_DRAFT_v0.2.md), [환자 중심 PRD v0.2](./PATIENT_FIRST_MVP_PRD_DRAFT_v0.2.md), [새 검증 로드맵](./RESEARCH_ROADMAP_PATIENT_FIRST_v0.2.md). 가격·제품 세부내용은 여전히 연구 중.
+
 - 제안일: 2026-10-20
 - 상태: **STRATEGIC DRAFT — 사용자 검토·승인 전**
 - 기존 B2B2C BM 및 PRD는 보존하고 이 문서에서 **대안과 권장 방향**을 비교한다.
