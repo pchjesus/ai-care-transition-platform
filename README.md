@@ -14,10 +14,11 @@
 2. [R00~R18 환자 중심 검증 로드맵 v0.2](docs/RESEARCH_ROADMAP_PATIENT_FIRST_v0.2.md)
 3. [R00 환자·보호자 문제 및 사용성 검증 시작안](docs/R00_PATIENT_AND_CAREGIVER_DISCOVERY_v0.1.md)
 4. [R00/R13 퇴원환자 이해도·자가관리·디지털 접근성 논문·공식조사 검증](docs/R00_R13_EVIDENCE_REVIEW_DISCHARGE_PATIENT_CAREGIVER_v0.1.md)
-5. [환자 중심 MVP PRD v0.2 — HTML/CSS/JavaScript](docs/PATIENT_FIRST_MVP_PRD_DRAFT_v0.2.md)
-6. [환자 중심 피벗 배경·사업모델 비교](docs/PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md)
-7. [2026년 4월 통합돌봄 개정 HWPX 검증 결과](docs/R01C_APRIL_2026_AMENDMENT_VERIFIED_v0.2.md)
-8. [기술 아키텍처 — Vanilla JS → 향후 Firebase](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
+5. [환자 중심 모바일 UX/UI 설계 v0.3 — 정보구조·화면·접근성·상태](docs/PATIENT_FIRST_MOBILE_UX_UI_DESIGN_DRAFT_v0.3.md)
+6. [환자 중심 MVP PRD v0.2 — HTML/CSS/JavaScript](docs/PATIENT_FIRST_MVP_PRD_DRAFT_v0.2.md)
+7. [환자 중심 피벗 배경·사업모델 비교](docs/PATIENT_FIRST_STRATEGY_PIVOT_DRAFT_v0.1.md)
+8. [2026년 4월 통합돌봄 개정 HWPX 검증 결과](docs/R01C_APRIL_2026_AMENDMENT_VERIFIED_v0.2.md)
+9. [기술 아키텍처 — Vanilla JS → 향후 Firebase](docs/TECH_ARCHITECTURE_DIRECTION_v0.1.md)
 
 ## 보존한 연구·이전 설계 (LEGACY / REFERENCE)
 
