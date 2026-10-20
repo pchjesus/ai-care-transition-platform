@@ -87,7 +87,7 @@ Patient, Encounter, Assessment, AssessmentEvidence, AssessmentRuleVersion, Revie
 
 ## 9. 구현 구조 (후보, 결정 전)
 
-- React + TypeScript + Vite 기반 역할별 화면 (기술 후보).
+- HTML5 + CSS3 + Vanilla JavaScript(ES modules) 기반 역할별 화면으로 초기 구현. 기술 방향은 [TECH_ARCHITECTURE_DIRECTION_v0.1.md](./TECH_ARCHITECTURE_DIRECTION_v0.1.md) 참조. 향후 필요시 프레임워크 도입 검토.
 - 평가 규칙, 워크플로 상태 전환, 표시/렌더링의 논리적 분리.
 - 초기에는 mock data provider + 로컬 저장; 향후 승인 API adapter/서버로 교체 가능하게 설계.
 - GitHub Pages는 공개 시연용 가상 데이터만 사용할 경우 별도 승인 후 활성화.
