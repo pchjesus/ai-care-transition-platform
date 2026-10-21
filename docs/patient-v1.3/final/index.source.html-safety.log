@@ -1,0 +1,25 @@
+test_all_help_routes_and_print_return_to_expected_screens (__main__.PatientRegression.test_all_help_routes_and_print_return_to_expected_screens) ... ok
+test_corrupt_profile_is_preserved_on_failed_save (__main__.PatientRegression.test_corrupt_profile_is_preserved_on_failed_save) ... ok
+test_failed_save_keeps_editing_and_disables_transfer (__main__.PatientRegression.test_failed_save_keeps_editing_and_disables_transfer) ... ok
+test_help_results_match_query_after_font_toggle (__main__.PatientRegression.test_help_results_match_query_after_font_toggle) ... ok
+test_injected_profile_is_displayed_as_text (__main__.PatientRegression.test_injected_profile_is_displayed_as_text) ... ok
+test_invalid_or_unpublished_plan_never_shows_patient_content (__main__.PatientRegression.test_invalid_or_unpublished_plan_never_shows_patient_content) ... ok
+test_legacy_profile_and_font_migration_in_real_browser (__main__.PatientRegression.test_legacy_profile_and_font_migration_in_real_browser) ... ok
+test_pdf_bytes_preview_failure_and_keyboard_trap (__main__.PatientRegression.test_pdf_bytes_preview_failure_and_keyboard_trap) ... ok
+test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled) ... ok
+test_pdf_download_matches_the_original_document (__main__.PatientRegression.test_pdf_download_matches_the_original_document) ... ok
+test_pdf_escape_restores_trigger_focus (__main__.PatientRegression.test_pdf_escape_restores_trigger_focus) ... ok
+test_pdf_url_released_on_reset (__main__.PatientRegression.test_pdf_url_released_on_reset) ... ok
+test_revised_version_restores_and_never_reuses_old_pdf (__main__.PatientRegression.test_revised_version_restores_and_never_reuses_old_pdf) ... ok
+test_save_cancel_restores_keyboard_focus (__main__.PatientRegression.test_save_cancel_restores_keyboard_focus) ... ok
+test_save_modal_keyboard_at_required_viewports (__main__.PatientRegression.test_save_modal_keyboard_at_required_viewports) ... ok
+test_stale_profile_tab_cannot_overwrite_saved_information (__main__.PatientRegression.test_stale_profile_tab_cannot_overwrite_saved_information) ... ok
+test_transfer_consent_survives_font_toggle (__main__.PatientRegression.test_transfer_consent_survives_font_toggle) ... ok
+test_unsaved_profile_survives_font_toggle (__main__.PatientRegression.test_unsaved_profile_survives_font_toggle) ... ok
+test_withdrawal_closes_content_in_other_open_patient_tab (__main__.PatientRegression.test_withdrawal_closes_content_in_other_open_patient_tab) ... ok
+test_withdrawn_plan_stays_blocked_after_reload (__main__.PatientRegression.test_withdrawn_plan_stays_blocked_after_reload) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 16.830s
+
+OK

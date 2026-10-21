@@ -1,0 +1,22 @@
+WIDTH 320 OK
+WIDTH 360 OK
+CHECK FONT today
+LARGE today 18.0 => 24.8
+CHECK FONT schedule
+LARGE schedule 18.0 => 21.2
+CHECK FONT help
+LARGE help 29.0 => 34.2
+CHECK FONT profile
+LARGE profile 29.0 => 34.2
+CHECK FONT overview
+LARGE overview 31.0 => 36.6
+CHECK FONT detail
+LARGE detail 28.0 => 33.0
+CHECK FONT quiz
+LARGE quiz 26.0 => 30.7
+WIDTH 390 OK
+WIDTH 768 OK
+WIDTH 1024 OK
+WIDTH 1440 OK
+PREVIEW OK
+ALL PASS

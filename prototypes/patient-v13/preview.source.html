@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko" class="preview-tools">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f1f6f2">
+  <title>퇴원 후, 나의 하루 — 개발 검증 화면 v1.3</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main-content">본문으로 건너뛰기</a>
+<div class="devbar" role="region" aria-label="시안 미리보기 도구">
+  <div class="dev-brand"><div class="dev-symbol" aria-hidden="true">D.</div><div><b>퇴원 후, 나의 하루</b><span>Patient-first UX · Prototype 1.1</span></div></div>
+  <div class="dev-controls">
+    <div class="seg" role="group" aria-label="레이아웃 미리보기">
+      <button data-preview="auto" aria-pressed="true">자동</button><button data-preview="mobile" aria-pressed="false">모바일</button><button data-preview="desktop" aria-pressed="false">PC</button>
+    </div>
+    <button class="dev-link" data-action="font">글자 크게</button>
+    <button class="dev-link" data-action="clinician">의료진 시연</button>
+    <button class="dev-link" data-action="reset">초기화</button>
+  </div>
+</div>
+<p class="dev-note">완전 가상 환자 · 학습용 UI 시연 · 실제 처방·예약·의료진 인증·병원 연결 기능 없음</p>
+<div class="stage" id="stage" data-preview="auto"><div class="app-frame" id="app-frame"><div id="app"></div></div></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+test_corrupt_profile_is_preserved_on_failed_save (__main__.PatientRegression.test_corrupt_profile_is_preserved_on_failed_save) ... FAIL
+test_failed_save_keeps_editing_and_disables_transfer (__main__.PatientRegression.test_failed_save_keeps_editing_and_disables_transfer) ... FAIL
+test_help_results_match_query_after_font_toggle (__main__.PatientRegression.test_help_results_match_query_after_font_toggle) ... FAIL
+test_injected_profile_is_displayed_as_text (__main__.PatientRegression.test_injected_profile_is_displayed_as_text) ... ok
+test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled) ... ERROR
+test_pdf_escape_restores_trigger_focus (__main__.PatientRegression.test_pdf_escape_restores_trigger_focus) ... FAIL
+test_pdf_url_released_on_reset (__main__.PatientRegression.test_pdf_url_released_on_reset) ... FAIL
+test_save_cancel_restores_keyboard_focus (__main__.PatientRegression.test_save_cancel_restores_keyboard_focus) ... FAIL
+test_transfer_consent_survives_font_toggle (__main__.PatientRegression.test_transfer_consent_survives_font_toggle) ... FAIL
+test_unsaved_profile_survives_font_toggle (__main__.PatientRegression.test_unsaved_profile_survives_font_toggle) ... FAIL
+test_withdrawal_closes_content_in_other_open_patient_tab (__main__.PatientRegression.test_withdrawal_closes_content_in_other_open_patient_tab) ... FAIL
+test_withdrawn_plan_stays_blocked_after_reload (__main__.PatientRegression.test_withdrawn_plan_stays_blocked_after_reload) ... FAIL
+
+======================================================================
+ERROR: test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 46, in test_pdf_creation_failure_is_handled
+    self.front();self.detail();self.page.evaluate("URL.createObjectURL=()=>{throw new Error('PDF unavailable')}")
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 9385, in evaluate
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_page.py", line 472, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 345, in evaluate
+    await self._channel.send(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: Error: PDF unavailable
+    at URL.createObjectURL (eval at evaluate (:311:30), <anonymous>:1:32)
+    at UtilityScript.evaluate (<anonymous>:318:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+
+======================================================================
+FAIL: test_corrupt_profile_is_preserved_on_failed_save (__main__.PatientRegression.test_corrupt_profile_is_preserved_on_failed_save)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 63, in test_corrupt_profile_is_preserved_on_failed_save
+    self.assertEqual(self.page.evaluate('key=>localStorage.getItem(key)',self.profile_key),'{broken-json')
+AssertionError: '{"schemaVersion":1,"profile":{"address":"서[81 chars]ull}' != '{broken-json'
+- {"schemaVersion":1,"profile":{"address":"서울시 가상구 수정주소 99 (가상)","contact":"010-0000-0000 (가상)"},"revision":1,"lastRequest":null}
++ {broken-json
+
+
+======================================================================
+FAIL: test_failed_save_keeps_editing_and_disables_transfer (__main__.PatientRegression.test_failed_save_keeps_editing_and_disables_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 66, in test_failed_save_keeps_editing_and_disables_transfer
+    self.save();expect(self.page.locator('#address')).to_have_value('서울시 가상구 수정주소 99 (가상)')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22638, in to_have_value
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 568, in to_have_value
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have Value '서울시 가상구 수정주소 99 (가상)'
+Actual value: None
+Error: element(s) not found
+Call log:
+  - Expect "to_have_value" with timeout 5000ms
+  - waiting for locator("#address")
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- banner:
+  - text: 퇴원 후, 나의 하루
+  - button "내 정보"
+  - button "글자 크기 전환": 글자 크게
+  - text: 가상 환자
+- main:
+  - text: 가상 계정 · 내 정보
+  - heading "내 정보" [level=1]
+  - paragraph: 병원에서 확인한 정보와 변경을 요청할 정보를 구분했어요.
+  - status: 이 화면에서 정보는 변경됐지만 브라우저가 저장을 차단했습니다. 새로고침하면 사라질 수 있어요.
+  - heading "병원 등록 정보" [level=2]
+  - text: 읽기 전용 · 가상 자료 성명
+  - strong: 이정희 (가상)
+  - text: 출생정보
+  - strong: 1950년생 (가상)
+  - text: 입원 기간
+  - strong: 2026.10.10 ~ 10.17 (가상)
+  - text: 진료기관
+  - strong: 가상병원 정형외과
+  - paragraph: 진료기록·환자 식별정보는 이 화면에서 수정할 수 없어요. 병원 기록이 잘못되었다면 담당 기관에 정정 요청이 필요합니다.
+  - heading "연락·주소 정보" [level=2]
+  - text: 가상 정보 · 수정 가능 등록된 주소
+  - strong: 서울시 가상구 수정주소 99 (가상)
+  - text: 등록된 연락처
+  - strong: 010-0000-0000 (가상)
+  - button "주소·연락처 수정하기"
+  - heading "정보 업데이트 요청" [level=2]
+  - paragraph: 저장한 가상 주소·연락처의 변경을 기관에 요청하는 과정입니다. 현재는 요청 내역만 이 브라우저에 기록하며 실제 기관에는 보내지지 않습니다.
+  - text: 저장 후 기관 전송 요청을 별도로 선택할 수 있어요.
+  - button "정보 업데이트 전송 요청"
+  - paragraph: 실제 서비스에는 기관별 수신 대상 확인, 정보 제공 동의, 환자 본인확인, 전송 기록 및 기관의 수락·반려 상태가 별도로 필요합니다.
+  - button "가상 계정에서 나가기"
+- navigation "모바일 주요 메뉴":
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+
+======================================================================
+FAIL: test_help_results_match_query_after_font_toggle (__main__.PatientRegression.test_help_results_match_query_after_font_toggle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 37, in test_help_results_match_query_after_font_toggle
+    self.page.locator('.top-font').click();expect(self.page.locator('#service-search-results .service-card')).to_have_count(0)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22365, in to_have_count
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 465, in to_have_count
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have count '0'
+Actual value: 5
+Call log:
+  - Expect "to_have_count" with timeout 5000ms
+  - waiting for locator("#service-search-results .service-card")
+    14 × locator resolved to 5 elements
+       - unexpected value "5"
+
+
+======================================================================
+FAIL: test_pdf_escape_restores_trigger_focus (__main__.PatientRegression.test_pdf_escape_restores_trigger_focus)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 57, in test_pdf_escape_restores_trigger_focus
+    expect(self.page.locator('[data-action="pdf-open"]')).to_be_focused()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23391, in to_be_focused
+    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 873, in to_be_focused
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be focused
+Actual value: inactive
+Call log:
+  - Expect "to_be_focused" with timeout 5000ms
+  - waiting for locator("[data-action=\"pdf-open\"]")
+    14 × locator resolved to <button type="button" class="document-cta" data-action="pdf-open">…</button>
+       - unexpected value "inactive"
+
+Aria snapshot:
+- button "앱에서 PDF 확인하기"
+
+======================================================================
+FAIL: test_pdf_url_released_on_reset (__main__.PatientRegression.test_pdf_url_released_on_reset)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 54, in test_pdf_url_released_on_reset
+    self.assertIn(url,self.page.evaluate('window.revoked'));expect(self.page.locator('.pdf-panel')).to_have_count(0)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'blob:http://127.0.0.1:33415/8c97eac9-6565-4386-9744-5dfc09c66bff' not found in [None]
+
+======================================================================
+FAIL: test_save_cancel_restores_keyboard_focus (__main__.PatientRegression.test_save_cancel_restores_keyboard_focus)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 60, in test_save_cancel_restores_keyboard_focus
+    expect(self.page.locator('#profile-form button[type="submit"]')).to_be_focused()
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23391, in to_be_focused
+    self._sync(self._impl_obj.to_be_focused(timeout=to_milliseconds(timeout)))
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 873, in to_be_focused
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be focused
+Actual value: inactive
+Call log:
+  - Expect "to_be_focused" with timeout 5000ms
+  - waiting for locator("#profile-form button[type=\"submit\"]")
+    14 × locator resolved to <button type="submit" class="primary">수정 내용 저장</button>
+       - unexpected value "inactive"
+
+Aria snapshot:
+- button "수정 내용 저장"
+
+======================================================================
+FAIL: test_transfer_consent_survives_font_toggle (__main__.PatientRegression.test_transfer_consent_survives_font_toggle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 70, in test_transfer_consent_survives_font_toggle
+    self.page.locator('.top-font').evaluate('(b)=>b.click()');expect(self.page.locator('#transfer-consent')).to_be_checked()
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22959, in to_be_checked
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 710, in to_be_checked
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be checked
+Actual value: unchecked
+Call log:
+  - Expect "to_be_checked" with timeout 5000ms
+  - waiting for locator("#transfer-consent")
+    14 × locator resolved to <input type="checkbox" id="transfer-consent"/>
+       - unexpected value "unchecked"
+
+Aria snapshot:
+- checkbox "주소·연락처의 변경 요청을 지정 기관에 제공하는 시연에 동의합니다."
+
+======================================================================
+FAIL: test_unsaved_profile_survives_font_toggle (__main__.PatientRegression.test_unsaved_profile_survives_font_toggle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 33, in test_unsaved_profile_survives_font_toggle
+    self.front();self.edit();self.page.locator('.top-font').click();expect(self.page.locator('#address')).to_have_value('서울시 가상구 수정주소 99 (가상)')
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22638, in to_have_value
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 568, in to_have_value
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have Value '서울시 가상구 수정주소 99 (가상)'
+Actual value: 서울시 가상구 돌봄로 12 (가상)
+Call log:
+  - Expect "to_have_value" with timeout 5000ms
+  - waiting for locator("#address")
+    14 × locator resolved to <input required="" id="address" name="address" maxlength="120" value="서울시 가상구 돌봄로 12 (가상)" data-profile-field="address"/>
+       - unexpected value "서울시 가상구 돌봄로 12 (가상)"
+
+Aria snapshot:
+- textbox "주소": 서울시 가상구 돌봄로 12 (가상)
+
+======================================================================
+FAIL: test_withdrawal_closes_content_in_other_open_patient_tab (__main__.PatientRegression.test_withdrawal_closes_content_in_other_open_patient_tab)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 44, in test_withdrawal_closes_content_in_other_open_patient_tab
+    expect(self.page.get_by_text('현재 공개된 퇴원 계획이 없어요.',exact=True)).to_be_visible();other.close()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23332, in to_be_visible
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 852, in to_be_visible
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be visible
+Actual value: None
+Error: element(s) not found
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for get_by_text("현재 공개된 퇴원 계획이 없어요.", exact=True)
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- banner:
+  - text: 퇴원 후, 나의 하루
+  - button "내 정보"
+  - button "글자 크기 전환": 글자 크게
+  - text: 가상 환자
+- main:
+  - text: 퇴원 후 3일째 · 2026년 10월 20일 (가상) 퇴원 후 필요한 관리를 안내합니다.
+  - heading "이정희님, 오늘의 관리 계획" [level=1]:
+    - text: 이정희님,
+    - emphasis: 오늘의 관리 계획
+  - paragraph: 지금 필요한 일부터 모았어요.
+  - text: 가상 의료진 확인 · 2026.10.20
+  - region "오늘 확인할 안내":
+    - heading "오늘 확인할 안내" [level=2]
+    - button "01 보행 보조기 안내 확인 이동할 때 필요한 안내를 살펴보세요."
+    - button "02 퇴원 약 안내 확인 퇴원하면서 받은 복약 설명서를 확인하세요."
+    - button "03 다음 진료 준비하기 진료 일정과 궁금한 점을 미리 살펴보세요."
+  - complementary:
+    - text: 가장 가까운 진료 10.27 화요일 · 오전 10:30
+    - heading "정형외과 외래" [level=3]
+    - paragraph: 가상병원 본관 2층 실제 병원 예약과는 연결되지 않아요.
+    - text: 가상 예약 확정 · 시연용
+    - button "일정 전체 보기"
+    - heading "더 자세한 설명이 필요하신가요?" [level=3]
+    - paragraph: 가족이나 의료인과 함께 볼 수 있도록 전체 계획과 현재 상태를 조금 더 자세히 확인할 수 있어요.
+    - button "계획 전체와 상태 보기"
+  - region "도움이 필요할 때":
+    - heading "도움이 필요할 때" [level=2]
+    - paragraph: 필요한 안내를 선택하거나 다른 서비스를 찾아보세요.
+    - button "서비스 전체 보기"
+    - button "병원 문의"
+    - button "주의사항"
+  - paragraph: 이 화면의 모든 정보는 가상 사례입니다. 실제 의료진의 지시·진료 예약을 대신하지 않습니다.
+- navigation "모바일 주요 메뉴":
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+
+======================================================================
+FAIL: test_withdrawn_plan_stays_blocked_after_reload (__main__.PatientRegression.test_withdrawn_plan_stays_blocked_after_reload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 40, in test_withdrawn_plan_stays_blocked_after_reload
+    self.page.reload();expect(self.page.get_by_text('현재 공개된 퇴원 계획이 없어요.',exact=True)).to_be_visible()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23332, in to_be_visible
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 852, in to_be_visible
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be visible
+Actual value: None
+Error: element(s) not found
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for get_by_text("현재 공개된 퇴원 계획이 없어요.", exact=True)
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- region "시안 미리보기 도구":
+  - text: 퇴원 후, 나의 하루 Patient-first UX · Prototype 1.1
+  - group "레이아웃 미리보기":
+    - button "자동" [pressed]
+    - button "모바일"
+    - button "PC"
+  - button "글자 크게"
+  - button "의료진 시연"
+  - button "초기화"
+- paragraph: 완전 가상 환자 · 학습용 UI 시연 · 실제 처방·예약·의료진 인증·병원 연결 기능 없음
+- banner:
+  - text: 퇴원 후, 나의 하루
+  - button "내 정보"
+  - button "글자 크기 전환": 글자 크게
+  - text: 가상 환자
+- main:
+  - text: 퇴원 후 3일째 · 2026년 10월 20일 (가상) 퇴원 후 필요한 관리를 안내합니다.
+  - heading "이정희님, 오늘의 관리 계획" [level=1]:
+    - text: 이정희님,
+    - emphasis: 오늘의 관리 계획
+  - paragraph: 지금 필요한 일부터 모았어요.
+  - text: 가상 의료진 확인 · 2026.10.20
+  - region "오늘 확인할 안내":
+    - heading "오늘 확인할 안내" [level=2]
+    - button "01 보행 보조기 안내 확인 이동할 때 필요한 안내를 살펴보세요."
+    - button "02 퇴원 약 안내 확인 퇴원하면서 받은 복약 설명서를 확인하세요."
+    - button "03 다음 진료 준비하기 진료 일정과 궁금한 점을 미리 살펴보세요."
+  - complementary:
+    - text: 가장 가까운 진료 10.27 화요일 · 오전 10:30
+    - heading "정형외과 외래" [level=3]
+    - paragraph: 가상병원 본관 2층 실제 병원 예약과는 연결되지 않아요.
+    - text: 가상 예약 확정 · 시연용
+    - button "일정 전체 보기"
+    - heading "더 자세한 설명이 필요하신가요?" [level=3]
+    - paragraph: 가족이나 의료인과 함께 볼 수 있도록 전체 계획과 현재 상태를 조금 더 자세히 확인할 수 있어요.
+    - button "계획 전체와 상태 보기"
+  - region "도움이 필요할 때":
+    - heading "도움이 필요할 때" [level=2]
+    - paragraph: 필요한 안내를 선택하거나 다른 서비스를 찾아보세요.
+    - button "서비스 전체 보기"
+    - button "병원 문의"
+    - button "주의사항"
+  - paragraph: 이 화면의 모든 정보는 가상 사례입니다. 실제 의료진의 지시·진료 예약을 대신하지 않습니다.
+- navigation "모바일 주요 메뉴":
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+
+----------------------------------------------------------------------
+Ran 12 tests in 48.210s
+
+FAILED (failures=10, errors=1)

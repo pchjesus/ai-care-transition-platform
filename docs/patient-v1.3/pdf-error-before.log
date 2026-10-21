@@ -1,0 +1,82 @@
+test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled) ... FAIL
+test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled) ... FAIL
+
+======================================================================
+FAIL: test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 49, in test_pdf_creation_failure_is_handled
+    expect(self.page.locator('.toast')).to_contain_text('PDF')
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22016, in to_contain_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text 'PDF'
+Actual value: None
+Error: element(s) not found
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator(".toast")
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- banner:
+  - text: 퇴원 후, 나의 하루
+  - button "내 정보"
+  - button "글자 크기 전환": 글자 크게
+  - text: 가상 환자
+- main:
+  - button "오늘 화면으로"
+  - text: 내 퇴원 안내 · 01 / 03
+  - heading "보행 보조기 안내 확인" [level=1]
+  - paragraph: 퇴원 후 이동할 때 참고할 내용이에요.
+  - heading "먼저 확인할 내용" [level=2]
+  - list:
+    - listitem: 01 퇴원하면서 받은 보행 보조기 안내자료를 찾아보세요.
+    - listitem: 02 사용 방법 중 헷갈리는 부분이 있다면 임의로 판단하지 말고 담당 의료진에게 확인하세요.
+    - listitem: 03 기억해 두고 싶은 질문은 다음 진료 전에 적어두세요.
+  - region "추가 안내 자료":
+    - text: 상세 자료
+    - heading "자세한 내용을 확인할까요?" [level=2]
+    - paragraph: 짧은 안내로 부족하다면 원문 자료를 함께 살펴보세요.
+    - text: 보행 보조기 안내문 · PDF · 시연용 자료 · 계획 v1.0 예시
+    - button "앱에서 PDF 확인하기"
+    - text: 시연용 PDF를 앱 안에서 보거나 저장할 수 있어요.
+  - text: 사용 방법과 활동 범위는 수술 종류와 개인 상태에 따라 달라요. 이 시안은 특정 보행 방법을 지시하지 않습니다.
+  - paragraph: 가상 의료진 확인 · 계획 v1.0 · PDF는 실제 의료 지침이 아닌 시연용 자료입니다.
+  - button "오늘 안내로 돌아가기"
+  - button "안내 확인 문제 풀어보기 (선택)"
+  - paragraph: 확인 문제를 풀지 않아도 모든 안내를 볼 수 있어요.
+- navigation "모바일 주요 메뉴":
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+
+======================================================================
+FAIL: test_pdf_creation_failure_is_handled (__main__.PatientRegression.test_pdf_creation_failure_is_handled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/http_regression.py", line 24, in tearDown
+    self.ctx.close();self.assertEqual(self.errors,[])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['PDF unavailable'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'PDF unavailable'
+
+- ['PDF unavailable']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 6.280s
+
+FAILED (failures=2)

@@ -1,0 +1,20 @@
+✔ embedded PDF remains byte-identical to the supplied synthetic PDF (1.726103ms)
+✔ PDF resource uses the correct MIME type and can be revoked (28.773008ms)
+✔ v1.2 profile, revision and local request migrate without touching the original (2.530878ms)
+✔ v1.3 values take precedence over v1.2 and font fallback is compatible (0.339059ms)
+✔ corrupt or incompatible storage is never silently overwritten (0.391587ms)
+✔ storage quota failure cannot be reported as a successful write (0.150381ms)
+✔ stale profile snapshot cannot overwrite another tab (0.238261ms)
+✔ withdrawn and revised plan survives fresh repository load (0.349725ms)
+✔ invalid plan data fails closed without replacing its bytes (0.14961ms)
+✔ reset prevents old legacy profile from reappearing and keeps font preference (0.211401ms)
+✔ failed migration preserves v1.2 bytes and does not claim saved data (0.195098ms)
+✔ reset rolls profile back if plan write fails (0.271951ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.806955
