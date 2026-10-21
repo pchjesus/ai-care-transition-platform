@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeInitial,publishedPayload,makeRevision} from '../a3/workflow.js';
+import {makeInitial,publishedPayload,makeRevision,fingerprint} from '../a3/workflow.js';
 import {validStoredRecord,STORAGE_KEYS} from '../a3/storage.js';
 import {projectCurrentPublication,readPatientPublication,encounterFor} from './publication.js';
 
 function published(version='1.0'){
  const r=makeInitial('SYN-002');
  r.draft.status='APPROVED';r.draft.version=version;
- r.draft.approval={by:'SIM-APPROVER',role:'지정 최종 승인자',at:new Date(Date.now()-1000).toISOString(),digest:'demo'};
+ r.draft.approval={by:'SIM-APPROVER',role:'지정 최종 승인자',at:new Date(Date.now()-1000).toISOString(),digest:fingerprint(r)};
  const snapshot=publishedPayload(r);
  r.publications.unshift({id:'PUB-test-'+version,status:'PUBLISHED',snapshot,
   encounterId:encounterFor('SYN-002'),assessmentId:r.assessment.id,approvedAt:snapshot.approvedAt});
@@ -44,7 +44,7 @@ test('revision does not replace old published until re-approval and re-issue',()
  assert.equal(project(next).planVersion,'1.0');
  // Re-approved simulated plan: replace publication; v1 is no longer current.
  next.draft.status='APPROVED';
- next.draft.approval={by:'SIM-APPROVER',role:'지정 최종 승인자',at:new Date().toISOString(),digest:'demo'};
+ next.draft.approval={by:'SIM-APPROVER',role:'지정 최종 승인자',at:new Date().toISOString(),digest:fingerprint(next)};
  const snapshot=publishedPayload(next);
  next.publications[0].status='SUPERSEDED';
  next.publications.unshift({id:'PUB-test-v2',status:'PUBLISHED',snapshot,
@@ -79,4 +79,17 @@ test('same-origin reader returns EMPTY/ERROR instead of standalone published def
  assert.equal(readPatientPublication(adapter,'SYN-002',encounterFor('SYN-002')).status,'ERROR');
  assert.equal(readPatientPublication(null,'SYN-002',encounterFor('SYN-002')).status,'ERROR');
  assert.equal(readPatientPublication(adapter,'SYN-002','ENC-SYN-003-DEMO').status,'MISMATCH');
+});
+test('published record cannot disagree with wrapper encounter, assessment or approval',()=>{
+ for(const mutate of [r=>r.encounterId='ENC-SYN-003-DEMO',r=>r.assessment.id='AS-SYN-002-other',r=>r.draft.approval=null,r=>delete r.draft.approval.by,r=>r.draft.approval.role='작성 간호사',r=>r.publications[0].snapshot.items[0].text='changed without approval',r=>r.draft.approval.at=new Date(Date.now()-10000).toISOString()]){
+  const r=published();mutate(r);assert.equal(project(r),null);
+ }
+});
+test('an initial draft cannot claim a later or same-version publication as a revision',()=>{
+ const r=published();r.draft.status='DRAFT';assert.equal(project(r),null);
+ r.draft.version='0.1';assert.equal(project(r),null);
+});
+test('withdrawn plan can start a fresh revision without restoring revoked publication or approval',()=>{
+ const r=published();r.publications[0].status='REVOKED';r.draft.status='REVOKED';const history=structuredClone(r.publications);
+ const next=makeRevision(r);assert.equal(next.draft.status,'DRAFT');assert.equal(next.draft.version,'2.0');assert.equal(next.draft.approval,null);assert(next.draft.items.every(i=>!i.verified));assert.deepEqual(next.publications,history);assert.equal(project(next),null);
 });

@@ -9,3 +9,14 @@
 .event{margin-top:16px}
 @media(max-width:1023px){.topline{padding-left:22px;padding-right:22px}.main{padding-left:25px;padding-right:25px}}
 @media(max-width:600px){.topline{gap:7px;align-items:flex-start}.topline .meta{width:100%;justify-content:flex-start;gap:6px}.connected-controls{width:auto}.connected-controls .top-font,.topline .top-font{min-height:42px}.main{padding-left:18px;padding-right:18px}.connected-text{font-size:calc(15px * var(--font-scale,1))}}
+/* Restore v1.3 interactions within its existing typography and palette. */
+.connected-controls{flex-wrap:wrap}.connected-controls a{text-decoration:none;display:inline-flex;align-items:center;color:inherit}
+.connected-dialog{border:1px solid #cddbd0;color:#233e30;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:auto;margin:auto}
+.connected-dialog::backdrop{background:#14281b66}.connected-dialog.pdf-panel[open]{display:flex}.connected-dialog h2{margin:0;overflow-wrap:anywhere}
+.connected-dialog:not(.pdf-panel){width:min(540px,calc(100vw - 24px));padding:25px}.connected-dialog .pdf-panel-header{flex-wrap:wrap}.connected-dialog p{line-height:1.8}
+.connected-dialog .pdf-frame{display:block;flex:1;min-height:260px}.connected-dialog .modal-actions{flex-shrink:0}.connected-dialog .modal-actions a{overflow-wrap:anywhere}
+.connected-dialog button,.connected-dialog a,.bottom-nav button,.topline button,.topline a{min-height:44px}.connected-dialog .consent-row{font-size:calc(16px * var(--font-scale,1))}
+.profile-form input,.search-input{max-width:100%;min-width:0}.read-state{color:#326d58}.task-content{min-width:0}.connected-text,.task-content small,.profile-grid strong{overflow-wrap:anywhere}
+@media(max-width:1023px){.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bottom-nav button{font-size:calc(12px * var(--font-scale,1))}}
+@media(max-width:600px){.connected-dialog:not(.pdf-panel){padding:18px}.connected-dialog.pdf-panel{height:calc(100dvh - 24px)}.meta .version-meta{max-width:100%}.connected-controls{gap:5px}.connected-controls .top-font{padding:8px}}
+@media print{.connected-dialog,.connected-controls,.bottom-nav{display:none!important}}

@@ -1,0 +1,12 @@
+{
+  "base": "3a572fd76dcb9816deef84129c6528b0949936f6",
+  "independentBRef": "80e2455f5ad3fdf88170152f7332f84082684fc6",
+  "independentBStyleBlob": "f0ba0d348e3a30fae57f4d6f58e103a9c9c79853",
+  "connectedBStyleBlob": "f0ba0d348e3a30fae57f4d6f58e103a9c9c79853",
+  "unchanged": {
+    "prototypes/integrated-v10/a2/engine.js": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff",
+    "prototypes/integrated-v10/a2/data.js": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468",
+    "prototypes/integrated-v10/a3/styles.css": "ab84418d297a3b6429e70c9568dbfadd27527c35d054bd87b6e79e80ebe9fbfb",
+    "prototypes/integrated-v10/patient/styles.css": "83a466ff8a60e58eaf23a7988326fae3ad85bed84fda12fd759bfa8b5c78d3a3"
+  }
+}

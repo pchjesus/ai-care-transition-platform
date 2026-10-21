@@ -1,0 +1,163 @@
+✔ A3 projection emits exact allowlist and preserves patient/encounter binding (3.2303ms)
+✔ draft, APPROVED-but-unpublished and revoked do not display (0.777475ms)
+✔ revision does not replace old published until re-approval and re-issue (1.969422ms)
+✔ legacy and malformed wrappers fail closed, as do multiple simultaneous publications (0.624981ms)
+✔ same-origin reader returns EMPTY/ERROR instead of standalone published default (1.708768ms)
+✖ published record cannot disagree with wrapper encounter, assessment or approval (2.276354ms)
+✖ an initial draft cannot claim a later or same-version publication as a revision (0.990279ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 129.21285
+
+✖ failing tests:
+
+test at prototypes/integrated-v10/shared/publication.test.js:83:1
+✖ published record cannot disagree with wrapper encounter, assessment or approval (2.276354ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + {
+  +   approvedAt: '2026-10-21T14:53:14.137Z',
+  +   assessmentId: 'AS-SYN-002-001',
+  +   documents: [],
+  +   encounterId: 'ENC-SYN-002-DEMO',
+  +   isSynthetic: true,
+  +   issuedAt: '2026-10-21T14:53:15.137Z',
+  +   items: [
+  +     {
+  +       id: 'today',
+  +       section: 'today',
+  +       text: '퇴원 전 받은 자가관리 안내문을 확인해 주세요.',
+  +       title: '오늘 해야 할 일'
+  +     },
+  +     {
+  +       id: 'medication',
+  +       section: 'medication',
+  +       text: '퇴원 시 확인된 약물 목록과 의료진 안내를 확인하세요. 복용 방법이 불확실하면 담당 의료진 또는 약사에게 문의하세요.',
+  +       title: '복약·약물 안내'
+  +     },
+  +     {
+  +       id: 'followup',
+  +       section: 'followup',
+  +       text: '퇴원 안내문에서 확정된 다음 진료 일정을 확인해 주세요.',
+  +       title: '외래·검사 일정'
+  +     },
+  +     {
+  +       id: 'warning',
+  +       section: 'warning',
+  +       text: '개인별 주의사항은 승인된 안내문을 확인하고, 위급한 경우에는 119에 연락하세요.',
+  +       title: '주의사항'
+  +     },
+  +     {
+  +       id: 'contact',
+  +       section: 'contact',
+  +       text: '퇴원 시 안내받은 담당 의료기관의 공식 문의처를 확인하세요.',
+  +       title: '도움이 필요할 때'
+  +     },
+  +     {
+  +       id: 'support',
+  +       section: 'support',
+  +       text: '이동과 돌봄에 도움이 필요한 경우 병원 상담 담당자와 확인해 주세요.',
+  +       title: '생활·이동 지원'
+  +     }
+  +   ],
+  +   patientId: 'SYN-002',
+  +   planVersion: '1.0',
+  +   publicationId: 'PUB-test-1.0',
+  +   schemaVersion: 1,
+  +   status: 'PUBLISHED'
+  + }
+  - null
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/integrated-v10/shared/publication.test.js:85:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schemaVersion: 1, isSynthetic: true, patientId: 'SYN-002', encounterId: 'ENC-SYN-002-DEMO', publicationId: 'PUB-test-1.0', assessmentId: 'AS-SYN-002-001', planVersion: '1.0', approvedAt: '2026-10-21T14:53:14.137Z', issuedAt: '2026-10-21T14:53:15.137Z', status: 'PUBLISHED', items: [ [Object], [Object], [Object], [Object], [Object], [Object] ], documents: [] },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at prototypes/integrated-v10/shared/publication.test.js:88:1
+✖ an initial draft cannot claim a later or same-version publication as a revision (0.990279ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + {
+  +   approvedAt: '2026-10-21T14:53:14.139Z',
+  +   assessmentId: 'AS-SYN-002-001',
+  +   documents: [],
+  +   encounterId: 'ENC-SYN-002-DEMO',
+  +   isSynthetic: true,
+  +   issuedAt: '2026-10-21T14:53:15.139Z',
+  +   items: [
+  +     {
+  +       id: 'today',
+  +       section: 'today',
+  +       text: '퇴원 전 받은 자가관리 안내문을 확인해 주세요.',
+  +       title: '오늘 해야 할 일'
+  +     },
+  +     {
+  +       id: 'medication',
+  +       section: 'medication',
+  +       text: '퇴원 시 확인된 약물 목록과 의료진 안내를 확인하세요. 복용 방법이 불확실하면 담당 의료진 또는 약사에게 문의하세요.',
+  +       title: '복약·약물 안내'
+  +     },
+  +     {
+  +       id: 'followup',
+  +       section: 'followup',
+  +       text: '퇴원 안내문에서 확정된 다음 진료 일정을 확인해 주세요.',
+  +       title: '외래·검사 일정'
+  +     },
+  +     {
+  +       id: 'warning',
+  +       section: 'warning',
+  +       text: '개인별 주의사항은 승인된 안내문을 확인하고, 위급한 경우에는 119에 연락하세요.',
+  +       title: '주의사항'
+  +     },
+  +     {
+  +       id: 'contact',
+  +       section: 'contact',
+  +       text: '퇴원 시 안내받은 담당 의료기관의 공식 문의처를 확인하세요.',
+  +       title: '도움이 필요할 때'
+  +     },
+  +     {
+  +       id: 'support',
+  +       section: 'support',
+  +       text: '이동과 돌봄에 도움이 필요한 경우 병원 상담 담당자와 확인해 주세요.',
+  +       title: '생활·이동 지원'
+  +     }
+  +   ],
+  +   patientId: 'SYN-002',
+  +   planVersion: '1.0',
+  +   publicationId: 'PUB-test-1.0',
+  +   schemaVersion: 1,
+  +   status: 'PUBLISHED'
+  + }
+  - null
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/integrated-v10/shared/publication.test.js:89:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { schemaVersion: 1, isSynthetic: true, patientId: 'SYN-002', encounterId: 'ENC-SYN-002-DEMO', publicationId: 'PUB-test-1.0', assessmentId: 'AS-SYN-002-001', planVersion: '1.0', approvedAt: '2026-10-21T14:53:14.139Z', issuedAt: '2026-10-21T14:53:15.139Z', status: 'PUBLISHED', items: [ [Object], [Object], [Object], [Object], [Object], [Object] ], documents: [] },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

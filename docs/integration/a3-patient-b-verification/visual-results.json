@@ -1,0 +1,57 @@
+{
+  "base": "3a572fd76dcb9816deef84129c6528b0949936f6",
+  "baseStyleSHA256": [
+    "83a466ff8a60e58eaf23a7988326fae3ad85bed84fda12fd759bfa8b5c78d3a3",
+    "83a466ff8a60e58eaf23a7988326fae3ad85bed84fda12fd759bfa8b5c78d3a3"
+  ],
+  "captures": [
+    {
+      "label": "before",
+      "width": 390,
+      "screen": "today",
+      "overflow": false
+    },
+    {
+      "label": "before",
+      "width": 390,
+      "screen": "profile",
+      "overflow": false
+    },
+    {
+      "label": "before",
+      "width": 1440,
+      "screen": "today",
+      "overflow": false
+    },
+    {
+      "label": "before",
+      "width": 1440,
+      "screen": "profile",
+      "overflow": false
+    },
+    {
+      "label": "after",
+      "width": 390,
+      "screen": "today",
+      "overflow": false
+    },
+    {
+      "label": "after",
+      "width": 390,
+      "screen": "profile",
+      "overflow": false
+    },
+    {
+      "label": "after",
+      "width": 1440,
+      "screen": "today",
+      "overflow": false
+    },
+    {
+      "label": "after",
+      "width": 1440,
+      "screen": "profile",
+      "overflow": false
+    }
+  ]
+}

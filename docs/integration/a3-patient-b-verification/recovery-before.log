@@ -1,0 +1,30 @@
+✔ A3 projection emits exact allowlist and preserves patient/encounter binding (4.977042ms)
+✔ draft, APPROVED-but-unpublished and revoked do not display (4.782234ms)
+✔ revision does not replace old published until re-approval and re-issue (1.011464ms)
+✔ legacy and malformed wrappers fail closed, as do multiple simultaneous publications (0.984174ms)
+✔ same-origin reader returns EMPTY/ERROR instead of standalone published default (1.926677ms)
+✔ published record cannot disagree with wrapper encounter, assessment or approval (1.560566ms)
+✔ an initial draft cannot claim a later or same-version publication as a revision (0.613657ms)
+✖ withdrawn plan can start a fresh revision without restoring revoked publication or approval (1.080607ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.794303
+
+✖ failing tests:
+
+test at prototypes/integrated-v10/shared/publication.test.js:92:1
+✖ withdrawn plan can start a fresh revision without restoring revoked publication or approval (1.080607ms)
+  Error: No active publication
+      at makeRevision (file:///workspace/ai-care-transition-platform/prototypes/integrated-v10/a3/workflow.js:74:47)
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/integrated-v10/shared/publication.test.js:94:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
