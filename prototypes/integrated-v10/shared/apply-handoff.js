@@ -1,12 +1,19 @@
 import {evaluateA2,issuesFromValues,audit} from '../a3/workflow.js';
-import {validateAssessmentHandoff} from './handoff.js';
+import {validateAssessmentHandoff,normalizeSelections} from './handoff.js';
 
 // Pure transformation: callers must persist before announcing import success.
 export function applyAssessmentHandoff(record,packet) {
  const handoff=validateAssessmentHandoff(packet);
  if(!record||record.patientId!==handoff.patientId)throw Error('환자 식별자가 서로 다릅니다.');
  if(record.encounterId&&record.encounterId!==handoff.encounterId)throw Error('서로 다른 입원건입니다.');
- if(record.assessment?.id===handoff.assessmentId)return {record,duplicate:true};
+ if(record.assessment?.id===handoff.assessmentId){
+  if(record.assessment.ruleVersion!==handoff.ruleVersion||record.assessment.capturedAt!==handoff.capturedAt||
+     JSON.stringify(normalizeSelections(record.assessment.values))!==JSON.stringify(normalizeSelections(handoff.values)))
+   throw Error('동일 평가 식별자의 내용이 다릅니다. A2에서 새 평가로 다시 인계하세요.');
+  return {record,duplicate:true};
+ }
+ if(record.integration?.source==='A2_V05'&&Date.parse(handoff.capturedAt)<Date.parse(record.assessment.capturedAt))
+  throw Error('이미 반영한 평가보다 이전 평가입니다. A2에서 최신 평가를 다시 인계하세요.');
  if(!record.draft||['PUBLISHED','REVOKED'].includes(record.draft.status))
   throw Error('발행된 계획은 먼저 새 버전 개정을 시작해야 합니다.');
  if(!['DRAFT','REVIEW_REQUESTED','CHANGES_REQUESTED','APPROVED'].includes(record.draft.status))throw Error('인계할 수 없는 계획 상태입니다.');

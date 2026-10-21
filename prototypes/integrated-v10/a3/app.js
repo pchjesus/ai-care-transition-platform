@@ -15,6 +15,8 @@ const normalState=loadRepository(storage,STORAGE_KEYS.normal),studyState=loadRep
 const repository=initializePatients(normalState.records),studyRepo=studyState.records;
 let practiceMode=false,priorContext=null,learningUnit='intro',learningHint=0,sourceTarget=null,learnFilter='';
 let selectedId=CASES[0].id,activeTab='plan',selectedDomain='function',role='NURSE',previewMode='draft',collapsed=false,previewCollapsed=true,screen='plan';
+const requestedPatient=new URLSearchParams(window.location.search).get('handoff');
+if(CASES.some(c=>c.id===requestedPatient))selectedId=requestedPatient;
 let expandedPlanItems=new Set(['today']);
 try{previewCollapsed=localStorage.getItem('a3-preview-collapsed-v04')!=='0'}catch{}
 try{collapsed=localStorage.getItem('a3-rail-collapsed-v04')==='1'}catch{}
@@ -23,7 +25,8 @@ let bootstrapping=true;
 function currentStore(){return practiceMode?studyRepo:repository}
 function get(){return currentStore()[selectedId]}
 function validSource(id,type,target){return usableSource(findSource(id,selectedId,get().unlockedSources||[]),type,target,selectedId)}
-function save(){try{persistRepository(storage,practiceMode?STORAGE_KEYS.study:STORAGE_KEYS.normal,practiceMode?studyState:normalState);$('#save-state').textContent='저장됨'}catch{$('#save-state').textContent='저장 불가';if(!bootstrapping)announce('로컬 저장에 실패했습니다. 브라우저 저장 공간을 확인해 주세요.') }}
+function save(){try{persistRepository(storage,practiceMode?STORAGE_KEYS.study:STORAGE_KEYS.normal,practiceMode?studyState:normalState);$('#save-state').textContent='저장됨';return true}catch{$('#save-state').textContent='저장 불가';if(!bootstrapping)announce('로컬 저장에 실패했습니다. 브라우저 저장 공간과 다른 탭의 변경을 확인해 주세요.');return false}}
+function saveWorkflow(before){if(save())return true;currentStore()[selectedId]=before;render();return false;}
 function announce(message){const t=$('#toast');t.textContent=message;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},4200)}
 
 function refreshIntegrationInbox(){
@@ -32,23 +35,35 @@ function refreshIntegrationInbox(){
   const packet=readPendingHandoff(storage);
   if(!packet){label.textContent='대기 중인 A2 평가 없음 · A2에서 먼저 인계하세요.';button.disabled=true;discard.hidden=true;return;}
   label.textContent=packet.patientId+' · '+packet.capturedAt.slice(0,10)+' 평가가 도착했습니다. 반영 전 검토 상태를 확인하세요.';
-  button.disabled=false;discard.hidden=false;
+  button.disabled=button.hasAttribute('aria-busy')||practiceMode||packet.patientId!==selectedId;discard.hidden=false;
+  if(packet.patientId!==selectedId)label.textContent+=' 해당 환자를 선택한 뒤 반영하세요.';
  }catch(error){
   label.textContent='인계 자료를 검증할 수 없습니다. 삭제 또는 A2에서 재작성하세요. ('+(error?.message||'검증 실패')+')';
   button.disabled=true;discard.hidden=false;
  }
 }
-function receiveIntegratedAssessment(){
+async function receiveIntegratedAssessment(){
  if(practiceMode){announce('실습 모드에서는 일반 자료 인계 불가. 일반 작업으로 돌아가세요.');return;}
  if(normalState.error){announce('기존 A3 저장자료 오류가 있어 인계를 중지했습니다. 원본을 덮어쓰지 않습니다.');return;}
+ const receiveButton=$('#integrated-receive');
+ if(receiveButton.hasAttribute('aria-busy'))return;
+ receiveButton.setAttribute('aria-busy','true');receiveButton.disabled=true;
  try{
   const packet=readPendingHandoff(storage);
   if(!packet){refreshIntegrationInbox();return;}
-  const original=repository[packet.patientId];
+  if(packet.patientId!==selectedId)throw Error('선택 환자와 인계 환자가 다릅니다. 해당 환자를 먼저 선택하세요.');
+  if(storage.getItem(STORAGE_KEYS.normal)!==normalState.serialized)throw Error('A3 저장자료가 다른 탭에서 변경됐습니다. 새로고침 후 다시 확인하세요.');
+  const original=repository[selectedId];
   if(!original)throw Error('A3에 등록되지 않은 환자입니다.');
+  const before=JSON.stringify(original);
   const {record:next,duplicate}=applyAssessmentHandoff(original,packet);
   if(!duplicate){
    if(!window.confirm(packet.patientId+' 평가를 A3에 반영할까요? 기존 검토·승인은 무효화되며 환자 공개 항목은 재검토가 필요합니다.'))return;
+   // Let storage events from other tabs reach this document after the blocking dialog.
+   await new Promise(resolve=>setTimeout(resolve,0));
+   if(practiceMode||selectedId!==packet.patientId||repository[selectedId]!==original||JSON.stringify(original)!==before)
+    throw Error('확인 중 작업 대상이 변경됐습니다. 다시 확인하세요.');
+   if(JSON.stringify(readPendingHandoff(storage))!==JSON.stringify(packet))throw Error('확인 중 인계 자료가 변경됐습니다. 최신 자료를 다시 확인하세요.');
    repository[packet.patientId]=next;
    try{persistRepository(storage,STORAGE_KEYS.normal,normalState);}
    catch(error){repository[packet.patientId]=original;throw Error('A3 저장 실패·동시 탭 충돌: '+(error?.message||'재시도 필요'));}
@@ -60,7 +75,8 @@ function receiveIntegratedAssessment(){
    else announce(duplicate?'동일 평가가 이미 인계됐습니다.':'A2 평가 저장 완료. 자료·안내 항목을 다시 검토하세요.');
   }catch{announce('평가는 저장됐지만 인계함 정리에 실패했습니다. 확인하세요.');}
   refreshIntegrationInbox();
- }catch(error){announce('인계 실패: '+(error?.message||'검증 오류'));refreshIntegrationInbox();}
+ }catch(error){announce('인계 실패: '+(error?.message||'검증 오류'));}
+ finally{receiveButton.removeAttribute('aria-busy');refreshIntegrationInbox();}
 }
 
 function docsAvailable(){return new Set([...fileStore.keys()])}
@@ -136,7 +152,7 @@ function render(){const c=CASES.find(x=>x.id===selectedId);$('#patient-name').te
  renderGate();renderDomains();
  renderAuxiliary();renderNav();applyPreviewLayout();
  for(const b of document.querySelectorAll('[data-tab]'))b.setAttribute('aria-selected',String(b.dataset.tab===activeTab));
- ({plan:renderPlan,issues:renderIssues,documents:renderDocs,history:renderHistory}[activeTab]||renderPlan)();renderPreview();renderButtons();
+ ({plan:renderPlan,issues:renderIssues,documents:renderDocs,history:renderHistory}[activeTab]||renderPlan)();renderPreview();renderButtons();refreshIntegrationInbox();
 }
 function updatePlan(target){const article=target.closest('[data-item]');if(!article)return;const item=get().draft.items.find(x=>x.id===article.dataset.item);if(!item)return;
  const key=target.dataset.edit;
@@ -190,19 +206,22 @@ function buildPrint(snapshot,isDraft){const r=get(),c=CASES.find(c=>c.id===r.pat
  $('#print-sheet').innerHTML=`<div class="print-heading"><div style="font-weight:900;color:#214B3B">D.　퇴원 후, 나의 하루</div><h1>퇴원 후 관리계획</h1><div>${safe(c.name)} · ${safe(c.id)} · 퇴원예정 ${safe(c.discharge)}</div><p class="${isDraft?'print-watermark':''}">${safe(title)}</p></div>${items.map(i=>`<section><h2>${safe(i.title)}</h2><p>${safe(i.text)}</p></section>`).join('')}<div class="print-footer">${isDraft?'검토용 문서 · 발행 전':'계획 v'+safe(snapshot.planVersion)+' / 발행 '+safe(dateTime(snapshot.issuedAt))}</div>`;
  window.print();
 }
-function requestReview(){if(!protectEdit())return;const d=get().draft;if(!['DRAFT','CHANGES_REQUESTED'].includes(d.status))return;d.status='REVIEW_REQUESTED';audit(get(),role,'REVIEW_REQUESTED','계획 검토 요청 (발행 게이트는 별도)');save();render();announce('의료진 검토를 요청했습니다. 핵심 미해결 사항이 있으면 승인은 차단됩니다.');}
-function returnReview(){const d=get().draft;if(d.status!=='REVIEW_REQUESTED'||role!=='APPROVER')return;d.status='CHANGES_REQUESTED';d.approval=null;audit(get(),role,'CHANGES_REQUESTED','최종 승인자가 보완 요청');save();render();announce('보완 요청 상태로 변경했습니다.');}
+function requestReview(){if(!protectEdit())return;const d=get().draft;if(!['DRAFT','CHANGES_REQUESTED'].includes(d.status))return;const before=deepCopy(get());d.status='REVIEW_REQUESTED';audit(get(),role,'REVIEW_REQUESTED','계획 검토 요청 (발행 게이트는 별도)');if(!saveWorkflow(before))return;render();announce('의료진 검토를 요청했습니다. 핵심 미해결 사항이 있으면 승인은 차단됩니다.');}
+function returnReview(){const d=get().draft;if(d.status!=='REVIEW_REQUESTED'||role!=='APPROVER')return;const before=deepCopy(get());d.status='CHANGES_REQUESTED';d.approval=null;audit(get(),role,'CHANGES_REQUESTED','최종 승인자가 보완 요청');if(!saveWorkflow(before))return;render();announce('보완 요청 상태로 변경했습니다.');}
 function approve(){const r=get();if(!mayApprove(r,role,docsAvailable())){announce('권한 또는 발행 전 필수 검증 조건을 충족하지 못했습니다.');return}
+ const before=deepCopy(r);
  const d=r.draft;if(!r.publications.length&&d.version==='0.1')d.version='1.0';d.status='APPROVED';d.approval={by:'SIM-APPROVER',role:roleLabel[role],at:now(),digest:fingerprint(r)};
- audit(r,role,'APPROVED',`계획 v${d.version} 내용 고정 · fingerprint ${d.approval.digest}`);save();render();announce('승인이 완료되었습니다.');}
+ audit(r,role,'APPROVED',`계획 v${d.version} 내용 고정 · fingerprint ${d.approval.digest}`);if(!saveWorkflow(before))return;render();announce('승인이 완료되었습니다.');}
 function publish(){const r=get();if(!mayPublish(r,role,docsAvailable())){announce('승인 상태·첨부 원본·내용 일치 검증에 실패했습니다.');return}
+ const before=deepCopy(r);
  const d=r.draft,p=currentPublished(r),snapshot=publishedPayload(r);
  // Prototype publication: browser-local snapshot only. Real PDF generation/atomically saved PDF is NOT part of this demo.
- if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}`,snapshot,status:'PUBLISHED'});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 실제 서버/환자 앱 연결 없음`);previewMode='published';save();render();announce('계획이 발행되었습니다.');}
-function revise(){if(get().draft.status!=='PUBLISHED')return;currentStore()[selectedId]=makeRevision(get());previewMode='draft';save();render();announce('새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
+ if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}`,snapshot,status:'PUBLISHED'});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 실제 서버/환자 앱 연결 없음`);if(!saveWorkflow(before))return;previewMode='published';render();announce('계획이 발행되었습니다.');}
+function revise(){if(get().draft.status!=='PUBLISHED')return;const before=deepCopy(get());currentStore()[selectedId]=makeRevision(get());if(!saveWorkflow(before))return;previewMode='draft';render();announce('새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
 function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
  if(!confirm(`발행본 v${p.snapshot.planVersion}을 철회할까요?`))return;
- p.status='REVOKED';if(r.draft.status==='PUBLISHED')r.draft.status='REVOKED';audit(r,role,'REVOKED',`발행본 v${p.snapshot.planVersion} 모의 철회`);previewMode='draft';save();render();announce('발행본을 철회했습니다.');}
+ const before=deepCopy(r);
+ p.status='REVOKED';if(r.draft.status==='PUBLISHED')r.draft.status='REVOKED';audit(r,role,'REVOKED',`발행본 v${p.snapshot.planVersion} 모의 철회`);if(!saveWorkflow(before))return;previewMode='draft';render();announce('발행본을 철회했습니다.');}
 // Navigation and auxiliary clinical workspace are separate from the immutable A2 v0.5 baseline.
 function renderNav(){
  $('#a3-screen').hidden=screen!=='plan';$('#aux-screen').hidden=screen==='plan';
@@ -420,7 +439,8 @@ $('#integrated-discard').addEventListener('click',()=>{
 $('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#revoke').addEventListener('click',revoke);
 $('#reset').addEventListener('click',()=>{if(!confirm(`현재 ${selectedId}의 작성 내용과 이력을 초기화할까요?`))return;const currentDocIds=new Set(get()?.draft?.docs?.map(d=>d.id)||[]);currentStore()[selectedId]=makeInitial(selectedId);for(const key of currentDocIds)fileStore.delete(key);activeTab='plan';previewMode='draft';expandedPlanItems=new Set(['today']);save();render();announce('작성 내용을 초기화했습니다.')});
 function toggleRail(flag){collapsed=flag;$('#shell').classList.toggle('rail-collapsed',collapsed);$('#rail-toggle').setAttribute('aria-expanded',String(!collapsed));$('#rail-toggle').setAttribute('aria-label',collapsed?'사이드바 펼치기':'사이드바 접기');$('#rail-toggle').title=collapsed?'사이드바 펼치기':'사이드바 접기';try{localStorage.setItem('a3-rail-collapsed-v04',collapsed?'1':'0')}catch{}}
-$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;refreshIntegrationInbox();
+$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;
+window.addEventListener('storage',e=>{if(e.key===HANDOFF_KEY||e.key===null)refreshIntegrationInbox();});
 
 // A1, A2 and standalone patient preview are navigable local screens; no A2 baseline files are mutated.
 document.querySelectorAll('.rail-link[data-nav]').forEach(button=>button.addEventListener('click',()=>{

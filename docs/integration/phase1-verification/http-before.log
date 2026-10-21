@@ -1,0 +1,180 @@
+test_changed_packet_during_confirmation_is_not_imported (__main__.Integration.test_changed_packet_during_confirmation_is_not_imported) ... ERROR
+test_current_patient_must_match_packet (__main__.Integration.test_current_patient_must_match_packet) ... FAIL
+test_failed_approval_never_claims_success (__main__.Integration.test_failed_approval_never_claims_success) ... FAIL
+test_failed_publication_never_claims_success (__main__.Integration.test_failed_publication_never_claims_success) ... FAIL
+test_incoming_url_selects_patient_without_importing (__main__.Integration.test_incoming_url_selects_patient_without_importing) ... FAIL
+test_receipt_storage_failure_rolls_back_and_retains_packet (__main__.Integration.test_receipt_storage_failure_rolls_back_and_retains_packet) ... ERROR
+test_reimport_invalidates_approval_but_protects_publication (__main__.Integration.test_reimport_invalidates_approval_but_protects_publication) ... ok
+test_stale_a3_tab_cannot_overwrite_another_tab (__main__.Integration.test_stale_a3_tab_cannot_overwrite_another_tab) ... FAIL
+test_syn002_handoff_recheck_and_reload (__main__.Integration.test_syn002_handoff_recheck_and_reload) ... ok
+test_syn003_missing_conflict_block_approval (__main__.Integration.test_syn003_missing_conflict_block_approval) ... ok
+
+======================================================================
+ERROR: test_changed_packet_during_confirmation_is_not_imported (__main__.Integration.test_changed_packet_during_confirmation_is_not_imported)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 62, in test_changed_packet_during_confirmation_is_not_imported
+    self.page.remove_all_listeners('dialog')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Page' object has no attribute 'remove_all_listeners'. Did you mean: 'remove_listener'?
+
+======================================================================
+ERROR: test_receipt_storage_failure_rolls_back_and_retains_packet (__main__.Integration.test_receipt_storage_failure_rolls_back_and_retains_packet)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 55, in test_receipt_storage_failure_rolls_back_and_retains_packet
+    self.assertEqual(self.records(),before);self.assertEqual(self.pending(),packet);self.assertIn('인계 실패',self.page.locator('#toast').inner_text());self.page.evaluate('window.restoreWrites()');self.receive();self.assertEqual(self.records()['SYN-002']['assessment']['id'],packet['assessmentId'])
+                                                                                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 9385, in evaluate
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_page.py", line 472, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 345, in evaluate
+    await self._channel.send(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: TypeError: Illegal invocation
+    at UtilityScript.evaluate (<anonymous>:318:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+
+======================================================================
+FAIL: test_current_patient_must_match_packet (__main__.Integration.test_current_patient_must_match_packet)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 50, in test_current_patient_must_match_packet
+    self.assertEqual(self.records(),before);self.assertEqual(self.pending()['patientId'],'SYN-002');expect(self.page.locator('#patient-select')).to_have_value('SYN-003')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'SYN[8526 chars]t': 'device', 'transfer': 'independent', 'adl'[25171 chars]'}]}} != {'SYN[8526 chars]t': 'independent', 'transfer': 'independent', [24813 chars]'}]}}
+Diff is 120947 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_failed_approval_never_claims_success (__main__.Integration.test_failed_approval_never_claims_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 73, in test_failed_approval_never_claims_success
+    expect(self.page.locator('#workflow-state')).to_have_text('의료진 검토 요청');self.assertEqual(self.records()['SYN-002']['draft']['status'],'REVIEW_REQUESTED');self.assertNotIn('승인이 완료',self.page.locator('#toast').inner_text())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22839, in to_have_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 648, in to_have_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have text '의료진 검토 요청'
+Actual value: 승인 완료
+Call log:
+  - Expect "to_have_text" with timeout 5000ms
+  - waiting for locator("#workflow-state")
+    14 × locator resolved to <strong id="workflow-state">승인 완료</strong>
+       - unexpected value "승인 완료"
+
+Aria snapshot:
+- strong: 승인 완료
+
+======================================================================
+FAIL: test_failed_publication_never_claims_success (__main__.Integration.test_failed_publication_never_claims_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 75, in test_failed_publication_never_claims_success
+    self.a3();self.approve();self.deny_writes();self.page.locator('#publish').click();expect(self.page.locator('#workflow-state')).to_have_text('승인 완료');self.assertEqual(self.records()['SYN-002']['publications'],[]);self.assertNotIn('발행되었습니다',self.page.locator('#toast').inner_text())
+                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22839, in to_have_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 648, in to_have_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have text '승인 완료'
+Actual value: 발행 완료
+Call log:
+  - Expect "to_have_text" with timeout 5000ms
+  - waiting for locator("#workflow-state")
+    14 × locator resolved to <strong id="workflow-state">발행 완료</strong>
+       - unexpected value "발행 완료"
+
+Aria snapshot:
+- strong: 발행 완료
+
+======================================================================
+FAIL: test_incoming_url_selects_patient_without_importing (__main__.Integration.test_incoming_url_selects_patient_without_importing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 52, in test_incoming_url_selects_patient_without_importing
+    self.send();expect(self.page.locator('#patient-select')).to_have_value('SYN-002');self.assertFalse('integration' in self.records()['SYN-002']);self.assertIsNotNone(self.pending())
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22638, in to_have_value
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 568, in to_have_value
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have Value 'SYN-002'
+Actual value: SYN-001
+Call log:
+  - Expect "to_have_value" with timeout 5000ms
+  - waiting for locator("#patient-select")
+    14 × locator resolved to <select id="patient-select">…</select>
+       - unexpected value "SYN-001"
+
+Aria snapshot:
+- combobox "환자 선택":
+  - option "이정희 · SYN-001" [selected]
+  - option "윤미경 · SYN-002"
+  - option "최도현 · SYN-003"
+  - option "한서윤 · SYN-004"
+
+======================================================================
+FAIL: test_stale_a3_tab_cannot_overwrite_another_tab (__main__.Integration.test_stale_a3_tab_cannot_overwrite_another_tab)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 59, in test_stale_a3_tab_cannot_overwrite_another_tab
+    self.assertEqual(self.records(),before);expect(other.locator('#workflow-state')).to_have_text('초안 작성 중');expect(other.locator('#save-state')).to_have_text('저장 불가');other.close()
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22839, in to_have_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 648, in to_have_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have text '초안 작성 중'
+Actual value: 의료진 검토 요청
+Call log:
+  - Expect "to_have_text" with timeout 5000ms
+  - waiting for locator("#workflow-state")
+    14 × locator resolved to <strong id="workflow-state">의료진 검토 요청</strong>
+       - unexpected value "의료진 검토 요청"
+
+Aria snapshot:
+- strong: 의료진 검토 요청
+
+----------------------------------------------------------------------
+Ran 10 tests in 31.740s
+
+FAILED (failures=5, errors=2)

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {DOMAINS as original,CASES as originalCases} from '../../hospital-a2/data.js';
-import {evaluateAll} from '../../hospital-a2/engine.js';
+import {DOMAINS as original,CASES as originalCases} from '../../a2/data.js';
+import {evaluateAll} from '../../a2/engine.js';
 import {DOMAINS,CASES} from '../data.js';
 import {evaluateA2} from '../workflow.js';
 test('copied A3 schema retains all 30 approved A2 fields, options and scores',()=>{

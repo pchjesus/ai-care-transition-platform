@@ -1,0 +1,10 @@
+{
+  "source_commit": "b4b936c90078ac72a4a7b30e281c5e3fb187a5b1",
+  "source_path": "prototypes/hospital-a3-v04/examples",
+  "files": {
+    "SYN-001_보행보조기_교육예시.pdf": "ec3c0ea9e8830cd41071b15041005f80621ef94fbaa866d16ecbbaf9df723539",
+    "SYN-002_sample_care_plan.pdf": "19a7491bd4cd8850949229c9773b25ad00064c525d1e78be197f0fafde03e349",
+    "SYN-003_약료상충_비교예시.pdf": "a376e3abcbc182a289c49ee563b49c6ebbb117f29bfddecf04aeb4b0b54635d9",
+    "SYN-004_일정변경_확인예시.pdf": "94a9c4770aab36ad592abb732e35b68d5f3f365a598e1988a9b95db60a231193"
+  }
+}

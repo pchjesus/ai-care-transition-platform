@@ -1,0 +1,46 @@
+test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) ...
+  test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-001_보행보조기_교육예시.pdf') ... FAIL
+  test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-002_sample_care_plan.pdf') ... FAIL
+  test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-003_약료상충_비교예시.pdf') ... FAIL
+  test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-004_일정변경_확인예시.pdf') ... FAIL
+
+======================================================================
+FAIL: test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-001_보행보조기_교육예시.pdf')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 90, in test_example_pdfs_are_served
+    self.assertEqual(response.status,200);self.assertEqual(response.body()[:5],b'%PDF-')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-002_sample_care_plan.pdf')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 90, in test_example_pdfs_are_served
+    self.assertEqual(response.status,200);self.assertEqual(response.body()[:5],b'%PDF-')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-003_약료상충_비교예시.pdf')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 90, in test_example_pdfs_are_served
+    self.assertEqual(response.status,200);self.assertEqual(response.body()[:5],b'%PDF-')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_example_pdfs_are_served (__main__.Integration.test_example_pdfs_are_served) (path='examples/SYN-004_일정변경_확인예시.pdf')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase1_http.py", line 90, in test_example_pdfs_are_served
+    self.assertEqual(response.status,200);self.assertEqual(response.body()[:5],b'%PDF-')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200
+
+----------------------------------------------------------------------
+Ran 1 test in 1.459s
+
+FAILED (failures=4)

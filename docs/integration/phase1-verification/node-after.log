@@ -1,0 +1,60 @@
+
+> test
+> node --test shared/*.test.js a2/tests/*.test.js a3/tests/*.test.js
+
+✔ All 6 domain scores deterministic (7.537094ms)
+✔ fully described patient gets 0 and no unknown (0.302954ms)
+✔ missing required fields yield unknown not score 0, even if other risk flags (0.228425ms)
+✔ conflicting observation yields explicit CONFLICTING even if severe (0.245279ms)
+✔ social living alone not automatically grade 3 (0.257097ms)
+✔ copied A3 schema retains all 30 approved A2 fields, options and scores (2.033199ms)
+✔ A3 evaluation matches untouched A2 for every option, missing and conflict input (17.625673ms)
+✔ missing assessment issues cannot bypass review after revision (3.412981ms)
+✔ unknown required option is an assessment issue, never silently accepted (0.513423ms)
+✔ absent issue target is rejected safely (0.217519ms)
+✔ unrecognized source target kind cannot count as an issue (0.162087ms)
+✔ different encounter and unrelated field references are rejected (0.548945ms)
+✔ case library has four dedicated scenarios and per-patient records (1.258194ms)
+✔ cross-patient or unrelated evidence cannot count as a reviewed plan source (2.097273ms)
+✔ pending medication record cannot satisfy a medical review, confirmed reply can (0.252981ms)
+✔ medication conflict remains hard blocker even if review text and linked evidence are filled (0.506533ms)
+✔ SYN002 complete draft references real synthetic source records (0.434546ms)
+✔ SYN004 contains immutable v1 publication and requires fresh review for v2 (0.837257ms)
+✔ normal, study and baseline use distinct keys and roundtrip patient data (5.412902ms)
+✔ corrupt JSON, wrong shapes and foreign-patient records remain untouched (4.060521ms)
+✔ quota and denied storage errors propagate without claiming a successful save (2.243828ms)
+✔ a stale repository cannot overwrite edits saved by another tab (1.540848ms)
+✔ foreign publication snapshots and malformed view models are rejected (0.395139ms)
+✔ A2 read-only import has six domains and 30 fields (18 required) (0.83896ms)
+✔ SYN-002 all six domains 0, but six basic plan sections still exist (2.433685ms)
+✔ SYN-003 has missing fields and medication conflict block even though A2 assigns 3 (0.901902ms)
+✔ SYN-001 requires an independent, reviewed medication patient instruction (0.368349ms)
+✔ only designated approver can approve and publish a clean, unchanged request (2.429931ms)
+✔ a reviewed patient PDF needs live file bytes during publication (0.522746ms)
+✔ patient-facing projection excludes internal items, raw source IDs, PDF hashes, reviewer identifiers (0.479273ms)
+✔ new revision keeps existing published snapshot and resets approval (1.056228ms)
+✔ fingerprint changes when underlying A2 input snapshot changes (0.697633ms)
+✔ A2 handoff creates new immutable A3 assessment and invalidates reviews (7.831161ms)
+✔ cross-patient import and currently published plan reject safely (0.867441ms)
+✔ A2 missing/CONFLICT values remain blocked in A3 (0.763068ms)
+✔ same assessment ID with different values is not silently treated as a duplicate (1.753089ms)
+✔ older assessment cannot replace a newer imported assessment (1.223783ms)
+✔ handoff invalidates reviewed patient PDFs but preserves publications and internal docs (0.625065ms)
+✔ SYN-002 exports its exact values and checks against A2 rules (4.281834ms)
+✔ missing and conflicting data cannot silently become ready (0.543306ms)
+✔ reject invalid option, unknown patient, forged result and forged encounter (1.71303ms)
+✔ inbox writes, reads, rejects cross-patient overwrite and clears with token (1.881967ms)
+✔ corrupt inbox fails closed (0.332417ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 267.92429
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
