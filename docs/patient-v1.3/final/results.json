@@ -1,0 +1,58 @@
+[
+  {
+    "check": "node",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "source-legacy",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-legacy",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "injection-legacy",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "file-legacy",
+    "status": "NOT RUN",
+    "exit": 1
+  },
+  {
+    "check": "index.source.html-safety",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "index.html-safety",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "visual",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "v12-original-hashes",
+    "status": "PASS"
+  },
+  {
+    "check": "patient-v12-standalone-build",
+    "status": "PASS"
+  },
+  {
+    "check": "patient-v13-standalone-build",
+    "status": "PASS"
+  },
+  {
+    "check": "hospital-a2-unchanged",
+    "status": "PASS"
+  }
+]

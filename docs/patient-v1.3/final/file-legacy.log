@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/test_v12.py", line 6, in <module>
+    runpy.run_path(str(root/"tests"/"legacy_regression.py"),run_name="__main__")
+  File "<frozen runpy>", line 287, in run_path
+  File "<frozen runpy>", line 98, in _run_module_code
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/legacy_regression.py", line 52, in <module>
+    attach(pg)
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/legacy_regression.py", line 10, in attach
+    load_page(page,dev);return
+    ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/ai-care-transition-platform/prototypes/patient-v13/tests/browser_support.py", line 15, in load_page
+    if MODE=='file':page.goto((ROOT/(name+'.html')).as_uri(),wait_until='load')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 9875, in goto
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_page.py", line 560, in goto
+    return await self._main_frame.goto(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 156, in goto
+    await self._channel.send(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///workspace/ai-care-transition-platform/prototypes/patient-v13/index.html
+Call log:
+  - navigating to "file:///workspace/ai-care-transition-platform/prototypes/patient-v13/index.html", waiting until "load"

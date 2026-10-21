@@ -1,0 +1,24 @@
+[
+  {
+    "scenario": "pdf-error",
+    "version": "patient-v12",
+    "runtime_errors": [
+      "PDF unavailable"
+    ]
+  },
+  {
+    "scenario": "pdf-error",
+    "version": "patient-v13",
+    "runtime_errors": []
+  },
+  {
+    "scenario": "save-error",
+    "version": "patient-v12",
+    "runtime_errors": []
+  },
+  {
+    "scenario": "save-error",
+    "version": "patient-v13",
+    "runtime_errors": []
+  }
+]

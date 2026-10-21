@@ -34,6 +34,12 @@
 - [병원 중심 업무·서식·데이터 계약 v0.2](docs/MVP_WORKFLOW_AND_DATA_CONTRACT_DRAFT_v0.2.md)
 - [기존 발표 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
 
+## 환자용 모바일 웹앱 v1.3 — 안정화 검토본
+
+- [v1.3 실행·개발·테스트 안내](prototypes/patient-v13/README.md) · [모듈형 원본](prototypes/patient-v13/index.source.html) · [독립 HTML](prototypes/patient-v13/index.html)
+- [v1.2 보존 원본](prototypes/patient-v12/README.md) · [전후 검증·잔여 위험](docs/patient-v1.3/REPORT.md)
+- 합성 환자 한 명의 독립 시연 앱입니다. 병원용 A2/A3 정식 통합·실제 인증·기관 전송·배포는 포함하지 않습니다.
+
 ## 병원용 A2 평가 워크벤치 (디자인 승인 기준선 v0.5, 2026-10-21)
 
 - [A2 목업 실행 — 독립 HTML](prototypes/hospital-a2/preview.html) · [모듈 소스](prototypes/hospital-a2/index.html)
