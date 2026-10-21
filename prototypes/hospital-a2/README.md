@@ -7,6 +7,7 @@
 - `styles.css`, `app.js`, `data.js`, `engine.js`: 스타일, UI, 합성 사례, 자체 규칙.
 - `DESIGN_REVIEW_v0.5.md`: v0.5 변경사항·기능/화면 검증 및 미실시 목록.
 - `NEXT_CHAT_HANDOFF.md`: 다음 병원 A3 설계 채팅 인수인계.
+- `CODEX_WORK_SCOPE_v0.1.md`: Codex 추천 작업·작업 보존 계약.
 - `QUICK_GUIDE_A2_v0.5.md`: A2 목업 1페이지 사용법.
 - `PATIENT_GUIDE_DRAFT_v0.1.md`: **실제 배포 전 검토가 필요한 환자·보호자 안내문 초안.**
 

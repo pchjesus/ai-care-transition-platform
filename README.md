@@ -38,7 +38,7 @@
 
 - [A2 목업 실행 — 독립 HTML](prototypes/hospital-a2/preview.html) · [모듈 소스](prototypes/hospital-a2/index.html)
 - [README/실행·테스트 안내](prototypes/hospital-a2/README.md) · [빠른 사용 설명서](prototypes/hospital-a2/QUICK_GUIDE_A2_v0.5.md)
-- [디자인·검증 기록](prototypes/hospital-a2/DESIGN_REVIEW_v0.5.md) · [다음 채팅 인수인계](prototypes/hospital-a2/NEXT_CHAT_HANDOFF.md)
+- [디자인·검증 기록](prototypes/hospital-a2/DESIGN_REVIEW_v0.5.md) · [다음 채팅 인수인계](prototypes/hospital-a2/NEXT_CHAT_HANDOFF.md) · [Codex 작업 후보](prototypes/hospital-a2/CODEX_WORK_SCOPE_v0.1.md)
 - 포함: 6개 관리 필요도 영역·30개 입력 후보·가상 환자 3명·규칙기반 업무 검토등급. **정식 임상 위험예측/진단/퇴원 허가 기준 아님.**
 - A1·A3는 목업 내 미리보기 단계. 의료진 실제 승인/환자 앱 발행/기관 전송은 미구현. 운영·임상 검증과 기능 승인은 별개입니다.
 
