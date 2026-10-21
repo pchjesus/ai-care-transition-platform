@@ -1,0 +1,26 @@
+{
+  "main": "f87402f8915f23b2e6da55079e770c49733cb140",
+  "zip_sha256": "9f61bb64e1036e567bb604e43d5d88591e7a798de211222f54e4befa4c2b923e",
+  "filename_normalization": "ZIP unflagged UTF-8 PDF name decoded from CP437 to UTF-8; bytes unchanged",
+  "files": {
+    "DESIGN_REVIEW.md": "c9c58ca94350b49795ff5437abcd25b31fad07d7dd2d28695ff0d431ee1ca12f",
+    "FIREBASE_INTEGRATION_CONTRACT.md": "efc41fe021a6c61812e785f04ac3b6c642865d308de4eae72be888183f306a78",
+    "README.md": "dae437c98cb26e597232a7c21be1ece8808eda674d3c9753b11e1440da170d2f",
+    "app.js": "c96d3d00e53751f74abcc289cba862fc4d050bbc77e59128bf8dace79565f8fa",
+    "build_standalone.py": "fe56e310892418622ed9287dfec6b6d5623aa1ee5244f11344c28a58f24016ed",
+    "home_1440.png": "a89f8a0d999f275428b38595e71b748c9748b76b331cfa9d8c61826d4f0684b4",
+    "home_390.png": "f5d50841d11afad015bd617e6cff9d02abf8b3a92f00c535cd670a3c3c9ae338",
+    "index.html": "ea50fee763f434f23e458ae79c7e9ef390b8c31359b8fa92d66e7b2a5e6f0cc3",
+    "large_quiz_390.png": "05019a7e4454a63cb6222dd698069ce9a0f23789c9d1d319adba997503c28dfa",
+    "login_390.png": "10590603333dbeb0bc6ef5ec15416988ee281d0395deadac59f4087db78065c9",
+    "pdf_390.png": "23ac0c8135745204324b8437156ccd664275535565a0175658888b5a8be26362",
+    "preview.html": "8f7b70bc595d8b853d6790e61aef907056f42cc43c850f0d478e6b08ac8b4445",
+    "preview_1440.png": "6a4f1abe3e217cf36612795e06b038247541fae4af0c54ed7f3a4d7ee68f293a",
+    "profile_requested_390.png": "ef4eb73c407949fe93709f2904a2b14c5178548f7f0301ea13c8bc3c7f9c634d",
+    "profile_saved_390.png": "cf57fbfb0ed9e59ce0fba43c749ab516d61a1fffdc1103d2530b88b7f91fe214",
+    "save_confirm_390.png": "549cfd00d7bbc5f568c246fd99d9d93db331cb24fee98f797b928f0e0f483d95",
+    "styles.css": "83a466ff8a60e58eaf23a7988326fae3ad85bed84fda12fd759bfa8b5c78d3a3",
+    "test_v12.py": "6bf35861bf0abfb91bdee148f7efdb19f0276d73915f86fc8f8f213db8cc55bf",
+    "보행_보조기_안내_시연용.pdf": "5a9bcca51c6093a86b65763603c1a382d889f73678567ca67c0a1bdfe35165b4"
+  }
+}
