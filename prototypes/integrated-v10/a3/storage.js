@@ -2,7 +2,7 @@ import {CASES,DOMAINS,SECTIONS} from './data.js';
 import {deepCopy,makeInitial} from './workflow.js';
 
 // Candidate data must never overwrite the read-only v0.3 baseline on a shared origin.
-export const STORAGE_KEYS={normal:'a3-prototype-v04-synthetic-only',study:'a3-study-v04-synthetic-only'};
+export const STORAGE_KEYS={normal:'care-transition-integrated-v10-a3-synthetic-only',study:'care-transition-integrated-v10-study-synthetic-only'};
 const isObject=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const strings=(v,keys)=>isObject(v)&&keys.every(k=>typeof v[k]==='string');
 export function validStoredRecord(r,id){

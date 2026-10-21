@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#214B3B"><title>A3 · 퇴원 후 관리계획 — 독립 프로토타입</title><link rel="stylesheet" href="styles.css"></head><body>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#214B3B"><title>A3 · 퇴원 후 관리계획 — 독립 프로토타입</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="../integration.css"></head><body>
 <div class="shell" id="shell">
  <aside class="rail" id="rail" aria-label="병원 업무 메뉴">
   <div class="brand-row"><div class="brand"><div class="brand-mark">D<span>.</span></div><div class="brand-name"><b>퇴원관리 워크벤치</b><small>Clinical workspace</small></div></div><button class="rail-toggle" id="rail-toggle" aria-label="사이드바 접기" aria-expanded="true" title="사이드바 접기">‹</button></div>
@@ -14,6 +14,7 @@
   <div class="topbar"><div class="breadcrumb">병원 업무 <span> / </span> 퇴원 전환관리 <span> / </span> <b>A3</b></div><div class="top-actions"><button class="plain-button" id="reset">초기화</button><button class="plain-button" id="top-help" type="button">빠른 도움말</button></div></div>
   <div class="content" id="a3-screen">
    <header class="headline"><div><div class="eyebrow">A3 · 퇴원계획</div><h1>퇴원 후 관리계획</h1><p>평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.</p></div><div class="headline-meta"><span class="version-chip" id="version-chip">초안 v0.1</span><span id="save-state" class="save-state" role="status">저장됨</span></div></header>
+   <section class="integration-inbox" aria-label="A2 원본 평가 인계"><div class="integration-info"><strong>A2 → A3 평가 인계</strong><p id="integrated-a3-status" role="status" aria-live="polite">대기 자료 확인 중</p></div><a href="../a2/index.html">A2 평가 열기</a><button type="button" id="integrated-discard" class="btn outline" hidden>인계 취소</button><button type="button" id="integrated-receive" class="btn primary" disabled>선택 환자 평가 반영</button></section>
    <div class="summary-row">
    <section class="patient-strip" aria-label="환자 컨텍스트"><div class="patient-overview"><div class="avatar">가</div><div><div class="upper-label">환자 정보</div><h2 id="patient-name">—</h2><div class="patient-detail" id="patient-detail">—</div></div></div><div class="patient-chooser"><label for="patient-select">환자 선택</label><select id="patient-select"></select></div></section>
    <button type="button" class="gate-banner" id="gate-banner" aria-label="발행 전 확인사항 보기" aria-haspopup="dialog"></button>

@@ -1,10 +1,14 @@
 import {CASES,DOMAINS,SOURCES} from './data.js';
 import {evaluateAll,evaluateDomain,chooseAction,TIER_LABELS} from './engine.js';
+import {createAssessmentHandoff,writePendingHandoff} from '../shared/handoff.js';
 
 const $=(sel)=>document.querySelector(sel);
 const escapeHtml=(raw)=>String(raw??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let selectedCase=0,selectedDomain='function';
 let values=structuredClone(CASES[0].values);
+const requestedCase=new URLSearchParams(window.location.search).get('patient');
+const requestedIndex=CASES.findIndex(c=>c.id===requestedCase);
+if(requestedIndex>=0){selectedCase=requestedIndex;values=structuredClone(CASES[selectedCase].values);}
 const dialog=$('#modal');
 function setHtml(el,html){$(el).innerHTML=html;}
 const domainById=(id)=>DOMAINS.find(d=>d.id===id);
@@ -75,6 +79,7 @@ try{initialCollapsed=localStorage.getItem(railKey)==='1';}catch{}
 setRailCollapsed(initialCollapsed,{persist:false});
 railToggle.addEventListener('click',()=>setRailCollapsed(!shell.classList.contains('is-rail-collapsed')));
 $('#patient-select').innerHTML=CASES.map((c,i)=>`<option value="${i}">${c.name} (${c.id})</option>`).join('');
+$('#patient-select').value=String(selectedCase);
 $('#patient-select').addEventListener('change',e=>{selectedCase=Number(e.target.value);values=structuredClone(CASES[selectedCase].values);selectedDomain='function';render();});
 $('#domains').addEventListener('click',e=>{const btn=e.target.closest('[data-domain]');if(!btn)return;selectedDomain=btn.dataset.domain;render();});
 $('#assessment-form').addEventListener('change',e=>{if(!e.target.matches('[data-field]'))return;const field=e.target.dataset.field;const v=e.target.value;values[selectedDomain][field]=v||null;render();document.querySelector(`[data-field="${field}"]`)?.focus({preventScroll:true});});
@@ -86,4 +91,14 @@ $('#show-method').addEventListener('click',showMethod);
 $('#modal-content').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(!b)return;selectedCase=Number(b.dataset.pick);$('#patient-select').value=String(selectedCase);values=structuredClone(CASES[selectedCase].values);dialog.close();render();});
 $('#modal-close').addEventListener('click',()=>dialog.close());$('#modal-dismiss').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+$('#integrated-send').addEventListener('click',()=>{
+ const status=$('#integrated-a2-status');
+ try{
+  const current=CASES[selectedCase];
+  const packet=createAssessmentHandoff(current.id,values);
+  writePendingHandoff(window.localStorage,packet);
+  status.textContent='가상 평가를 저장했습니다. A3에서 인계를 확인하세요.';
+  window.location.assign('../a3/index.html?handoff='+encodeURIComponent(current.id));
+ }catch(error){status.textContent='인계 보류: '+(error?.message||'저장·검증 실패');}
+});
 render();

@@ -6,6 +6,7 @@
 <meta name="description" content="가상의 고령 근골격계 퇴원환자를 대상으로 여섯 영역을 평가하는 병원용 A2 디자인 목업"/>
 <title>A2 관리 필요도 평가 v0.5 | 병원 워크벤치</title>
 <link rel="stylesheet" href="./styles.css"/>
+<link rel="stylesheet" href="../integration.css"/>
 <script type="module" src="./app.js"></script>
 </head>
 <body>
@@ -52,6 +53,7 @@
           <form id="assessment-form" autocomplete="off"></form>
           <details class="form-guidance"><summary>입력 기준·참고사항 보기</summary><div id="field-guidance"></div></details>
           <div class="form-footer"><span id="form-feedback" aria-live="polite">입력값을 변경하면 결과에 반영됩니다.</span><button type="button" id="open-a3-bottom" class="btn-primary">A3 검토 초안 보기 <span>→</span></button></div>
+          <div class="integration-actions"><a href="../index.html">통합 시작</a><button type="button" id="integrated-send" class="btn-primary">A3로 실제 평가 인계 →</button><p id="integrated-a2-status" role="status" aria-live="polite"></p></div>
         </article>
       </section>
       <section class="evidence-panel" aria-label="평가 근거 상세">

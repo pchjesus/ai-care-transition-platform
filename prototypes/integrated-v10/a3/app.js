@@ -2,6 +2,8 @@ import {CASES,DOMAINS,SECTIONS} from './data.js';
 import {recordsForPatient,findSource,usableSource,CASE_MISSIONS} from './source-library.js';
 import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision,issuesFromValues} from './workflow.js';
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
+import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
+import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
 const $=s=>document.querySelector(s);
 const safe=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const dateTime=v=>v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
@@ -23,6 +25,44 @@ function get(){return currentStore()[selectedId]}
 function validSource(id,type,target){return usableSource(findSource(id,selectedId,get().unlockedSources||[]),type,target,selectedId)}
 function save(){try{persistRepository(storage,practiceMode?STORAGE_KEYS.study:STORAGE_KEYS.normal,practiceMode?studyState:normalState);$('#save-state').textContent='저장됨'}catch{$('#save-state').textContent='저장 불가';if(!bootstrapping)announce('로컬 저장에 실패했습니다. 브라우저 저장 공간을 확인해 주세요.') }}
 function announce(message){const t=$('#toast');t.textContent=message;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},4200)}
+
+function refreshIntegrationInbox(){
+ const label=$('#integrated-a3-status'),button=$('#integrated-receive'),discard=$('#integrated-discard');
+ try{
+  const packet=readPendingHandoff(storage);
+  if(!packet){label.textContent='대기 중인 A2 평가 없음 · A2에서 먼저 인계하세요.';button.disabled=true;discard.hidden=true;return;}
+  label.textContent=packet.patientId+' · '+packet.capturedAt.slice(0,10)+' 평가가 도착했습니다. 반영 전 검토 상태를 확인하세요.';
+  button.disabled=false;discard.hidden=false;
+ }catch(error){
+  label.textContent='인계 자료를 검증할 수 없습니다. 삭제 또는 A2에서 재작성하세요. ('+(error?.message||'검증 실패')+')';
+  button.disabled=true;discard.hidden=false;
+ }
+}
+function receiveIntegratedAssessment(){
+ if(practiceMode){announce('실습 모드에서는 일반 자료 인계 불가. 일반 작업으로 돌아가세요.');return;}
+ if(normalState.error){announce('기존 A3 저장자료 오류가 있어 인계를 중지했습니다. 원본을 덮어쓰지 않습니다.');return;}
+ try{
+  const packet=readPendingHandoff(storage);
+  if(!packet){refreshIntegrationInbox();return;}
+  const original=repository[packet.patientId];
+  if(!original)throw Error('A3에 등록되지 않은 환자입니다.');
+  const {record:next,duplicate}=applyAssessmentHandoff(original,packet);
+  if(!duplicate){
+   if(!window.confirm(packet.patientId+' 평가를 A3에 반영할까요? 기존 검토·승인은 무효화되며 환자 공개 항목은 재검토가 필요합니다.'))return;
+   repository[packet.patientId]=next;
+   try{persistRepository(storage,STORAGE_KEYS.normal,normalState);}
+   catch(error){repository[packet.patientId]=original;throw Error('A3 저장 실패·동시 탭 충돌: '+(error?.message||'재시도 필요'));}
+  }
+  selectedId=packet.patientId;activeTab='issues';selectedDomain='function';previewMode='draft';
+  render();
+  try{
+   if(!clearPendingHandoff(storage,packet.assessmentId))announce('평가는 저장됐지만 다른 탭에서 대기자료가 변경됐습니다. 확인하세요.');
+   else announce(duplicate?'동일 평가가 이미 인계됐습니다.':'A2 평가 저장 완료. 자료·안내 항목을 다시 검토하세요.');
+  }catch{announce('평가는 저장됐지만 인계함 정리에 실패했습니다. 확인하세요.');}
+  refreshIntegrationInbox();
+ }catch(error){announce('인계 실패: '+(error?.message||'검증 오류'));refreshIntegrationInbox();}
+}
+
 function docsAvailable(){return new Set([...fileStore.keys()])}
 function canEdit(){return !['PUBLISHED','REVOKED'].includes(get().draft.status)}
 function protectEdit(){if(!canEdit()){announce('발행된 계획은 편집할 수 없습니다. 새 버전 개정을 선택하세요.');return false}return true}
@@ -174,6 +214,10 @@ function renderNav(){
  $('.breadcrumb b').textContent=screen==='plan'?'A3':screen==='assessment'?'A2':screen==='learn'?'학습':'환자용 미리보기';
 }
 function go(screenName){
+ if(screenName==='assessment'&&!practiceMode){
+  window.location.assign('../a2/index.html?patient='+encodeURIComponent(selectedId));
+  return;
+ }
  screen=screenName;render();window.scrollTo({top:0,behavior:'instant'});
 }
 function choosePatient(id,destination='plan'){
@@ -363,10 +407,20 @@ $('#work-pane').addEventListener('click',e=>{const b=e.target.closest('[data-act
  if(a==='print-published'){const p=currentPublished(get());if(p)buildPrint(p.snapshot,false)}
 });
 $('#show-current').addEventListener('click',()=>{if(!currentPublished(get()))return;previewMode=previewMode==='published'?'draft':'published';renderPreview()});
+$('#integrated-receive').addEventListener('click',receiveIntegratedAssessment);
+$('#integrated-discard').addEventListener('click',()=>{
+ try{
+  const prior=storage.getItem(HANDOFF_KEY);
+  if(prior===null)return refreshIntegrationInbox();
+  if(!window.confirm('미처리 A2 평가를 삭제할까요? 기존 A3 계획은 변경되지 않습니다.'))return;
+  if(storage.getItem(HANDOFF_KEY)!==prior)throw Error('다른 탭에서 인계 정보가 변경되었습니다.');
+  storage.removeItem(HANDOFF_KEY);refreshIntegrationInbox();announce('미처리 인계 자료를 삭제했습니다.');
+ }catch(error){announce('인계함 정리 실패: '+(error?.message||'저장소 오류'));}
+});
 $('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#revoke').addEventListener('click',revoke);
 $('#reset').addEventListener('click',()=>{if(!confirm(`현재 ${selectedId}의 작성 내용과 이력을 초기화할까요?`))return;const currentDocIds=new Set(get()?.draft?.docs?.map(d=>d.id)||[]);currentStore()[selectedId]=makeInitial(selectedId);for(const key of currentDocIds)fileStore.delete(key);activeTab='plan';previewMode='draft';expandedPlanItems=new Set(['today']);save();render();announce('작성 내용을 초기화했습니다.')});
 function toggleRail(flag){collapsed=flag;$('#shell').classList.toggle('rail-collapsed',collapsed);$('#rail-toggle').setAttribute('aria-expanded',String(!collapsed));$('#rail-toggle').setAttribute('aria-label',collapsed?'사이드바 펼치기':'사이드바 접기');$('#rail-toggle').title=collapsed?'사이드바 펼치기':'사이드바 접기';try{localStorage.setItem('a3-rail-collapsed-v04',collapsed?'1':'0')}catch{}}
-$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;
+$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;refreshIntegrationInbox();
 
 // A1, A2 and standalone patient preview are navigable local screens; no A2 baseline files are mutated.
 document.querySelectorAll('.rail-link[data-nav]').forEach(button=>button.addEventListener('click',()=>{
