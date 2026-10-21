@@ -1,0 +1,33 @@
+CHROMIUM PASS: 32 checks
+ - initial page loads
+ - six A2 evaluation tiles
+ - six plan sections
+ - SYN-001 publication blockers
+ - A2 v0.5 visual heritage
+ - no horizontal overflow 320px
+ - no horizontal overflow 390px
+ - no horizontal overflow 800px
+ - no horizontal overflow 801px
+ - no horizontal overflow 1024px
+ - no horizontal overflow 1440px
+ - rail collapses
+ - SYN-003 conflicting medication raw choice
+ - SYN-003 approval blocked
+ - SYN-002 has 0 blockers
+ - NURSE cannot approve
+ - APPROVER can approve
+ - approved status
+ - APPROVER can publish
+ - published state
+ - published preview version
+ - public preview hides internal source
+ - revision resets draft
+ - revision increments version
+ - existing published remains accessible
+ - PDF file attachment registered
+ - attached PDF defaults internal
+ - public unreviewed PDF blocks
+ - NURSE cannot mark PDF reviewed
+ - PHYSICIAN may review PDF
+ - SYN-001 independent state
+ - no JS page errors

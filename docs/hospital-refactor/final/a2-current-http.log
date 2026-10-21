@@ -1,0 +1,6 @@
+{"viewport": 1440, "document_height": 1630, "sidebar_bg": "#214b3b", "background": "#ffffff"}
+{"viewport": 1024, "document_height": 1625}
+{"viewport": 768, "document_height": 1919}
+{"viewport": 390, "document_height": 2210}
+{"viewport": 320, "document_height": 2286}
+PASS real HTTP module-based index.html, 5 viewports, interactions, console check

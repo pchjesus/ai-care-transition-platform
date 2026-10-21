@@ -1,0 +1,82 @@
+[
+  {
+    "check": "node",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-browser_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-v03_features.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-v03_full_case.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-pdf_export_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "standalone-browser_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "standalone-v03_features.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "standalone-v03_full_case.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "standalone-pdf_export_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "http-safety",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "a2-current-http",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "visual-comparison",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "check": "a2-v0.5-hashes",
+    "status": "PASS"
+  },
+  {
+    "check": "a3-v0.3-hashes",
+    "status": "PASS"
+  },
+  {
+    "check": "hospital-a2-standalone-build",
+    "status": "PASS"
+  },
+  {
+    "check": "hospital-a3-standalone-build",
+    "status": "PASS"
+  },
+  {
+    "check": "hospital-a3-v04-standalone-build",
+    "status": "PASS"
+  }
+]

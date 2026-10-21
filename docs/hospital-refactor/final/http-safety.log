@@ -1,0 +1,18 @@
+test_attachment_never_moves_from_normal_to_study (__main__.Safety.test_attachment_never_moves_from_normal_to_study) ... ok
+test_attachment_never_moves_to_different_patient (__main__.Safety.test_attachment_never_moves_to_different_patient) ... ok
+test_corrupt_storage_not_silently_overwritten (__main__.Safety.test_corrupt_storage_not_silently_overwritten) ... ok
+test_current_print_sheet_cleared_on_patient_switch (__main__.Safety.test_current_print_sheet_cleared_on_patient_switch) ... ok
+test_foreign_patient_record_is_not_rendered (__main__.Safety.test_foreign_patient_record_is_not_rendered) ... ok
+test_keyboard_dialogs_at_all_required_widths (__main__.Safety.test_keyboard_dialogs_at_all_required_widths) ... ok
+test_matching_pdf_restores_approved_attachment_after_reload (__main__.Safety.test_matching_pdf_restores_approved_attachment_after_reload) ... ok
+test_patient_picker_leaves_practice_for_requested_patient (__main__.Safety.test_patient_picker_leaves_practice_for_requested_patient) ... ok
+test_published_pdf_and_history_keep_previous_version_immutable (__main__.Safety.test_published_pdf_and_history_keep_previous_version_immutable) ... ok
+test_revoke_enabled_after_lower_role_and_reapproval (__main__.Safety.test_revoke_enabled_after_lower_role_and_reapproval) ... ok
+test_stale_tab_does_not_overwrite_another_tabs_saved_changes (__main__.Safety.test_stale_tab_does_not_overwrite_another_tabs_saved_changes) ... ok
+test_study_resume_and_reset_leave_normal_records_unchanged (__main__.Safety.test_study_resume_and_reset_leave_normal_records_unchanged) ... ok
+test_text_is_escaped_and_restored_without_cross_patient_or_study_leak (__main__.Safety.test_text_is_escaped_and_restored_without_cross_patient_or_study_leak) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 9.582s
+
+OK

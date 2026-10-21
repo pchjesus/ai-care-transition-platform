@@ -1,0 +1,842 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#214B3B"><title>A3 · 퇴원 후 관리계획 — 독립 프로토타입</title><style>
+:root{--forest:#214B3B;--forest-bright:#326D58;--mint:#E6F0E9;--mint-pale:#F4F8F5;--ink:#1D2E26;--muted:#6A7C72;--line:#DFE8E1;--canvas:#FBFCFA;--paper:#fff;--amber:#98662B;--amber-bg:#FFF7E9;--red:#A44A46;--red-bg:#FEF1EF;--shadow:0 8px 26px rgba(33,75,59,.045)}*{box-sizing:border-box}html{font-family:'Pretendard','Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);font-size:14px}body{margin:0;background:var(--canvas)}button,select,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #88B99D;outline-offset:2px}button:disabled{cursor:not-allowed;opacity:.45}.shell{display:flex;min-height:100vh}.rail{background:var(--forest);color:white;width:242px;flex:0 0 242px;padding:20px 13px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:width .2s,flex-basis .2s;z-index:10}.brand-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 7px 24px}.brand{display:flex;align-items:center;gap:11px;min-width:0}.brand-mark{height:36px;width:36px;flex:none;display:grid;place-items:center;background:#fff;color:var(--forest);border-radius:10px;font-weight:800;font-size:20px;letter-spacing:-1.7px}.brand-mark span{color:#78AE8F}.brand-name{min-width:0;white-space:nowrap}.brand-name b{display:block;font-size:13px;letter-spacing:-.35px}.brand-name small{display:block;margin-top:3px;color:#B5D0BF;font-size:10px}.rail-toggle{color:#E4EEE6;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.17);border-radius:7px;width:24px;height:27px;font-size:19px;line-height:1}.rail-cap{font-size:11px;color:#B0CAB8;margin:8px 10px 13px}.rail-link{display:flex;align-items:center;gap:10px;padding:12px 10px;margin-bottom:7px;border-radius:10px;font-size:12px;color:#D4E5D9;cursor:default}.rail-short{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:1px solid rgba(255,255,255,.22);border-radius:8px;font-size:10px;font-weight:800}.rail-name{white-space:nowrap}.rail-link.active{background:#D7E8DB;color:var(--forest);font-weight:700}.rail-link.active .rail-short{border-color:#9ABCA6;background:white}.active-dot{font-size:8px;margin-left:auto}.rail-bottom{margin-top:auto;padding:14px 8px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;color:#C1D8CA}.rail-bottom small{font-size:10px;line-height:1.7}.side-badge{font-size:10px;padding:4px 7px;border:1px solid rgba(255,255,255,.23);border-radius:5px}.rail-collapsed .rail{width:78px;flex-basis:78px}.rail-collapsed .brand-name,.rail-collapsed .rail-cap,.rail-collapsed .rail-name,.rail-collapsed .active-dot,.rail-collapsed .rail-bottom{display:none}.rail-collapsed .brand-row{flex-direction:column;gap:16px}.rail-collapsed .rail-link{padding:11px 7px;justify-content:center}.rail-collapsed .rail-toggle{transform:rotate(180deg)}.workspace{min-width:0;flex:1}.topbar{height:59px;border-bottom:1px solid var(--line);background:white;display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:16px}.breadcrumb{font-size:12px;color:#718479}.breadcrumb span{margin:0 7px;color:#B0C4B7}.breadcrumb b{color:var(--forest)}.top-actions{display:flex;align-items:center;gap:16px}.rules{font-size:11px;color:var(--muted);border:1px solid var(--line);background:var(--mint-pale);padding:5px 9px;border-radius:20px}.plain-button{border:0;background:none;color:var(--muted);font-size:12px}.plain-button:hover,.text-link:hover{color:var(--forest);text-decoration:underline}.content{max-width:1512px;margin:0 auto;padding:30px 32px 40px}.headline{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:22px}.eyebrow,.upper-label{color:var(--forest-bright);font-weight:750;font-size:10px;letter-spacing:1.15px}.headline h1{font-size:31px;letter-spacing:-1.35px;margin:6px 0 8px}.headline p{margin:0;color:var(--muted);font-size:13px}.headline-meta{display:flex;flex-direction:column;gap:7px;align-items:flex-end}.version-chip{font-weight:700;border:1px solid #C6DCCC;background:#EAF3ED;color:#275A42;padding:7px 11px;border-radius:18px;white-space:nowrap}.save-state{font-size:11px;color:var(--muted)}.patient-strip{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin-bottom:17px;gap:20px}.patient-overview{display:flex;align-items:center;gap:13px}.avatar{height:43px;width:43px;border-radius:14px;background:#E1EEE5;color:var(--forest);display:grid;place-items:center;font-size:15px;font-weight:800}.patient-overview h2{font-size:17px;margin:4px 0}.patient-detail{font-size:11px;color:var(--muted)}.patient-chooser{display:flex;flex-direction:column;gap:5px}.patient-chooser label,.actor-box label{font-size:10px;color:var(--muted);font-weight:750}.patient-chooser select,.actor-box select{border:1px solid #D1DFD5;border-radius:8px;padding:9px 30px 9px 11px;background:#fff;color:var(--ink);min-width:170px}.gate-banner{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 19px;border-radius:12px;border:1px solid #F0D8B8;background:var(--amber-bg);margin-bottom:24px}.gate-banner.good{border-color:#C8E0CE;background:#EDF7EF}.gate-banner.issued{border-color:#B4D7C0;background:#E6F2E9}.gate-banner .gate-left{display:flex;gap:12px;min-width:0}.gate-icon{width:29px;height:29px;border-radius:8px;display:grid;place-items:center;background:#F7E6CC;color:#80531D;font-weight:800;flex:none}.gate-banner.good .gate-icon,.gate-banner.issued .gate-icon{background:#D6EBD9;color:var(--forest)}.gate-banner strong{font-size:13px}.gate-banner p{margin:6px 0 0;font-size:11px;color:#846D4F;line-height:1.6}.gate-banner.good p,.gate-banner.issued p{color:#567764}.gate-number{white-space:nowrap;background:#fff9;border:1px solid #E9D8BD;padding:6px 10px;border-radius:7px;font-weight:800;font-size:11px;color:#865E2C}.gate-banner.good .gate-number,.gate-banner.issued .gate-number{border-color:#B7D6BF;color:var(--forest)}.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:11px}.section-head h2{font-size:15px;letter-spacing:-.4px;margin:0 0 4px}.section-head p{font-size:11px;color:var(--muted);margin:0}.micro-link{font-size:11px;color:var(--muted)}.domains{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-bottom:28px}.domain{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px;min-width:0;text-align:left;min-height:92px;display:flex;flex-direction:column;justify-content:space-between;gap:9px}.domain:hover,.domain.selected{border-color:#8DAE98;background:#F6FAF6}.domain-top{display:flex;justify-content:space-between;gap:5px;align-items:center}.domain-name{font-size:12px;font-weight:800}.domain-n{font-size:10px;color:#94A89A}.domain-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:10px;color:var(--muted)}.grade{font-size:11px;font-weight:700;color:var(--forest-bright);background:#E9F3EC;padding:4px 6px;border-radius:6px}.grade.priority{background:var(--amber-bg);color:var(--amber)}.grade.pending{background:#FFF0EC;color:var(--red)}.editor-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px;border-bottom:1px solid var(--line)}.tabs{display:flex;flex-wrap:wrap;gap:20px}.tabs button{border:0;border-bottom:2px solid transparent;background:none;padding:11px 1px;color:#718479;font-size:13px;font-weight:700;white-space:nowrap}.tabs button[aria-selected="true"]{color:var(--forest);border-bottom-color:var(--forest)}#issue-count{font-size:10px;color:var(--red)}.actor-box{display:flex;align-items:center;gap:8px;padding-bottom:8px}.actor-box select{min-width:143px;padding:6px 10px;font-size:11px}.working-grid{display:grid;grid-template-columns:minmax(0,1.52fr) minmax(300px,1fr);gap:16px;align-items:start}.work-pane,.preview-pane{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);min-width:0}.work-pane{padding:20px;min-height:450px}.pane-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}.pane-head h3{font-size:17px;letter-spacing:-.5px;margin:0 0 6px}.pane-head p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}.subtle-count{font-size:11px;color:var(--muted)}.edit-card{border:1px solid var(--line);border-radius:11px;padding:15px;margin-bottom:11px;background:white}.edit-card.internal{background:#F8FAF8}.edit-title{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px}.edit-title b{font-size:12px}.edit-title small{font-size:10px;color:var(--muted)}.edit-textarea{min-height:64px;resize:vertical}.edit-card label,.issue-form label,.doc-settings label{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:5px}.edit-card textarea,.edit-card input[type=text],.issue-form input,.issue-form textarea,.doc-settings select{width:100%;border:1px solid #D6E1D8;background:#fff;border-radius:8px;padding:9px 10px;font-size:12px;color:var(--ink);line-height:1.5}.edit-meta{display:grid;grid-template-columns:1fr 120px;gap:11px;margin-top:11px}.edit-actions{display:flex;align-items:center;gap:14px;margin-top:10px;justify-content:space-between}.inline-check{display:flex!important;gap:6px;align-items:center;color:var(--ink)!important;font-size:11px!important}.inline-check input{accent-color:var(--forest)}.mini-button{border:1px solid #D0DED4;background:#F7FAF8;border-radius:7px;color:var(--forest);font-size:10px;padding:7px 10px;font-weight:650}.mini-button:hover{background:#ECF3ED}.status-pill{font-size:10px;border-radius:6px;padding:5px 8px;background:#F0F3F1;color:#63766B}.status-pill.red{background:var(--red-bg);color:var(--red)}.status-pill.green{background:var(--mint);color:var(--forest)}.issue-card{border:1px solid #E8D5C4;background:#FFFBF5;padding:15px;border-radius:10px;margin-bottom:10px}.issue-card.resolved{background:#F5FAF6;border-color:#D5E5D9}.issue-head{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:8px}.issue-card strong{font-size:12px}.issue-card p{font-size:11px;color:#7E7567;margin:5px 0 12px;line-height:1.6}.issue-form{display:grid;gap:8px}.issue-form textarea{min-height:54px}.issue-line{font-size:11px;color:var(--muted);line-height:1.6}.empty{padding:30px 16px;text-align:center;color:var(--muted);background:#F7FAF8;border-radius:10px;font-size:12px;line-height:1.7}.file-input{display:flex;gap:10px;align-items:center;background:#F6F9F6;border:1px dashed #BED2C3;border-radius:9px;padding:15px;margin-bottom:15px;flex-wrap:wrap}.file-input input{font-size:11px;max-width:100%}.doc-card{border:1px solid var(--line);padding:13px;border-radius:9px;margin-bottom:9px}.doc-title{display:flex;justify-content:space-between;align-items:center;gap:10px}.doc-title strong{font-size:12px;overflow-wrap:anywhere}.doc-settings{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}.doc-settings select{width:auto}.doc-settings label{margin:0}.timeline{display:grid;gap:0}.timeline-item{border-left:2px solid #CCE2D1;padding:0 0 17px 15px;position:relative;font-size:11px;color:var(--muted);line-height:1.7}.timeline-item:before{content:'';position:absolute;left:-6px;top:1px;width:9px;height:9px;border-radius:50%;background:var(--forest)}.timeline-item strong{display:block;font-size:12px;color:var(--ink)}.timeline-item time{font-size:10px;color:#90A196}.preview-pane{padding:18px;background:#F6F9F6;position:sticky;top:17px}.preview-pane-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.preview-pane h3{margin:5px 0 0;font-size:16px}.preview-mark{font-size:10px;border:1px solid #D6E3D8;background:#fff;border-radius:18px;padding:6px 9px;color:#6C7A71;white-space:nowrap}.preview-mark.live{background:#DDEEE1;color:#255A3D}.preview-frame{border:1px solid #E1E9E3;background:#fff;border-radius:13px;min-height:360px;overflow:hidden}.patient-mini-header{background:#E7F2EA;padding:20px}.patient-mini-header .patient-logo{font-size:11px;color:var(--forest);font-weight:800;margin-bottom:12px}.patient-mini-header h4{font-size:18px;letter-spacing:-.65px;margin:0 0 8px}.patient-mini-header p{font-size:11px;margin:0;color:#547461}.patient-mini-body{padding:15px}.patient-mini-card{padding:14px;border:1px solid #E4EBE6;border-radius:9px;margin-bottom:10px}.patient-mini-card b{font-size:11px}.patient-mini-card p{font-size:11px;color:#53685C;white-space:pre-wrap;line-height:1.65;margin:7px 0 0;overflow-wrap:anywhere}.patient-mini-tag{font-size:9px;color:#73907C;display:block;margin-top:7px}.preview-empty{padding:48px 24px;text-align:center;line-height:1.8;color:var(--muted);font-size:12px}.preview-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:12px}.preview-footer span{font-size:10px;color:#84978A;line-height:1.5;text-align:right}.text-link{border:0;background:none;padding:0;color:var(--forest);font-size:11px;font-weight:750;white-space:nowrap}.bottom-actions{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 19px;flex-wrap:wrap}.work-status strong{display:block;font-size:12px}.work-status small{display:block;margin-top:4px;color:var(--muted);font-size:10px}.button-group{display:flex;gap:8px;flex-wrap:wrap}.btn{padding:10px 17px;border-radius:8px;font-weight:750;font-size:12px;border:1px solid transparent}.btn.primary{background:var(--forest);color:white}.btn.primary:hover{background:#163D2D}.btn.outline{background:#fff;color:var(--forest);border-color:#BCD1C2}.btn.danger-outline{background:#FFF8F7;color:var(--red);border-color:#EEC9C5}.footnote{color:#91A097;font-size:10px;margin-top:20px;line-height:1.8}.toast{position:fixed;z-index:30;right:24px;bottom:24px;max-width:420px;background:#1A3A2B;color:white;box-shadow:0 10px 32px #173F2A35;padding:14px 18px;border-radius:10px;font-size:12px;line-height:1.6}.notice{border-left:3px solid #D2A36B;background:#FFF8EE;padding:10px 12px;margin-bottom:12px;color:#77572D;font-size:11px;line-height:1.7}.history-list{margin:0;padding:0;list-style:none}.button-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.help-text{font-size:11px;color:var(--muted);line-height:1.6}.audit-box{max-height:320px;overflow:auto}.divider{height:1px;background:var(--line);margin:17px 0}.preview-live-label{font-size:10px;color:var(--forest);font-weight:800}.print-only{display:none}#print-sheet{display:none}[hidden]{display:none!important}@media(max-width:1280px){.content{padding:25px 22px}.domains{grid-template-columns:repeat(3,minmax(0,1fr))}.working-grid{grid-template-columns:minmax(0,1.2fr) minmax(260px,1fr)}}@media(max-width:1024px){.working-grid{grid-template-columns:1fr}.preview-pane{position:static}.preview-frame{min-height:0}.patient-mini-body{display:grid;grid-template-columns:1fr 1fr;gap:9px}.patient-mini-card{margin:0}}@media(max-width:800px){.shell{display:block}.rail{height:auto;position:static;width:100%!important;flex-basis:auto!important;padding:9px 15px;flex-direction:row;align-items:center;gap:9px}.brand-row{padding:0!important;display:block}.brand-name,.rail-cap,.rail-toggle,.rail-bottom,.rail-name,.active-dot{display:none!important}.rail-link{margin:0;padding:4px 3px;background:none!important}.rail-short{width:33px;height:29px;flex-basis:33px}.rail-link.active .rail-short{background:#DDEBE1;color:var(--forest)}.topbar{padding:0 18px;height:49px}.content{padding:23px 17px}.headline h1{font-size:26px}.patient-strip{padding:15px}.editor-head{align-items:flex-start;flex-direction:column;gap:0}.actor-box{align-self:flex-end}.tabs{gap:14px}.tabs button{font-size:12px}.domains{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:520px){.headline{align-items:start;flex-direction:column}.headline-meta{flex-direction:row;align-items:center}.patient-strip{align-items:flex-start;flex-direction:column}.patient-chooser{width:100%}.patient-chooser select{width:100%}.section-head{align-items:flex-start;flex-direction:column;gap:7px}.domains{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:20px 12px}.work-pane{padding:15px}.edit-meta{grid-template-columns:1fr}.patient-mini-body{grid-template-columns:1fr}.gate-banner{padding:12px}.gate-number{font-size:10px}.top-actions .rules{display:none}.bottom-actions{padding:14px}.button-group{width:100%}.btn{flex:1}.breadcrumb{font-size:11px}}@media print{@page{size:A4;margin:15mm}html,body{background:#fff!important;color:#111!important}.shell,.toast{display:none!important}#print-sheet{display:block!important;font:12px/1.65 'Noto Sans KR',sans-serif;color:#222}#print-sheet h1{font-size:22px;margin-bottom:9px}#print-sheet h2{font-size:13px;margin-top:22px;border-bottom:1px solid #bbb;padding-bottom:6px}#print-sheet p{white-space:pre-wrap}#print-sheet .print-heading{border-bottom:3px solid #214B3B;padding-bottom:12px}#print-sheet .print-watermark{color:#9C542E;font-size:14px;font-weight:bold}#print-sheet .print-footer{border-top:1px solid #ccc;margin-top:25px;font-size:10px;color:#666}}
+
+/* A3 v0.2 — readable clinical workspace, restrained hierarchy and navigable review */
+html{font-size:16px}
+body{line-height:1.55}
+.content{max-width:1640px;padding:32px clamp(18px,3vw,46px) 48px}
+.headline{margin-bottom:22px}
+.headline h1{font-size:clamp(29px,2.6vw,37px);letter-spacing:-1.2px;margin:7px 0 8px}
+.headline p{font-size:16px;line-height:1.5}
+.eyebrow,.upper-label{font-size:12px;letter-spacing:.35px}
+.brand-name b{font-size:15px}.brand-name small{font-size:12px}
+.rail-link{width:100%;border:0;text-align:left;background:transparent;cursor:pointer;color:#D4E5D9;font-size:15px;font-weight:550;min-height:49px}
+.rail-link:hover:not(.active){background:#ffffff13}
+.rail-short{font-size:12px;flex-basis:32px;width:32px;height:32px}
+.rail-cap{font-size:12px}
+.rail-help{margin-top:auto}
+.breadcrumb,.plain-button{font-size:14px}.plain-button{font-weight:650}
+.version-chip{font-size:14px;padding:8px 13px}.save-state{font-size:13px}
+.patient-strip{padding:20px 23px;margin-bottom:19px}
+.patient-overview h2{font-size:21px}.patient-detail{font-size:14px}
+.patient-chooser label,.actor-box label{font-size:13px}.patient-chooser select,.actor-box select{font-size:14px;min-height:41px}
+.gate-banner{display:flex;width:100%;align-items:center;text-align:left;cursor:pointer;min-height:88px;padding:18px 22px;margin-bottom:25px;box-shadow:none}
+.gate-banner:hover{border-color:#D0A875;box-shadow:0 5px 18px #8C673215}
+.gate-banner strong{font-size:17px;letter-spacing:-.3px}.gate-banner p{font-size:14px;margin-top:4px}
+.gate-icon{width:36px;height:36px;font-size:18px}.gate-number{font-size:13px;padding:9px 12px}
+.section-head{margin-bottom:13px}.section-head h2{font-size:20px;margin-bottom:3px}.section-head p{font-size:14px}
+.domains{gap:12px;margin-bottom:25px}.domain{min-height:107px;padding:16px 13px;gap:12px}.domain-name{font-size:16px}.domain-n{font-size:12px}
+.domain-meta{font-size:12px}.grade{font-size:13px;padding:5px 9px}
+.editor-head{align-items:center;gap:14px}.tabs{gap:clamp(9px,1.4vw,22px)}.tabs button{font-size:15px;padding:14px 1px}
+#issue-count{font-size:12px}.actor-box{gap:10px;padding-bottom:7px;flex-wrap:wrap}
+.actor-box select{font-size:13px;min-width:142px}
+.working-grid{grid-template-columns:minmax(0,1.42fr) minmax(330px,1fr);gap:20px}
+.preview-collapsed .working-grid{grid-template-columns:minmax(0,1fr)}
+.work-pane{padding:24px;min-height:420px}
+.pane-head h3{font-size:21px}.pane-head p{font-size:14px;line-height:1.6}.subtle-count{font-size:13px}
+.edit-card{padding:20px;margin-bottom:14px}.edit-title{align-items:flex-start;margin-bottom:12px}.edit-title b{font-size:16px;line-height:1.45}.edit-title small{font-size:12px}
+.edit-card label,.issue-form label,.doc-settings label{font-size:13px;margin-bottom:7px}
+.edit-card textarea,.edit-card input[type=text],.issue-form input,.issue-form textarea,.doc-settings select{font-size:15px;line-height:1.65;padding:11px 13px}
+.edit-textarea{min-height:92px}.edit-meta{grid-template-columns:minmax(0,1fr) minmax(135px,170px);gap:14px;margin-top:15px}
+.edit-actions{margin-top:15px}.inline-check{font-size:14px!important}.mini-button{font-size:13px;padding:9px 12px;min-height:37px}
+.status-pill{font-size:12px;padding:6px 9px;white-space:nowrap}
+.issue-card{padding:19px;margin-bottom:14px}.issue-card strong{font-size:16px}.issue-card p{font-size:14px;line-height:1.7}.issue-line{font-size:14px}
+.issue-form{gap:13px}.issue-form textarea{min-height:86px}.empty{font-size:14px}
+.file-input{padding:19px}.file-input label{font-size:15px!important}.file-input input{font-size:14px}
+.doc-card{padding:17px}.doc-title strong{font-size:15px}.timeline-item{font-size:13px}.timeline-item strong{font-size:15px}.timeline-item time{font-size:12px}
+.preview-pane{padding:19px;top:18px}.preview-pane h3{font-size:19px}.preview-mark{font-size:12px}
+.preview-frame{min-height:320px}.patient-mini-header{padding:23px}.patient-mini-header .patient-logo{font-size:13px}.patient-mini-header h4{font-size:23px}.patient-mini-header p{font-size:13px}
+.patient-mini-card{padding:16px}.patient-mini-card b{font-size:15px}.patient-mini-card p{font-size:14px;line-height:1.7}.patient-mini-tag{font-size:12px}
+.preview-footer{align-items:center}.text-link{font-size:13px}
+.bottom-actions{padding:20px 23px;position:relative}.work-status strong{font-size:16px}.work-status small{font-size:13px}.btn{font-size:14px;padding:11px 17px;min-height:43px}
+.notice{font-size:14px;line-height:1.7;padding:13px 15px}.help-text{font-size:13px}
+.toast{font-size:14px;max-width:440px}
+/* Disclosure dialogs: explanations no longer occupy the clinical workspace. */
+.modal-dialog{width:min(640px,calc(100vw - 32px));max-height:min(86vh,900px);border:1px solid #C7D7CB;border-radius:16px;box-shadow:0 20px 80px #1233253b;padding:24px;background:#fff;color:var(--ink);overflow:auto}
+.modal-dialog::backdrop{background:#0E291E95;backdrop-filter:blur(2px)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:10px}
+.modal-head h2{margin:0;font-size:23px;letter-spacing:-.6px}.modal-dialog>p{color:var(--muted);font-size:14px;margin:0 0 17px}
+.icon-close{border:1px solid var(--line);border-radius:9px;width:38px;height:38px;background:#fff;font-size:22px;color:var(--forest)}
+.blocker-list{display:grid;gap:9px}.blocker-jump{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:11px;padding:15px 14px;color:var(--ink)}
+.blocker-jump:hover{background:#F5F9F5;border-color:#93B49D}.blocker-jump>span:nth-child(2){flex:1}.blocker-jump b{display:block;font-size:15px;font-weight:700;line-height:1.45}.blocker-jump small{display:block;font-size:12px;color:var(--muted);margin-top:4px}.blocker-index{font-size:13px;font-weight:750;color:var(--forest);background:var(--mint);padding:8px;border-radius:8px}
+.jump-highlight{border-color:#C79543!important;box-shadow:0 0 0 3px #F0D9B0!important;scroll-margin:25px}
+.help-sections{display:grid;gap:15px}.help-sections section{border-top:1px solid var(--line);padding-top:15px}.help-sections h3{margin:0 0 7px;font-size:17px}.help-sections p{margin:6px 0;color:#4F6357;font-size:14px;line-height:1.75}
+.patient-list{display:grid;gap:12px}.patient-list-card{padding:17px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:14px}.patient-list-card.current{border-color:#94B9A2;background:#F6FAF7}
+.patient-list-main{display:grid;gap:4px}.patient-list-main strong{font-size:17px}.patient-list-main span{font-size:14px;color:#576C5E}.patient-list-main small{font-size:13px;color:var(--muted)}.patient-list-actions{display:flex;gap:8px;flex-wrap:wrap}
+.aux-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:25px}.aux-heading h1{font-size:33px;margin:5px 0 6px;letter-spacing:-1px}.aux-heading p{margin:0;color:var(--muted);font-size:15px}.aux-actions{display:flex;gap:9px;flex-wrap:wrap}
+.a2-migration-note{background:#ECF5EF;border:1px solid #CBDCCF;border-radius:10px;padding:12px 16px;font-size:14px;color:var(--forest);margin-bottom:17px}
+.a2-domains{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-bottom:22px}
+.a2-domain-btn{display:grid;gap:9px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 11px;text-align:left;color:var(--ink);min-width:0}
+.a2-domain-btn span{font-size:14px;font-weight:700}.a2-domain-btn b{font-size:13px;color:var(--forest)}.a2-domain-btn.selected{background:#EDF5EF;border-color:#81A78D}
+.a2-work-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.85fr);gap:17px}
+.a2-input-panel,.a2-judgment-panel{border:1px solid var(--line);background:#fff;border-radius:13px;padding:22px;align-self:start}
+.a2-input-panel h2,.a2-judgment-panel h2{font-size:21px;margin:0 0 10px}.a2-field{margin:0 0 20px}.a2-field label{display:flex;gap:10px;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:8px}.a2-field small{font-size:12px;color:#4B7B5D}.a2-field select{border:1px solid #CBDCCF;border-radius:9px;padding:12px;width:100%;background:#fff;font-size:15px;color:var(--ink)}
+.a2-big-grade{font-size:34px;color:var(--forest);font-weight:850;margin:17px 0}.a2-judgment-panel p{font-size:14px;color:var(--muted)}.a2-judgment-panel h3{font-size:17px;margin-top:24px}.a2-fact{display:flex;gap:12px;justify-content:space-between;border-top:1px solid var(--line);padding:11px 0;font-size:14px}.a2-fact span{color:var(--forest);text-align:right}
+.full-patient-preview{max-width:800px;margin:0 auto 35px;border:1px solid #DAE8DE;border-radius:14px;overflow:hidden;background:white;box-shadow:var(--shadow)}
+.full-patient-preview .patient-mini-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:20px}.full-patient-preview .patient-mini-card{margin:0}.full-patient-preview .patient-mini-header{padding:31px}
+@media(max-width:1280px){.domains,.a2-domains{grid-template-columns:repeat(3,minmax(0,1fr))}.working-grid{grid-template-columns:minmax(0,1.2fr) minmax(300px,1fr)}}
+@media(max-width:1050px){.working-grid,.a2-work-layout{grid-template-columns:1fr}.preview-pane{position:static}.editor-head{align-items:stretch;flex-direction:column}.actor-box{align-self:flex-end}.aux-heading{align-items:flex-start;flex-direction:column}}
+@media(max-width:800px){.rail-help{margin-top:0}.rail-link{width:auto;min-height:38px}.rail-short{height:32px}.headline h1{font-size:30px}.domains,.a2-domains{grid-template-columns:repeat(3,minmax(0,1fr))}.content{padding:25px 18px}.tabs button{font-size:14px}}
+@media(max-width:520px){.domains,.a2-domains{grid-template-columns:repeat(2,minmax(0,1fr))}.gate-banner{padding:14px;gap:8px}.gate-banner strong{font-size:15px}.gate-banner p{font-size:13px}.gate-number{font-size:12px;white-space:normal}.edit-meta{grid-template-columns:1fr}.patient-list-card{align-items:stretch;flex-direction:column}.patient-list-actions{width:100%}.modal-dialog{padding:19px}.full-patient-preview .patient-mini-body{grid-template-columns:1fr}.headline-meta{align-items:flex-start}.patient-mini-header h4{font-size:21px}.aux-heading h1{font-size:29px}.a2-input-panel,.a2-judgment-panel{padding:17px}}
+@media print{.modal-dialog,.auxiliary-screen{display:none!important}}
+/* Focused plan editing: six sections remain scannable, one expanded by default. */
+.edit-card{padding:0;overflow:hidden}.edit-card summary.edit-title{margin:0;padding:17px 19px;display:flex;align-items:center;list-style:none;cursor:pointer;gap:10px;background:white}
+.edit-card summary.edit-title::-webkit-details-marker{display:none}.edit-card summary.edit-title::after{content:'⌄';color:#557361;font-size:18px;margin-left:4px;transition:transform .18s}
+.edit-card[open] summary.edit-title::after{transform:rotate(180deg)}.edit-card summary.edit-title b{flex:1;font-size:16px}
+.edit-card[open] summary.edit-title{border-bottom:1px solid var(--line);background:#F8FBF9}.edit-card-body{padding:19px 20px 22px}
+.edit-card:not([open]){min-height:0}.edit-card summary.edit-title:hover{background:#F5FAF6}
+@media(max-width:520px){.edit-card summary.edit-title{padding:15px 13px}.edit-card-body{padding:15px}.edit-card summary.edit-title b{font-size:15px}}
+
+.gate-banner .gate-sub{display:block;font-size:14px;line-height:1.6;color:#846D4F;margin-top:5px}.gate-banner.good .gate-sub,.gate-banner.issued .gate-sub{color:#567764}
+
+
+/* v0.3: compact summary strip and reduced work interruptions. */
+.summary-row{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:14px;margin:0 0 24px;align-items:stretch}
+.summary-row>.patient-strip,.summary-row>.gate-banner{margin:0;min-height:105px;height:100%;border-radius:14px;padding:15px 19px;min-width:0;box-shadow:0 6px 18px rgba(32,63,45,.035)}
+.summary-row .patient-overview{min-width:0}.summary-row .patient-detail{overflow-wrap:anywhere;line-height:1.55}
+.summary-row .gate-banner{gap:8px}.summary-row .gate-banner .gate-left{min-width:0}.summary-row .gate-banner strong{font-size:17px}.summary-row .gate-banner .gate-sub{font-size:13px;line-height:1.45;margin-top:4px}
+.summary-row .gate-number{flex:none;font-size:13px;padding:10px 12px}
+.summary-row .patient-chooser select{max-width:170px}
+/* Type scale for reading rather than maximal card density. */
+html{font-size:15px}.rail-link{cursor:pointer;font-size:14px}.rail-name{font-size:13px}.top-actions .plain-button{font-size:13px}.section-head h2,.pane-head h3{font-size:21px}.pane-head p,.section-head p{font-size:15px}.gate-banner,.patient-detail,.upper-label{line-height:1.5}
+.edit-card summary.edit-title b{font-size:17px}.edit-card-body label{font-size:15px}.edit-textarea{font-size:15px;line-height:1.7}.status-pill{font-size:12px}
+.source-choose{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:#F5F9F6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:5px}
+.source-choose strong{font-size:14px;flex:1;min-width:140px}.source-choose .source-status{font-size:12px;color:#60776A}
+.source-choose button{white-space:nowrap}.source-dialog{width:min(760px,calc(100vw - 26px))}.source-list{display:grid;gap:10px;max-height:62vh;overflow-y:auto}
+.source-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:white}.source-card h3{margin:0 0 8px;font-size:17px}.source-card p{font-size:14px;line-height:1.6;margin:6px 0}.source-card small{font-size:12px;color:var(--muted)}.source-card-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.source-card.no-use{background:#F7F8F7}.source-card .source-flag{font-size:12px;padding:5px 8px;border-radius:6px;background:#E9F1EC;color:#26563E}.source-card.no-use .source-flag{background:#FFF4E5;color:#8F6029}
+.learning-head{margin-bottom:24px}.learning-head h1{font-size:32px;margin:5px 0 9px}.learning-head p{color:var(--muted);font-size:16px;line-height:1.7;margin:0}
+.learning-layout{display:grid;grid-template-columns:minmax(215px,260px) minmax(0,1fr);gap:20px}.learning-nav{display:flex;flex-direction:column;gap:8px;align-self:start;position:sticky;top:20px}
+.learning-nav button{padding:16px 14px;border:1px solid var(--line);border-radius:11px;background:white;text-align:left;font-size:15px;font-weight:700;color:var(--ink)}.learning-nav button.active{background:#E9F2EB;border-color:#91B39D;color:var(--forest)}
+.learning-body{display:grid;gap:18px;min-width:0}.learning-panel{border:1px solid var(--line);background:white;padding:26px;border-radius:15px}.learning-panel h2{font-size:25px;margin:0 0 14px}.learning-panel h3{font-size:18px;margin:0 0 10px}.learning-panel p,.learning-panel li{font-size:15px;line-height:1.78;color:#4E6256}.learning-kicker{font-size:12px;color:var(--forest-bright);font-weight:800;letter-spacing:.08em;margin-bottom:6px}
+.learning-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.learning-card{border:1px solid var(--line);border-radius:12px;padding:18px;background:#FBFDFB;min-width:0}.learning-card h3{margin:0 0 6px}.learning-card p{margin:6px 0 14px}.learning-card button{margin-right:7px;margin-bottom:6px}.learning-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.learning-flow button{min-height:110px;padding:14px 10px;border:1px solid #BDD1C2;border-radius:12px;background:#F3F8F4;color:var(--forest);text-align:left;font-weight:750}.learning-flow button small{display:block;font-weight:400;margin-top:12px;line-height:1.45;color:#526E5B}
+.study-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#EAF3EC;border:1px solid #BDD5C5;padding:14px 17px;border-radius:12px;margin-bottom:16px;flex-wrap:wrap}.study-banner strong{font-size:15px}.study-banner .mini-button{margin-left:6px}
+.learn-task{border:1px solid var(--line);border-radius:9px;padding:12px;margin:8px 0;font-size:15px}.learn-task.completed{background:#EBF5ED;border-color:#ABCDB4}
+.learn-faq details{border-bottom:1px solid var(--line);padding:12px 2px}.learn-faq summary{cursor:pointer;font-size:16px;font-weight:700}.learn-faq p{margin:10px 0 3px}
+.learn-copy{font-size:12px;color:var(--muted)}
+.content{container-type:inline-size}@container (max-width:950px){.summary-row{grid-template-columns:minmax(0,1fr)}.summary-row>.patient-strip,.summary-row>.gate-banner{min-height:unset}.summary-row .gate-banner{min-height:75px}}
+@media(max-width:900px){.learning-layout{grid-template-columns:1fr}.learning-nav{display:flex;flex-direction:row;overflow-x:auto;position:static}.learning-nav button{min-width:135px;flex:none}}
+@media(max-width:650px){.summary-row{gap:10px}.summary-row>.patient-strip,.summary-row>.gate-banner{padding:14px}.summary-row .gate-number{padding:8px}.learning-panel{padding:17px}.learning-cards{grid-template-columns:1fr}.learning-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learning-head h1{font-size:27px}}
+@media(max-width:420px){.summary-row .patient-strip{flex-wrap:wrap;gap:12px}.summary-row .patient-chooser{margin-left:auto}.summary-row .patient-chooser select{max-width:100%}}
+/* v0.3 mobile topbar: keep actions legible without splitting Korean words. */
+@media(max-width:520px){
+ .topbar{padding:0 14px;gap:8px;flex-wrap:nowrap}
+ .breadcrumb{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+ .top-actions{flex:0 0 auto;gap:13px}
+ .top-actions .plain-button{white-space:nowrap;font-size:12px;word-break:keep-all}
+}
+
+</style></head><body>
+<div class="shell" id="shell">
+ <aside class="rail" id="rail" aria-label="병원 업무 메뉴">
+  <div class="brand-row"><div class="brand"><div class="brand-mark">D<span>.</span></div><div class="brand-name"><b>퇴원관리 워크벤치</b><small>Clinical workspace</small></div></div><button class="rail-toggle" id="rail-toggle" aria-label="사이드바 접기" aria-expanded="true" title="사이드바 접기">‹</button></div>
+  <p class="rail-cap">업무 흐름</p>
+  <button type="button" class="rail-link" data-nav="patients" title="A1 · 환자 목록"><span class="rail-short">A1</span><span class="rail-name">환자 목록</span></button>
+  <button type="button" class="rail-link" data-nav="assessment" title="A2 · 다영역 평가"><span class="rail-short">A2</span><span class="rail-name">다영역 평가</span></button>
+  <button type="button" class="rail-link active" data-nav="plan" aria-current="page" title="A3 · 의료진 검토"><span class="rail-short">A3</span><span class="rail-name">계획 검토·발행</span><span class="active-dot">●</span></button>
+  <button type="button" class="rail-link" data-nav="patient-preview" title="환자용 미리보기"><span class="rail-short">B</span><span class="rail-name">환자용 미리보기</span></button>
+  <button type="button" class="rail-link rail-help" data-nav="learn" title="사용법·학습"><span class="rail-short">?</span><span class="rail-name">사용법·학습</span></button>
+
+ </aside>
+ <main class="workspace">
+  <div class="topbar"><div class="breadcrumb">병원 업무 <span> / </span> 퇴원 전환관리 <span> / </span> <b>A3</b></div><div class="top-actions"><button class="plain-button" id="reset">초기화</button><button class="plain-button" id="top-help" type="button">빠른 도움말</button></div></div>
+  <div class="content" id="a3-screen">
+   <header class="headline"><div><div class="eyebrow">A3 · 퇴원계획</div><h1>퇴원 후 관리계획</h1><p>평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.</p></div><div class="headline-meta"><span class="version-chip" id="version-chip">초안 v0.1</span><span id="save-state" class="save-state" role="status">저장됨</span></div></header>
+   <div class="summary-row">
+   <section class="patient-strip" aria-label="환자 컨텍스트"><div class="patient-overview"><div class="avatar">가</div><div><div class="upper-label">환자 정보</div><h2 id="patient-name">—</h2><div class="patient-detail" id="patient-detail">—</div></div></div><div class="patient-chooser"><label for="patient-select">환자 선택</label><select id="patient-select"></select></div></section>
+   <button type="button" class="gate-banner" id="gate-banner" aria-label="발행 전 확인사항 보기" aria-haspopup="dialog"></button>
+   </div>
+   <div class="section-head"><div><h2>6개 영역 평가 결과</h2><p>영역을 선택하면 검토 항목을 확인할 수 있습니다.</p></div><span class="micro-link" id="assessment-stamp" hidden></span></div>
+   <nav class="domains" id="domain-grid" aria-label="A2 영역별 결과"></nav>
+   <div class="editor-head"><div class="tabs" role="tablist" aria-label="A3 작업"><button data-tab="plan" role="tab" aria-selected="true">계획 편집</button><button data-tab="issues" role="tab" aria-selected="false">근거·미해결 <span id="issue-count"></span></button><button data-tab="documents" role="tab" aria-selected="false">PDF·첨부</button><button data-tab="history" role="tab" aria-selected="false">승인·이력</button></div><div class="actor-box"><button type="button" class="mini-button" id="preview-toggle" aria-expanded="false" aria-controls="preview-pane">미리보기 펼치기</button><label for="actor">담당 역할</label><select id="actor"><option value="NURSE">작성 간호사</option><option value="PHARMACIST">약사</option><option value="PHYSICIAN">담당 의사</option><option value="APPROVER">지정 최종 승인자</option></select></div></div>
+   <div class="working-grid"><section class="work-pane" id="work-pane" aria-live="polite"></section><aside class="preview-pane" id="preview-pane" aria-label="환자 공개 미리보기"><div class="preview-pane-top"><div><div class="eyebrow">환자에게 보이는 내용</div><h3>환자용 미리보기</h3></div><span class="preview-mark" id="preview-mark">미발행 초안</span></div><div class="preview-frame" id="preview-frame"></div><div class="preview-footer"><button id="show-current" class="text-link">현재 발행본 보기</button><button id="open-preview-page" class="text-link">큰 화면에서 보기 ↗</button></div></aside></div>
+   <section class="bottom-actions"><div class="work-status"><strong id="workflow-state">초안 작성 중</strong><small id="workflow-sub">마지막 수정 사항 저장됨</small></div><div class="button-group"><button id="revise" class="btn outline" hidden>새 버전 개정</button><button id="request" class="btn outline">검토 요청</button><button id="return" class="btn outline" hidden>보완 요청</button><button id="approve" class="btn primary" hidden>승인</button><button id="publish" class="btn primary" hidden>계획 발행</button><button id="revoke" class="btn danger-outline" hidden>발행 철회</button></div></section>
+
+  </div>
+  <section class="content auxiliary-screen" id="aux-screen" hidden aria-label="보조 작업 화면"></section>
+ </main>
+</div>
+<dialog id="patient-dialog" class="modal-dialog" aria-labelledby="patient-dialog-title"><div class="modal-head"><h2 id="patient-dialog-title">환자 목록</h2><button type="button" class="icon-close" data-close-dialog="patient-dialog" aria-label="환자 목록 닫기">×</button></div><p>검토할 환자를 선택하세요.</p><div id="patient-list" class="patient-list"></div></dialog>
+<dialog id="blockers-dialog" class="modal-dialog" aria-labelledby="blockers-dialog-title"><div class="modal-head"><h2 id="blockers-dialog-title">발행 전 확인사항</h2><button type="button" class="icon-close" data-close-dialog="blockers-dialog" aria-label="확인사항 닫기">×</button></div><p id="blockers-description">항목을 선택하면 수정할 위치로 이동합니다.</p><div id="blockers-list" class="blocker-list"></div></dialog>
+<dialog id="help-dialog" class="modal-dialog" aria-labelledby="help-dialog-title"><div class="modal-head"><h2 id="help-dialog-title">사용 안내·평가 설명</h2><button type="button" class="icon-close" data-close-dialog="help-dialog" aria-label="사용 안내 닫기">×</button></div><div class="help-sections">
+<section><h3>화면 흐름</h3><p>A1 환자 목록 → A2 다영역 평가 → A3 의료진 검토·승인·계획 발행. 왼쪽 B 메뉴는 환자 공개 내용을 독립 화면으로 보여줍니다. A3의 미리보기는 접어두거나 펼칠 수 있습니다.</p></section>
+<section><h3>평가 결과의 의미</h3><p>이 평가는 검증된 임상 위험도나 퇴원 허가 기준이 아닙니다. A2의 등급은 업무 검토 우선도이며, 발행 승인 여부와 다릅니다. A2의 0~3등급과 미평가·상충은 자체 시연 규칙으로 계산하며 공식 통합돌봄 6문항이 아닙니다.</p><p id="help-assessment-ref">평가 기록</p></section>
+<section><h3>근거와 계획 작성</h3><p>A2 선택값만으로 실제 약물명·용법을 알 수 없습니다. 안내 내용의 별도 근거가 필요합니다. A2 선택값에 포함되지 않은 구체적인 처방, 보행 제한, 상처관리 방법을 추론해 생성하지 마세요. 의료진의 확인된 기록을 입력하고 역할별 검토를 진행합니다.</p></section>
+<section><h3>발행 전 확인사항</h3><p>발행 전 해결할 사항을 선택하면 각 항목의 수정 위치로 이동합니다. 핵심 미해결 사항이 하나라도 남으면 승인이 차단됩니다. 해결 기록과 계획 내용 검토는 별개입니다.</p></section>
+<section><h3>PDF 및 데이터 관리</h3><p>첨부 PDF는 최대 4MB로 임시 보관하며 새로고침 이후 원본 파일을 다시 연결해야 할 수 있습니다. 인쇄 → PDF 저장 기능으로 문서를 내보냅니다. 실제 서버의 자동 PDF 생성·영구 보관·원자적 발행은 구현되지 않았습니다. 입력 자료는 브라우저 가상 저장소에 저장되며 A2 v0.5 원본이나 환자용 v1.2 앱과 실시간 연결되지 않습니다.</p></section>
+<section><h3>시연 및 안전 경계</h3><p>이 시스템은 합성 환자 데이터만 사용하는 연구·창업용 프로토타입입니다. 실제 임상 의사결정, 퇴원허가, 의료기관 승인, 실환자 공개 및 외부기관 전송에 사용하지 않습니다. 가상 담당자 역할은 실제 의료인 인증이 아닙니다.</p></section></div><p><button class="btn outline" type="button" data-open-learning>학습 탭에서 자세히 보기 →</button></p></dialog>
+<dialog id="source-dialog" class="modal-dialog source-dialog" aria-labelledby="source-dialog-title"><div class="modal-head"><h2 id="source-dialog-title">관련 원천자료</h2><button type="button" class="icon-close" data-close-dialog="source-dialog" aria-label="원천자료 닫기">×</button></div><p id="source-dialog-description">현재 환자의 가상 원천자료입니다.</p><div id="source-list" class="source-list"></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="print-sheet" aria-hidden="true"></div>
+<script>
+// A2 v0.5 approved baseline mirrored for a read-only A3 simulation.
+// NOT connected to a live A2 browser state or clinical record.
+const DOMAINS = [
+ {id:'medical',title:'의료',fields:[
+  ['followup','퇴원 후 외래·추적 계획',1,[['confirmed','확정됨',0],['routine','일반 추적 검토',1],['pending','미확정·조정 필요',2]]],
+  ['condition','퇴원 직전 상태 관련 검토',1,[['reviewed','담당의 확인 완료',0],['needsReview','추가 확인 필요',2],['unresolved','퇴원 전 우선 확인할 사항 있음',3]]],
+  ['warningGuide','문제 발생 시 안내·문의처',1,[['approved','안내 승인됨',0],['draft','안내 수정 필요',1],['missing','안내 준비되지 않음',2]]],
+  ['testResults','남아 있는 검사·결과 확인',0,[['none','미결과 없음',0],['plan','추적 계획 있음',1],['pending','확인 책임자·일정 미정',2]]],
+  ['complexity','동반질환·추적진료 조정',0,[['ordinary','추가 조정 없음',0],['multi','여러 진료일정 조정',1],['unresolved','진료 간 조정 필요',2]]]
+ ]},
+ {id:'nursing',title:'간호',fields:[
+  ['selfCare','가정 내 자가간호 수행',1,[['independent','설명 후 스스로 가능',0],['training','재교육·확인 필요',1],['help','일부 도움이 필요',2],['unable','수행 불가능·대체 지원 필요',3]]],
+  ['wound','드레싱·상처관리 계획',1,[['notNeeded','해당 없음',0],['approved','관리법 안내 승인됨',1],['needsReview','교육 또는 담당자 확인 필요',2]]],
+  ['education','퇴원교육 이해 확인',1,[['documented','내용 확인 기록됨',0],['partial','추가 설명이 필요',1],['notDone','미시행·재교육 필요',2]]],
+  ['careDevice','기구·처치 관련 관리',0,[['none','해당 없음',0],['guided','개인별 사용 안내 있음',1],['unguided','안내 자료 확인 필요',2]]],
+  ['symptomMonitoring','집에서 관찰할 내용',0,[['notNeeded','별도 관찰 항목 없음',0],['approved','관찰 안내 있음',1],['unclear','관찰 항목·문의기준 미확정',2]]]
+ ]},
+ {id:'medication',title:'약료',fields:[
+  ['reconciliation','퇴원약 목록 조정(대조)',1,[['complete','대조 완료',0],['pending','대조 미완료',2],['conflict','목록 간 상충·확인 요청',3]]],
+  ['medUnderstanding','약물 변경·복약 교육',1,[['confirmed','이해 확인됨',0],['review','재설명 필요',1],['missing','교육 미실시·안내 누락',2]]],
+  ['administration','퇴원 후 약물 관리 도움',1,[['independent','스스로 관리 가능',0],['help','보조 인력·보호자 도움 필요',2],['unable','실행 담당자 미확보',3]]],
+  ['access','약 수령·구입 계획',0,[['secured','확인됨',0],['uncertain','확인 필요',1],['barrier','구입·수령에 제약 있음',2]]],
+  ['changes','퇴원 전후 약물 변경',0,[['none','없음',0],['documented','변경내역 문서화됨',1],['unclear','변경 내역 확인 필요',2]]]
+ ]},
+ {id:'function',title:'기능',fields:[
+  ['gait','보행/이동',1,[['independent','독립 이동',0],['device','보조기 사용',2],['assistance','인적 도움 필요',3]]],
+  ['transfer','침대·의자 등 이동',1,[['independent','독립 가능',0],['supervision','감독 필요',1],['assistance','인적 도움 필요',3]]],
+  ['adl','기본 일상생활 수행(ADL)',1,[['independent','독립적',0],['partial','일부 도움 필요',2],['dependent','상당한 도움 필요',3]]],
+  ['iadl','도구적 일상생활(IADL)',0,[['independent','독립 가능',0],['someHelp','일부 지원 필요',1],['dependent','지속 지원 필요',2]]],
+  ['assistDevice','보조기 사용방법 확인',0,[['notNeeded','해당 없음',0],['approved','개인별 안내 확인됨',1],['needsTeaching','재교육·조정 필요',2]]]
+ ]},
+ {id:'social',title:'사회환경',fields:[
+  ['caregiver','도움이 필요한 시간대의 지원',1,[['available','충분히 확보됨',0],['limited','시간·범위가 제한됨',2],['none','확보되지 않음',2]]],
+  ['housing','실제 가정 내 이동 환경',1,[['accessible','현 이동능력에 적합',0],['needsCheck','현장 확인 필요',1],['barrier','이동 장벽 확인됨',2]]],
+  ['travel','퇴원 후 통원·이동 수단',1,[['available','이동 수단 확보',0],['someBarrier','이용 제약 있음',2],['unavailable','대안 마련 필요',3]]],
+  ['living','생활·동거 상황',0,[['withSupport','필요 지원 확보',0],['aloneSupported','독거·지원 확보됨',0],['aloneNoSupport','독거·지원 공백 확인',2]]],
+  ['cost','지원 이용 비용·접근 제약',0,[['noBarrier','확인된 제약 없음',0],['needsInfo','지원정보 안내 필요',1],['costBarrier','비용상 장벽 호소',2]]]
+ ]},
+ {id:'continuity',title:'돌봄 연속성',fields:[
+  ['appointment','후속 외래·진료 약속',1,[['confirmed','예약 확인됨',0],['notNeeded','추적 불필요 확인',0],['pending','아직 미확정',2]]],
+  ['contact','환자가 연락할 담당·문의처',1,[['documented','연락처 안내 완료',0],['missing','미확인·안내 누락',2]]],
+  ['dischargeEducation','최종 퇴원안내 전달',1,[['completed','전달·확인 완료',0],['needsReview','변경내용 재설명 필요',1],['notSent','전달 전',2]]],
+  ['referral','지역사회 서비스 의뢰 상태',0,[['notNeeded','의뢰 불필요 판단',0],['draft','의뢰 검토 중',1],['requested','모의 신청·접수 단계',2]]],
+  ['consent','공적 지원 신청 동의 상태',0,[['notApplicable','해당 없음',0],['secured','동의 확인됨',0],['notYet','동의 확인 전',2]]]
+ ]},
+];
+const CASES=[
+ {id:'SYN-001',name:'이정희',age:75,context:'근골격계 수술 후 퇴원',discharge:'2026-10-21',values:{medical:{followup:'confirmed',condition:'reviewed',warningGuide:'approved',testResults:'plan',complexity:'ordinary'},nursing:{selfCare:'training',wound:'approved',education:'partial',careDevice:'guided',symptomMonitoring:'approved'},medication:{reconciliation:'complete',medUnderstanding:'review',administration:'independent',access:'secured',changes:'documented'},function:{gait:'device',transfer:'supervision',adl:'partial',iadl:'someHelp',assistDevice:'needsTeaching'},social:{caregiver:'limited',housing:'barrier',travel:'someBarrier',living:'withSupport',cost:'needsInfo'},continuity:{appointment:'confirmed',contact:'documented',dischargeEducation:'needsReview',referral:'draft',consent:'notYet'}}},
+ {id:'SYN-002',name:'윤미경',age:68,context:'근골격계 치료 후 퇴원',discharge:'2026-10-23',values:{medical:{followup:'confirmed',condition:'reviewed',warningGuide:'approved',testResults:'none',complexity:'ordinary'},nursing:{selfCare:'independent',wound:'notNeeded',education:'documented',careDevice:'none',symptomMonitoring:'notNeeded'},medication:{reconciliation:'complete',medUnderstanding:'confirmed',administration:'independent',access:'secured',changes:'none'},function:{gait:'independent',transfer:'independent',adl:'independent',iadl:'independent',assistDevice:'notNeeded'},social:{caregiver:'available',housing:'accessible',travel:'available',living:'withSupport',cost:'noBarrier'},continuity:{appointment:'confirmed',contact:'documented',dischargeEducation:'completed',referral:'notNeeded',consent:'notApplicable'}}},
+ {id:'SYN-003',name:'최도현',age:79,context:'퇴원자료 미완성',discharge:'2026-10-24',values:{medical:{followup:'pending',condition:'needsReview',warningGuide:'missing',testResults:'pending',complexity:'unresolved'},nursing:{selfCare:'help',wound:'needsReview',education:null,careDevice:'unguided',symptomMonitoring:'unclear'},medication:{reconciliation:'conflict',medUnderstanding:null,administration:'help',access:'uncertain',changes:'unclear'},function:{gait:'assistance',transfer:null,adl:'dependent',iadl:'dependent',assistDevice:'needsTeaching'},social:{caregiver:null,housing:'needsCheck',travel:'unavailable',living:'aloneNoSupport',cost:'costBarrier'},continuity:{appointment:null,contact:'missing',dischargeEducation:'notSent',referral:'draft',consent:'notYet'}}}
+];
+const SECTIONS=[
+ {id:'today',label:'오늘 해야 할 일',domain:'nursing',defaultText:'퇴원 전 받은 자가관리 안내문을 확인해 주세요.'},
+ {id:'medication',label:'복약·약물 안내',domain:'medication',defaultText:'퇴원 시 확인된 약물 목록과 의료진 안내를 확인하세요. 복용 방법이 불확실하면 담당 의료진 또는 약사에게 문의하세요.'},
+ {id:'followup',label:'외래·검사 일정',domain:'medical',defaultText:'퇴원 안내문에서 확정된 다음 진료 일정을 확인해 주세요.'},
+ {id:'warning',label:'주의사항',domain:'medical',defaultText:'개인별 주의사항은 승인된 안내문을 확인하고, 위급한 경우에는 119에 연락하세요.'},
+ {id:'contact',label:'도움이 필요할 때',domain:'continuity',defaultText:'퇴원 시 안내받은 담당 의료기관의 공식 문의처를 확인하세요.'},
+ {id:'support',label:'생활·이동 지원',domain:'social',defaultText:'이동과 돌봄에 도움이 필요한 경우 병원 상담 담당자와 확인해 주세요.'}
+];
+
+// Fourth patient is unique to the A3 teaching prototype, never inserted into the approved A2 v0.5.
+CASES.push({id:'SYN-004',name:'한서윤',age:72,context:'퇴원 후 외래 일정 변경',discharge:'2026-10-25',values:structuredClone(CASES[1].values)});
+
+// Every record is fictional. These IDs are references for the teaching prototype only.
+const record=(patient,suffix,title,domain,fields,sections,verificationStatus,summary,detail,observedAt='2026-10-21 09:00')=>({
+ id:`SRC-${patient.replace('SYN-','SYN')}-${suffix}`,patientId:patient,encounterId:`ENC-${patient.replace('SYN-','SYN')}-01`,title,domain,
+ fieldRefs:fields,sections,verificationStatus,sourceType:'synthetic_demo_record',observedAt,documentVersion:'1',isSynthetic:true,summary,detail
+});
+const base=(patient)=>[
+ record(patient,'MED-01','퇴원약 목록 대조 기록','medication',['medication.reconciliation','medication.medUnderstanding'],['medication'],'CONFIRMED','퇴원약 대조 검토 기록.','개별 약물명·용량은 포함하지 않으며 시연에서는 대조 여부만 확인합니다.'),
+ record(patient,'NUR-01','퇴원교육 이해 확인지','nursing',['nursing.education','nursing.selfCare'],['today'],'CONFIRMED','자가관리 안내와 이해 확인 기록.','안내 내용을 환자에게 다시 설명하고 이해 여부를 확인하는 사례입니다.'),
+ record(patient,'APT-01','외래 예약 확인서','medical',['medical.followup','continuity.appointment'],['followup'],'CONFIRMED','가상 외래 후속관리 예약 확인.','이 문서는 실제 병원 예약을 뜻하지 않습니다. 구체적 진료 시각을 생성하지 않았습니다.'),
+ record(patient,'WARN-01','주의사항 검토 기록','medical',['medical.warningGuide','medical.condition'],['warning'],'CONFIRMED','담당 진료팀의 개인별 주의사항 검토.','구체적인 진단·지시를 자동 생성하지 않고 확인된 안내문의 존재를 검토합니다.'),
+ record(patient,'CON-01','문의 경로 안내 기록','continuity',['continuity.contact'],['contact'],'CONFIRMED','퇴원 후 문의 경로를 확인한 기록.','실제 병원 전화번호를 제공하지 않는 가상 문의 경로 자료입니다.'),
+ record(patient,'SOC-01','가정 복귀·이동 상담 기록','social',['social.caregiver','social.housing','social.travel','function.gait'],['support'],'CONFIRMED','이동과 돌봄 지원 필요 사항을 검토.','기능 관찰 및 주거 지원 필요도 확인을 위해 사용됩니다.'),
+ record(patient,'FUN-01','보행·이동 관찰 기록','function',['function.gait','function.transfer'],['today','support'],'CONFIRMED','이동 능력 및 보조기 안내 확인.','체중부하 허용 범위는 본 자료로 판단할 수 없습니다.'),
+ record(patient,'EDU-01','보행보조기 교육자료 (예시)','function',['function.assistDevice'],['support'],'PENDING','환자 교육용 자료 내용 검토 대기.','자료를 읽어보는 것과 최종 PDF 첨부 승인은 별개의 절차입니다.')
+];
+const CASE_LIBRARY=[
+ ...base('SYN-001').map(r=>r.id.endsWith('MED-01')?{...r,verificationStatus:'PENDING',summary:'복약 안내 원문과 대조 완료 여부를 추가 확인해야 합니다.'}:r),
+ record('SYN-001','MED-02','약료 담당자 최종 확인 기록','medication',['medication.reconciliation','medication.medUnderstanding'],['medication'],'CONFIRMED','추가 대조를 거쳐 약료 안내 존재를 확인했습니다.','원천자료의 확인 기록에 기반해 계획을 검토하는 학습 예시입니다.'),
+ ...base('SYN-002'),
+ ...base('SYN-003').map(r=>r.domain==='medication'?{...r,verificationStatus:'CONFLICTING',summary:'서로 다른 퇴원약 목록이 존재해 아직 채택 불가.'}:r),
+ record('SYN-003','MED-A','퇴원약 목록 A','medication',['medication.reconciliation'],['medication'],'CONFLICTING','원천 기록 A의 약물 대조 결과.','기록 B와 다르므로 어느 하나만 선택하여 해결할 수 없습니다.'),
+ record('SYN-003','MED-B','퇴원약 목록 B','medication',['medication.reconciliation'],['medication'],'CONFLICTING','원천 기록 B의 약물 대조 결과.','기록 A와 상충하며 추가 확인 회신이 필요합니다.'),
+ record('SYN-003','MED-C','약료 담당자 대조 완료 회신','medication',['medication.reconciliation','medication.medUnderstanding'],['medication'],'LOCKED','실습에서 추가 확인 절차를 진행하면 열리는 회신.','실습 버튼으로 가상 회신을 받은 다음 A2의 자료 상태도 수정하여 재인계해야 합니다.'),
+ ...base('SYN-004'),
+ record('SYN-004','APT-OLD','기존 발행 외래 일정 확인서','medical',['medical.followup','continuity.appointment'],['followup'],'CONFIRMED','기존 발행 계획 v1.0이 참조한 자료.','이전 발행 내용은 편집하지 않습니다.','2026-10-20 14:00'),
+ record('SYN-004','APT-NEW','새 외래 일정 확인서','medical',['medical.followup','continuity.appointment'],['followup'],'CONFIRMED','후속 확인을 거친 새로운 가상 일정 기록.','새 버전의 외래 안내를 작성·승인하는 학습용입니다.','2026-10-21 10:00')
+];
+// Links are local, hand-authored study PDFs; they are not automatically attached to patient plans.
+for(const rec of CASE_LIBRARY){
+ if(rec.id==='SRC-SYN001-EDU-01')rec.exampleFile='examples/SYN-001_보행보조기_교육예시.pdf';
+ if(rec.id==='SRC-SYN002-NUR-01')rec.exampleFile='examples/SYN-002_sample_care_plan.pdf';
+ if(['SRC-SYN004-APT-OLD','SRC-SYN004-APT-NEW'].includes(rec.id))rec.exampleFile='examples/SYN-004_일정변경_확인예시.pdf';
+ if(['SRC-SYN003-MED-A','SRC-SYN003-MED-B','SRC-SYN003-MED-C'].includes(rec.id))rec.exampleFile='examples/SYN-003_약료상충_비교예시.pdf';
+}
+const SOURCE_LIBRARY=CASE_LIBRARY;
+const recordsForPatient=(id,unlocked=[])=>SOURCE_LIBRARY.filter(s=>s.patientId===id).map(s=>({...s,verificationStatus:s.verificationStatus==='LOCKED'&&unlocked.includes(s.id)?'CONFIRMED':s.verificationStatus}));
+const findSource=(id,patient,unlocked=[])=>recordsForPatient(patient,unlocked).find(s=>s.id===id)||null;
+function usableSource(s,targetType,target,caseId){
+ if(!s||typeof caseId!=='string'||s.patientId!==caseId||s.encounterId!==`ENC-${caseId.replace('SYN-','SYN')}-01`||s.verificationStatus!=='CONFIRMED')return false;
+ if(targetType==='item')return s.sections.includes(target);
+ if(targetType!=='issue'||!target||typeof target.id!=='string')return false;
+ return s.fieldRefs.some(f=>target.id===`ISS-${f.replace('.','-')}`)||(target.id==='ISS-plan-med-original'&&s.domain==='medication');
+}
+const CASE_MISSIONS={
+ 'SYN-001':{title:'발행 전 보완',difficulty:'중간',description:'근거 확인과 6개 계획 항목 검토 후 승인·발행',steps:['발행 전 확인사항 열기','확인된 원천자료 연결','영역별 역할로 계획 검토','최종 승인자 역할로 발행']},
+ 'SYN-002':{title:'기본 안내 발행',difficulty:'쉬움',description:'0등급 평가에서도 기본 안내를 승인하고 발행',steps:['계획 미리보기','의료진 검토 요청','지정 승인자 승인','발행 후 환자 화면 확인']},
+ 'SYN-003':{title:'누락·상충 해결',difficulty:'어려움',description:'충돌 기록 비교, 추가 회신, A2 수정과 재인계',steps:['충돌 기록 A/B 비교','가상 약료 확인 회신 받기','A2 값 수정·인계','남은 확인사항 보완']},
+ 'SYN-004':{title:'발행 이후 개정',difficulty:'중간',description:'기존 v1.0을 유지하면서 새 버전을 검토·발행',steps:['기존 발행본 확인','새 버전 개정','새 일정 기록 연결','재승인·발행 및 이력 비교']}
+};
+
+const deepCopy=x=>structuredClone(x);
+const now=()=>new Date().toISOString();
+function evaluateA2(caseData){
+ return DOMAINS.map(domain=>{
+   let known=0,peak=0;const missing=[],conflicting=[],facts=[];
+   for(const [id,label,required,options] of domain.fields){
+     const v=caseData.values?.[domain.id]?.[id];
+     if(v==='CONFLICT'){conflicting.push(label);continue;}
+     const match=options.find(o=>o[0]===v);
+     if(!match){if(required)missing.push(label);continue;}
+     if(required)known++;
+     peak=Math.max(peak,match[2]);facts.push({id,label,value:match[1],tier:match[2],required:!!required,raw:v});
+   }
+   if(domain.id==='social'&&caseData.values.social.caregiver==='none'&&caseData.values.social.housing==='barrier'&&caseData.values.social.travel==='unavailable')peak=3;
+   return {id:domain.id,title:domain.title,status:conflicting.length?'CONFLICTING':missing.length?'UNKNOWN':'READY',grade:missing.length||conflicting.length?null:peak,provisionalGrade:peak,requiredDone:known,requiredTotal:3,missing,conflicting,facts};
+ });
+}
+function issuesFromValues(values){
+ const issues=[];
+ for(const domain of DOMAINS){for(const [id,label,required,options] of domain.fields){
+   const raw=values?.[domain.id]?.[id];
+   if((required && !options.some(option=>option[0]===raw)) || raw==='CONFLICT' || (domain.id==='medication'&&id==='reconciliation'&&raw==='conflict')){
+     issues.push({id:`ISS-${domain.id}-${id}`,domain:domain.id,title:label,reason:raw===null||raw===undefined||raw===''?'필수 평가자료가 아직 확인되지 않았습니다.':'서로 다른 약물 목록 또는 기록의 상충 사항이 남아 있습니다.',status:'OPEN',source:'',resolution:'',reviewer:''});
+   }
+ }}
+ return issues;
+}
+function makeInitial(caseId){
+ const c=CASES.find(c=>c.id===caseId);if(!c)throw Error('No synthetic case');
+ const result=evaluateA2(c),issues=issuesFromValues(c.values);
+ const complete=caseId==='SYN-002';
+ const sourceSuffix={today:'NUR-01',medication:'MED-01',followup:'APT-01',warning:'WARN-01',contact:'CON-01',support:'SOC-01'};
+ const items=SECTIONS.map(s=>({id:s.id,section:s.id,title:s.label,text:s.defaultText,source:complete||caseId==='SYN-004'?`SRC-${caseId.replace('SYN-','SYN')}-${sourceSuffix[s.id]}`:'',verified:complete||caseId==='SYN-004',visibility:'PATIENT'}));
+ if(caseId==='SYN-001')issues.push({id:'ISS-plan-med-original',domain:'medication',title:'환자용 복약 안내의 확인된 원문',reason:'복약 안내문 원천자료를 확인하고 담당자의 검토를 완료해 주세요.',status:'OPEN',source:'',resolution:'',reviewer:''});
+ const created=now();
+ const record={schema:2,unlockedSources:[],patientId:c.id,a2Values:deepCopy(c.values),a2Dirty:false,assessment:{id:`AS-${c.id}-001`,ruleVersion:'v0.1',capturedAt:created,values:deepCopy(c.values),domainResults:result},draft:{version:'0.1',status:'DRAFT',items,docs:[],issues,approval:null,createdAt:created,updatedAt:created},publications:[],audit:[{at:created,role:'system',event:'INIT',details:'합성 환자 A2 스냅샷에서 최초 계획 초안 생성'}]};
+ if(caseId==='SYN-004'){
+  record.draft.version='1.0';record.draft.status='PUBLISHED';record.draft.approval={by:'SIM-APPROVER',role:'지정 최종 승인자',at:created,digest:'historical-demo-approval'};
+  const snapshot=publishedPayload(record);snapshot.issuedAt=created;record.publications.push({id:'PUB-SYN004-V1',snapshot,status:'PUBLISHED'});
+  audit(record,'system','PUBLISHED','사전 발행된 합성 v1.0 학습 시나리오');
+ }
+ return record;
+}
+function currentPublished(record){return record.publications.find(p=>p.status==='PUBLISHED')||null;}
+function blockers(record, availableDocs=new Set()){
+ const d=record.draft,res=[],assessmentIssues=issuesFromValues(record.assessment.values);
+ if(record.a2Dirty)res.push({id:'assessment-dirty',label:'변경된 A2 평가를 계획에 인계해야 합니다',group:'evidence'});
+ // Re-derive hard assessment gates; a missing draft issue must never remove them.
+ for(const issue of assessmentIssues){
+  if(!d.issues.some(existing=>existing.id===issue.id))res.push({id:issue.id,label:`${issue.title}: A2 원자료 수정·인계 필요`,group:'evidence'});
+ }
+ for(const issue of d.issues){
+  const src=findSource(issue.source,record.patientId,record.unlockedSources||[]);
+  const unresolvedAssessment=assessmentIssues.some(required=>required.id===issue.id);
+  if(issue.status!=='RESOLVED'||!usableSource(src,'issue',issue,record.patientId)||unresolvedAssessment)res.push({id:issue.id,label:`${issue.title}: 확인 기록 필요${unresolvedAssessment?' · A2 원자료 수정·인계 필요':''}`,group:'evidence'});
+ }
+ const patientItems=d.items.filter(x=>x.visibility==='PATIENT');
+ for(const sec of ['today','medication','followup','warning','contact']){
+   if(!patientItems.some(i=>i.section===sec&&i.text.trim()))res.push({id:`section-${sec}`,label:`필수 안내 '${SECTIONS.find(s=>s.id===sec).label}' 없음`,group:'plan'});
+ }
+ for(const item of patientItems){if(!item.text.trim())res.push({id:`item-${item.id}-text`,label:`${item.title}: 안내 내용이 비어 있음`,group:'plan'});
+   const src=findSource(item.source,record.patientId,record.unlockedSources||[]);
+   if(!item.verified||!usableSource(src,'item',item.section,record.patientId))res.push({id:`item-${item.id}-source`,label:`${item.title}: 확인된 원천정보·검토 누락`,group:'plan'});
+ }
+ for(const doc of d.docs.filter(x=>x.visibility==='PATIENT')){
+   if(doc.status!=='REVIEWED')res.push({id:`doc-${doc.id}`,label:`${doc.name}: 환자 공개용 PDF 검토 미완료`,group:'docs'});
+   if(!availableDocs.has(doc.id))res.push({id:`file-${doc.id}`,label:`${doc.name}: PDF 파일 원본을 다시 첨부해야 합니다`,group:'docs'});
+ }
+ return res;
+}
+function fingerprint(record){
+ const d=record.draft;const str=JSON.stringify({patientId:record.patientId,assessment:record.assessment,version:d.version,items:d.items,docs:d.docs.map(({id,name,size,visibility,status,fileHash})=>({id,name,size,visibility,status,fileHash})),issues:d.issues});
+ let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');
+}
+function mayApprove(record,role,availableDocs){return record.draft.status==='REVIEW_REQUESTED'&&role==='APPROVER'&&blockers(record,availableDocs).length===0;}
+function mayPublish(record,role,availableDocs){return role==='APPROVER'&&record.draft.status==='APPROVED'&&!!record.draft.approval&&record.draft.approval.digest===fingerprint(record)&&blockers(record,availableDocs).length===0;}
+function audit(record,role,event,details=''){record.audit.unshift({at:now(),role,event,details});record.audit=record.audit.slice(0,120);record.draft.updatedAt=now();}
+function publishedPayload(record){
+ // Explicit patient-facing projection: never copy internal source IDs, audit or reviewer identifiers.
+ return {patientId:record.patientId,planVersion:record.draft.version,approvedAt:record.draft.approval?.at||null,
+ items:deepCopy(record.draft.items.filter(i=>i.visibility==='PATIENT').map(({id,title,section,text})=>({id,title,section,text}))),
+ documents:deepCopy(record.draft.docs.filter(d=>d.visibility==='PATIENT').map(({id,name})=>({id,name}))),issuedAt:now()};
+}
+function makeRevision(record){
+ const p=currentPublished(record);if(!p)throw Error('No active publication');
+ const clone=deepCopy(record); const prev=p.snapshot.planVersion.split('.');
+ clone.draft.version=`${Number(prev[0])+1}.0`;
+ clone.draft.status='DRAFT';clone.draft.approval=null;clone.draft.updatedAt=now();
+ clone.draft.issues=deepCopy(record.draft.issues); // Preserve review evidence and unresolved gates.
+ for(const item of clone.draft.items)item.verified=false; // Every new published version requires review.
+ audit(clone,'system','REVISION_START',`새 초안 ${clone.draft.version}, 기존 발행 ${p.snapshot.planVersion} 유지`);
+ return clone;
+}
+
+
+// Candidate data must never overwrite the read-only v0.3 baseline on a shared origin.
+const STORAGE_KEYS={normal:'a3-prototype-v04-synthetic-only',study:'a3-study-v04-synthetic-only'};
+const isObject=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+const strings=(v,keys)=>isObject(v)&&keys.every(k=>typeof v[k]==='string');
+function validStoredRecord(r,id){
+ if(!isObject(r)||r.schema!==2||r.patientId!==id||!CASES.some(c=>c.id===id))return false;
+ const a=r.assessment,d=r.draft;
+ if(!strings(a,['id','ruleVersion','capturedAt'])||!a.id.startsWith(`AS-${id}-`)||!isObject(a.values))return false;
+ if(!DOMAINS.every(domain=>isObject(a.values[domain.id])))return false;
+ if(!Array.isArray(a.domainResults)||a.domainResults.length!==DOMAINS.length||!DOMAINS.every(domain=>a.domainResults.some(result=>result.id===domain.id&&Array.isArray(result.facts)&&Array.isArray(result.missing)&&Array.isArray(result.conflicting))))return false;
+ if(!strings(d,['version','status','createdAt','updatedAt'])||!['DRAFT','REVIEW_REQUESTED','CHANGES_REQUESTED','APPROVED','PUBLISHED','REVOKED'].includes(d.status))return false;
+ if(!Array.isArray(d.items)||!d.items.every(i=>strings(i,['id','section','title','text','source','visibility'])&&SECTIONS.some(s=>s.id===i.section)&&typeof i.verified==='boolean'))return false;
+ if(!Array.isArray(d.docs)||!d.docs.every(doc=>strings(doc,['id','name','fileHash','visibility','status'])&&Number.isFinite(doc.size)))return false;
+ if(!Array.isArray(d.issues)||!d.issues.every(i=>strings(i,['id','domain','title','reason','status','source','resolution','reviewer'])))return false;
+ if(!Array.isArray(r.audit)||!r.audit.every(e=>strings(e,['at','role','event','details'])))return false;
+ if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text']))&&Array.isArray(p.snapshot.documents)))return false;
+ if(r.unlockedSources!==undefined&&(!Array.isArray(r.unlockedSources)||!r.unlockedSources.every(s=>typeof s==='string')))return false;
+ if(r.a2Values!==undefined&&(!isObject(r.a2Values)||!DOMAINS.every(domain=>isObject(r.a2Values[domain.id]))))return false;
+ return true;
+}
+function loadRepository(storage,key){
+ try{
+  if(!storage)throw Error('Local storage unavailable');
+  const raw=storage.getItem(key),records=raw===null?{}:JSON.parse(raw);
+  if(!isObject(records)||!Object.entries(records).every(([id,r])=>validStoredRecord(r,id)))throw Error('Invalid patient repository');
+  return {records,error:null,serialized:raw};
+ }catch(error){return {records:{},error};}
+}
+function initializePatients(records){
+ for(const c of CASES){
+  if(!records[c.id])records[c.id]=makeInitial(c.id);
+  if(!records[c.id].a2Values)records[c.id].a2Values=deepCopy(records[c.id].assessment.values);
+  if(records[c.id].a2Dirty===undefined)records[c.id].a2Dirty=false;
+ }
+ return records;
+}
+function persistRepository(storage,key,state){
+ // Do not destroy unreadable or cross-patient records with a freshly initialized default.
+ if(state.error)throw state.error;
+ if(storage.getItem(key)!==state.serialized)throw Error('Storage changed in another tab; reload before saving');
+ const serialized=JSON.stringify(state.records);
+ storage.setItem(key,serialized);
+ state.serialized=serialized;
+}
+
+const $=s=>document.querySelector(s);
+const safe=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const dateTime=v=>v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+const roleLabel={NURSE:'작성 간호사',PHARMACIST:'약사',PHYSICIAN:'담당 의사',APPROVER:'지정 최종 승인자',system:'시스템'};
+const statusLabel={DRAFT:'초안 작성 중',REVIEW_REQUESTED:'의료진 검토 요청',CHANGES_REQUESTED:'보완 요청',APPROVED:'승인 완료',PUBLISHED:'발행 완료',REVOKED:'발행 철회'};
+const fileStore=new Map();
+const storage=(()=>{try{return localStorage}catch{return null}})();
+const normalState=loadRepository(storage,STORAGE_KEYS.normal),studyState=loadRepository(storage,STORAGE_KEYS.study);
+const repository=initializePatients(normalState.records),studyRepo=studyState.records;
+let practiceMode=false,priorContext=null,learningUnit='intro',learningHint=0,sourceTarget=null,learnFilter='';
+let selectedId=CASES[0].id,activeTab='plan',selectedDomain='function',role='NURSE',previewMode='draft',collapsed=false,previewCollapsed=true,screen='plan';
+let expandedPlanItems=new Set(['today']);
+try{previewCollapsed=localStorage.getItem('a3-preview-collapsed-v04')!=='0'}catch{}
+try{collapsed=localStorage.getItem('a3-rail-collapsed-v04')==='1'}catch{}
+let toastTimer;
+let bootstrapping=true;
+function currentStore(){return practiceMode?studyRepo:repository}
+function get(){return currentStore()[selectedId]}
+function validSource(id,type,target){return usableSource(findSource(id,selectedId,get().unlockedSources||[]),type,target,selectedId)}
+function save(){try{persistRepository(storage,practiceMode?STORAGE_KEYS.study:STORAGE_KEYS.normal,practiceMode?studyState:normalState);$('#save-state').textContent='저장됨'}catch{$('#save-state').textContent='저장 불가';if(!bootstrapping)announce('로컬 저장에 실패했습니다. 브라우저 저장 공간을 확인해 주세요.') }}
+function announce(message){const t=$('#toast');t.textContent=message;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},4200)}
+function docsAvailable(){return new Set([...fileStore.keys()])}
+function canEdit(){return !['PUBLISHED','REVOKED'].includes(get().draft.status)}
+function protectEdit(){if(!canEdit()){announce('발행된 계획은 편집할 수 없습니다. 새 버전 개정을 선택하세요.');return false}return true}
+function mutateBeforeEdit(){if(!protectEdit())return false;const d=get().draft;if(d.status==='APPROVED'||d.status==='REVIEW_REQUESTED'||d.status==='CHANGES_REQUESTED'){d.status='DRAFT';d.approval=null;audit(get(),role,'APPROVAL_INVALIDATED','계획 또는 문서 변경으로 재검토 필요')}return true}
+function permitted(section){if(role==='APPROVER')return true;if(['medication'].includes(section))return ['PHARMACIST','PHYSICIAN'].includes(role);if(['followup','warning'].includes(section))return role==='PHYSICIAN';return ['NURSE','PHYSICIAN'].includes(role)}
+function canResolve(domain){if(role==='APPROVER')return true;if(domain==='medication')return ['PHARMACIST','PHYSICIAN'].includes(role);if(domain==='medical')return role==='PHYSICIAN';return ['NURSE','PHYSICIAN'].includes(role)}
+function noBlock(){return blockers(get(),docsAvailable())}
+function viewTitle(){const d=get().draft,p=currentPublished(get());return p&&d.status==='PUBLISHED'?'발행 완료':d.status==='DRAFT'&&p?'새 버전 초안':statusLabel[d.status]||'계획 상태'}
+function renderGate(){const r=get(),blocked=noBlock(),p=currentPublished(r),isPublished=r.draft.status==='PUBLISHED';
+ const hard=blocked.length;let kind=hard?'':'good';if(isPublished)kind='issued';
+ const title=isPublished?'계획이 발행되었습니다':hard?`발행 전 해결할 사항 ${hard}건`:'발행 전 필수 확인사항 없음';
+ const brief=isPublished?'승인된 계획 및 이력을 확인할 수 있습니다.':hard?'눌러서 해결할 항목을 확인하세요.': '담당자 검토와 승인을 진행하세요.';
+ $('#gate-banner').className=`gate-banner ${kind}`;
+ $('#gate-banner').innerHTML=`<span class="gate-left"><span class="gate-icon" aria-hidden="true">${hard?'!':'✓'}</span><span><strong>${safe(title)}</strong><span class="gate-sub">${safe(brief)}</span></span></span><span class="gate-number">${isPublished?'이력 보기':hard?`${hard}건 확인`:'확인하기'}　→</span>`;
+ $('#gate-banner').setAttribute('aria-label',title+' · 상세 항목 보기');
+ $('#issue-count').textContent=r.draft.issues.filter(x=>x.status!=='RESOLVED').length||'';
+ $('#workflow-state').textContent=viewTitle();
+ $('#workflow-sub').textContent=p?`현재 발행본 v${p.snapshot.planVersion} · ${dateTime(p.snapshot.issuedAt)}`:'최근 수정 내용 저장됨';
+ $('#version-chip').textContent=`${viewTitle()} · v${r.draft.version}`;
+}
+
+function renderDomains(){const r=get();$('#assessment-stamp').textContent=`A2 평가 ${r.assessment.id} · 규칙 ${r.assessment.ruleVersion}`;$('#help-assessment-ref').textContent=`A2 평가 ${r.assessment.id} · 규칙 ${r.assessment.ruleVersion}`;
+ $('#domain-grid').innerHTML=r.assessment.domainResults.map((d,i)=>`<button class="domain ${selectedDomain===d.id?'selected':''}" data-domain="${d.id}" aria-pressed="${selectedDomain===d.id}"><div class="domain-top"><span class="domain-name">${safe(d.title)}</span><span class="domain-n">0${i+1}</span></div><div class="domain-meta"><span>필수 ${d.requiredDone}/${d.requiredTotal}</span><span class="grade ${d.status!=='READY'?'pending':d.grade===3?'priority':''}">${d.status==='CONFLICTING'?'상충':d.status==='UNKNOWN'?'미평가':d.grade+'등급'}</span></div></button>`).join('');
+}
+function sourceTitle(id){const s=findSource(id,selectedId,get().unlockedSources||[]);return s?s.title:'연결된 자료 없음'}
+function renderPlan(){const r=get(),d=r.draft,readonly=!canEdit();const approvedMessage=readonly?'발행 완료된 계획은 수정할 수 없습니다. 새 버전 개정을 사용하세요.':'';
+ $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>환자용 계획 편집</h3><p>환자가 해야 할 행동부터 작성합니다. 항목별 출처와 직종 검토를 확인하세요.</p></div><span class="subtle-count">${d.items.filter(x=>x.verified).length}/${d.items.length} 확인됨</span></div>${approvedMessage?`<p class="notice">${safe(approvedMessage)}</p>`:''}
+ ${d.items.map((item,i)=>`<details class="edit-card ${item.visibility==='INTERNAL'?'internal':''}" data-item="${safe(item.id)}" ${expandedPlanItems.has(item.id)?'open':''}><summary class="edit-title"><b>${String(i+1).padStart(2,'0')} · ${safe(item.title)}</b><span class="status-pill ${item.verified&&item.source?'green':'red'}">${item.verified&&item.source?'근거 확인됨':'확인 필요'}</span></summary><div class="edit-card-body">
+ <label for="text-${safe(item.id)}">환자에게 전달할 안내문</label><textarea class="edit-textarea" id="text-${safe(item.id)}" data-edit="text" ${readonly?'disabled':''}>${safe(item.text)}</textarea>
+ <div class="edit-meta"><div><label>관련 원천자료</label><div class="source-choose"><strong>${safe(sourceTitle(item.source))}</strong><span class="source-status">${item.source?(validSource(item.source,'item',item.section)?'확인 자료':'다시 확인 필요'):'미연결'}</span><button type="button" class="mini-button" data-action="select-source" data-source-kind="item" data-source-target="${safe(item.id)}" ${readonly?'disabled':''}>기록 선택</button>${item.source?`<button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(item.source)}">자료 보기</button>`:''}</div></div><div><label for="visibility-${safe(item.id)}">공개 범위</label><select data-edit="visibility" id="visibility-${safe(item.id)}" ${readonly?'disabled':''}><option value="PATIENT" ${item.visibility==='PATIENT'?'selected':''}>환자 공개</option><option value="INTERNAL" ${item.visibility==='INTERNAL'?'selected':''}>의료진 전용</option></select></div></div>
+ <div class="edit-actions"><label class="inline-check"><input type="checkbox" data-edit="verified" ${item.verified?'checked':''} ${readonly?'disabled':''}> 확인된 내용 (직종 권한 검증)</label><small class="help-text">${safe(DOMAINS.find(x=>x.id===SECTIONS.find(s=>s.id===item.section)?.domain)?.title||'담당자')} 검토</small></div></div></details>`).join('')}
+`;
+}
+function renderIssues(){const r=get(),issues=r.draft.issues,grade=r.assessment.domainResults.find(d=>d.id===selectedDomain),domain=DOMAINS.find(d=>d.id===selectedDomain),facts=grade?.facts||[];
+ $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>근거·미해결 사항</h3><p>자료의 출처를 확인하고 필요한 검토를 마무리하세요.</p></div><span class="subtle-count">${issues.filter(x=>x.status==='OPEN').length}건 미해결</span></div>
+ <div class="notice"><b>${safe(domain.title)} · 현재 평가</b> — ${grade.status==='READY'?`${grade.grade}등급`:(grade.status==='UNKNOWN'?'미평가':'상충')} / ${grade.requiredDone}·${grade.requiredTotal}개 필수 확인<br></div>
+ <details style="margin-bottom:17px"><summary class="help-text" style="cursor:pointer">${safe(domain.title)} 평가값 ${facts.length}개 보기</summary><div class="issue-card">${facts.map(x=>`<p>${safe(x.label)} · <b>${safe(x.value)}</b></p>`).join('')||'확인된 값 없음'}</div></details>
+ ${issues.length?issues.map(issue=>`<article class="issue-card ${issue.status==='RESOLVED'?'resolved':''}" data-issue="${safe(issue.id)}"><div class="issue-head"><strong>${safe(DOMAINS.find(x=>x.id===issue.domain)?.title)} · ${safe(issue.title)}</strong><span class="status-pill ${issue.status==='RESOLVED'?'green':'red'}">${issue.status==='RESOLVED'?'해결 기록됨':'HARD · 발행 보류'}</span></div><p>${safe(issue.reason)}</p>
+ ${issue.status==='RESOLVED'?`<div class="issue-line">근거: ${safe(issue.source)}<br>확인: ${safe(issue.resolution)}<br>확인 역할: ${safe(issue.reviewer)}</div>`:
+ `<div class="issue-form"><div><label>확인한 원천자료</label><div class="source-choose"><strong>${safe(sourceTitle(issue.source))}</strong><button type="button" class="mini-button" data-action="select-source" data-source-kind="issue" data-source-target="${safe(issue.id)}" ${!canEdit()?'disabled':''}>기록 선택</button>${issue.source?`<button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(issue.source)}">자료 보기</button>`:''}</div></div><div><label>해결 내용 및 확인 이유 (10자 이상)</label><textarea data-issue-edit="resolution" placeholder="어떤 기록을 확인하여 상충·누락이 해소됐는지 설명" ${!canEdit()?'disabled':''}>${safe(issue.resolution)}</textarea></div><div><button class="mini-button" data-action="resolve" ${!canEdit()?'disabled':''}>담당 역할로 확인·해결</button></div></div>`}</article>`).join(''):'<div class="empty">현재 A2 입력에서 생성된 별도 검토 이슈가 없습니다. 환자용 계획 항목의 근거도 추가로 확인해야 합니다.</div>'}`;
+}
+function renderDocs(){const d=get().draft;
+ $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>PDF·첨부 문서</h3><p>외부 PDF의 내용 검토와 계획서 인쇄/PDF 저장을 구분합니다.</p></div><span class="subtle-count">첨부 ${d.docs.length}건</span></div>
+ <div class="file-input"><label for="file-attach" style="font-weight:750;font-size:12px">PDF 첨부</label><input type="file" id="file-attach" accept=".pdf,application/pdf" ${!canEdit()?'disabled':''}><small class="help-text">PDF 파일만 첨부 · 최대 4MB</small></div>
+ ${d.docs.map(doc=>`<div class="doc-card" data-doc="${safe(doc.id)}"><div class="doc-title"><strong>▤ ${safe(doc.name)}</strong><span class="status-pill ${doc.status==='REVIEWED'?'green':'red'}">${doc.status==='REVIEWED'?'내용 검토됨':'검토 전'}</span></div><p class="help-text">${(doc.size/1024).toFixed(1)} KB · SHA-256 ${safe(doc.fileHash.slice(0,14))}… · ${fileStore.has(doc.id)?'현재 세션의 파일 사용 가능':'파일 다시 첨부 필요'}</p><div class="doc-settings"><label>공개 범위</label><select data-doc-edit="visibility" ${!canEdit()?'disabled':''}><option value="INTERNAL" ${doc.visibility==='INTERNAL'?'selected':''}>의료진 전용</option><option value="PATIENT" ${doc.visibility==='PATIENT'?'selected':''}>환자 공개</option></select><button class="mini-button" data-action="open-doc" ${!fileStore.has(doc.id)?'disabled':''}>PDF 보기</button><button class="mini-button" data-action="review-doc" ${!canEdit()?'disabled':''}>검토 확인</button><button class="mini-button" data-action="remove-doc" ${!canEdit()?'disabled':''}>제외</button></div></div>`).join('')||'<div class="empty">추가된 PDF가 없습니다.<br>환자 공개 파일은 최종 승인 전에 내용·버전을 확인해야 합니다.</div>'}
+ <div class="divider"></div><div class="pane-head"><div><h3>승인 계획 PDF 생성</h3><p>웹 미리보기와 동일한 계획 데이터를 인쇄용 문서로 구성합니다.</p></div></div><div class="button-row"><button class="btn outline" data-action="print-draft">검토용 계획서 출력</button><button class="btn primary" data-action="print-published" ${currentPublished(get())?'':'disabled'}>현재 발행본 PDF 저장</button></div>`;
+}
+function renderHistory(){const r=get(),d=r.draft,p=currentPublished(r);$('#work-pane').innerHTML=`<div class="pane-head"><div><h3>승인·발행 이력</h3><p>평가·계획 버전과 최종 승인자, 환자 공개 스냅샷을 구분합니다.</p></div><span class="subtle-count">감사 이벤트 ${r.audit.length}건</span></div>
+ <div class="edit-card"><div class="edit-title"><b>현재 계획</b><span class="status-pill ${d.status==='APPROVED'||d.status==='PUBLISHED'?'green':''}">${safe(viewTitle())}</span></div><p class="help-text">계획 버전: v${safe(d.version)}<br>연결된 A2: ${safe(r.assessment.id)} (${safe(r.assessment.ruleVersion)})<br>검토 요약: ${d.issues.filter(x=>x.status==='RESOLVED').length}건 해결 / ${d.issues.length}건 이슈<br>승인: ${d.approval?safe(d.approval.role)+' · '+dateTime(d.approval.at):'아직 없음'}<br>발행: ${p?'v'+safe(p.snapshot.planVersion)+' · '+dateTime(p.snapshot.issuedAt):'아직 없음'}</p></div>
+ <div class="edit-title"><b>버전별 발행 기록</b></div>${r.publications.length?r.publications.map(x=>`<div class="doc-card"><strong>v${safe(x.snapshot.planVersion)}</strong> <span class="status-pill ${x.status==='PUBLISHED'?'green':''}">${safe(x.status)}</span><p class="help-text">${dateTime(x.snapshot.issuedAt)} · 환자 공개 항목 ${x.snapshot.items.length}개 · 문서 ${x.snapshot.documents.length}개</p></div>`).join(''):'<div class="empty">아직 발행된 계획이 없습니다.</div>'}
+ <div class="divider"></div><div class="edit-title"><b>변경 이력</b></div><div class="audit-box timeline">${r.audit.map(ev=>`<div class="timeline-item"><strong>${safe(ev.event)} · ${safe(roleLabel[ev.role]||ev.role)}</strong><time>${dateTime(ev.at)}</time><div>${safe(ev.details)}</div></div>`).join('')}</div>`;
+}
+function previewItems(items,meta,isPublished=false){return `<div class="patient-mini-header"><div class="patient-logo">D.　퇴원 후, 나의 하루</div><h4>지금 필요한 일부터 모았어요.</h4><p>${safe(meta)}</p></div><div class="patient-mini-body">${items.length?items.map(item=>`<div class="patient-mini-card"><b>${safe(item.title)}</b><p>${safe(item.text)}</p><span class="patient-mini-tag">${isPublished?'의료진 검토 완료':'검토 중'}</span></div>`).join(''):'<div class="preview-empty">환자에게 공개할 계획 항목이 없습니다.</div>'}</div>`}
+function renderPreview(){const r=get(),p=currentPublished(r);const published=previewMode==='published'&&p;const items=published?p.snapshot.items:r.draft.items.filter(x=>x.visibility==='PATIENT');
+ $('#preview-mark').textContent=published?`발행 v${p.snapshot.planVersion}`:'편집 중';$('#preview-mark').classList.toggle('live',!!published);
+ $('#preview-frame').innerHTML=previewItems(items,published?`의료진 승인 · ${dateTime(p.snapshot.issuedAt)}`:'계획 초안',!!published);
+ $('#show-current').textContent=p?(published?'편집 중인 계획 보기':`현재 발행본 v${p.snapshot.planVersion} 보기`):'현재 발행본 없음';$('#show-current').disabled=!p;
+}
+function renderButtons(){const d=get().draft,p=currentPublished(get());for(const id of ['revise','request','return','approve','publish','revoke'])$('#'+id).hidden=true;
+ if(d.status==='PUBLISHED'){$('#revise').hidden=false;$('#revoke').hidden=false}
+ else if(d.status==='REVIEW_REQUESTED'){$('#return').hidden=false;$('#approve').hidden=false;$('#approve').disabled=!mayApprove(get(),role,docsAvailable());$('#return').disabled=role!=='APPROVER'}
+ else if(d.status==='APPROVED'){$('#publish').hidden=false;$('#publish').disabled=!mayPublish(get(),role,docsAvailable());}
+ else if(d.status==='DRAFT'||d.status==='CHANGES_REQUESTED'){$('#request').hidden=false;}
+ if(p&&d.status!=='PUBLISHED'){$('#revoke').hidden=false;$('#revoke').disabled=role!=='APPROVER'}
+}
+function render(){const c=CASES.find(x=>x.id===selectedId);$('#patient-name').textContent=`${c.name} · ${c.age}세`;
+ // A prior patient's print DOM must not survive navigation or plan edits.
+ $('#print-sheet').replaceChildren();
+ $('#patient-detail').textContent=`${c.id} · ${c.context} · 퇴원 예정 ${c.discharge}`;
+ $('#patient-select').value=selectedId;$('#actor').value=role;
+ renderGate();renderDomains();
+ renderAuxiliary();renderNav();applyPreviewLayout();
+ for(const b of document.querySelectorAll('[data-tab]'))b.setAttribute('aria-selected',String(b.dataset.tab===activeTab));
+ ({plan:renderPlan,issues:renderIssues,documents:renderDocs,history:renderHistory}[activeTab]||renderPlan)();renderPreview();renderButtons();
+}
+function updatePlan(target){const article=target.closest('[data-item]');if(!article)return;const item=get().draft.items.find(x=>x.id===article.dataset.item);if(!item)return;
+ const key=target.dataset.edit;
+ // Denied review action must not invalidate an existing approval.
+ if(key==='verified'&&target.checked&&!permitted(item.section)){announce('해당 항목을 확인할 권한이 없는 역할입니다.');render();return}
+ if(!mutateBeforeEdit())return;
+ if(key==='verified'){
+   if(target.checked){if(!validSource(item.source,'item',item.section)||!item.text.trim()){announce('해당 환자·항목과 일치하는 확인 자료 및 안내문이 필요합니다.');render();return}}
+   item.verified=target.checked;
+ }else if(key==='visibility'){item.visibility=target.value;item.verified=false;}
+ else if(key==='text'){item.text=target.value;item.verified=false;}
+ audit(get(),role,'PLAN_EDIT',`${item.title}: ${key} 변경`);save();render();
+}
+function updateIssue(target){const article=target.closest('[data-issue]');if(!article)return;const issue=get().draft.issues.find(x=>x.id===article.dataset.issue);if(!issue||!mutateBeforeEdit())return;issue[target.dataset.issueEdit]=target.value;save();/* deliberately no full render: preserve form typing */}
+function resolveIssue(target){const article=target.closest('[data-issue]'),issue=get().draft.issues.find(x=>x.id===article?.dataset.issue);if(!issue)return;
+ if(!canResolve(issue.domain)){announce('이 영역의 근거를 확인할 담당 권한이 없습니다.');return}
+ const source=issue.source||'',resolution=article.querySelector('[data-issue-edit="resolution"]')?.value.trim()||'';
+ if(!validSource(source,'issue',issue)||resolution.length<10){announce('해당 문제와 일치하는 확인 자료를 선택하고 해결 사유를 10자 이상 입력하세요.');return}
+ if(!mutateBeforeEdit())return;
+ issue.source=source;issue.resolution=resolution;issue.reviewer=roleLabel[role];issue.status='RESOLVED';audit(get(),role,'ISSUE_RESOLVED',`${issue.title} · ${source}`);save();render();announce('검토 해결 기록을 저장했습니다. 환자용 계획 내용도 별도로 확인해야 합니다.');
+}
+async function addDoc(file){if(!file||!protectEdit())return;
+ // Bind asynchronous reads/hashes to the initiating record and workspace.
+ const owner=get(),ownerStore=currentStore(),ownerRole=role;
+ if(file.size>4*1024*1024||file.size<5||!file.name.toLowerCase().endsWith('.pdf')){announce('4MB 이하의 PDF 파일만 첨부할 수 있습니다.');return}
+ const buffer=await file.arrayBuffer(); const magic=new TextDecoder().decode(buffer.slice(0,5));if(magic!=='%PDF-'){announce('PDF 형식의 파일이 아닙니다.');return}
+ if(!globalThis.crypto?.subtle){announce('이 브라우저 환경에서는 SHA-256을 사용할 수 없어 첨부를 보류합니다.');return}
+ const hashed=await crypto.subtle.digest('SHA-256',buffer);const hash=[...new Uint8Array(hashed)].map(b=>b.toString(16).padStart(2,'0')).join('');
+ if(get()!==owner||currentStore()!==ownerStore||role!==ownerRole){announce('작업 대상이 변경되어 첨부를 취소했습니다. 해당 환자에서 다시 첨부하세요.');return}
+ const existing=owner.draft.docs.find(doc=>doc.fileHash===hash&&doc.size===file.size&&doc.name===file.name);
+ if(existing){
+  // Exact bytes restore availability only; reviewed metadata and approval stay unchanged.
+  fileStore.set(existing.id,file);audit(owner,role,'PDF_RESTORED',file.name);save();render();announce('동일한 PDF 원본을 복원했습니다.');return;
+ }
+ if(!mutateBeforeEdit())return;
+ const id=`DOC-${Date.now()}-${Math.round(Math.random()*99999)}`;
+ fileStore.set(id,file);get().draft.docs.push({id,name:file.name,size:file.size,fileHash:hash,visibility:'INTERNAL',status:'REGISTERED',at:now()});
+ audit(get(),role,'PDF_ATTACHED',file.name+' · 임시 파일');save();render();announce('PDF를 첨부했습니다. 공개 전 검토 및 공개범위를 설정하세요.');
+}
+function docAction(action,button){const root=button.closest('[data-doc]');const id=root?.dataset.doc;const d=get().draft.docs.find(x=>x.id===id);if(!d)return;
+ if(action==='open-doc'){const file=fileStore.get(id);if(file){const url=URL.createObjectURL(file);const wnd=window.open(url,'_blank','noopener');if(!wnd)announce('브라우저에서 팝업이 차단되었습니다.');setTimeout(()=>URL.revokeObjectURL(url),60000)}return}
+ if(action==='review-doc'&&role!=='APPROVER'&&role!=='PHYSICIAN'){announce('PDF 검토 확인은 담당 의사 또는 최종 승인자 역할이 필요합니다.');return}
+ if(action==='review-doc'&&!fileStore.has(d.id)){announce('PDF 원본 파일이 현재 브라우저 세션에 없습니다.');return}
+ if(!mutateBeforeEdit())return;
+ if(action==='remove-doc'){get().draft.docs=get().draft.docs.filter(x=>x.id!==id);fileStore.delete(id);audit(get(),role,'PDF_REMOVED',d.name)}
+ if(action==='review-doc'){d.status='REVIEWED';audit(get(),role,'PDF_REVIEWED',d.name)}
+ save();render();
+}
+function buildPrint(snapshot,isDraft){const r=get(),c=CASES.find(c=>c.id===r.patientId),items=snapshot?.items||r.draft.items.filter(i=>i.visibility==='PATIENT');
+ const title=isDraft?'검토용 계획 초안 · 환자에게 발행되지 않음':`의료진 승인 계획 · v${snapshot.planVersion}`;
+ $('#print-sheet').innerHTML=`<div class="print-heading"><div style="font-weight:900;color:#214B3B">D.　퇴원 후, 나의 하루</div><h1>퇴원 후 관리계획</h1><div>${safe(c.name)} · ${safe(c.id)} · 퇴원예정 ${safe(c.discharge)}</div><p class="${isDraft?'print-watermark':''}">${safe(title)}</p></div>${items.map(i=>`<section><h2>${safe(i.title)}</h2><p>${safe(i.text)}</p></section>`).join('')}<div class="print-footer">${isDraft?'검토용 문서 · 발행 전':'계획 v'+safe(snapshot.planVersion)+' / 발행 '+safe(dateTime(snapshot.issuedAt))}</div>`;
+ window.print();
+}
+function requestReview(){if(!protectEdit())return;const d=get().draft;if(!['DRAFT','CHANGES_REQUESTED'].includes(d.status))return;d.status='REVIEW_REQUESTED';audit(get(),role,'REVIEW_REQUESTED','계획 검토 요청 (발행 게이트는 별도)');save();render();announce('의료진 검토를 요청했습니다. 핵심 미해결 사항이 있으면 승인은 차단됩니다.');}
+function returnReview(){const d=get().draft;if(d.status!=='REVIEW_REQUESTED'||role!=='APPROVER')return;d.status='CHANGES_REQUESTED';d.approval=null;audit(get(),role,'CHANGES_REQUESTED','최종 승인자가 보완 요청');save();render();announce('보완 요청 상태로 변경했습니다.');}
+function approve(){const r=get();if(!mayApprove(r,role,docsAvailable())){announce('권한 또는 발행 전 필수 검증 조건을 충족하지 못했습니다.');return}
+ const d=r.draft;if(!r.publications.length&&d.version==='0.1')d.version='1.0';d.status='APPROVED';d.approval={by:'SIM-APPROVER',role:roleLabel[role],at:now(),digest:fingerprint(r)};
+ audit(r,role,'APPROVED',`계획 v${d.version} 내용 고정 · fingerprint ${d.approval.digest}`);save();render();announce('승인이 완료되었습니다.');}
+function publish(){const r=get();if(!mayPublish(r,role,docsAvailable())){announce('승인 상태·첨부 원본·내용 일치 검증에 실패했습니다.');return}
+ const d=r.draft,p=currentPublished(r),snapshot=publishedPayload(r);
+ // Prototype publication: browser-local snapshot only. Real PDF generation/atomically saved PDF is NOT part of this demo.
+ if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}`,snapshot,status:'PUBLISHED'});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 실제 서버/환자 앱 연결 없음`);previewMode='published';save();render();announce('계획이 발행되었습니다.');}
+function revise(){if(get().draft.status!=='PUBLISHED')return;currentStore()[selectedId]=makeRevision(get());previewMode='draft';save();render();announce('새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
+function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
+ if(!confirm(`발행본 v${p.snapshot.planVersion}을 철회할까요?`))return;
+ p.status='REVOKED';if(r.draft.status==='PUBLISHED')r.draft.status='REVOKED';audit(r,role,'REVOKED',`발행본 v${p.snapshot.planVersion} 모의 철회`);previewMode='draft';save();render();announce('발행본을 철회했습니다.');}
+// Navigation and auxiliary clinical workspace are separate from the immutable A2 v0.5 baseline.
+function renderNav(){
+ $('#a3-screen').hidden=screen!=='plan';$('#aux-screen').hidden=screen==='plan';
+ for(const b of document.querySelectorAll('.rail-link[data-nav]')){
+  const active=b.dataset.nav===screen;
+  b.classList.toggle('active',active);
+  if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+ }
+ $('.breadcrumb b').textContent=screen==='plan'?'A3':screen==='assessment'?'A2':screen==='learn'?'학습':'환자용 미리보기';
+}
+function go(screenName){
+ screen=screenName;render();window.scrollTo({top:0,behavior:'instant'});
+}
+function choosePatient(id,destination='plan'){
+ if(!CASES.some(c=>c.id===id))return;
+ if(practiceMode)leavePractice();
+ selectedId=id;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);
+ $('#patient-dialog').close();go(destination);
+}
+function showPatientDialog(){
+ $('#patient-list').innerHTML=CASES.map(c=>{
+  const r=practiceMode&&studyRepo[c.id]?studyRepo[c.id]:repository[c.id];const unresolved=blockers(r,docsAvailable()).length;
+  return `<article class="patient-list-card ${c.id===selectedId?'current':''}"><div class="patient-list-main"><strong>${safe(c.name)} · ${c.age}세</strong><span>${safe(c.id)} · ${safe(c.context)}</span><small>퇴원 예정 ${safe(c.discharge)} · ${unresolved?`확인 필요 ${unresolved}건`:'검토 준비'}</small></div><div class="patient-list-actions"><button type="button" class="mini-button" data-patient-pick="${safe(c.id)}" data-target-screen="plan">계획 검토</button><button type="button" class="mini-button" data-patient-pick="${safe(c.id)}" data-target-screen="assessment">다영역 평가</button></div></article>`;
+ }).join('');$('#patient-dialog').showModal();
+}
+function applyPreviewLayout(){
+ $('#shell').classList.toggle('preview-collapsed',previewCollapsed);
+ $('#preview-toggle').textContent=previewCollapsed?'미리보기 펼치기':'미리보기 접기';
+ $('#preview-toggle').setAttribute('aria-expanded',String(!previewCollapsed));
+ $('#preview-pane').hidden=previewCollapsed;
+}
+function togglePreview(){previewCollapsed=!previewCollapsed;try{localStorage.setItem('a3-preview-collapsed-v04',previewCollapsed?'1':'0')}catch{}applyPreviewLayout()}
+function renderAuxiliary(){
+ if(screen==='plan')return;
+ if(screen==='learn'){renderLearning();return;}
+ const root=$('#aux-screen'),r=get(),c=CASES.find(x=>x.id===selectedId);
+ if(screen==='patient-preview'){
+  const live=currentPublished(r),isLive=previewMode==='published'&&live;
+  const items=isLive?live.snapshot.items:r.draft.items.filter(x=>x.visibility==='PATIENT');
+  root.innerHTML=`<div class="aux-heading"><div><p class="eyebrow">B · 환자용 미리보기</p><h1>환자에게 보이는 계획</h1><p>${safe(c.name)} · ${safe(c.id)} · ${isLive?`발행 v${safe(live.snapshot.planVersion)}`:'편집 중인 계획'}</p></div><div class="aux-actions"><button class="btn outline" id="back-to-plan">계획 검토로 돌아가기</button>${live?`<button class="btn outline" id="aux-switch-preview">${isLive?'편집본 보기':'발행본 보기'}</button>`:''}</div></div><div class="full-patient-preview">${previewItems(items,isLive?'발행된 계획':'계획 초안',isLive)}</div>`;
+  return;
+ }
+ const domains=evaluateA2({...c,values:r.a2Values});
+ const done=domains.reduce((n,d)=>n+d.requiredDone,0);
+ root.innerHTML=`<div class="aux-heading"><div><p class="eyebrow">A2 · 다영역 평가</p><h1>퇴원 후 관리 필요도 평가</h1><p>${safe(c.name)} · ${safe(c.id)} · 필수 ${done}/18개 확인</p></div><div class="aux-actions"><button class="btn outline" id="back-to-plan">계획 검토로 돌아가기</button><button class="btn primary" id="handoff-a2" ${r.a2Dirty?'':'disabled'}>변경된 평가 A3로 인계</button></div></div>
+ <div class="a2-migration-note">${r.a2Dirty?'변경된 평가가 있습니다. 인계하기 전까지 기존 계획은 유지됩니다.':'현재 평가가 계획에 반영되어 있습니다.'}</div>
+ <nav class="a2-domains" id="a2-domain-tabs" aria-label="평가영역 선택">${domains.map((d,i)=>`<button type="button" data-a2-domain="${safe(d.id)}" class="a2-domain-btn ${selectedDomain===d.id?'selected':''}"><span>${String(i+1).padStart(2,'0')} · ${safe(d.title)}</span><b>${d.status==='READY'?d.grade+'등급':d.status==='CONFLICTING'?'상충':'미평가'}</b></button>`).join('')}</nav>
+ <div class="a2-work-layout"><section class="a2-input-panel"><div class="pane-head"><h2>${safe(DOMAINS.find(d=>d.id===selectedDomain).title)}</h2><span class="status-pill">영역별 입력</span></div>${DOMAINS.find(d=>d.id===selectedDomain).fields.map(([id,label,required,options],i)=>{
+ const v=r.a2Values[selectedDomain]?.[id]??'';
+ return `<div class="a2-field"><label for="a2-field-${safe(id)}"><span>${i+1}. ${safe(label)}</span>${required?'<small>필수</small>':''}</label><select id="a2-field-${safe(id)}" data-a2-field="${safe(id)}"><option value="" ${v===''?'selected':''}>미확인 · 자료 없음</option><option value="CONFLICT" ${v==='CONFLICT'?'selected':''}>상충 · 자료 간 불일치</option>${options.map(([value,text])=>`<option value="${safe(value)}" ${v===value?'selected':''}>${safe(text)}</option>`).join('')}</select></div>`;
+ }).join('')}</section><aside class="a2-judgment-panel"><h2>판단과 우선 확인사항</h2>${(()=>{const d=domains.find(x=>x.id===selectedDomain);return `<div class="a2-big-grade">${d.status==='READY'?d.grade+'등급':d.status==='CONFLICTING'?'상충 · 보류':'미평가'}</div><p>${d.missing.length?`미확인: ${safe(d.missing.join(', '))}`:d.conflicting.length?`상충: ${safe(d.conflicting.join(', '))}`:'입력된 근거를 확인하세요.'}</p><h3>현재 입력 근거</h3>${d.facts.map(x=>`<div class="a2-fact"><b>${safe(x.label)}</b><span>${safe(x.value)}</span></div>`).join('')}`})()}</aside></div>`;
+}
+function handoffAssessment(){
+ const r=get();if(!r.a2Dirty)return;
+ if(r.draft.status==='PUBLISHED'||r.draft.status==='REVOKED'){
+  announce('발행된 계획은 변경할 수 없습니다. 새 버전 개정 후 평가를 인계하세요.');return;
+ }
+ if(!confirm('현재 A2 평가 변경을 계획에 반영할까요? 검토 해결 기록과 항목 확인 상태를 다시 검토하게 됩니다.'))return;
+ const c=CASES.find(x=>x.id===selectedId),timestamp=now(),vals=deepCopy(r.a2Values);
+ r.assessment={id:`AS-${selectedId}-${Date.now()}`,ruleVersion:'v0.1',capturedAt:timestamp,values:vals,domainResults:evaluateA2({...c,values:vals})};
+ const issues=issuesFromValues(vals);
+ if(selectedId==='SYN-001')issues.push({id:'ISS-plan-med-original',domain:'medication',title:'환자용 복약 안내의 확인된 원문',reason:'복약 정보에 대한 확인된 원천자료가 필요합니다.',status:'OPEN',source:'',resolution:'',reviewer:''});
+ r.draft.issues=issues;
+ for(const item of r.draft.items)item.verified=false;
+ r.draft.status='DRAFT';r.draft.approval=null;r.a2Dirty=false;
+ audit(r,role,'ASSESSMENT_IMPORTED','변경된 평가를 A3 계획에 인계, 항목 재검토 필요');save();activeTab='issues';go('plan');announce('새 평가가 인계되었습니다. 항목을 다시 확인하세요.');
+}
+function showBlockers(){
+ const r=get(),problems=blockers(r,docsAvailable());
+ $('#blockers-description').textContent=problems.length?'항목을 선택하면 해당 위치로 이동합니다.':'현재 해결해야 할 차단 항목이 없습니다.';
+ const groupText={evidence:'근거·미해결',plan:'계획 편집',docs:'PDF·첨부'};
+ $('#blockers-list').innerHTML=problems.length?problems.map((b,i)=>`<button type="button" class="blocker-jump" data-blocker-id="${safe(b.id)}"><span class="blocker-index">${String(i+1).padStart(2,'0')}</span><span><b>${safe(b.label)}</b><small>${safe(groupText[b.group]||'검토')}</small></span><span aria-hidden="true">↗</span></button>`).join(''):'<div class="empty">필수 검토사항이 모두 해결되었습니다.</div>';
+ $('#blockers-dialog').showModal();
+}
+function jumpToBlocker(id){
+ const b=blockers(get(),docsAvailable()).find(x=>x.id===id);if(!b)return;
+ $('#blockers-dialog').close();
+ if(id==='assessment-dirty'){go('assessment');$('#handoff-a2')?.focus();return;}
+ screen='plan';
+ activeTab=b.group==='evidence'?'issues':b.group==='docs'?'documents':'plan';
+ render();
+ let locator;
+ if(b.group==='evidence')locator=[...document.querySelectorAll('[data-issue]')].find(el=>el.dataset.issue===id);
+ else if(b.group==='docs')locator=[...document.querySelectorAll('[data-doc]')].find(el=>id.endsWith(el.dataset.doc));
+ else if(id.startsWith('section-'))locator=[...document.querySelectorAll('[data-item]')].find(el=>el.dataset.item===id.slice('section-'.length));
+ else locator=[...document.querySelectorAll('[data-item]')].find(el=>id.includes(el.dataset.item));
+ if(locator){if(locator.matches('details[data-item]')){locator.open=true;expandedPlanItems.add(locator.dataset.item)}locator.classList.add('jump-highlight');locator.scrollIntoView({behavior:'instant',block:'center'});const input=locator.querySelector('textarea,input,select,button');if(input)input.focus({preventScroll:true});}
+ else $('#work-pane').scrollIntoView({behavior:'instant',block:'start'});
+}
+
+// v0.3: mock evidence picker with source/role validation, no EMR or external data connection.
+function openSourceDialog(kind,target=null,viewId=null,patientOverride=null){
+ sourceTarget={kind,target};
+ const canChoose=kind==='item'||kind==='issue';
+ $('#source-dialog-title').textContent=viewId?'원천자료 상세':'관련 원천자료 선택';
+ $('#source-dialog-description').textContent=viewId?'원천자료 요약과 연결 관계를 확인하세요.':'기록 제목과 확인 상태를 살펴본 뒤 해당 업무에 맞는 자료를 선택하세요.';
+ const sourcePatient=patientOverride||selectedId;
+ const all=recordsForPatient(sourcePatient,sourcePatient===selectedId?(get().unlockedSources||[]):[]);
+ const sources=viewId?all.filter(s=>s.id===viewId):all;
+ $('#source-list').innerHTML=sources.length?sources.map(rec=>{
+  const valid=canChoose&&validSource(rec.id,kind,kind==='issue'?get().draft.issues.find(i=>i.id===target):get().draft.items.find(i=>i.id===target)?.section);
+  const status={CONFIRMED:'확인됨',PENDING:'추가 확인',CONFLICTING:'상충',LOCKED:'회신 대기'}[rec.verificationStatus]||'자료 확인';
+  return `<article class="source-card ${valid?'':'no-use'}"><div class="source-card-actions"><h3>${safe(rec.title)}</h3><span class="source-flag">${status}</span></div><p>${safe(rec.summary)}</p><p>${safe(rec.detail)}</p><small>분야 ${safe(DOMAINS.find(d=>d.id===rec.domain)?.title||rec.domain)} · 기준 ${safe(rec.observedAt)} · 연결 ${safe(rec.fieldRefs.join(', '))}</small><details><summary class="learn-copy" style="cursor:pointer;margin-top:8px">기록 식별·기술 정보 보기</summary><p class="learn-copy">${safe(rec.id)} · ${safe(rec.encounterId)} · 문서 v${safe(rec.documentVersion)}</p></details><div class="source-card-actions">${rec.exampleFile?`<a class="mini-button" href="${safe(rec.exampleFile)}" target="_blank" rel="noopener noreferrer">예시 PDF 열기 ↗</a>`:''}${canChoose?`<button type="button" class="mini-button" data-connect-source="${safe(rec.id)}" ${valid?'':'disabled'}>${valid?'이 근거 연결':'확인·대상 불일치'}</button>`:''}${rec.verificationStatus==='LOCKED'&&practiceMode&&selectedId==='SYN-003'?`<button type="button" class="mini-button" data-unlock-source="${safe(rec.id)}">가상 담당자 회신 받기</button>`:''}</div></article>`;
+ }).join(''):'<p class="empty">연결된 원천자료를 찾지 못했습니다.</p>';
+ $('#source-dialog').showModal();
+}
+function selectSource(id){
+ const {kind,target}=sourceTarget||{};
+ if(!['item','issue'].includes(kind))return;
+ const r=get(),entry=kind==='item'?r.draft.items.find(i=>i.id===target):r.draft.issues.find(i=>i.id===target);
+ if(!entry||!validSource(id,kind,kind==='item'?entry.section:entry)){announce('해당 환자 또는 검토 항목과 일치하지 않는 자료입니다.');return;}
+ if(!mutateBeforeEdit())return;
+ entry.source=id;
+ if(kind==='item')entry.verified=false;
+ else{entry.status='OPEN';entry.reviewer='';}
+ audit(r,role,'EVIDENCE_LINKED',`${kind==='item'?entry.title:entry.title}: ${id}`);
+ save();$('#source-dialog').close();render();announce('자료가 연결되었습니다. 담당 역할로 검토를 완료해야 합니다.');
+}
+function unlockSource(id){
+ if(!practiceMode||selectedId!=='SYN-003'||!id.endsWith('MED-C'))return;
+ if(!get().unlockedSources.includes(id))get().unlockedSources.push(id);
+ audit(get(),role,'SYNTHETIC_REPLY_RECEIVED','약료 담당자의 가상 회신을 수신');save();
+ $('#source-dialog').close();render();announce('가상 확인 회신을 받았습니다. A2 평가도 직접 수정하고 인계하세요.');
+}
+const LEARN_TABS=[['intro','01 · 시작하기'],['screen','02 · 화면 읽기'],['source','03 · 원천자료'],['practice','04 · 케이스 실습'],['terms','05 · 용어·FAQ']];
+const FAQ=[
+ ['A2의 0~3등급','퇴원 위험도나 퇴원 허가 점수가 아닌 자체 업무 검토 우선도입니다. 결측·상충은 0점으로 대체하지 않습니다.'],
+ ['원천자료와 자료 ID','환자별 기록을 구분하는 식별자입니다. 사용자는 자료 제목으로 선택하고 ID는 상세에서 확인하면 됩니다.'],
+ ['미평가와 상충','미평가는 필수정보 부족, 상충은 서로 맞지 않는 기록이 있어 판단을 보류하는 상태입니다.'],
+ ['스냅샷','그 시점의 A2 입력·결과 또는 승인된 공개 계획을 고정하여 남긴 기록입니다.'],
+ ['검토 완료','자료 연결만으로 검토가 끝나지 않습니다. 담당 역할로 환자에게 제공할 내용을 확인해야 합니다.'],
+ ['승인과 발행','지정 최종 승인자가 내용을 확인한 후, 별도의 발행 동작으로 환자에게 공개될 스냅샷을 생성합니다.'],
+ ['발행 전 해결사항','원천자료 미해결, 확인되지 않은 환자 안내, 공개 PDF 미검토 등 핵심 사유가 하나라도 있으면 전체 발행이 보류됩니다.'],
+ ['발행본·개정·철회','발행된 계획은 그대로 보존됩니다. 수정하려면 새 버전을 만들고 승인해야 하며, 철회본은 현재 유효한 안내가 아닙니다.'],
+ ['PDF 첨부와 생성','첨부 PDF는 세션 메모리에 존재하므로 새로고침 후 원본이 없어질 수 있습니다. 인쇄/PDF 저장은 서버의 PDF 영구 저장이나 원자적 발행이 아닙니다.'],
+ ['실습과 실제 의료업무','모든 사례는 합성 데이터이며 역할 선택은 모의 권한입니다. 임상적 의사결정·실환자 인증·실제 처방 변경이나 기관 전송이 구현된 것은 아닙니다.'],
+ ['공적 통합돌봄과 6영역','A2 자체 6개 평가영역은 공적 통합돌봄 선별 6문항과 별개입니다. 지자체 지원 확정은 병원 계획 승인과 같지 않습니다.']
+];
+function learningStatusFor(id){
+ const r=practiceMode&&selectedId===id?get():studyRepo[id];
+ if(!r)return '시작 전';
+ if(id==='SYN-004'&&r.publications.filter(p=>p.status==='PUBLISHED'||p.status==='SUPERSEDED').length>=2)return '실습 완료';
+ if(id==='SYN-003'&&r.draft.status==='PUBLISHED'&&blockers(r,docsAvailable()).length===0)return '실습 완료';
+ if(['SYN-001','SYN-002'].includes(id)&&r.draft.status==='PUBLISHED'&&blockers(r,docsAvailable()).length===0)return '실습 완료';
+ return '진행 중';
+}
+function renderLearning(){
+ const root=$('#aux-screen');const count=Object.keys(studyRepo).length;
+ const card=(title,body,action)=>`<div class="learning-card"><h3>${title}</h3><p>${body}</p>${action}</div>`;
+ let content='';
+ if(learningUnit==='intro') content=`<section class="learning-panel"><div class="learning-kicker">L01 · 시작하기</div><h2>퇴원 후 관리계획, 이렇게 연결돼요</h2><p>환자의 관리 필요도를 확인하고, 담당 의료진이 근거를 검토한 뒤 환자에게 필요한 계획만 발행하는 흐름입니다. 각 단계를 눌러 실제 화면으로 이동할 수 있어요.</p><div class="learning-flow">${[['A1','환자 선택','patients'],['A2','평가 입력·인계','assessment'],['A3','계획 검토·발행','plan'],['B','환자 화면','patient-preview']].map(([id,t,target])=>`<button data-learn-go="${target}">${id}<small>${t}</small></button>`).join('')}</div></section><section class="learning-panel"><h3>1분 실습 안내</h3><p>처음이라면 SYN-002부터 시작하세요. 계획을 읽고, 검토 요청 후 담당 역할을 최종 승인자로 바꿔 승인·발행하는 순서를 직접 경험할 수 있습니다.</p><button class="btn primary" data-study-start="SYN-002">쉬운 실습 시작 →</button></section>`;
+ else if(learningUnit==='screen') content=`<section class="learning-panel"><div class="learning-kicker">L02 · 화면 읽기</div><h2>무엇부터 봐야 할까요?</h2><div class="learning-cards">${card('환자 정보','지금 선택한 환자와 입원 건을 확인합니다.','<button class="mini-button" data-learn-go="plan">위치 보기</button>')}${card('발행 전 해결할 사항','숫자를 선택하면 어떤 작업이 남았는지 확인하고 그곳으로 이동할 수 있습니다.','<button class="mini-button" data-learn-go="blockers">확인사항 열기</button>')}${card('A2 6영역','평가 등급은 업무 검토 우선도이고 발행 가능 여부와는 별개입니다.','<button class="mini-button" data-learn-go="assessment">평가 열기</button>')}${card('계획 편집·근거','환자 안내와 원천자료를 연결하고 담당자의 확인을 기록합니다.','<button class="mini-button" data-learn-go="plan">편집으로 이동</button>')}${card('PDF·첨부','자료를 첨부한 뒤 검토·공개 범위를 따로 확인해야 합니다.','<button class="mini-button" data-learn-go="documents">첨부 화면 보기</button>')}${card('승인·발행·이력','역할에 따라 검토 요청, 승인, 발행과 개정·철회를 구분합니다.','<button class="mini-button" data-learn-go="history">이력으로 이동</button>')}</div></section>`;
+ else if(learningUnit==='source') content=`<section class="learning-panel"><div class="learning-kicker">L03 · 원천자료 이해</div><h2>원천자료를 읽고 연결하기</h2><p>자료 ID를 기억할 필요는 없습니다. 제목으로 내용을 확인하고, 해당 환자·항목에 맞는 자료를 선택하세요. 연결만으로 검토가 끝나지는 않습니다.</p><div class="learning-cards">${CASES.map(c=>card(`${safe(c.name)} · ${safe(c.id)}`,`${recordsForPatient(c.id).length}개 가상 원천자료 · ${safe(c.context)}`,`<button class="mini-button" data-learn-source-patient="${c.id}">자료 목록 보기</button>`)).join('')}</div></section><section class="learning-panel"><h3>상충된 기록의 예시</h3><p>SYN-003에는 상충하는 퇴원약 목록 A/B와 잠긴 담당자 회신 C가 있어요. 어느 하나를 임의로 선택해서 해결 완료하면 안 됩니다. 담당자 회신을 받은 다음 A2 자료도 수정하여 인계해야 합니다.</p><button class="mini-button" data-study-start="SYN-003">상충 실습 시작</button></section>`;
+ else if(learningUnit==='practice') content=`<section class="learning-panel"><div class="learning-kicker">L04 · 직접 해보기</div><h2>케이스별로 실제 조작해 보세요</h2><p>실습 시작 시 별도의 사본을 사용합니다. 일반 작성 이력은 수정되지 않으며, 다른 화면을 다녀와도 실습 상태를 보존합니다.</p><div class="learning-cards">${CASES.map(c=>{const m=CASE_MISSIONS[c.id];return card(`${safe(c.id)} · ${safe(m.title)} <span class="source-flag">${safe(m.difficulty)}</span>`,`${safe(m.description)}<br><b>상태: ${learningStatusFor(c.id)}</b>`,`<button class="mini-button" data-study-start="${c.id}">${studyRepo[c.id]?'처음부터 다시 실습':'실습 시작'}</button><button class="mini-button" data-study-resume="${c.id}" ${studyRepo[c.id]?'':'disabled'}>이어하기</button>`)}).join('')}</div></section>${practiceMode?`<section class="learning-panel"><h3>현재 실습: ${safe(selectedId)} · ${safe(CASE_MISSIONS[selectedId].title)}</h3>${CASE_MISSIONS[selectedId].steps.map((t,i)=>`<div class="learn-task ${i===0?'completed':''}">${String(i+1).padStart(2,'0')} · ${safe(t)}</div>`).join('')}<p>현재 상태: <b>${learningStatusFor(selectedId)}</b> · 발행 전 확인 ${blockers(get(),docsAvailable()).length}건</p><button class="mini-button" data-learn-go="plan">현재 실습 계속</button><button class="mini-button" data-learn-hint="1">단계별 힌트</button><p class="learn-copy" id="learn-hint-text"></p></section>`:''}`;
+ else content=`<section class="learning-panel"><div class="learning-kicker">L05 · 용어 및 FAQ</div><h2>헷갈리는 개념 찾아보기</h2><label for="learn-search">설명 검색</label><input id="learn-search" type="search" value="${safe(learnFilter)}" placeholder="예: 스냅샷, 승인, 상충" style="width:100%;padding:12px;margin:10px 0 18px;border:1px solid var(--line);border-radius:9px"><div class="learn-faq">${FAQ.filter(([a,b])=>(a+b).includes(learnFilter)).map(([a,b])=>`<details><summary>${safe(a)}</summary><p>${safe(b)}</p></details>`).join('')||'<p>일치하는 설명이 없습니다.</p>'}</div></section>`;
+ root.innerHTML=`<header class="learning-head"><p class="eyebrow">학습 · 가상 사례로 이해하기</p><h1>설명과 실습</h1><p>업무 흐름을 배우고, 실제 화면에서 직접 확인해 보세요.</p></header>${practiceMode?`<div class="study-banner"><strong>실습 모드 · ${safe(selectedId)} · ${safe(CASE_MISSIONS[selectedId].title)}</strong><div><button class="mini-button" data-learn-go="plan">실습 계속</button><button class="mini-button" data-study-leave="1">일반 작업으로 돌아가기</button></div></div>`:''}<div class="learning-layout"><nav class="learning-nav" aria-label="학습 단원">${LEARN_TABS.map(([id,title])=>`<button data-learn-unit="${id}" class="${id===learningUnit?'active':''}" aria-current="${id===learningUnit?'page':'false'}">${title}</button>`).join('')}</nav><div class="learning-body">${content}</div></div>`;
+}
+function startPractice(id,reset=true){
+ if(!CASES.some(c=>c.id===id))return;
+ if(!practiceMode){priorContext={selectedId,activeTab,selectedDomain,previewMode,screen,previewCollapsed};}
+ if(reset||!studyRepo[id])studyRepo[id]=makeInitial(id);
+ practiceMode=true;selectedId=id;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);
+ save();go('plan');announce('독립 학습 사본을 열었습니다. 일반 작업 기록은 보존됩니다.');
+}
+function leavePractice(){
+ if(!practiceMode)return;
+ practiceMode=false;
+ const previous=priorContext||{selectedId:'SYN-001',activeTab:'plan',selectedDomain:'function',previewMode:'draft',screen:'learn',previewCollapsed:true};
+ selectedId=previous.selectedId;activeTab=previous.activeTab;selectedDomain=previous.selectedDomain;previewMode=previous.previewMode;previewCollapsed=previous.previewCollapsed;
+ priorContext=null;save();go(previous.screen||'learn');
+ announce('일반 작업으로 돌아왔습니다. 실습 기록은 별도로 보관됩니다.');
+}
+function learnNavigate(target){
+ if(target==='blockers'){go('plan');showBlockers();return}
+ if(['documents','history','issues'].includes(target)){activeTab=target;go('plan');return}
+ if(target==='patients'){showPatientDialog();return}
+ go(target);
+}
+
+// Root event handlers
+$('#patient-select').innerHTML=CASES.map(c=>`<option value="${c.id}">${safe(c.name)} · ${c.id}</option>`).join('');
+$('#patient-select').addEventListener('change',e=>{const patientId=e.target.value;if(practiceMode)leavePractice();selectedId=patientId;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);render()});
+$('#actor').addEventListener('change',e=>{role=e.target.value;render()});
+$('#domain-grid').addEventListener('click',e=>{const button=e.target.closest('[data-domain]');if(!button)return;selectedDomain=button.dataset.domain;activeTab='issues';render()});
+$('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;activeTab=b.dataset.tab;render()});
+$('#work-pane').addEventListener('change',e=>{
+ if(e.target.matches('[data-edit]'))updatePlan(e.target);
+ if(e.target.matches('[data-issue-edit]'))updateIssue(e.target);
+ if(e.target.matches('[data-doc-edit]')){const doc=get().draft.docs.find(d=>d.id===e.target.closest('[data-doc]')?.dataset.doc);if(doc&&mutateBeforeEdit()){doc.visibility=e.target.value;doc.status='REGISTERED';audit(get(),role,'PDF_SCOPE_CHANGED',`${doc.name}: ${doc.visibility}`);save();render()}}
+ if(e.target.id==='file-attach')addDoc(e.target.files?.[0]);
+});
+$('#work-pane').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;
+ if(a==='resolve')resolveIssue(b);
+ if(['open-doc','review-doc','remove-doc'].includes(a))docAction(a,b);
+ if(a==='select-source')openSourceDialog(b.dataset.sourceKind,b.dataset.sourceTarget);
+ if(a==='view-source')openSourceDialog('view',null,b.dataset.sourceId);
+ if(a==='print-draft')buildPrint(null,true);
+ if(a==='print-published'){const p=currentPublished(get());if(p)buildPrint(p.snapshot,false)}
+});
+$('#show-current').addEventListener('click',()=>{if(!currentPublished(get()))return;previewMode=previewMode==='published'?'draft':'published';renderPreview()});
+$('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#revoke').addEventListener('click',revoke);
+$('#reset').addEventListener('click',()=>{if(!confirm(`현재 ${selectedId}의 작성 내용과 이력을 초기화할까요?`))return;const currentDocIds=new Set(get()?.draft?.docs?.map(d=>d.id)||[]);currentStore()[selectedId]=makeInitial(selectedId);for(const key of currentDocIds)fileStore.delete(key);activeTab='plan';previewMode='draft';expandedPlanItems=new Set(['today']);save();render();announce('작성 내용을 초기화했습니다.')});
+function toggleRail(flag){collapsed=flag;$('#shell').classList.toggle('rail-collapsed',collapsed);$('#rail-toggle').setAttribute('aria-expanded',String(!collapsed));$('#rail-toggle').setAttribute('aria-label',collapsed?'사이드바 펼치기':'사이드바 접기');$('#rail-toggle').title=collapsed?'사이드바 펼치기':'사이드바 접기';try{localStorage.setItem('a3-rail-collapsed-v04',collapsed?'1':'0')}catch{}}
+$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;
+
+// A1, A2 and standalone patient preview are navigable local screens; no A2 baseline files are mutated.
+document.querySelectorAll('.rail-link[data-nav]').forEach(button=>button.addEventListener('click',()=>{
+ const target=button.dataset.nav;if(target==='patients')showPatientDialog();else go(target);
+}));
+$('#top-help').addEventListener('click',()=>$('#help-dialog').showModal());
+$('#help-dialog').addEventListener('click',e=>{if(e.target.closest('[data-open-learning]')){$('#help-dialog').close();learningUnit='intro';go('learn')}});
+$('#gate-banner').addEventListener('click',()=>{if(get().draft.status==='PUBLISHED'&&!noBlock().length){activeTab='history';go('plan')}else showBlockers()});
+$('#patient-list').addEventListener('click',e=>{const b=e.target.closest('[data-patient-pick]');if(b)choosePatient(b.dataset.patientPick,b.dataset.targetScreen)});
+document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.closeDialog).close()));
+$('#blockers-list').addEventListener('click',e=>{const b=e.target.closest('[data-blocker-id]');if(b)jumpToBlocker(b.dataset.blockerId)});
+$('#preview-toggle').addEventListener('click',togglePreview);
+$('#open-preview-page').addEventListener('click',()=>go('patient-preview'));
+$('#aux-screen').addEventListener('click',e=>{
+ const domain=e.target.closest('[data-a2-domain]');if(domain){selectedDomain=domain.dataset.a2Domain;renderAuxiliary();return}
+ if(e.target.closest('#back-to-plan'))go('plan');
+ if(e.target.closest('#handoff-a2'))handoffAssessment();
+ if(e.target.closest('#aux-switch-preview')){previewMode=previewMode==='published'?'draft':'published';renderAuxiliary()}
+});
+$('#aux-screen').addEventListener('change',e=>{
+ const input=e.target.closest('[data-a2-field]');if(!input)return;
+ get().a2Values[selectedDomain][input.dataset.a2Field]=input.value||null;
+ get().a2Dirty=true;save();renderAuxiliary();
+});
+
+
+$('#source-list').addEventListener('click',e=>{
+ const c=e.target.closest('[data-connect-source]');if(c){selectSource(c.dataset.connectSource);return}
+ const u=e.target.closest('[data-unlock-source]');if(u)unlockSource(u.dataset.unlockSource);
+});
+$('#aux-screen').addEventListener('click',e=>{
+ const unit=e.target.closest('[data-learn-unit]');if(unit){learningUnit=unit.dataset.learnUnit;renderLearning();return}
+ const start=e.target.closest('[data-study-start]');if(start){startPractice(start.dataset.studyStart,true);return}
+ const resume=e.target.closest('[data-study-resume]');if(resume){startPractice(resume.dataset.studyResume,false);return}
+ if(e.target.closest('[data-study-leave]')){leavePractice();return}
+ const nav=e.target.closest('[data-learn-go]');if(nav){learnNavigate(nav.dataset.learnGo);return}
+ const src=e.target.closest('[data-learn-source-patient]');if(src){openSourceDialog('learn',null,null,src.dataset.learnSourcePatient);return}
+ if(e.target.closest('[data-learn-hint]')){
+  learningHint++;const instructions=CASE_MISSIONS[selectedId].steps;
+  const tips=['먼저 발행 전 확인사항에서 남은 항목을 살펴보세요.',`관련 케이스의 첫 목표: ${instructions[0]}`,`실행 순서: ${instructions.join(' → ')}`];
+  const dest=$('#learn-hint-text');if(dest)dest.textContent=tips[Math.min(learningHint-1,tips.length-1)];
+ }
+});
+$('#aux-screen').addEventListener('input',e=>{
+ if(e.target.id!=='learn-search')return;
+ learnFilter=e.target.value;
+ const container=$('.learn-faq');if(!container)return;
+ container.innerHTML=FAQ.filter(([a,b])=>(a+b).includes(learnFilter)).map(([a,b])=>`<details><summary>${safe(a)}</summary><p>${safe(b)}</p></details>`).join('')||'<p>일치하는 설명이 없습니다.</p>';
+});
+
+$('#work-pane').addEventListener('toggle',e=>{const details=e.target.closest('details[data-item]');if(!details)return;if(details.open)expandedPlanItems.add(details.dataset.item);else expandedPlanItems.delete(details.dataset.item)},true);
+
+</script></body></html>

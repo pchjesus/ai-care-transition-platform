@@ -1,0 +1,7 @@
+{"width": 1440, "status": "PASS", "sidebar": "collapsible", "overflow": false, "errors": []}
+{"width": 1024, "status": "PASS", "sidebar": "collapsible", "overflow": false, "errors": []}
+{"width": 801, "status": "PASS", "sidebar": "collapsible", "overflow": false, "errors": []}
+{"width": 800, "status": "PASS", "sidebar": "top nav", "overflow": false, "errors": []}
+{"width": 390, "status": "PASS", "sidebar": "top nav", "overflow": false, "errors": []}
+{"width": 320, "status": "PASS", "sidebar": "top nav", "overflow": false, "errors": []}
+Responsive resize preserves collapsed rail and mobile nav PASS
