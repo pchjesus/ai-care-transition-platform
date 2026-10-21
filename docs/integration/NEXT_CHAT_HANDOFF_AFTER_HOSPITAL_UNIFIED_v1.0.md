@@ -25,7 +25,7 @@
 - 통합 소스는 `gh-pages:prototypes/integrated-v10/`에 SHA 그대로 배치하여 상대 경로를 보존. 비교에 필요한 독립 A2는 `gh-pages:prototypes/hospital-a2/`에 보존.
 - 환자용 웹앱은 `gh-pages:patient/index.html` 원본 v1.3 단독 HTML 그대로; Git blob `c57089c7bc2a3ea01a756b8cf0f618a643b176eb` 유지.
 - **배포 정적 검사:** `gh-pages` 파일 53개 존재, 참조된 상대경로 58건(19개 HTML/JS/CSS 파일) 검증, 누락 0건, 원본 환자용 blob 동일.
-- **중요:** Pages가 활성화되어 있다는 GitHub 저장소 플래그 `has_pages: true`는 확인했으나 **실제 공개 주소의 HTTP 접속은 현 실행 환경에서 DNS 실패로 NOT VERIFIED**. 사용자가 직접 URL 열기, Pages Settings → Build and deployment → `gh-pages`/`(root)` 및 Actions 배포 성공 여부 확인 필요. 실제 운영 화면 PASS를 과장하지 않는다.
+- **배포 결과:** GitHub Actions의 [pages build and deployment 실행 #39609108741](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/39609108741)은 배포 SHA `2cfb5efd` 대상으로 **completed / success**. 다만 **실제 공개 주소의 HTTP 접속은 현 실행 환경에서 DNS 실패로 NOT VERIFIED**. 사용자가 직접 URL 열기, Pages Settings → Build and deployment → `gh-pages`/`(root)` 및 Actions 배포 성공 여부 확인 필요. 실제 운영 화면 PASS를 과장하지 않는다.
 - 정적 배포 이후 실제 사용자 조작·실제 PDF·모바일 UI를 GitHub Pages에서 재확인 필요.
 
 ## 3. 아직 미구현 / 남은 제한
