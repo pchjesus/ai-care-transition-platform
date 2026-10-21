@@ -6,10 +6,7 @@
 - No real patient data, medical institution credentials, external back-end or AI clinical predictions.
 
 ## Publishing
-The branch alone does not automatically enable Pages. Repository administrator:
-Settings → Pages → Build and deployment: Deploy from a branch → `gh-pages` → `/(root)` → Save.
-Expected project site address after successful build: `https://pchjesus.github.io/ai-care-transition-platform/`.
-Until GitHub reports build success, do not say it is live.
+Repository metadata now reports `has_pages: true` after creating the `gh-pages` branch, but successful public HTTP delivery has **not** been independently confirmed. Expected address: `https://pchjesus.github.io/ai-care-transition-platform/`. If it does not load, check **Settings → Pages → Build and deployment**, choose **Deploy from a branch**, **`gh-pages`**, **`/(root)`**, then Save and inspect deployment status. Do not claim the site is live until an external HTTP check succeeds.
 
 ## Isolation
 Deployment assets are copied as existing Git blob objects from the reviewed branches; no implementation repository source paths were modified. `gh-pages` contains only required static runtime files and synthetic example PDFs.
