@@ -214,7 +214,7 @@ function renderNav(){
  $('.breadcrumb b').textContent=screen==='plan'?'A3':screen==='assessment'?'A2':screen==='learn'?'학습':'환자용 미리보기';
 }
 function go(screenName){
- if(screenName==='assessment'&&!practiceMode){
+ if(screenName==='assessment'&&!practiceMode&&selectedId!=='SYN-004'){
   window.location.assign('../a2/index.html?patient='+encodeURIComponent(selectedId));
   return;
  }
