@@ -66,3 +66,5 @@ PASS/FAIL/NOT RUN은 아래처럼 구분한다. 원본 실패를 후보의 통�
 ## 전달 상태
 
 Git HTTPS 브랜치 푸시는 가능하지만 `api.github.com` 연결은 환경 프록시가 HTTP 403으로 차단한다. Draft PR 생성은 별도 실제 명령 결과에 따라 보고하며, 생성되지 않았다면 PR 번호/주소를 만들지 않는다. PR 본문은 `PR_BODY.md`에 보존한다. `main`에 직접 푸시하거나 병합하지 않는다.
+
+실제 전달 결과: 개발 브랜치 푸시 성공. `gh pr create --repo pchjesus/ai-care-transition-platform --base main --head codex/hospital-workbench-refactor --draft --title 'fix(hospital): preserve A3 baseline and harden v0.4 review workflow' --body-file docs/hospital-refactor/PR_BODY.md`는 `Post "https://api.github.com/graphql": Forbidden`으로 실패했다. 이는 실행환경의 API 프록시 차단으로, Git 브랜치 쓰기 실패와 구분한다. 생성된 PR은 없다. GitHub가 반환한 PR 생성 경로는 https://github.com/pchjesus/ai-care-transition-platform/pull/new/codex/hospital-workbench-refactor 이며, 환경에서 API 접근이 복구되면 위 명령으로 Draft PR 생성을 재시도할 수 있다.
