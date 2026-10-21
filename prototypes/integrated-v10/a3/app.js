@@ -7,6 +7,7 @@ import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprin
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
 import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
 import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
+import {encounterFor} from '../shared/publication.js';
 const $=s=>document.querySelector(s);
 const safe=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const dateTime=v=>v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
@@ -225,7 +226,7 @@ function publish(){const r=get();if(!mayPublish(r,role,docsAvailable())){announc
  const before=deepCopy(r);
  const d=r.draft,p=currentPublished(r),snapshot=publishedPayload(r);
  // Prototype publication: browser-local snapshot only. Real PDF generation/atomically saved PDF is NOT part of this demo.
- if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}`,snapshot,status:'PUBLISHED'});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 실제 서버/환자 앱 연결 없음`);if(!saveWorkflow(before))return;previewMode='published';render();announce('계획이 발행되었습니다.');}
+ if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}-${Math.floor(Math.random()*1e9)}`,snapshot,status:'PUBLISHED',encounterId:encounterFor(r.patientId),assessmentId:r.assessment.id,approvedAt:d.approval.at});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 동일 브라우저의 합성 환자용 B에서 확인 가능`);if(!saveWorkflow(before))return;previewMode='published';render();announce('계획이 발행되었습니다.');}
 function revise(){if(get().draft.status!=='PUBLISHED')return;const before=deepCopy(get());currentStore()[selectedId]=makeRevision(get());if(!saveWorkflow(before))return;previewMode='draft';render();announce('새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
 function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
  if(!confirm(`발행본 v${p.snapshot.planVersion}을 철회할까요?`))return;
@@ -490,6 +491,7 @@ document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEvent
 $('#blockers-list').addEventListener('click',e=>{const b=e.target.closest('[data-blocker-id]');if(b)jumpToBlocker(b.dataset.blockerId)});
 $('#preview-toggle').addEventListener('click',togglePreview);
 $('#open-preview-page').addEventListener('click',()=>go('patient-preview'));
+$('#open-patient-b').addEventListener('click',()=>{if(practiceMode){announce('실습 사본은 환자 앱에 공개되지 않습니다.');return;}const url=new URL('../patient/index.html',location.href);url.searchParams.set('patient',selectedId);url.searchParams.set('encounter',encounterFor(selectedId));window.location.assign(url.href);});
 $('#aux-screen').addEventListener('click',e=>{
  const pick=e.target.closest('[data-patient-pick]');if(pick){choosePatient(pick.dataset.patientPick,pick.dataset.targetScreen);return;}
  if(e.target.closest('[data-open-assessment]')){go('assessment');return;}
