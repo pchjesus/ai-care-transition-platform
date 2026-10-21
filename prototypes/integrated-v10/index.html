@@ -1,13 +1,8 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>퇴원 전환관리 시작 화면으로 이동</title></head><body><p>통합 워크벤치로 이동합니다. <a id="redirect-link" href="../../index.html">직접 열기</a></p><script>
-const dest=new URL("../../index.html",location.href);
-for(const [key,value] of new URLSearchParams(location.search)){
- if(!['patient','handoff','screen','mode'].includes(key))continue;
- if(key==='patient' && !/^(SYN-00[1-4]|[012])$/.test(value))continue;
- if(key==='handoff' && !/^SYN-00[1-4]$/.test(value))continue;
- if(key==='screen' && !['patients','assessment','plan','patient-preview','compare','learn'].includes(value))continue;
- if(key==='mode' && value!=='study')continue;
- dest.searchParams.set(key,value);
-}
-document.getElementById('redirect-link').href=dest.href;
-location.replace(dest.href);
-</script></body></html>
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>병원용 통합 워크벤치 v1.0 | 퇴원관리 시연</title><style>
+:root{font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;color:#1e4637;background:#edf2ee}
+body{max-width:760px;margin:0 auto;padding:48px 20px}main{background:white;border:1px solid #d5e1d9;border-radius:22px;padding:32px;box-shadow:0 12px 40px #163a2614}
+h1{font-size:clamp(26px,4vw,37px);letter-spacing:-.04em}p{line-height:1.8;color:#4e6358}
+nav{display:grid;gap:12px;margin:25px 0}a.card{display:block;text-decoration:none;color:#194633;padding:18px;border:1px solid #bed5c6;border-radius:13px;background:#f6faf7}a.card:hover,a.card:focus{border-color:#44765c}a.card span{display:block;font-size:13px;margin-top:4px;color:#53685d}
+small{color:#657d70}
+</style><link rel="icon" href="data:,"></head><body><main><small>HOSPITAL UNIFIED WORKBENCH / v1.0 · SYNTHETIC DEMO</small><h1>병원용 통합 워크벤치</h1><p>합성 환자의 평가를 작성하고, 명시적으로 인계해 A3에서 다시 검토할 수 있어요. <strong>승인이나 발행을 자동으로 진행하지 않습니다.</strong></p><nav><a class="card" href="./a3/index.html?screen=patients">A1 · 환자 목록<span>환자를 선택하고 평가·계획 검토를 시작하세요.</span></a><a class="card" href="./a2/index.html">① A2 · 6영역 평가 <span>공통 화면에서 평가하고 변경된 평가를 A3에 반영하세요.</span></a><a class="card" href="./a3/index.html">② A3 · 계획 검토 <span>대기 중인 인계를 명시적으로 확인하고 기존 승인·발행 과정을 진행하세요.</span></a><a class="card" href="./a3/index.html?screen=patient-preview">환자용 시연 미리보기<span>A3 내부 시연이며 독립 환자 앱과 연결하지 않습니다.</span></a><a class="card" href="./a3/index.html?screen=compare">원본·통합 화면 비교</a><a class="card" href="./patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">환자용 B · SYN-002 발행 연계<span>A3에서 승인·발행 후 열면 현재 유효한 계획만 표시합니다.</span></a></nav><p><small>※ 로컬 HTTP 동일 출처에서만 작동하며, 별도 브라우저 저장키를 사용합니다. 환자용 B는 A3가 발행한 동일 환자·입원건의 합성 계획을 표시합니다. 실제 의료정보·병원 서버·AI 임상 판단에 사용하지 마세요.</small></p></main></body></html>

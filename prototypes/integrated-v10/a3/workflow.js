@@ -71,12 +71,13 @@ export function publishedPayload(record){
  documents:deepCopy(record.draft.docs.filter(d=>d.visibility==='PATIENT').map(({id,name})=>({id,name}))),issuedAt:now()};
 }
 export function makeRevision(record){
- const p=currentPublished(record);if(!p)throw Error('No active publication');
+ const p=currentPublished(record)||(record.draft.status==='REVOKED'?record.publications.find(p=>p.status==='REVOKED'):null);if(!p||!['PUBLISHED','REVOKED'].includes(record.draft.status))throw Error('No publication available for revision');
  const clone=deepCopy(record); const prev=p.snapshot.planVersion.split('.');
  clone.draft.version=`${Number(prev[0])+1}.0`;
  clone.draft.status='DRAFT';clone.draft.approval=null;clone.draft.updatedAt=now();
  clone.draft.issues=deepCopy(record.draft.issues); // Preserve review evidence and unresolved gates.
  for(const item of clone.draft.items)item.verified=false; // Every new published version requires review.
- audit(clone,'system','REVISION_START',`새 초안 ${clone.draft.version}, 기존 발행 ${p.snapshot.planVersion} 유지`);
+ for(const doc of clone.draft.docs)if(doc.visibility==='PATIENT')doc.status='REGISTERED';
+ audit(clone,'system','REVISION_START',`새 초안 ${clone.draft.version}, 기존 ${p.status==='REVOKED'?'철회 기록':'발행'} ${p.snapshot.planVersion} 유지`);
  return clone;
 }

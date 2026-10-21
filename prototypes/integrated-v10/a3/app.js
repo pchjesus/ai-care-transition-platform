@@ -1,3 +1,4 @@
+import {stagePublishedDocuments} from '../shared/published-documents.js';
 import {chooseAction,TIER_LABELS} from '../a2/engine.js';
 import {editEvaluation,commitEvaluation} from '../shared/evaluation-edit.js';
 import {DOMAINS as ENGINE_DOMAINS,SOURCES} from '../a2/data.js';
@@ -7,6 +8,7 @@ import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprin
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
 import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
 import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
+import {encounterFor,projectCurrentPublication} from '../shared/publication.js';
 const $=s=>document.querySelector(s);
 const safe=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const dateTime=v=>v?new Date(v).toLocaleString('ko-KR',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
@@ -147,7 +149,9 @@ function renderPreview(){const r=get(),p=currentPublished(r);const published=pre
  $('#show-current').textContent=p?(published?'편집 중인 계획 보기':`현재 발행본 v${p.snapshot.planVersion} 보기`):'현재 발행본 없음';$('#show-current').disabled=!p;
 }
 function renderButtons(){const d=get().draft,p=currentPublished(get());for(const id of ['revise','request','return','approve','publish','revoke'])$('#'+id).hidden=true;
- if(d.status==='PUBLISHED'){$('#revise').hidden=false;$('#revoke').hidden=false}
+ $('#revise').textContent=d.status==='REVOKED'?'철회 후 새 버전 작성':'새 버전 개정';
+ if(d.status==='REVOKED'){$('#revise').hidden=false;}
+ else if(d.status==='PUBLISHED'){$('#revise').hidden=false;$('#revoke').hidden=false}
  else if(d.status==='REVIEW_REQUESTED'){$('#return').hidden=false;$('#approve').hidden=false;$('#approve').disabled=!mayApprove(get(),role,docsAvailable());$('#return').disabled=role!=='APPROVER'}
  else if(d.status==='APPROVED'){$('#publish').hidden=false;$('#publish').disabled=!mayPublish(get(),role,docsAvailable());}
  else if(d.status==='DRAFT'||d.status==='CHANGES_REQUESTED'){$('#request').hidden=false;}
@@ -221,12 +225,26 @@ function approve(){const r=get();if(!mayApprove(r,role,docsAvailable())){announc
  const before=deepCopy(r);
  const d=r.draft;if(!r.publications.length&&d.version==='0.1')d.version='1.0';d.status='APPROVED';d.approval={by:'SIM-APPROVER',role:roleLabel[role],at:now(),digest:fingerprint(r)};
  audit(r,role,'APPROVED',`계획 v${d.version} 내용 고정 · fingerprint ${d.approval.digest}`);if(!saveWorkflow(before))return;render();announce('승인이 완료되었습니다.');}
-function publish(){const r=get();if(!mayPublish(r,role,docsAvailable())){announce('승인 상태·첨부 원본·내용 일치 검증에 실패했습니다.');return}
- const before=deepCopy(r);
- const d=r.draft,p=currentPublished(r),snapshot=publishedPayload(r);
- // Prototype publication: browser-local snapshot only. Real PDF generation/atomically saved PDF is NOT part of this demo.
- if(p)p.status='SUPERSEDED';r.publications.unshift({id:`PUB-${Date.now()}`,snapshot,status:'PUBLISHED'});d.status='PUBLISHED';audit(r,role,'PUBLISHED',`모의 공개 v${d.version} · 실제 서버/환자 앱 연결 없음`);if(!saveWorkflow(before))return;previewMode='published';render();announce('계획이 발행되었습니다.');}
-function revise(){if(get().draft.status!=='PUBLISHED')return;const before=deepCopy(get());currentStore()[selectedId]=makeRevision(get());if(!saveWorkflow(before))return;previewMode='draft';render();announce('새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
+async function publish(){
+ const button=$('#publish');if(button.hasAttribute('aria-busy'))return;
+ const r=get();if(!mayPublish(r,role,docsAvailable())){announce('승인 상태·첨부 원본·내용 일치 검증에 실패했습니다.');return;}
+ const originalDigest=fingerprint(r),originalMode=practiceMode,owner=selectedId,serialized=(practiceMode?studyState:normalState).serialized;
+ const publication={id:`PUB-${crypto.randomUUID()}`,snapshot:publishedPayload(r),status:'PUBLISHED',encounterId:encounterFor(r.patientId),assessmentId:r.assessment.id,approvedAt:r.draft.approval.at};
+ button.setAttribute('aria-busy','true');button.disabled=true;
+ try{
+  if((r.encounterId&&r.encounterId!==publication.encounterId)||(r.assessment.encounterId&&r.assessment.encounterId!==publication.encounterId))throw Error('현재 환자의 입원건과 평가 입원건이 일치하지 않습니다.');
+  const before=deepCopy(r),next=deepCopy(r),previous=currentPublished(next);
+  if(previous)previous.status='SUPERSEDED';next.encounterId=publication.encounterId;next.publications.unshift(publication);next.draft.status='PUBLISHED';
+  if(!projectCurrentPublication({[owner]:next},owner,publication.encounterId))throw Error('환자용 공개 항목의 개수·길이·발행 정보를 확인하세요.');
+  if(!practiceMode&&r.draft.docs.some(d=>d.visibility==='PATIENT'))publication.documentManifest=await stagePublishedDocuments(deepCopy(r),publication,new Map(fileStore));
+  if(get()!==r||selectedId!==owner||practiceMode!==originalMode||fingerprint(r)!==originalDigest||!mayPublish(r,role,docsAvailable())||storage.getItem(practiceMode?STORAGE_KEYS.study:STORAGE_KEYS.normal)!==serialized)throw Error('발행 준비 중 환자·자료·저장 상태가 변경됐습니다. 새로고침 후 다시 확인하세요.');
+  audit(next,role,'PUBLISHED','모의 공개 v'+next.draft.version+' · 승인 PDF와 동일 브라우저 B에서 확인 가능');
+  currentStore()[owner]=next;
+  if(!saveWorkflow(before))return;previewMode='published';render();announce('계획이 발행되었습니다.');
+ }catch(error){announce('발행하지 못했습니다: '+error.message);}
+ finally{button.removeAttribute('aria-busy');renderButtons();}
+}
+function revise(){if(!['PUBLISHED','REVOKED'].includes(get().draft.status))return;const before=deepCopy(get());try{currentStore()[selectedId]=makeRevision(get());}catch(error){announce(error.message);return;}if(!saveWorkflow(before))return;previewMode='draft';render();announce(before.draft.status==='REVOKED'?'철회 기록을 유지하고 새 초안을 만들었습니다. 재검토·승인·발행 전에는 공개하지 않습니다.':'새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
 function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
  if(!confirm(`발행본 v${p.snapshot.planVersion}을 철회할까요?`))return;
  const before=deepCopy(r);
@@ -490,6 +508,7 @@ document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEvent
 $('#blockers-list').addEventListener('click',e=>{const b=e.target.closest('[data-blocker-id]');if(b)jumpToBlocker(b.dataset.blockerId)});
 $('#preview-toggle').addEventListener('click',togglePreview);
 $('#open-preview-page').addEventListener('click',()=>go('patient-preview'));
+$('#open-patient-b').addEventListener('click',()=>{if(practiceMode){announce('실습 사본은 환자 앱에 공개되지 않습니다.');return;}const url=new URL('../patient/index.html',location.href);url.searchParams.set('patient',selectedId);url.searchParams.set('encounter',encounterFor(selectedId));window.location.assign(url.href);});
 $('#aux-screen').addEventListener('click',e=>{
  const pick=e.target.closest('[data-patient-pick]');if(pick){choosePatient(pick.dataset.patientPick,pick.dataset.targetScreen);return;}
  if(e.target.closest('[data-open-assessment]')){go('assessment');return;}
