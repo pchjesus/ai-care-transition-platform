@@ -2,6 +2,7 @@
 // This is not an authentication or server authorization boundary.
 import {STORAGE_KEYS,loadRepository} from '../a3/storage.js';
 
+export const PUBLICATION_STORAGE_KEY=STORAGE_KEYS.normal;
 export const ENCOUNTERS=Object.freeze({
  'SYN-001':'ENC-SYN-001-DEMO',
  'SYN-002':'ENC-SYN-002-DEMO',
