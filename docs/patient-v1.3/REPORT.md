@@ -92,3 +92,5 @@
 코드·테스트·보고서를 개발 브랜치에 커밋·푸시하고 Draft PR 생성 명령을 실행한다. GitHub API는 현재 환경 프록시에서 403으로 차단되어 있으며, 실제 PR 생성 결과를 별도로 기록한다. 생성되지 않은 PR 번호/주소를 제시하지 않는다. PR 본문은 [PR_BODY.md](PR_BODY.md)에 보존한다. `main` 직접 수정·병합·배포는 하지 않는다.
 
 기타 확인: 새 코드의 Git 공백 검사는 검토했으며, v1.2 CSS의 빈 줄에 있던 두 칸 공백과 이를 포함하는 생성 HTML 두 곳의 경고는 원본 CSS 바이트 보존을 위해 그대로 두었다. 기능/빌드 실패를 무시한 것이 아니며 테스트의 FAIL/NOT RUN과 구분한다.
+
+최종 전달 결과: `codex/patient-v1.3` 브랜치 푸시 성공. `gh pr create --repo pchjesus/ai-care-transition-platform --base main --head codex/patient-v1.3 --draft --title 'fix(patient): stabilize v1.3 storage, state and PDF workflows' --body-file docs/patient-v1.3/PR_BODY.md`는 `Post "https://api.github.com/graphql": Forbidden`으로 실패했다. Git 브랜치 쓰기는 가능하나 API 프록시 접근이 차단된 상태이며 생성된 PR은 없다. GitHub가 반환한 생성 경로: https://github.com/pchjesus/ai-care-transition-platform/pull/new/codex/patient-v1.3 . API 접근이 가능한 환경에서는 위 명령으로 Draft PR 생성을 재시도할 수 있다.
