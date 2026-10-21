@@ -6,7 +6,7 @@
 
 의료진이 가상 퇴원정보에서 계획 초안을 작성·검토·승인하면, 환자·보호자에게 이해하기 쉬운 행동 중심 안내를 제공하는 **B2B2C 사업 가설**을 검증합니다. 병원 및 지자체의 공식 진료·지원계획과 제품의 연구용 평가·안내는 명확히 구분합니다.
 
-**현재 한계:** 실제 의료기관 제휴/유료 고객/실환자정보/임상 성능 검증은 없으며, 아직 MVP 코드·Firebase·실제 연계망이 구현된 상태가 아닙니다. 공개 저장소는 연구·기획 문서만 보유합니다.
+**현재 한계:** 실제 의료기관 제휴/유료 고객/실환자정보/임상 성능 검증은 없으며, 병원용 A2는 가상 데이터로 작동하는 연구용 **평가 워크벤치 목업**을 포함하지만, Firebase·실제 병원 연계·실환자 인증·임상 예측모델은 구현되지 않았습니다. 환자용 시안은 이 저장소에 통합 배포하지 않았습니다.
 
 ## 현재 기준 문서 (ACTIVE DRAFT)
 
@@ -33,6 +33,14 @@
 - [기존 MVP PRD v0.1](docs/MVP_PRD_DRAFT_v0.1.md)
 - [병원 중심 업무·서식·데이터 계약 v0.2](docs/MVP_WORKFLOW_AND_DATA_CONTRACT_DRAFT_v0.2.md)
 - [기존 발표 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
+
+## 병원용 A2 평가 워크벤치 (디자인 승인 기준선 v0.5, 2026-10-21)
+
+- [A2 목업 실행 — 독립 HTML](prototypes/hospital-a2/preview.html) · [모듈 소스](prototypes/hospital-a2/index.html)
+- [README/실행·테스트 안내](prototypes/hospital-a2/README.md) · [빠른 사용 설명서](prototypes/hospital-a2/QUICK_GUIDE_A2_v0.5.md)
+- [디자인·검증 기록](prototypes/hospital-a2/DESIGN_REVIEW_v0.5.md) · [다음 채팅 인수인계](prototypes/hospital-a2/NEXT_CHAT_HANDOFF.md)
+- 포함: 6개 관리 필요도 영역·30개 입력 후보·가상 환자 3명·규칙기반 업무 검토등급. **정식 임상 위험예측/진단/퇴원 허가 기준 아님.**
+- A1·A3는 목업 내 미리보기 단계. 의료진 실제 승인/환자 앱 발행/기관 전송은 미구현. 운영·임상 검증과 기능 승인은 별개입니다.
 
 ## 운영·안전 원칙
 
