@@ -1,0 +1,11 @@
+/* Only integrated B navigation and safe multi-line A3 content; base v1.3 stylesheet unchanged. */
+.connected-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:calc(16px * var(--font-scale,1));color:#334f44;margin-top:12px}
+.connected-controls{display:flex;gap:5px;align-items:center;flex-wrap:nowrap}
+.connected-controls .top-font{min-width:43px;padding:8px 10px}
+.topline{height:auto;min-height:77px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.topline .meta{flex-wrap:wrap;justify-content:flex-end}
+.profile-section+.profile-section{margin-top:14px}
+.document-unavailable+.document-unavailable{margin-top:10px}
+.event{margin-top:16px}
+@media(max-width:1023px){.topline{padding-left:22px;padding-right:22px}.main{padding-left:25px;padding-right:25px}}
+@media(max-width:600px){.topline{gap:7px;align-items:flex-start}.topline .meta{width:100%;justify-content:flex-start;gap:6px}.connected-controls{width:auto}.connected-controls .top-font,.topline .top-font{min-height:42px}.main{padding-left:18px;padding-right:18px}.connected-text{font-size:calc(15px * var(--font-scale,1))}}
