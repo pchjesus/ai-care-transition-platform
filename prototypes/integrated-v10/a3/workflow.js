@@ -1,22 +1,9 @@
+import {evaluateForReview} from '../shared/assessment-adapter.js';
 import {DOMAINS, CASES, SECTIONS} from './data.js';
 import {findSource,usableSource} from './source-library.js';
 export const deepCopy=x=>structuredClone(x);
 export const now=()=>new Date().toISOString();
-export function evaluateA2(caseData){
- return DOMAINS.map(domain=>{
-   let known=0,peak=0;const missing=[],conflicting=[],facts=[];
-   for(const [id,label,required,options] of domain.fields){
-     const v=caseData.values?.[domain.id]?.[id];
-     if(v==='CONFLICT'){conflicting.push(label);continue;}
-     const match=options.find(o=>o[0]===v);
-     if(!match){if(required)missing.push(label);continue;}
-     if(required)known++;
-     peak=Math.max(peak,match[2]);facts.push({id,label,value:match[1],tier:match[2],required:!!required,raw:v});
-   }
-   if(domain.id==='social'&&caseData.values.social.caregiver==='none'&&caseData.values.social.housing==='barrier'&&caseData.values.social.travel==='unavailable')peak=3;
-   return {id:domain.id,title:domain.title,status:conflicting.length?'CONFLICTING':missing.length?'UNKNOWN':'READY',grade:missing.length||conflicting.length?null:peak,provisionalGrade:peak,requiredDone:known,requiredTotal:3,missing,conflicting,facts};
- });
-}
+export const evaluateA2=caseData=>evaluateForReview(caseData.values);
 export function issuesFromValues(values){
  const issues=[];
  for(const domain of DOMAINS){for(const [id,label,required,options] of domain.fields){

@@ -1,0 +1,500 @@
+{
+  "SYN-002": {
+    "schema": 2,
+    "unlockedSources": [],
+    "patientId": "SYN-002",
+    "a2Values": {
+      "medical": {
+        "followup": "confirmed",
+        "condition": "reviewed",
+        "warningGuide": "approved",
+        "testResults": "none",
+        "complexity": "ordinary"
+      },
+      "nursing": {
+        "selfCare": "independent",
+        "wound": "notNeeded",
+        "education": "documented",
+        "careDevice": "none",
+        "symptomMonitoring": "notNeeded"
+      },
+      "medication": {
+        "reconciliation": "complete",
+        "medUnderstanding": "confirmed",
+        "administration": "independent",
+        "access": "secured",
+        "changes": "none"
+      },
+      "function": {
+        "gait": "independent",
+        "transfer": "independent",
+        "adl": "independent",
+        "iadl": "independent",
+        "assistDevice": "notNeeded"
+      },
+      "social": {
+        "caregiver": "available",
+        "housing": "accessible",
+        "travel": "available",
+        "living": "withSupport",
+        "cost": "noBarrier"
+      },
+      "continuity": {
+        "appointment": "confirmed",
+        "contact": "documented",
+        "dischargeEducation": "completed",
+        "referral": "notNeeded",
+        "consent": "notApplicable"
+      }
+    },
+    "a2Dirty": false,
+    "assessment": {
+      "id": "AS-SYN-002-001",
+      "ruleVersion": "v0.1",
+      "capturedAt": "2026-10-21T12:32:08.624Z",
+      "values": {
+        "medical": {
+          "followup": "confirmed",
+          "condition": "reviewed",
+          "warningGuide": "approved",
+          "testResults": "none",
+          "complexity": "ordinary"
+        },
+        "nursing": {
+          "selfCare": "independent",
+          "wound": "notNeeded",
+          "education": "documented",
+          "careDevice": "none",
+          "symptomMonitoring": "notNeeded"
+        },
+        "medication": {
+          "reconciliation": "complete",
+          "medUnderstanding": "confirmed",
+          "administration": "independent",
+          "access": "secured",
+          "changes": "none"
+        },
+        "function": {
+          "gait": "independent",
+          "transfer": "independent",
+          "adl": "independent",
+          "iadl": "independent",
+          "assistDevice": "notNeeded"
+        },
+        "social": {
+          "caregiver": "available",
+          "housing": "accessible",
+          "travel": "available",
+          "living": "withSupport",
+          "cost": "noBarrier"
+        },
+        "continuity": {
+          "appointment": "confirmed",
+          "contact": "documented",
+          "dischargeEducation": "completed",
+          "referral": "notNeeded",
+          "consent": "notApplicable"
+        }
+      },
+      "domainResults": [
+        {
+          "id": "medical",
+          "title": "의료",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "followup",
+              "label": "퇴원 후 외래·추적 계획",
+              "value": "확정됨",
+              "tier": 0,
+              "required": true,
+              "raw": "confirmed"
+            },
+            {
+              "id": "condition",
+              "label": "퇴원 직전 상태 관련 검토",
+              "value": "담당의 확인 완료",
+              "tier": 0,
+              "required": true,
+              "raw": "reviewed"
+            },
+            {
+              "id": "warningGuide",
+              "label": "문제 발생 시 안내·문의처",
+              "value": "안내 승인됨",
+              "tier": 0,
+              "required": true,
+              "raw": "approved"
+            },
+            {
+              "id": "testResults",
+              "label": "남아 있는 검사·결과 확인",
+              "value": "미결과 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "none"
+            },
+            {
+              "id": "complexity",
+              "label": "동반질환·추적진료 조정",
+              "value": "추가 조정 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "ordinary"
+            }
+          ]
+        },
+        {
+          "id": "nursing",
+          "title": "간호",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "selfCare",
+              "label": "가정 내 자가간호 수행",
+              "value": "설명 후 스스로 가능",
+              "tier": 0,
+              "required": true,
+              "raw": "independent"
+            },
+            {
+              "id": "wound",
+              "label": "드레싱·상처관리 계획",
+              "value": "해당 없음",
+              "tier": 0,
+              "required": true,
+              "raw": "notNeeded"
+            },
+            {
+              "id": "education",
+              "label": "퇴원교육 이해 확인",
+              "value": "내용 확인 기록됨",
+              "tier": 0,
+              "required": true,
+              "raw": "documented"
+            },
+            {
+              "id": "careDevice",
+              "label": "기구·처치 관련 관리",
+              "value": "해당 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "none"
+            },
+            {
+              "id": "symptomMonitoring",
+              "label": "집에서 관찰할 내용",
+              "value": "별도 관찰 항목 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "notNeeded"
+            }
+          ]
+        },
+        {
+          "id": "medication",
+          "title": "약료",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "reconciliation",
+              "label": "퇴원약 목록 조정(대조)",
+              "value": "대조 완료",
+              "tier": 0,
+              "required": true,
+              "raw": "complete"
+            },
+            {
+              "id": "medUnderstanding",
+              "label": "약물 변경·복약 교육",
+              "value": "이해 확인됨",
+              "tier": 0,
+              "required": true,
+              "raw": "confirmed"
+            },
+            {
+              "id": "administration",
+              "label": "퇴원 후 약물 관리 도움",
+              "value": "스스로 관리 가능",
+              "tier": 0,
+              "required": true,
+              "raw": "independent"
+            },
+            {
+              "id": "access",
+              "label": "약 수령·구입 계획",
+              "value": "확인됨",
+              "tier": 0,
+              "required": false,
+              "raw": "secured"
+            },
+            {
+              "id": "changes",
+              "label": "퇴원 전후 약물 변경",
+              "value": "없음",
+              "tier": 0,
+              "required": false,
+              "raw": "none"
+            }
+          ]
+        },
+        {
+          "id": "function",
+          "title": "기능",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "gait",
+              "label": "보행/이동",
+              "value": "독립 이동",
+              "tier": 0,
+              "required": true,
+              "raw": "independent"
+            },
+            {
+              "id": "transfer",
+              "label": "침대·의자 등 이동",
+              "value": "독립 가능",
+              "tier": 0,
+              "required": true,
+              "raw": "independent"
+            },
+            {
+              "id": "adl",
+              "label": "기본 일상생활 수행(ADL)",
+              "value": "독립적",
+              "tier": 0,
+              "required": true,
+              "raw": "independent"
+            },
+            {
+              "id": "iadl",
+              "label": "도구적 일상생활(IADL)",
+              "value": "독립 가능",
+              "tier": 0,
+              "required": false,
+              "raw": "independent"
+            },
+            {
+              "id": "assistDevice",
+              "label": "보조기 사용방법 확인",
+              "value": "해당 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "notNeeded"
+            }
+          ]
+        },
+        {
+          "id": "social",
+          "title": "사회환경",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "caregiver",
+              "label": "도움이 필요한 시간대의 지원",
+              "value": "충분히 확보됨",
+              "tier": 0,
+              "required": true,
+              "raw": "available"
+            },
+            {
+              "id": "housing",
+              "label": "실제 가정 내 이동 환경",
+              "value": "현 이동능력에 적합",
+              "tier": 0,
+              "required": true,
+              "raw": "accessible"
+            },
+            {
+              "id": "travel",
+              "label": "퇴원 후 통원·이동 수단",
+              "value": "이동 수단 확보",
+              "tier": 0,
+              "required": true,
+              "raw": "available"
+            },
+            {
+              "id": "living",
+              "label": "생활·동거 상황",
+              "value": "필요 지원 확보",
+              "tier": 0,
+              "required": false,
+              "raw": "withSupport"
+            },
+            {
+              "id": "cost",
+              "label": "지원 이용 비용·접근 제약",
+              "value": "확인된 제약 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "noBarrier"
+            }
+          ]
+        },
+        {
+          "id": "continuity",
+          "title": "돌봄 연속성",
+          "status": "READY",
+          "grade": 0,
+          "provisionalGrade": 0,
+          "requiredDone": 3,
+          "requiredTotal": 3,
+          "missing": [],
+          "conflicting": [],
+          "facts": [
+            {
+              "id": "appointment",
+              "label": "후속 외래·진료 약속",
+              "value": "예약 확인됨",
+              "tier": 0,
+              "required": true,
+              "raw": "confirmed"
+            },
+            {
+              "id": "contact",
+              "label": "환자가 연락할 담당·문의처",
+              "value": "연락처 안내 완료",
+              "tier": 0,
+              "required": true,
+              "raw": "documented"
+            },
+            {
+              "id": "dischargeEducation",
+              "label": "최종 퇴원안내 전달",
+              "value": "전달·확인 완료",
+              "tier": 0,
+              "required": true,
+              "raw": "completed"
+            },
+            {
+              "id": "referral",
+              "label": "지역사회 서비스 의뢰 상태",
+              "value": "의뢰 불필요 판단",
+              "tier": 0,
+              "required": false,
+              "raw": "notNeeded"
+            },
+            {
+              "id": "consent",
+              "label": "공적 지원 신청 동의 상태",
+              "value": "해당 없음",
+              "tier": 0,
+              "required": false,
+              "raw": "notApplicable"
+            }
+          ]
+        }
+      ]
+    },
+    "draft": {
+      "version": "0.1",
+      "status": "APPROVED",
+      "items": [
+        {
+          "id": "today",
+          "section": "today",
+          "title": "오늘 해야 할 일",
+          "text": "퇴원 전 받은 자가관리 안내문을 확인해 주세요.",
+          "source": "SRC-SYN002-NUR-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        },
+        {
+          "id": "medication",
+          "section": "medication",
+          "title": "복약·약물 안내",
+          "text": "퇴원 시 확인된 약물 목록과 의료진 안내를 확인하세요. 복용 방법이 불확실하면 담당 의료진 또는 약사에게 문의하세요.",
+          "source": "SRC-SYN002-MED-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        },
+        {
+          "id": "followup",
+          "section": "followup",
+          "title": "외래·검사 일정",
+          "text": "퇴원 안내문에서 확정된 다음 진료 일정을 확인해 주세요.",
+          "source": "SRC-SYN002-APT-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        },
+        {
+          "id": "warning",
+          "section": "warning",
+          "title": "주의사항",
+          "text": "개인별 주의사항은 승인된 안내문을 확인하고, 위급한 경우에는 119에 연락하세요.",
+          "source": "SRC-SYN002-WARN-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        },
+        {
+          "id": "contact",
+          "section": "contact",
+          "title": "도움이 필요할 때",
+          "text": "퇴원 시 안내받은 담당 의료기관의 공식 문의처를 확인하세요.",
+          "source": "SRC-SYN002-CON-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        },
+        {
+          "id": "support",
+          "section": "support",
+          "title": "생활·이동 지원",
+          "text": "이동과 돌봄에 도움이 필요한 경우 병원 상담 담당자와 확인해 주세요.",
+          "source": "SRC-SYN002-SOC-01",
+          "verified": true,
+          "visibility": "PATIENT"
+        }
+      ],
+      "docs": [],
+      "issues": [],
+      "approval": {
+        "by": "SIM-APPROVER",
+        "role": "지정 최종 승인자",
+        "at": "2026-10-21T00:00:00.000Z",
+        "digest": "b2872b17"
+      },
+      "createdAt": "2026-10-21T12:32:08.624Z",
+      "updatedAt": "2026-10-21T12:32:08.624Z"
+    },
+    "publications": [],
+    "audit": [
+      {
+        "at": "2026-10-21T12:32:08.624Z",
+        "role": "system",
+        "event": "INIT",
+        "details": "합성 환자 A2 스냅샷에서 최초 계획 초안 생성"
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "baseCommit": "0bd2692ee73e360c7c5a2f5396468c5d33000cbe",
+  "files": {
+    "prototypes/hospital-a2/engine.js": {
+      "before": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff",
+      "after": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff",
+      "identical": true
+    },
+    "prototypes/hospital-a2/data.js": {
+      "before": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468",
+      "after": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468",
+      "identical": true
+    },
+    "prototypes/integrated-v10/a2/engine.js": {
+      "before": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff",
+      "after": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff",
+      "identical": true
+    },
+    "prototypes/integrated-v10/a2/data.js": {
+      "before": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468",
+      "after": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468",
+      "identical": true
+    },
+    "prototypes/integrated-v10/a3/styles.css": {
+      "before": "ab84418d297a3b6429e70c9568dbfadd27527c35d054bd87b6e79e80ebe9fbfb",
+      "after": "ab84418d297a3b6429e70c9568dbfadd27527c35d054bd87b6e79e80ebe9fbfb",
+      "identical": true
+    }
+  },
+  "HEAD:prototypes/hospital-a2": "82475335ae3925f74bd312f2756b80e0c1a634f6",
+  "b4b936c90078ac72a4a7b30e281c5e3fb187a5b1:prototypes/hospital-a3-v04": "bd05da2059d8debdb007c868fe3bb72460cd3d3a"
+}

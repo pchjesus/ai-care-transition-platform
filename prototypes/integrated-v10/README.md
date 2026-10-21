@@ -1,47 +1,60 @@
-# 통합 MVP v1.0 — 1차 A2→A3 평가 인계
+# 병원용 통합 워크벤치 v1.0
 
-> **개발 1차 후보 / 합성 데이터만 사용 / 독립 Node·HTTP 검증 완료**.
+A3 공통 사이드바·상단바·환자 선택 안에서 A1 환자 목록 → A2 평가 → A3 검토·승인·발행을 수행한다. 합성 데이터 전용 시연이며 임상 척도·실제 의료기관 인증이 아니다.
 
-## 실행 방법
+## 실행
+
+**저장소 루트**에서 실행한다. 원본 비교 iframe도 같은 HTTP 서버에서 제공해야 한다.
 
 ```sh
-cd prototypes/integrated-v10
 python3 -m http.server 5500
-# http://localhost:5500/
+# http://localhost:5500/prototypes/integrated-v10/
 ```
 
-로컬 **HTTP 동일 origin**에서만 A2→A3 임시 인계가 가능하다. `file://` 실행 시 저장/모듈 기능을 보장하지 않는다.
+- 홈: `index.html`
+- A1: `a3/index.html?screen=patients`
+- A2: `a3/index.html?screen=assessment&patient=SYN-002`
+- A3: `a3/index.html?screen=plan&patient=SYN-002`
+- 환자용 시연 미리보기: `a3/index.html?screen=patient-preview`
+- 비교: `a3/index.html?screen=compare`
+- 기존 `a2/index.html?patient=1` 또는 `?patient=SYN-002`는 통합 A2로 이동한다. 숫자 0/1/2도 유지한다.
+- 기존 `a3/index.html?handoff=SYN-002`는 환자만 선택한다. Phase 1 인계는 A3의 **Phase 1 외부 인계함**을 펼쳐 명시적으로 반영한다.
+- Phase 1 독립 A2는 `a2/legacy.html`로 보존했다. 독립 원본은 `../hospital-a2/index.html`이며 변경하지 않았다.
 
-1. `/a2/index.html` → SYN-002 선택 → 실제 화면에서 6영역 평가값 확인·수정.
-2. **A3로 실제 평가 인계** 클릭 → `/a3/index.html`로 이동.
-3. A3 상단 **선택 환자 평가 반영** 클릭 → 확인 창 → 해당 가상 환자의 **평가 입력·평가 결과**가 A3에 저장된다.
-4. A3에서 미해결 사항을 확인하고 검토·승인·발행한다. **인계만으로 승인·발행되지 않는다.**
+A1에서 SYN-002 평가 시작 → 보행/이동 변경 → **변경된 평가 A3로 인계** → 안내 항목 재검토 → 검토 요청 → 최종 승인자 역할 → 승인 → 발행 순서로 시연한다. 발행 후에는 먼저 새 버전 개정을 시작해야 한다.
 
-## 검증 명령
+## 상태와 경계
+
+- `a2/engine.js`와 `a2/data.js`가 단일 평가 기준이다. `shared/assessment-adapter.js`가 A3 표시 형식만 변환한다. 6영역·30항목, 점수·필수 결측·상충·사회환경 복합 규칙은 원본 그대로이다.
+- 미반영 평가 입력도 환자별로 저장한다. 입력 즉시 승인을 무효화하며, 반영 전에는 발행할 수 없다. 반영 후 계획 항목과 환자 공개 PDF를 다시 검토한다.
+- 기존 Phase 1 schema 2/저장키를 유지한다. 기존 승인·발행 스냅샷은 조회만으로 재계산하거나 변경하지 않는다.
+- SYN-001~004 학습은 별도 저장키와 `mode=study` URL을 사용한다. 실습 시작/종료 시 이동 기록을 새로 시작하며 정상 작업과 섞지 않는다.
+- **이전·다음**은 현재 페이지에서 방문한 화면/환자의 이동 기록이다. 직접 진입·새로고침 시 둘 다 비활성화되며 브라우저의 외부 방문 기록으로 이동하지 않는다. 통합 홈은 항상 사용할 수 있다.
+- 환자용 화면은 **기존 A3 내부 시연 미리보기**이다. 실제 B v1.3을 수정하거나 A3→B 실시간 연결을 추가하지 않았다. 비교 화면의 원본 입력도 독립적이며 자동 동기화하지 않는다.
+- PDF 파일 바이트는 세션 내 임시 보관한다. 새로고침 후 동일 파일을 다시 첨부해야 공개할 수 있다. 생성은 브라우저 인쇄/PDF 저장이다.
+- 저장 실패와 순차적인 다른 탭 변경은 저장 시점에 차단한다. 서버 트랜잭션·실시간 병합은 제공하지 않는다.
+- `file://`, Safari/Firefox, 실제 인증·EMR·Firebase는 지원 검증 범위가 아니다. gh-pages 배포는 수행하지 않았다.
+
+## 검증
 
 ```sh
 cd prototypes/integrated-v10
 npm test
+python3 tests/unified_http.py
 python3 tests/phase1_http.py
 ```
 
-최소 케이스: SYN-002 정상 인계, SYN-003 결측·상충, 다른 환자 인계 차단, 미발행·승인 무효화, 재인계, 저장 실패·다른 탭의 변경 감지. 기능검사와 별개로 브라우저에서 인계 버튼 조작·화면·새로고침을 직접 확인해야 한다.
+Node.js 24, Python 3, Python Playwright, Chromium이 필요하다. PDF 검증에는 PyMuPDF가 필요하며 브라우저 경로는 `/usr/bin/chromium`이다. 자동 테스트는 임시 HTTP 서버와 합성 저장소만 사용한다.
 
-## 설계 결정과 한계
+전후 화면 재현(저장소 루트에서 기준선 export 후):
 
-- **기존 파일을 복사한 통합 폴더**: `a2/`는 `main:prototypes/hospital-a2`, `a3/`는 PR #1의 v0.4 소스에서 복사. 원본 SHA·PR·UI 변경 없음.
-- 평가 원본: **통합 폴더의 A2 v0.5**. A3 내부 A2 메뉴는 일반 모드에서 실제 A2 페이지로 이동하며, A3의 학습 모드 내부 평가 실습은 기존대로 별도이다.
-- 전달: `shared/handoff.js`에서 **전 항목의 선택값·실제 계산결과를 검증한 합성 JSON**을 통합 전용 localStorage inbox에 기록. A3에서 **사용자 확인 후에만** 반영.
-- 같은 환자·입원건·규칙 버전 검증. A2와 A3 평가 계산 결과가 일치하지 않으면 인계 거부. A3 자료 저장 실패 때 인계 전 기록 복구·중단.
-- 인계 후 **기존 미발행 검토/승인 상태를 무효화**하고 원천자료·환자 공개 항목을 재검토한다. 발행된 기존 계획이 있으면 먼저 A3에서 개정 단계로 이동해야 한다.
-- A3의 저장키는 **통합 전용**이며, 기존 A3 v0.4 standalone 저장 데이터는 건드리지 않는다. A2→A3 미처리 인계는 별도 키.
-- **B 환자 앱은 아직 미연결**이다. A3의 기존 `환자용 미리보기`는 실제 B v1.3이 아니며, 이 단계에서 '완전한 A2→A3→B 연결'로 소개하지 않는다.
-- 저장/역할은 시연용 브라우저 기능이며 **병원 인증/실제 서버 동기화/실환자 개인정보 처리 아님**.
-- 같은 사용자 A2 화면을 재진입할 때 미반영 입력은 재설정되며, A3에 저장된 평가가 A2로 역전파되지는 않는다. 2차 개발에서 통합 읽기 전용 공유 상태 여부를 검토한다.
-- 브라우저 다중 탭 동시 수정은 A3 저장소 비교로 *저장 시점* 충돌을 감지하지만 원자적 서버 트랜잭션이나 실시간 동기화가 아니다.
+```sh
+mkdir -p /tmp/unified-baseline
+# 동일 디렉터리의 기존 파일을 덮어쓰지 않도록 빈 export 경로를 사용한다.
+git archive 0bd2692ee73e360c7c5a2f5396468c5d33000cbe prototypes/integrated-v10 prototypes/hospital-a2 | tar -x -C /tmp/unified-baseline
+python3 prototypes/integrated-v10/tests/unified_visual.py --baseline /tmp/unified-baseline
+```
 
-상세 계약: `../../docs/integration/INTEGRATED_MVP_V1_CONTRACT.md`. 2차 계획: A3 승인 발행본을 B v1.3 동적 환자 화면으로 안전하게 반영하고 철회·개정을 검증한다.
+`phase1_visual.py`는 이전 Phase 1의 픽셀 동일성을 검사하는 당시의 스크립트다. 통합 레이아웃의 의도된 변경 비교에는 `unified_visual.py`를 사용한다.
 
-## 독립 검증 결과
-
-기준 커밋 `760083692ff971800eb0f37725114b03bdb1ba97` 대비 실제 결함만 수정했다. Node **43/43**, HTTP **17/17**, 7개 폭의 기본 화면 비교 **28쌍 픽셀 동일**. 기존 A2/A3/B 원본 및 PR #1·#2는 변경하지 않았다. 실행 로그·수정 범위·NOT RUN 항목은 [검증 보고서](../../docs/integration/PHASE1_IMPLEMENTATION_REPORT.md)를 참조한다.
+[개발·회귀 검증 보고서](../../docs/integration/HOSPITAL_UNIFIED_V1_REPORT.md) · [이전 Phase 1 보고서](../../docs/integration/PHASE1_IMPLEMENTATION_REPORT.md)

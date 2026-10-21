@@ -19,11 +19,11 @@ class Integration(unittest.TestCase):
   self.ctx=self.browser.new_context(viewport={'width':1440,'height':1000});self.page=self.ctx.new_page();self.page.set_default_timeout(4000);self.errors=[];self.page.on('pageerror',lambda e:self.errors.append(str(e)));self.accept_dialog=lambda d:d.accept();self.page.on('dialog',self.accept_dialog)
  def tearDown(self):self.ctx.close();self.assertEqual(self.errors,[])
  def a3(self,page=None):
-  page=page or self.page;page.goto(self.base+'a3/index.html');expect(page.locator('#patient-select')).to_be_visible();page.locator('#patient-select').select_option('SYN-002')
+  page=page or self.page;page.goto(self.base+'a3/index.html');expect(page.locator('#patient-select')).to_be_visible();page.locator('.legacy-inbox').evaluate('(d)=>d.open=true');page.locator('#patient-select').select_option('SYN-002')
  def send(self,patient='1',field='gait',value='device'):
-  self.page.goto(self.base+'a2/index.html');self.page.locator('#patient-select').select_option(patient)
+  self.page.goto(self.base+'a2/legacy.html');self.page.locator('#patient-select').select_option(patient)
   if field:self.page.locator('#field-'+field).select_option(value)
-  self.page.locator('#integrated-send').click();self.page.wait_for_url('**/a3/index.html?handoff=*');expect(self.page.locator('#patient-select')).to_be_visible()
+  self.page.locator('#integrated-send').click();self.page.wait_for_url('**/a3/index.html?*');expect(self.page.locator('#patient-select')).to_be_visible();self.page.locator('.legacy-inbox').evaluate('(d)=>d.open=true')
  def select(self,id='SYN-002'):self.page.locator('#patient-select').select_option(id)
  def records(self):return self.page.evaluate('key=>JSON.parse(localStorage.getItem(key))',KEY)
  def pending(self):return self.page.evaluate('key=>JSON.parse(localStorage.getItem(key))',INBOX)
@@ -59,7 +59,7 @@ class Integration(unittest.TestCase):
   self.send();self.select();self.receive();before=self.records();other.locator('#request').click()
   self.assertEqual(self.records(),before);expect(other.locator('#workflow-state')).to_have_text('초안 작성 중');expect(other.locator('#save-state')).to_have_text('저장 불가');other.close()
  def test_changed_packet_during_confirmation_is_not_imported(self):
-  self.send();self.select();before=self.records();other=self.ctx.new_page();other.goto(self.base+'a2/index.html')
+  self.send();self.select();before=self.records();other=self.ctx.new_page();other.goto(self.base+'a2/legacy.html')
   self.page.remove_listener('dialog',self.accept_dialog)
   def change(dialog):
    other.evaluate("async key=>{const {createAssessmentHandoff}=await import('./../shared/handoff.js');const {CASES}=await import('./data.js');const v=structuredClone(CASES[1].values);v.function.gait='assistance';localStorage.setItem(key,JSON.stringify(createAssessmentHandoff('SYN-002',v,new Date(Date.now()+1000))))}",INBOX);dialog.accept()
@@ -71,7 +71,7 @@ class Integration(unittest.TestCase):
   self.page.locator('#revise').click();self.receive();self.assertEqual(self.records()['SYN-002']['publications'],published);self.assertEqual(self.records()['SYN-002']['draft']['status'],'DRAFT')
  def test_inbox_updates_in_an_already_open_a3_tab(self):
   self.a3();expect(self.page.locator('#integrated-receive')).to_be_disabled()
-  other=self.ctx.new_page();other.goto(self.base+'a2/index.html');other.locator('#patient-select').select_option('1');other.locator('#integrated-send').click();other.wait_for_url('**/a3/index.html?handoff=*')
+  other=self.ctx.new_page();other.goto(self.base+'a2/legacy.html');other.locator('#patient-select').select_option('1');other.locator('#integrated-send').click();other.wait_for_url('**/a3/index.html?*')
   expect(self.page.locator('#integrated-receive')).to_be_enabled();self.assertIn('SYN-002',self.page.locator('#integrated-a3-status').inner_text());other.close()
  def test_other_workflow_storage_failures_restore_previous_state(self):
   for action,expected in [('request','초안 작성 중'),('return','의료진 검토 요청'),('revise','발행 완료'),('revoke','발행 완료')]:
@@ -91,7 +91,7 @@ class Integration(unittest.TestCase):
  def test_ui_responsive_keyboard_and_existing_flows(self):
   for width in [320,390,768,800,801,1024,1440]:
    with self.subTest(width=width):
-    self.page.set_viewport_size({'width':width,'height':1000});self.page.goto(self.base+'a2/index.html')
+    self.page.set_viewport_size({'width':width,'height':1000});self.page.goto(self.base+'a2/legacy.html')
     expect(self.page.locator('#total-complete')).to_have_text('18 / 18');self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
     self.page.locator('#open-a1').click();self.page.keyboard.press('Escape');expect(self.page.locator('#modal')).not_to_be_visible()
     self.page.locator('#domains button').nth(1).click();self.page.locator('#field-education').select_option('');expect(self.page.locator('#detail-grade')).to_have_text('미평가')
@@ -109,16 +109,16 @@ class Integration(unittest.TestCase):
     self.page.locator('[data-nav="learn"]').click();self.page.locator('[data-study-leave]').click()
     self.page.locator('[data-nav="plan"]').click();self.select();self.page.locator('[data-item="today"] [data-action="select-source"]').click();expect(self.page.locator('#source-dialog')).to_be_visible();self.page.keyboard.press('Escape')
  def test_a2_storage_failure_keeps_input_and_does_not_navigate(self):
-  self.page.goto(self.base+'a2/index.html');self.page.locator('#patient-select').select_option('1');self.page.locator('#field-gait').select_option('device')
+  self.page.goto(self.base+'a2/legacy.html');self.page.locator('#patient-select').select_option('1');self.page.locator('#field-gait').select_option('device')
   self.page.evaluate("key=>{const write=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Quota','QuotaExceededError');return write.call(this,k,v)}}",INBOX)
-  self.page.locator('#integrated-send').click();self.assertIn('/a2/index.html',self.page.url);expect(self.page.locator('#field-gait')).to_have_value('device');expect(self.page.locator('#integrated-a2-status')).to_contain_text('인계 보류');self.assertIsNone(self.pending())
+  self.page.locator('#integrated-send').click();self.assertIn('/a2/legacy.html',self.page.url);expect(self.page.locator('#field-gait')).to_have_value('device');expect(self.page.locator('#integrated-a2-status')).to_contain_text('인계 보류');self.assertIsNone(self.pending())
  def test_cleanup_failure_can_retry_without_invalidating_new_approval(self):
   self.send();self.select()
   self.page.evaluate("key=>{const remove=Storage.prototype.removeItem;window.restoreRemovals=()=>{Storage.prototype.removeItem=remove;};Storage.prototype.removeItem=function(k){if(k===key)throw Error('cleanup denied');return remove.call(this,k)}}",INBOX)
   self.receive();self.assertIsNotNone(self.pending());self.verify_items();self.approve();before=self.records()
   self.page.evaluate('window.restoreRemovals()');self.receive();self.assertEqual(self.records(),before);self.assertIsNone(self.pending());expect(self.page.locator('#workflow-state')).to_have_text('승인 완료')
  def test_corrupt_a3_storage_is_preserved_and_receipt_is_blocked(self):
-  self.page.goto(self.base+'a2/index.html');self.page.evaluate("key=>localStorage.setItem(key,'{broken-json')",KEY)
+  self.page.goto(self.base+'a2/legacy.html');self.page.evaluate("key=>localStorage.setItem(key,'{broken-json')",KEY)
   self.send();self.select();self.receive();self.assertEqual(self.page.evaluate('key=>localStorage.getItem(key)',KEY),'{broken-json');self.assertIsNotNone(self.pending());self.assertIn('원본을 덮어쓰지 않습니다',self.page.locator('#toast').inner_text())
  def test_failed_approval_never_claims_success(self):
   self.a3();self.page.locator('#request').click();self.page.locator('#actor').select_option('APPROVER');self.deny_writes();self.page.locator('#approve').click()

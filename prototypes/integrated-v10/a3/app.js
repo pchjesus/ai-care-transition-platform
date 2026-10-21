@@ -1,6 +1,9 @@
+import {chooseAction,TIER_LABELS} from '../a2/engine.js';
+import {editEvaluation,commitEvaluation} from '../shared/evaluation-edit.js';
+import {DOMAINS as ENGINE_DOMAINS,SOURCES} from '../a2/data.js';
 import {CASES,DOMAINS,SECTIONS} from './data.js';
 import {recordsForPatient,findSource,usableSource,CASE_MISSIONS} from './source-library.js';
-import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision,issuesFromValues} from './workflow.js';
+import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision} from './workflow.js';
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
 import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
 import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
@@ -15,8 +18,13 @@ const normalState=loadRepository(storage,STORAGE_KEYS.normal),studyState=loadRep
 const repository=initializePatients(normalState.records),studyRepo=studyState.records;
 let practiceMode=false,priorContext=null,learningUnit='intro',learningHint=0,sourceTarget=null,learnFilter='';
 let selectedId=CASES[0].id,activeTab='plan',selectedDomain='function',role='NURSE',previewMode='draft',collapsed=false,previewCollapsed=true,screen='plan';
-const requestedPatient=new URLSearchParams(window.location.search).get('handoff');
+const requestedPatient=new URLSearchParams(window.location.search).get('patient')||new URLSearchParams(window.location.search).get('handoff');
 if(CASES.some(c=>c.id===requestedPatient))selectedId=requestedPatient;
+const screens=['patients','assessment','plan','patient-preview','compare','learn'];
+const initialScreen=new URLSearchParams(location.search).get('screen');
+if(screens.includes(initialScreen))screen=initialScreen;
+if(new URLSearchParams(location.search).get('mode')==='study'&&studyRepo[selectedId])practiceMode=true;
+let journey=[],journeyIndex=-1;
 let expandedPlanItems=new Set(['today']);
 try{previewCollapsed=localStorage.getItem('a3-preview-collapsed-v04')!=='0'}catch{}
 try{collapsed=localStorage.getItem('a3-rail-collapsed-v04')==='1'}catch{}
@@ -94,6 +102,7 @@ function renderGate(){const r=get(),blocked=noBlock(),p=currentPublished(r),isPu
  $('#gate-banner').className=`gate-banner ${kind}`;
  $('#gate-banner').innerHTML=`<span class="gate-left"><span class="gate-icon" aria-hidden="true">${hard?'!':'✓'}</span><span><strong>${safe(title)}</strong><span class="gate-sub">${safe(brief)}</span></span></span><span class="gate-number">${isPublished?'이력 보기':hard?`${hard}건 확인`:'확인하기'}　→</span>`;
  $('#gate-banner').setAttribute('aria-label',title+' · 상세 항목 보기');
+ if(screen==='assessment'){const evaluation=evaluateA2({values:r.a2Values});const summary=evaluation.reduce((n,d)=>n+d.requiredDone,0);$('#gate-banner .gate-sub').textContent=`평가 필수 ${summary}/18 · 미평가·상충 ${evaluation.filter(d=>d.status!=='READY').length}영역 · 우선 검토 ${evaluation.filter(d=>d.status==='READY'&&d.grade===3).length}영역 · ${r.a2Dirty?'변경 평가 반영 필요 · ':''}`+brief;}
  $('#issue-count').textContent=r.draft.issues.filter(x=>x.status!=='RESOLVED').length||'';
  $('#workflow-state').textContent=viewTitle();
  $('#workflow-sub').textContent=p?`현재 발행본 v${p.snapshot.planVersion} · ${dateTime(p.snapshot.issuedAt)}`:'최근 수정 내용 저장됨';
@@ -147,7 +156,7 @@ function renderButtons(){const d=get().draft,p=currentPublished(get());for(const
 function render(){const c=CASES.find(x=>x.id===selectedId);$('#patient-name').textContent=`${c.name} · ${c.age}세`;
  // A prior patient's print DOM must not survive navigation or plan edits.
  $('#print-sheet').replaceChildren();
- $('#patient-detail').textContent=`${c.id} · ${c.context} · 퇴원 예정 ${c.discharge}`;
+ $('#patient-detail').textContent=`${practiceMode?'실습 사본 · ':''}${c.id} · ${c.context} · 퇴원 예정 ${c.discharge}`;
  $('#patient-select').value=selectedId;$('#actor').value=role;
  renderGate();renderDomains();
  renderAuxiliary();renderNav();applyPreviewLayout();
@@ -225,19 +234,42 @@ function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){
 // Navigation and auxiliary clinical workspace are separate from the immutable A2 v0.5 baseline.
 function renderNav(){
  $('#a3-screen').hidden=screen!=='plan';$('#aux-screen').hidden=screen==='plan';
- for(const b of document.querySelectorAll('.rail-link[data-nav]')){
+ for(const b of document.querySelectorAll('[data-nav]')){
   const active=b.dataset.nav===screen;
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  }
- $('.breadcrumb b').textContent=screen==='plan'?'A3':screen==='assessment'?'A2':screen==='learn'?'학습':'환자용 미리보기';
+ $('.breadcrumb b').textContent={plan:'A3',assessment:'A2',patients:'A1',learn:'학습',compare:'비교','patient-preview':'환자용 미리보기'}[screen];
+ const titles={plan:['A3 · 퇴원계획','퇴원 후 관리계획'],assessment:['A2 · 다영역 평가','퇴원 후 관리 필요도 평가'],patients:['A1 · 환자 목록','환자 선택'],learn:['사용법·학습','사용법과 합성 실습'],compare:['화면 비교','평가 화면 비교'],'patient-preview':['B · 시연 미리보기','환자에게 보이는 계획']};
+ $('#common-context .eyebrow').textContent=titles[screen][0];$('#common-context h1').textContent=titles[screen][1];
+ $('#common-context .headline p').textContent=screen==='assessment'?'6영역·30항목 · A2 v0.5 평가 규칙을 사용합니다.':'평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.';
+}
+function routeEntry(){return {screen,patient:selectedId,practiceMode}}
+function updateJourney(){
+ $('#journey-back').disabled=journeyIndex<=0;
+ $('#journey-next').disabled=journeyIndex>=journey.length-1;
+}
+function routeURL(){
+ const url=new URL(location.href);url.searchParams.set('screen',screen);url.searchParams.set('patient',selectedId);url.searchParams.delete('handoff');
+ if(practiceMode)url.searchParams.set('mode','study');else url.searchParams.delete('mode');
+ history.replaceState(null,'',url);
 }
 function go(screenName){
- if(screenName==='assessment'&&!practiceMode&&selectedId!=='SYN-004'){
-  window.location.assign('../a2/index.html?patient='+encodeURIComponent(selectedId));
-  return;
+ if(!screens.includes(screenName))return;
+ screen=screenName;
+ const entry=routeEntry(),prior=journey[journeyIndex];
+ if(prior&&prior.practiceMode!==practiceMode){journey=[];journeyIndex=-1;}
+ if(!prior||JSON.stringify(prior)!==JSON.stringify(entry)){
+  journey=journey.slice(0,journeyIndex+1);journey.push(entry);journeyIndex++;
  }
- screen=screenName;render();window.scrollTo({top:0,behavior:'instant'});
+ routeURL();render();updateJourney();window.scrollTo({top:0,behavior:'instant'});
+}
+function traverseJourney(offset){
+ const target=journeyIndex+offset;if(target<0||target>=journey.length)return;
+ const entry=journey[target];
+ // Study sessions have separate data. Never restore their context as normal patient work.
+ if(entry.practiceMode!==practiceMode){announce('실습 시작·종료는 학습 화면에서 선택하세요.');return;}
+ journeyIndex=target;selectedId=entry.patient;screen=entry.screen;routeURL();render();updateJourney();
 }
 function choosePatient(id,destination='plan'){
  if(!CASES.some(c=>c.id===id))return;
@@ -262,6 +294,12 @@ function renderAuxiliary(){
  if(screen==='plan')return;
  if(screen==='learn'){renderLearning();return;}
  const root=$('#aux-screen'),r=get(),c=CASES.find(x=>x.id===selectedId);
+ if(screen==='patients'){
+  root.innerHTML=`<div class="patient-list">${CASES.map(patient=>`<article class="patient-list-card"><div class="patient-list-main"><strong>${safe(patient.name)} · ${safe(patient.age)}세</strong><span>${safe(patient.id)} · ${safe(patient.context)}</span><small>${safe(statusLabel[repository[patient.id].draft.status])}</small></div><div class="patient-list-actions"><button class="btn primary" data-patient-pick="${safe(patient.id)}" data-target-screen="assessment">평가 시작</button><button class="btn outline" data-patient-pick="${safe(patient.id)}" data-target-screen="plan">계획 검토</button></div></article>`).join('')}</div>`;return;
+ }
+ if(screen==='compare'){
+  root.innerHTML=`<p>원본은 별도 저장소의 독립 화면입니다. 양쪽 입력은 자동 동기화하지 않습니다.</p><div class="comparison-grid"><section><h2>A2 v0.5 원본</h2><a href="../../hospital-a2/index.html" target="_blank" rel="noopener">원본 새 창</a><iframe title="보존된 A2 v0.5 원본" src="../../hospital-a2/index.html"></iframe></section><section><h2>통합 A2</h2><button class="btn outline" data-open-assessment>현재 환자 평가로 이동</button><p>A3 공통 디자인 · 원본과 동일한 엔진 · 저장·승인 연계</p><ul>${evaluateA2({values:r.a2Values}).map(d=>`<li>${safe(d.title)}: ${d.status==='READY'?d.grade+'등급':safe(d.status)}</li>`).join('')}</ul></section></div>`;return;
+ }
  if(screen==='patient-preview'){
   const live=currentPublished(r),isLive=previewMode==='published'&&live;
   const items=isLive?live.snapshot.items:r.draft.items.filter(x=>x.visibility==='PATIENT');
@@ -270,13 +308,14 @@ function renderAuxiliary(){
  }
  const domains=evaluateA2({...c,values:r.a2Values});
  const done=domains.reduce((n,d)=>n+d.requiredDone,0);
- root.innerHTML=`<div class="aux-heading"><div><p class="eyebrow">A2 · 다영역 평가</p><h1>퇴원 후 관리 필요도 평가</h1><p>${safe(c.name)} · ${safe(c.id)} · 필수 ${done}/18개 확인</p></div><div class="aux-actions"><button class="btn outline" id="back-to-plan">계획 검토로 돌아가기</button><button class="btn primary" id="handoff-a2" ${r.a2Dirty?'':'disabled'}>변경된 평가 A3로 인계</button></div></div>
+ root.innerHTML=`<div class="aux-heading"><div><h2>평가 입력·판단 근거</h2><p>필수 ${done}/18개 확인 · 6영역·30항목</p></div><div class="aux-actions"><button class="btn outline" id="reset-evaluation" ${canEdit()?'':'disabled'}>평가 입력 초기값 복원</button><button class="btn outline" id="back-to-plan">계획 검토로 돌아가기</button><button class="btn primary" id="handoff-a2" ${r.a2Dirty&&canEdit()?'':'disabled'}>변경된 평가 A3로 인계</button></div></div>
  <div class="a2-migration-note">${r.a2Dirty?'변경된 평가가 있습니다. 인계하기 전까지 기존 계획은 유지됩니다.':'현재 평가가 계획에 반영되어 있습니다.'}</div>
+ <details class="assessment-actions"><summary>검토할 행동 초안 · 평가에서 확인한 업무 제안</summary>${domains.filter(d=>d.status==='READY'&&d.grade>0).map(d=>{const action=chooseAction(d.id,d.grade);return `<p><strong>${safe(action.title)} · ${d.grade}등급</strong><br>${safe(action.detail)} · ${safe(action.category)}</p>`}).join('')||'<p>추가 검토 초안이 없습니다.</p>'}<p>미평가·상충 영역은 자료 확인 후 판단합니다. 안내문을 자동 생성하거나 승인하지 않습니다.</p></details>
  <nav class="a2-domains" id="a2-domain-tabs" aria-label="평가영역 선택">${domains.map((d,i)=>`<button type="button" data-a2-domain="${safe(d.id)}" class="a2-domain-btn ${selectedDomain===d.id?'selected':''}"><span>${String(i+1).padStart(2,'0')} · ${safe(d.title)}</span><b>${d.status==='READY'?d.grade+'등급':d.status==='CONFLICTING'?'상충':'미평가'}</b></button>`).join('')}</nav>
  <div class="a2-work-layout"><section class="a2-input-panel"><div class="pane-head"><h2>${safe(DOMAINS.find(d=>d.id===selectedDomain).title)}</h2><span class="status-pill">영역별 입력</span></div>${DOMAINS.find(d=>d.id===selectedDomain).fields.map(([id,label,required,options],i)=>{
  const v=r.a2Values[selectedDomain]?.[id]??'';
- return `<div class="a2-field"><label for="a2-field-${safe(id)}"><span>${i+1}. ${safe(label)}</span>${required?'<small>필수</small>':''}</label><select id="a2-field-${safe(id)}" data-a2-field="${safe(id)}"><option value="" ${v===''?'selected':''}>미확인 · 자료 없음</option><option value="CONFLICT" ${v==='CONFLICT'?'selected':''}>상충 · 자료 간 불일치</option>${options.map(([value,text])=>`<option value="${safe(value)}" ${v===value?'selected':''}>${safe(text)}</option>`).join('')}</select></div>`;
- }).join('')}</section><aside class="a2-judgment-panel"><h2>판단과 우선 확인사항</h2>${(()=>{const d=domains.find(x=>x.id===selectedDomain);return `<div class="a2-big-grade">${d.status==='READY'?d.grade+'등급':d.status==='CONFLICTING'?'상충 · 보류':'미평가'}</div><p>${d.missing.length?`미확인: ${safe(d.missing.join(', '))}`:d.conflicting.length?`상충: ${safe(d.conflicting.join(', '))}`:'입력된 근거를 확인하세요.'}</p><h3>현재 입력 근거</h3>${d.facts.map(x=>`<div class="a2-fact"><b>${safe(x.label)}</b><span>${safe(x.value)}</span></div>`).join('')}`})()}</aside></div>`;
+ return `<div class="a2-field"><label for="a2-field-${safe(id)}"><span>${i+1}. ${safe(label)}</span>${required?'<small>필수</small>':'<small>추가 확인</small>'}</label><select id="a2-field-${safe(id)}" data-a2-field="${safe(id)}" ${canEdit()?'':'disabled'}><option value="" ${v===''?'selected':''}>미확인 · 자료 없음</option><option value="CONFLICT" ${v==='CONFLICT'?'selected':''}>상충 · 자료 간 불일치</option>${options.map(([value,text])=>`<option value="${safe(value)}" ${v===value?'selected':''}>${safe(text)}</option>`).join('')}</select></div>`;
+ }).join('')}<details class="field-guidance"><summary>항목별 입력 안내</summary>${ENGINE_DOMAINS.find(d=>d.id===selectedDomain).fields.map(f=>`<p><b>${safe(f.label)}</b><br>${safe(f.note||'별도의 상세 설명 없음')} · 자료 확인 또는 기록 대조</p>`).join('')}</details></section><aside class="a2-judgment-panel"><h2>판단과 우선 확인사항</h2>${(()=>{const d=domains.find(x=>x.id===selectedDomain);return `<div class="a2-big-grade">${d.status==='READY'?d.grade+'등급 · '+safe(TIER_LABELS[d.grade]):d.status==='CONFLICTING'?'상충 · 보류':'미평가'}</div><p>${[d.missing.length?'미확인: '+d.missing.join(', '):'',d.conflicting.length?'상충: '+d.conflicting.join(', '):''].filter(Boolean).map(safe).join('<br>')||'입력된 근거를 확인하세요.'}</p><h3>현재 입력 근거</h3>${d.traces.map(x=>`<div class="a2-fact"><b>${safe(x.name)}</b><span>${safe(x.reason)} · ${x.severity===null?'판단 보류':x.severity+'등급'}<br><small>${safe(x.id)} · 자체 검토규칙</small></span></div>`).join('')}<details><summary>계산 방식·참고 자료</summary><p>${TIER_LABELS.map((label,i)=>`${i}: ${safe(label)}`).join('<br>')}</p><p>확인된 항목 중 최고 등급을 사용합니다. 필수 결측 또는 상충 시 등급을 확정하지 않습니다. 사회환경 복합 지원 공백 규칙을 보존합니다. 검증된 임상 척도가 아닙니다.</p>${(ENGINE_DOMAINS.find(x=>x.id===selectedDomain).sources||[]).map(id=>`<p><a href="${safe(SOURCES[id].url)}" target="_blank" rel="noopener">${safe(SOURCES[id].label)}</a></p>`).join('')}</details>`})()}</aside></div>`;
 }
 function handoffAssessment(){
  const r=get();if(!r.a2Dirty)return;
@@ -284,14 +323,10 @@ function handoffAssessment(){
   announce('발행된 계획은 변경할 수 없습니다. 새 버전 개정 후 평가를 인계하세요.');return;
  }
  if(!confirm('현재 A2 평가 변경을 계획에 반영할까요? 검토 해결 기록과 항목 확인 상태를 다시 검토하게 됩니다.'))return;
- const c=CASES.find(x=>x.id===selectedId),timestamp=now(),vals=deepCopy(r.a2Values);
- r.assessment={id:`AS-${selectedId}-${Date.now()}`,ruleVersion:'v0.1',capturedAt:timestamp,values:vals,domainResults:evaluateA2({...c,values:vals})};
- const issues=issuesFromValues(vals);
- if(selectedId==='SYN-001')issues.push({id:'ISS-plan-med-original',domain:'medication',title:'환자용 복약 안내의 확인된 원문',reason:'복약 정보에 대한 확인된 원천자료가 필요합니다.',status:'OPEN',source:'',resolution:'',reviewer:''});
- r.draft.issues=issues;
- for(const item of r.draft.items)item.verified=false;
- r.draft.status='DRAFT';r.draft.approval=null;r.a2Dirty=false;
- audit(r,role,'ASSESSMENT_IMPORTED','변경된 평가를 A3 계획에 인계, 항목 재검토 필요');save();activeTab='issues';go('plan');announce('새 평가가 인계되었습니다. 항목을 다시 확인하세요.');
+ const before=deepCopy(r);
+ try{currentStore()[selectedId]=commitEvaluation(r,role);if(!saveWorkflow(before))return;}
+ catch(error){announce(error.message);return;}
+ activeTab='issues';go('plan');announce('새 평가가 반영되었습니다. 안내 항목과 PDF를 다시 확인하세요.');
 }
 function showBlockers(){
  const r=get(),problems=blockers(r,docsAvailable());
@@ -407,7 +442,7 @@ function learnNavigate(target){
 
 // Root event handlers
 $('#patient-select').innerHTML=CASES.map(c=>`<option value="${c.id}">${safe(c.name)} · ${c.id}</option>`).join('');
-$('#patient-select').addEventListener('change',e=>{const patientId=e.target.value;if(practiceMode)leavePractice();selectedId=patientId;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);render()});
+$('#patient-select').addEventListener('change',e=>{const patientId=e.target.value;if(practiceMode)leavePractice();selectedId=patientId;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);go(screen)});
 $('#actor').addEventListener('change',e=>{role=e.target.value;render()});
 $('#domain-grid').addEventListener('click',e=>{const button=e.target.closest('[data-domain]');if(!button)return;selectedDomain=button.dataset.domain;activeTab='issues';render()});
 $('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;activeTab=b.dataset.tab;render()});
@@ -439,12 +474,13 @@ $('#integrated-discard').addEventListener('click',()=>{
 $('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#revoke').addEventListener('click',revoke);
 $('#reset').addEventListener('click',()=>{if(!confirm(`현재 ${selectedId}의 작성 내용과 이력을 초기화할까요?`))return;const currentDocIds=new Set(get()?.draft?.docs?.map(d=>d.id)||[]);currentStore()[selectedId]=makeInitial(selectedId);for(const key of currentDocIds)fileStore.delete(key);activeTab='plan';previewMode='draft';expandedPlanItems=new Set(['today']);save();render();announce('작성 내용을 초기화했습니다.')});
 function toggleRail(flag){collapsed=flag;$('#shell').classList.toggle('rail-collapsed',collapsed);$('#rail-toggle').setAttribute('aria-expanded',String(!collapsed));$('#rail-toggle').setAttribute('aria-label',collapsed?'사이드바 펼치기':'사이드바 접기');$('#rail-toggle').title=collapsed?'사이드바 펼치기':'사이드바 접기';try{localStorage.setItem('a3-rail-collapsed-v04',collapsed?'1':'0')}catch{}}
-$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();render();bootstrapping=false;
+$('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();journey=[routeEntry()];journeyIndex=0;routeURL();render();updateJourney();bootstrapping=false;
+$('#journey-back').addEventListener('click',()=>traverseJourney(-1));$('#journey-next').addEventListener('click',()=>traverseJourney(1));
 window.addEventListener('storage',e=>{if(e.key===HANDOFF_KEY||e.key===null)refreshIntegrationInbox();});
 
 // A1, A2 and standalone patient preview are navigable local screens; no A2 baseline files are mutated.
-document.querySelectorAll('.rail-link[data-nav]').forEach(button=>button.addEventListener('click',()=>{
- const target=button.dataset.nav;if(target==='patients')showPatientDialog();else go(target);
+document.querySelectorAll('[data-nav]').forEach(button=>button.addEventListener('click',()=>{
+ go(button.dataset.nav);
 }));
 $('#top-help').addEventListener('click',()=>$('#help-dialog').showModal());
 $('#help-dialog').addEventListener('click',e=>{if(e.target.closest('[data-open-learning]')){$('#help-dialog').close();learningUnit='intro';go('learn')}});
@@ -455,15 +491,24 @@ $('#blockers-list').addEventListener('click',e=>{const b=e.target.closest('[data
 $('#preview-toggle').addEventListener('click',togglePreview);
 $('#open-preview-page').addEventListener('click',()=>go('patient-preview'));
 $('#aux-screen').addEventListener('click',e=>{
+ const pick=e.target.closest('[data-patient-pick]');if(pick){choosePatient(pick.dataset.patientPick,pick.dataset.targetScreen);return;}
+ if(e.target.closest('[data-open-assessment]')){go('assessment');return;}
  const domain=e.target.closest('[data-a2-domain]');if(domain){selectedDomain=domain.dataset.a2Domain;renderAuxiliary();return}
  if(e.target.closest('#back-to-plan'))go('plan');
+ if(e.target.closest('#reset-evaluation')){
+  if(!canEdit()||!confirm('현재 환자의 평가 입력만 합성 초기값으로 복원할까요? 승인 무효화 및 평가 재반영이 필요합니다.'))return;
+  const before=deepCopy(get());let next=get();
+  try{const initial=CASES.find(c=>c.id===selectedId).values;for(const d of ENGINE_DOMAINS)for(const f of d.fields)next=editEvaluation(next,d.id,f.id,initial[d.id]?.[f.id]??null,role);currentStore()[selectedId]=next;if(saveWorkflow(before))render();}
+  catch(error){currentStore()[selectedId]=before;announce(error.message);render();}return;
+ }
  if(e.target.closest('#handoff-a2'))handoffAssessment();
  if(e.target.closest('#aux-switch-preview')){previewMode=previewMode==='published'?'draft':'published';renderAuxiliary()}
 });
 $('#aux-screen').addEventListener('change',e=>{
  const input=e.target.closest('[data-a2-field]');if(!input)return;
- get().a2Values[selectedDomain][input.dataset.a2Field]=input.value||null;
- get().a2Dirty=true;save();renderAuxiliary();
+ const before=deepCopy(get()),fieldId=input.id;
+ try{currentStore()[selectedId]=editEvaluation(get(),selectedDomain,input.dataset.a2Field,input.value||null,role);if(!saveWorkflow(before))return;render();document.getElementById(fieldId)?.focus();}
+ catch(error){announce(error.message);render();}
 });
 
 

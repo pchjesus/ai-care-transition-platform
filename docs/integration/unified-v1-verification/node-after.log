@@ -1,0 +1,62 @@
+
+> test
+> node --test shared/*.test.js a2/tests/*.test.js a3/tests/*.test.js
+
+✔ All 6 domain scores deterministic (4.178117ms)
+✔ fully described patient gets 0 and no unknown (0.702796ms)
+✔ missing required fields yield unknown not score 0, even if other risk flags (0.235647ms)
+✔ conflicting observation yields explicit CONFLICTING even if severe (0.202688ms)
+✔ social living alone not automatically grade 3 (0.272842ms)
+✔ copied A3 schema retains all 30 approved A2 fields, options and scores (1.455395ms)
+✔ A3 evaluation matches untouched A2 for every option, missing and conflict input (17.862874ms)
+✔ missing assessment issues cannot bypass review after revision (4.01704ms)
+✔ unknown required option is an assessment issue, never silently accepted (3.718609ms)
+✔ absent issue target is rejected safely (0.185834ms)
+✔ unrecognized source target kind cannot count as an issue (0.211362ms)
+✔ different encounter and unrelated field references are rejected (0.233214ms)
+✔ case library has four dedicated scenarios and per-patient records (1.171276ms)
+✔ cross-patient or unrelated evidence cannot count as a reviewed plan source (2.559532ms)
+✔ pending medication record cannot satisfy a medical review, confirmed reply can (0.220164ms)
+✔ medication conflict remains hard blocker even if review text and linked evidence are filled (0.803384ms)
+✔ SYN002 complete draft references real synthetic source records (1.294458ms)
+✔ SYN004 contains immutable v1 publication and requires fresh review for v2 (0.920216ms)
+✔ normal, study and baseline use distinct keys and roundtrip patient data (4.789208ms)
+✔ corrupt JSON, wrong shapes and foreign-patient records remain untouched (3.456393ms)
+✔ quota and denied storage errors propagate without claiming a successful save (0.294043ms)
+✔ a stale repository cannot overwrite edits saved by another tab (1.863486ms)
+✔ foreign publication snapshots and malformed view models are rejected (1.053683ms)
+✔ A2 read-only import has six domains and 30 fields (18 required) (1.287517ms)
+✔ SYN-002 all six domains 0, but six basic plan sections still exist (1.968371ms)
+✔ SYN-003 has missing fields and medication conflict block even though A2 assigns 3 (0.750626ms)
+✔ SYN-001 requires an independent, reviewed medication patient instruction (0.486457ms)
+✔ only designated approver can approve and publish a clean, unchanged request (3.275968ms)
+✔ a reviewed patient PDF needs live file bytes during publication (0.626233ms)
+✔ patient-facing projection excludes internal items, raw source IDs, PDF hashes, reviewer identifiers (0.636618ms)
+✔ new revision keeps existing published snapshot and resets approval (0.800269ms)
+✔ fingerprint changes when underlying A2 input snapshot changes (0.762714ms)
+✔ A2 handoff creates new immutable A3 assessment and invalidates reviews (4.668679ms)
+✔ cross-patient import and currently published plan reject safely (0.797805ms)
+✔ A2 missing/CONFLICT values remain blocked in A3 (0.85488ms)
+✔ same assessment ID with different values is not silently treated as a duplicate (1.360795ms)
+✔ older assessment cannot replace a newer imported assessment (1.008346ms)
+✔ handoff invalidates reviewed patient PDFs but preserves publications and internal docs (0.978542ms)
+✔ single engine is byte identical to preserved A2 v0.5; all choices and social combinations agree (34.515163ms)
+✔ evaluation edit immediately invalidates approval without changing committed assessment or another patient (1.802226ms)
+✔ commit rederives issues, invalidates PDF review and plan checks, preserves publication and unrelated issue (3.324249ms)
+✔ published and revoked assessments reject edits and commit; revision permits edits while preserving snapshot (1.256001ms)
+✔ invalid evaluation target or option cannot mutate a record (0.331469ms)
+✔ all four scenarios remain valid after evaluation commit; missing and medication conflict remain blocked (1.598816ms)
+✔ Phase 1 approved repository loads without changing its fingerprint, assessment or approval (1.488824ms)
+✔ SYN-002 exports its exact values and checks against A2 rules (4.694708ms)
+✔ missing and conflicting data cannot silently become ready (0.596098ms)
+✔ reject invalid option, unknown patient, forged result and forged encounter (1.728998ms)
+✔ inbox writes, reads, rejects cross-patient overwrite and clears with token (1.936945ms)
+✔ corrupt inbox fails closed (0.511674ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 279.644287
