@@ -1,9 +1,0 @@
-{
-  "name": "care-transition-integrated-v10-phase1",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "test": "node --test shared/*.test.js a2/tests/*.test.js a3/tests/*.test.js",
-    "serve": "python3 -m http.server 5500"
-  }
-}
