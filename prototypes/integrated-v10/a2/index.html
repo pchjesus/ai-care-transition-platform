@@ -1,0 +1,5 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A2 · 통합 워크벤치로 이동</title><link rel="icon" href="data:,"></head><body><p><a href="../a3/index.html?screen=assessment">통합 A2 평가 열기</a></p><script>
+const query=new URLSearchParams(location.search),candidate=query.get('patient');
+const patient=/^SYN-00[1-4]$/.test(candidate)?candidate:['SYN-001','SYN-002','SYN-003'][Number(candidate)]||'SYN-001';
+location.replace('../a3/index.html?screen=assessment&patient='+encodeURIComponent(patient));
+</script></body></html>

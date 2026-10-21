@@ -1,0 +1,8 @@
+/* Integration-only affordances; standalone A2/A3 source styles remain unchanged. */
+.integration-actions,.integration-inbox{margin:14px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #bfd6c9;border-radius:12px;padding:12px 14px;background:#f3f8f5;color:#234a37;font:inherit;}
+.integration-actions p,.integration-inbox p{margin:3px 0;font-size:13px;line-height:1.5;color:#446354}
+.integration-actions button,.integration-inbox button{cursor:pointer;min-height:40px}
+.integration-inbox .integration-info{flex:1;min-width:180px}
+.integration-inbox a,.integration-actions a{color:#215f44;text-underline-offset:3px}
+#integrated-a2-status,#integrated-a3-status{font-size:13px;min-height:1em}
+@media(max-width:480px){.integration-actions,.integration-inbox{align-items:stretch;flex-direction:column}.integration-actions button,.integration-inbox button{width:100%}}

@@ -1,0 +1,13 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>퇴원 전환관리 시작 화면으로 이동</title></head><body><p>통합 워크벤치로 이동합니다. <a id="redirect-link" href="../../index.html">직접 열기</a></p><script>
+const dest=new URL("../../index.html",location.href);
+for(const [key,value] of new URLSearchParams(location.search)){
+ if(!['patient','handoff','screen','mode'].includes(key))continue;
+ if(key==='patient' && !/^(SYN-00[1-4]|[012])$/.test(value))continue;
+ if(key==='handoff' && !/^SYN-00[1-4]$/.test(value))continue;
+ if(key==='screen' && !['patients','assessment','plan','patient-preview','compare','learn'].includes(value))continue;
+ if(key==='mode' && value!=='study')continue;
+ dest.searchParams.set(key,value);
+}
+document.getElementById('redirect-link').href=dest.href;
+location.replace(dest.href);
+</script></body></html>

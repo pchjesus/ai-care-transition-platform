@@ -1,0 +1,47 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#214B3B"><title>병원용 통합 워크벤치 v1.0</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="../integration.css"><link rel="stylesheet" href="../unified.css"><link rel="icon" href="data:,"></head><body>
+<div class="shell" id="shell">
+ <aside class="rail" id="rail" aria-label="병원 업무 메뉴">
+  <div class="brand-row"><div class="brand"><div class="brand-mark">D<span>.</span></div><div class="brand-name"><b>퇴원관리 워크벤치</b><small>Clinical workspace</small></div></div><button class="rail-toggle" id="rail-toggle" aria-label="사이드바 접기" aria-expanded="true" title="사이드바 접기">‹</button></div>
+  <p class="rail-cap">업무 흐름</p>
+  <button type="button" class="rail-link" data-nav="patients" title="A1 · 환자 목록"><span class="rail-short">A1</span><span class="rail-name">환자 목록</span></button>
+  <button type="button" class="rail-link" data-nav="assessment" title="A2 · 다영역 평가"><span class="rail-short">A2</span><span class="rail-name">다영역 평가</span></button>
+  <button type="button" class="rail-link active" data-nav="plan" aria-current="page" title="A3 · 의료진 검토"><span class="rail-short">A3</span><span class="rail-name">계획 검토·발행</span><span class="active-dot">●</span></button>
+  <button type="button" class="rail-link" data-nav="patient-preview" title="환자용 미리보기"><span class="rail-short">B</span><span class="rail-name">환자용 미리보기</span></button>
+  <button type="button" class="rail-link rail-help" data-nav="learn" title="사용법·학습"><span class="rail-short">?</span><span class="rail-name">사용법·학습</span></button>
+
+ </aside>
+ <main class="workspace">
+  <nav class="journey-nav" aria-label="통합 화면 이동"><a href="../index.html">통합 홈</a><button type="button" id="journey-back" disabled>이전</button><button type="button" id="journey-next" disabled>다음</button><button type="button" data-nav="compare">화면 비교</button></nav>
+  <div class="topbar"><div class="breadcrumb">병원 업무 <span> / </span> 퇴원 전환관리 <span> / </span> <b>A3</b></div><div class="top-actions"><button class="plain-button" id="reset">초기화</button><button class="plain-button" id="top-help" type="button">빠른 도움말</button></div></div>
+  <div class="content common-context" id="common-context">
+   <header class="headline"><div><div class="eyebrow">A3 · 퇴원계획</div><h1>퇴원 후 관리계획</h1><p>평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.</p></div><div class="headline-meta"><span class="version-chip" id="version-chip">초안 v0.1</span><span id="save-state" class="save-state" role="status">저장됨</span></div></header>
+   <div class="summary-row">
+   <section class="patient-strip" aria-label="환자 컨텍스트"><div class="patient-overview"><div class="avatar">가</div><div><div class="upper-label">환자 정보</div><h2 id="patient-name">—</h2><div class="patient-detail" id="patient-detail">—</div></div></div><div class="patient-chooser"><label for="patient-select">환자 선택</label><select id="patient-select"></select></div></section>
+   <button type="button" class="gate-banner" id="gate-banner" aria-label="발행 전 확인사항 보기" aria-haspopup="dialog"></button>
+   </div>
+  </div>
+  <div class="content" id="a3-screen">
+   <details class="legacy-inbox"><summary>Phase 1 외부 인계함</summary><section class="integration-inbox" aria-label="A2 원본 평가 인계"><div class="integration-info"><strong>A2 → A3 평가 인계</strong><p id="integrated-a3-status" role="status" aria-live="polite">대기 자료 확인 중</p></div><a href="../a2/index.html">A2 평가 열기</a><button type="button" id="integrated-discard" class="btn outline" hidden>인계 취소</button><button type="button" id="integrated-receive" class="btn primary" disabled>선택 환자 평가 반영</button></section></details>
+   <div class="section-head"><div><h2>6개 영역 평가 결과</h2><p>영역을 선택하면 검토 항목을 확인할 수 있습니다.</p></div><span class="micro-link" id="assessment-stamp" hidden></span></div>
+   <nav class="domains" id="domain-grid" aria-label="A2 영역별 결과"></nav>
+   <div class="editor-head"><div class="tabs" role="tablist" aria-label="A3 작업"><button data-tab="plan" role="tab" aria-selected="true">계획 편집</button><button data-tab="issues" role="tab" aria-selected="false">근거·미해결 <span id="issue-count"></span></button><button data-tab="documents" role="tab" aria-selected="false">PDF·첨부</button><button data-tab="history" role="tab" aria-selected="false">승인·이력</button></div><div class="actor-box"><button type="button" class="mini-button" id="preview-toggle" aria-expanded="false" aria-controls="preview-pane">미리보기 펼치기</button><label for="actor">담당 역할</label><select id="actor"><option value="NURSE">작성 간호사</option><option value="PHARMACIST">약사</option><option value="PHYSICIAN">담당 의사</option><option value="APPROVER">지정 최종 승인자</option></select></div></div>
+   <div class="working-grid"><section class="work-pane" id="work-pane" aria-live="polite"></section><aside class="preview-pane" id="preview-pane" aria-label="환자 공개 미리보기"><div class="preview-pane-top"><div><div class="eyebrow">환자에게 보이는 내용</div><h3>환자용 미리보기</h3></div><span class="preview-mark" id="preview-mark">미발행 초안</span></div><div class="preview-frame" id="preview-frame"></div><div class="preview-footer"><button id="show-current" class="text-link">현재 발행본 보기</button><button id="open-preview-page" class="text-link">큰 화면에서 보기 ↗</button></div></aside></div>
+   <section class="bottom-actions"><div class="work-status"><strong id="workflow-state">초안 작성 중</strong><small id="workflow-sub">마지막 수정 사항 저장됨</small></div><div class="button-group"><button id="revise" class="btn outline" hidden>새 버전 개정</button><button id="request" class="btn outline">검토 요청</button><button id="return" class="btn outline" hidden>보완 요청</button><button id="approve" class="btn primary" hidden>승인</button><button id="publish" class="btn primary" hidden>계획 발행</button><button id="revoke" class="btn danger-outline" hidden>발행 철회</button></div></section>
+
+  </div>
+  <section class="content auxiliary-screen" id="aux-screen" hidden aria-label="보조 작업 화면"></section>
+ </main>
+</div>
+<dialog id="patient-dialog" class="modal-dialog" aria-labelledby="patient-dialog-title"><div class="modal-head"><h2 id="patient-dialog-title">환자 목록</h2><button type="button" class="icon-close" data-close-dialog="patient-dialog" aria-label="환자 목록 닫기">×</button></div><p>검토할 환자를 선택하세요.</p><div id="patient-list" class="patient-list"></div></dialog>
+<dialog id="blockers-dialog" class="modal-dialog" aria-labelledby="blockers-dialog-title"><div class="modal-head"><h2 id="blockers-dialog-title">발행 전 확인사항</h2><button type="button" class="icon-close" data-close-dialog="blockers-dialog" aria-label="확인사항 닫기">×</button></div><p id="blockers-description">항목을 선택하면 수정할 위치로 이동합니다.</p><div id="blockers-list" class="blocker-list"></div></dialog>
+<dialog id="help-dialog" class="modal-dialog" aria-labelledby="help-dialog-title"><div class="modal-head"><h2 id="help-dialog-title">사용 안내·평가 설명</h2><button type="button" class="icon-close" data-close-dialog="help-dialog" aria-label="사용 안내 닫기">×</button></div><div class="help-sections">
+<section><h3>화면 흐름</h3><p>A1 환자 목록 → A2 다영역 평가 → A3 의료진 검토·승인·계획 발행. 왼쪽 B 메뉴는 환자 공개 내용을 독립 화면으로 보여줍니다. A3의 미리보기는 접어두거나 펼칠 수 있습니다.</p></section>
+<section><h3>평가 결과의 의미</h3><p>이 평가는 검증된 임상 위험도나 퇴원 허가 기준이 아닙니다. A2의 등급은 업무 검토 우선도이며, 발행 승인 여부와 다릅니다. A2의 0~3등급과 미평가·상충은 자체 시연 규칙으로 계산하며 공식 통합돌봄 6문항이 아닙니다.</p><p id="help-assessment-ref">평가 기록</p></section>
+<section><h3>근거와 계획 작성</h3><p>A2 선택값만으로 실제 약물명·용법을 알 수 없습니다. 안내 내용의 별도 근거가 필요합니다. A2 선택값에 포함되지 않은 구체적인 처방, 보행 제한, 상처관리 방법을 추론해 생성하지 마세요. 의료진의 확인된 기록을 입력하고 역할별 검토를 진행합니다.</p></section>
+<section><h3>발행 전 확인사항</h3><p>발행 전 해결할 사항을 선택하면 각 항목의 수정 위치로 이동합니다. 핵심 미해결 사항이 하나라도 남으면 승인이 차단됩니다. 해결 기록과 계획 내용 검토는 별개입니다.</p></section>
+<section><h3>PDF 및 데이터 관리</h3><p>첨부 PDF는 최대 4MB로 임시 보관하며 새로고침 이후 원본 파일을 다시 연결해야 할 수 있습니다. 인쇄 → PDF 저장 기능으로 문서를 내보냅니다. 실제 서버의 자동 PDF 생성·영구 보관·원자적 발행은 구현되지 않았습니다. 입력 자료는 브라우저 가상 저장소에 저장되며 A2 v0.5 원본이나 환자용 v1.2 앱과 실시간 연결되지 않습니다.</p></section>
+<section><h3>시연 및 안전 경계</h3><p>이 시스템은 합성 환자 데이터만 사용하는 연구·창업용 프로토타입입니다. 실제 임상 의사결정, 퇴원허가, 의료기관 승인, 실환자 공개 및 외부기관 전송에 사용하지 않습니다. 가상 담당자 역할은 실제 의료인 인증이 아닙니다.</p></section></div><p><button class="btn outline" type="button" data-open-learning>학습 탭에서 자세히 보기 →</button></p></dialog>
+<dialog id="source-dialog" class="modal-dialog source-dialog" aria-labelledby="source-dialog-title"><div class="modal-head"><h2 id="source-dialog-title">관련 원천자료</h2><button type="button" class="icon-close" data-close-dialog="source-dialog" aria-label="원천자료 닫기">×</button></div><p id="source-dialog-description">현재 환자의 가상 원천자료입니다.</p><div id="source-list" class="source-list"></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="print-sheet" aria-hidden="true"></div>
+<script type="module" src="app.js"></script></body></html>
