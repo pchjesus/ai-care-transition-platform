@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: case library has four dedicated scenarios and per-patient records
+ok 1 - case library has four dedicated scenarios and per-patient records
+  ---
+  duration_ms: 0.750581
+  type: 'test'
+  ...
+# Subtest: cross-patient or unrelated evidence cannot count as a reviewed plan source
+ok 2 - cross-patient or unrelated evidence cannot count as a reviewed plan source
+  ---
+  duration_ms: 1.384004
+  type: 'test'
+  ...
+# Subtest: pending medication record cannot satisfy a medical review, confirmed reply can
+ok 3 - pending medication record cannot satisfy a medical review, confirmed reply can
+  ---
+  duration_ms: 0.111909
+  type: 'test'
+  ...
+# Subtest: medication conflict remains hard blocker even if review text and linked evidence are filled
+ok 4 - medication conflict remains hard blocker even if review text and linked evidence are filled
+  ---
+  duration_ms: 0.396858
+  type: 'test'
+  ...
+# Subtest: SYN002 complete draft references real synthetic source records
+ok 5 - SYN002 complete draft references real synthetic source records
+  ---
+  duration_ms: 0.361444
+  type: 'test'
+  ...
+# Subtest: SYN004 contains immutable v1 publication and requires fresh review for v2
+ok 6 - SYN004 contains immutable v1 publication and requires fresh review for v2
+  ---
+  duration_ms: 1.715283
+  type: 'test'
+  ...
+# Subtest: A2 read-only import has six domains and 30 fields (18 required)
+ok 7 - A2 read-only import has six domains and 30 fields (18 required)
+  ---
+  duration_ms: 0.866875
+  type: 'test'
+  ...
+# Subtest: SYN-002 all six domains 0, but six basic plan sections still exist
+ok 8 - SYN-002 all six domains 0, but six basic plan sections still exist
+  ---
+  duration_ms: 1.202882
+  type: 'test'
+  ...
+# Subtest: SYN-003 has missing fields and medication conflict block even though A2 assigns 3
+ok 9 - SYN-003 has missing fields and medication conflict block even though A2 assigns 3
+  ---
+  duration_ms: 0.500073
+  type: 'test'
+  ...
+# Subtest: SYN-001 requires an independent, reviewed medication patient instruction
+ok 10 - SYN-001 requires an independent, reviewed medication patient instruction
+  ---
+  duration_ms: 0.324028
+  type: 'test'
+  ...
+# Subtest: only designated approver can approve and publish a clean, unchanged request
+ok 11 - only designated approver can approve and publish a clean, unchanged request
+  ---
+  duration_ms: 2.862581
+  type: 'test'
+  ...
+# Subtest: a reviewed patient PDF needs live file bytes during publication
+ok 12 - a reviewed patient PDF needs live file bytes during publication
+  ---
+  duration_ms: 0.370979
+  type: 'test'
+  ...
+# Subtest: patient-facing projection excludes internal items, raw source IDs, PDF hashes, reviewer identifiers
+ok 13 - patient-facing projection excludes internal items, raw source IDs, PDF hashes, reviewer identifiers
+  ---
+  duration_ms: 0.523899
+  type: 'test'
+  ...
+# Subtest: new revision keeps existing published snapshot and resets approval
+ok 14 - new revision keeps existing published snapshot and resets approval
+  ---
+  duration_ms: 0.430648
+  type: 'test'
+  ...
+# Subtest: fingerprint changes when underlying A2 input snapshot changes
+ok 15 - fingerprint changes when underlying A2 input snapshot changes
+  ---
+  duration_ms: 0.957061
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69.764242

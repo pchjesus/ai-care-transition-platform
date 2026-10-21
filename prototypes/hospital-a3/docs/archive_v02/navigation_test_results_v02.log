@@ -1,0 +1,40 @@
+NAVIGATION V0.2 PASS 39 checks
+ - no redundant caution in main
+ - a3 main available
+ - plan sections folded by default
+ - all six plan sections available
+ - patient list opens
+ - three patient records
+ - patient pick opens A2 screen
+ - a2 renders six domain controls
+ - a2 five editable fields
+ - a2 domain selection opens medication
+ - handoff enabled after field changed
+ - A3 opens after handoff
+ - new assessment id after explicit handoff
+ - blocker notice remains after handoff
+ - blockers dialog opens
+ - all blockers represented
+ - blocker jumps to relevant tab
+ - jumped issue gets highlight
+ - plan blocker opens correct folded section
+ - preview collapses to full-width edit
+ - preview expands again
+ - standalone patient preview opens
+ - return to A3 works
+ - mockup explanation moved to help
+ - help dialog closes
+ - A3 responsive no overflow 320
+ - A2 responsive no overflow 320
+ - A3 responsive no overflow 390
+ - A2 responsive no overflow 390
+ - A3 responsive no overflow 800
+ - A2 responsive no overflow 800
+ - A3 responsive no overflow 801
+ - A2 responsive no overflow 801
+ - A3 responsive no overflow 1024
+ - A2 responsive no overflow 1024
+ - A3 responsive no overflow 1440
+ - A2 responsive no overflow 1440
+ - reset restores a single expanded plan section
+ - no JS errors
