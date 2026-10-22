@@ -42,6 +42,16 @@ export function validItemSources(record,item){
   ids.every(id=>typeof id==='string'&&usableSource(findSource(id,record.patientId,record.unlockedSources||[]),'item',item.section,record.patientId));
 }
 export const canRequestRevocation=(record,role)=>['NURSE','PHARMACIST','PHYSICIAN'].includes(role)&&!!currentPublished(record)&&!(record.revocationRequest?.status==='PENDING'&&record.revocationRequest.publicationId===currentPublished(record)?.id);
+// Optional schedule: absence or PENDING must never be represented as a booked appointment.
+export function validAppointment(a){
+ if(!a||typeof a!=='object'||Array.isArray(a)||!['PENDING','CONFIRMED'].includes(a.status)||
+    !['date','time','place'].every(k=>typeof a[k]==='string'))return false;
+ if(a.place.length>160||a.date.length>10||a.time.length>5)return false;
+ if(a.status==='PENDING')return (!a.date||/^\d{4}-\d{2}-\d{2}$/.test(a.date))&&(!a.time||/^([01]\d|2[0-3]):[0-5]\d$/.test(a.time));
+ return /^\d{4}-\d{2}-\d{2}$/.test(a.date)&&/^([01]\d|2[0-3]):[0-5]\d$/.test(a.time)&&
+  a.place.trim().length>0&&Number.isFinite(Date.parse(a.date+'T00:00:00Z'))&&
+  new Date(a.date+'T00:00:00Z').toISOString().slice(0,10)===a.date;
+}
 export function currentPublished(record){return record.publications.find(p=>p.status==='PUBLISHED')||null;}
 export function blockers(record, availableDocs=new Set()){
  const d=record.draft,res=[],assessmentIssues=issuesFromValues(record.assessment.values);
@@ -59,7 +69,10 @@ export function blockers(record, availableDocs=new Set()){
  for(const sec of ['today','medication','followup','warning','contact']){
    if(!patientItems.some(i=>i.section===sec&&i.text.trim()))res.push({id:`section-${sec}`,label:`필수 안내 '${SECTIONS.find(s=>s.id===sec).label}' 없음`,group:'plan'});
  }
- for(const item of patientItems){if(!item.text.trim())res.push({id:`item-${item.id}-text`,label:`${item.title}: 안내 내용이 비어 있음`,group:'plan'});
+ for(const item of patientItems){
+   if(item.appointment!==undefined&&(item.section!=='followup'||!validAppointment(item.appointment)))
+    res.push({id:`item-${item.id}-appointment`,label:`${item.title}: 일정 확정 날짜·시간·장소를 확인하세요`,group:'plan'});
+   if(!item.text.trim())res.push({id:`item-${item.id}-text`,label:`${item.title}: 안내 내용이 비어 있음`,group:'plan'});
    if(!item.verified||!validItemSources(record,item))res.push({id:`item-${item.id}-source`,label:`${item.title}: 확인된 원천정보·검토 누락`,group:'plan'});
  }
  for(const doc of d.docs.filter(x=>x.visibility==='PATIENT')){
@@ -78,7 +91,10 @@ export function audit(record,role,event,details=''){record.audit.unshift({at:now
 export function publishedPayload(record){
  // Explicit patient-facing projection: never copy internal source IDs, audit or reviewer identifiers.
  return {patientId:record.patientId,planVersion:record.draft.version,approvedAt:record.draft.approval?.at||null,
- items:deepCopy(record.draft.items.filter(i=>i.visibility==='PATIENT').map(({id,title,section,text})=>({id,title,section,text}))),
+ items:deepCopy(record.draft.items.filter(i=>i.visibility==='PATIENT').map(({id,title,section,text,appointment})=>({
+   id,title,section,text,...(section==='followup'&&appointment?.status==='CONFIRMED'&&validAppointment(appointment)?
+    {appointment:{date:appointment.date,time:appointment.time,place:appointment.place}}:{})
+  }))),
  documents:deepCopy(record.draft.docs.filter(d=>d.visibility==='PATIENT').map(({id,name})=>({id,name}))),issuedAt:now()};
 }
 export function makeRevision(record){

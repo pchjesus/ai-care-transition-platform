@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CASES,DOMAINS} from '../data.js';
-import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision,linkedSources,validItemSources,canRequestRevocation} from '../workflow.js';
+import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision,linkedSources,validItemSources,canRequestRevocation,validAppointment} from '../workflow.js';
 
 const readyApproved = () => {
   const r=makeInitial('SYN-002');
@@ -121,4 +121,24 @@ test('revocation request rights are separate from final approval',()=>{
  r.revocationRequest={publicationId:'PUB-SYN004-V1',requestedRole:'NURSE',requestedAt:'2026-10-22T01:00:00.000Z',reason:'발행 후 대상자 안내 수정 사항을 확인했습니다.',status:'PENDING'};
  for(const role of ['NURSE','PHARMACIST','PHYSICIAN'])assert.equal(canRequestRevocation(r,role),false);
  assert.equal(currentPublished(r).status,'PUBLISHED');
+});
+
+test('typed synthetic appointment is optional for legacy but must be complete before confirmed issuance',()=>{
+ const r=readyApproved(),item=r.draft.items.find(x=>x.section==='followup');
+ assert.equal(Object.hasOwn(item,'appointment'),false);
+ const old=fingerprint(r);
+ const previous=publishedPayload(r).items.find(x=>x.section==='followup');
+ assert.equal(Object.hasOwn(previous,'appointment'),false);
+ item.appointment={status:'PENDING',date:'',time:'',place:''};
+ assert.equal(blockers(r).length,0);
+ assert.equal(Object.hasOwn(publishedPayload(r).items.find(x=>x.section==='followup'),'appointment'),false);
+ item.appointment.status='CONFIRMED';
+ assert.ok(blockers(r).some(x=>x.id==='item-followup-appointment'));
+ item.appointment={status:'CONFIRMED',date:'2026-11-06',time:'14:30',place:'가상 병원 외래'};
+ item.verified=true;
+ assert.equal(blockers(r).length,0);
+ const result=publishedPayload(r).items.find(x=>x.section==='followup');
+ assert.deepEqual(result.appointment,{date:'2026-11-06',time:'14:30',place:'가상 병원 외래'});
+ assert.notEqual(fingerprint(r),old);
+ assert.equal(validAppointment({status:'CONFIRMED',date:'2026-02-30',time:'09:00',place:'외래'}),false);
 });
