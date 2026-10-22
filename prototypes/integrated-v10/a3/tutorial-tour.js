@@ -1,5 +1,5 @@
 // In-place, synthetic-only walkthrough. No workflow/state/storage mutations.
-const steps=[
+export const GUIDED_TOUR_STEPS=[
  {scene:'hospital',target:'patients',tag:'01 / 06',title:'환자를 먼저 확인해요',body:'A1에서 가상 환자와 입원건을 선택해요. 이름과 대상이 일치하는지 확인하는 것이 첫 번째 단계예요.'},
  {scene:'hospital',target:'assessment',tag:'02 / 06',title:'필요한 돌봄을 평가해요',body:'A2의 여섯 영역에서 필요한 정보를 확인해요. 영역 등급은 실제 임상 위험도가 아니라 업무 검토용 시연 결과예요.'},
  {scene:'hospital',target:'plan',tag:'03 / 06',title:'환자가 읽을 계획을 작성해요',body:'A3에서 쉬운 안내 문구와 확인된 원천자료를 연결해요. 출처를 고르는 일과 의료진이 내용을 검토하는 일은 구분돼요.'},
@@ -7,6 +7,7 @@ const steps=[
  {scene:'patient',target:'today',tag:'05 / 06',title:'환자는 오늘 할 일을 먼저 봐요',body:'환자 화면에서는 전문적인 기록보다 당장 확인할 안내를 앞에 두어요. 아래 예시는 과거 독립 B v1.3의 디자인을 설명하기 위한 미리보기예요.'},
  {scene:'patient',target:'schedule',tag:'06 / 06',title:'이제 환자 화면을 직접 체험해 봐요',body:'일정·주의사항·도움 요청을 쉽게 찾는 화면을 확인해 보세요. 마지막 버튼은 실제 A3 발행본이 아닌, 기존 합성 예시 B v1.3을 새 탭에서 열어요.'}
 ];
+const steps=GUIDED_TOUR_STEPS;
 const hospitalScene=[
  '<div class="tour-mock-header"><b>CareBridge Lab</b><span>합성 환자 업무 시연 · A1 → A2 → A3</span></div>',
  '<div class="tour-hospital-body">',
