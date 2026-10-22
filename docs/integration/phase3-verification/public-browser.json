@@ -1,0 +1,36 @@
+{
+  "checkedAtUTC": "2026-10-22T06:18:54.525270+00:00",
+  "browser": "Chromium / actual navigation after gh-pages push",
+  "results": [
+    {
+      "url": "https://pchjesus.github.io/ai-care-transition-platform/",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://pchjesus.github.io/ai-care-transition-platform/"
+    },
+    {
+      "url": "https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=patients",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=patients"
+    },
+    {
+      "url": "https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html"
+    },
+    {
+      "url": "https://pchjesus.github.io/ai-care-transition-platform/patient/index.html",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://pchjesus.github.io/ai-care-transition-platform/patient/index.html"
+    },
+    {
+      "url": "https://pchjesus.github.io/ai-care-transition-platform/compare.html",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://pchjesus.github.io/ai-care-transition-platform/compare.html"
+    },
+    {
+      "url": "https://map.kakao.com/",
+      "status": "NOT VERIFIED",
+      "error": "Page.goto: net::ERR_TUNNEL_CONNECTION_FAILED at https://map.kakao.com/"
+    }
+  ]
+}

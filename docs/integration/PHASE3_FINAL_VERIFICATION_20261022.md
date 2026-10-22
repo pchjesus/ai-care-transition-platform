@@ -73,7 +73,14 @@ CAREBRIDGE_SITE_PARENT=/tmp/carebridge-phase3-site python3 tests/release_http.py
 
 개발 실행은 저장소 루트에서 `python3 -m http.server 5500` 후 `/prototypes/integrated-v10/a3/index.html?screen=patients` 또는 `/patient/index.html`. A3 연동 B는 같은 출처에서 합성 환자를 발행한 뒤 연다. 시연 코드 `CARE2026`은 인증이 아니다.
 
-배포 전 검증: **PASS**. 고유 최종 테스트는 Node 95 + Chromium 89 = **184 PASS / 0 FAIL**이며 배포 파일 47개 및 상대 참조 131개도 통과했다. 원격 반영·공개 사이트 확인은 아직 실행 전이며 배포 후 이 절을 실제 결과로 갱신한다. 공개 브라우저 접속 제한은 로컬 검사 결과와 구분한다.
+배포 파일 반영: **PASS**. 고유 최종 테스트는 Node 95 + Chromium 89 = **184 PASS / 0 FAIL**이며 main 실행 파일 47개와 상대 참조 131개도 통과했다.
+
+- main 런타임 구현 커밋: [`50f166b606da5ae57fbac228879282f1825776a9`](https://github.com/pchjesus/ai-care-transition-platform/commit/50f166b606da5ae57fbac228879282f1825776a9).
+- gh-pages: [`fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436`](https://github.com/pchjesus/ai-care-transition-platform/commit/fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436). 1·2차 미배포 실행 파일까지 최신 main과 맞췄으며 기존 진입점은 보존했다. 원본 A2 preview는 기존 main 파일을 그대로 복사했다.
+- 원격 gh-pages를 다시 fetch하고 manifest의 **70개 파일 전체**를 Git 객체에서 읽어 SHA-256·바이트 수·검증한 임시 배포 트리와 대조했다: [실제 배포 증거](phase3-verification/deployed-files.json). `release-manifest.json`은 런타임 기준 main SHA와 이전 Pages SHA를 담는다.
+- main과 gh-pages 모두 일반 fast-forward push. 기존 PR #1~#4·사업계획서 브랜치·배포 설정 변경 없음. 이 결과를 추가한 후속 main 커밋은 문서/증거만 변경하며 배포 런타임은 동일하다.
+- 공개 주소: <https://pchjesus.github.io/ai-care-transition-platform/>.
+- **공개 브라우저 동작: NOT VERIFIED**. 배포 후 실제 Chromium으로 시작 화면, 병원 워크벤치, 연동 B, 독립 B, 비교 화면 및 카카오맵에 접속했지만 모두 `net::ERR_TUNNEL_CONNECTION_FAILED`였다: [실제 시도 기록](phase3-verification/public-browser.json). Pages 빌드 완료·CDN 캐시 갱신·공개 사이트 실행 성공은 확인하지 못했다. 로컬 배포 경로 3 PASS와 구분한다.
 
 변경 파일: 실행 코드 `patient/{comfort-ui.js,comfort.css,time-zones.js}`, `shared/publication-events.js`; 단위 검사 `shared/{destinations,time-zones}.test.js`; 브라우저 검사 `tests/{comfort_http,stabilization_http,release_http}.py`; 정적 파일 검증 `tests/release_assets.py`; 이 보고서/증거와 2차 보고서의 가설 문구.
 

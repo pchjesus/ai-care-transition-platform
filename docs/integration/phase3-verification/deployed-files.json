@@ -1,0 +1,30 @@
+{
+  "result": "PASS",
+  "remotePagesCommit": "fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436",
+  "runtimeSourceCommit": "50f166b606da5ae57fbac228879282f1825776a9",
+  "manifestFilesVerified": 70,
+  "stagedTree": "da7f37b597f09add00aba668db634c81f9d86355",
+  "changedFiles": [
+    "compare.html",
+    "index.html",
+    "patient/index.html",
+    "prototypes/hospital-a2/preview.html",
+    "prototypes/integrated-v10/a3/app.js",
+    "prototypes/integrated-v10/a3/storage.js",
+    "prototypes/integrated-v10/a3/tutorial-tour.css",
+    "prototypes/integrated-v10/a3/tutorial-tour.js",
+    "prototypes/integrated-v10/a3/workflow.js",
+    "prototypes/integrated-v10/patient/app.js",
+    "prototypes/integrated-v10/patient/comfort-ui.js",
+    "prototypes/integrated-v10/patient/comfort.css",
+    "prototypes/integrated-v10/patient/connected.css",
+    "prototypes/integrated-v10/patient/index.html",
+    "prototypes/integrated-v10/patient/reminders.js",
+    "prototypes/integrated-v10/patient/standalone-comfort.js",
+    "prototypes/integrated-v10/patient/time-zones.js",
+    "prototypes/integrated-v10/shared/destinations.js",
+    "prototypes/integrated-v10/shared/publication-events.js",
+    "prototypes/integrated-v10/shared/publication.js",
+    "release-manifest.json"
+  ]
+}
