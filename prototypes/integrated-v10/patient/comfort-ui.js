@@ -4,9 +4,9 @@ import {directionsURL} from '../shared/destinations.js';
 import {openPatientTour} from '../a3/tutorial-tour.js';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const steps=[
- {screen:'today',target:'today',title:'오늘 확인할 안내를 찾아요',body:'이곳에서 관리계획과 지금 확인할 내용을 볼 수 있어요. 안내를 읽는 것과 실제 치료를 수행하는 것은 달라요.'},
- {screen:'schedule',target:'schedule',title:'확정된 외래 정보를 확인해요',body:'날짜와 장소가 확정됐는지 먼저 확인하세요. 알림 설정은 예약을 만들거나 바꾸지 않아요.'},
- {screen:'help',target:'help',title:'도움과 문의 방법을 찾아요',body:'궁금한 내용은 병원 문의 안내에서 확인하세요. 생활지원과 일반 이동 안내는 의료적 이송이나 예약 확정이 아니에요.'}
+ {screen:'today',target:'today-task',title:'오늘 확인할 안내를 선택해요',body:'오늘 확인할 안내에서 항목을 선택하면 상세 내용과 관련 자료를 볼 수 있어요. 강조한 위치를 확인하고 아래 버튼으로 이동을 연습하세요.',tryLabel:'이 안내 상세 보기',tryScreen:'detail',tryTarget:'detail',tryBody:'여기가 선택한 안내의 상세 화면이에요. 안내와 PDF를 읽은 다음 필요한 경우 이해 확인에 참여할 수 있어요. 이 연습에서는 읽음·이해 확인을 기록하지 않아요.'},
+ {screen:'today',target:'schedule-tab',title:'일정 탭으로 이동해요',body:'메뉴의 일정을 선택하면 외래 일정 화면으로 이동해요. 아래 버튼으로 같은 이동 경로를 연습하세요.',tryLabel:'일정 화면 열어보기',tryScreen:'schedule',tryTarget:'schedule',tryBody:'날짜·장소가 제공된 확정 일정과 확인 중·날짜 미정인 일정을 구분하세요. 확인 중인 일정은 예약 확정이 아니며 임의의 날짜나 알림을 만들지 않아요.'},
+ {screen:'schedule',target:'reminders-tab',title:'알림 메뉴에서 설정과 내역을 찾아요',body:'내 정보 위의 알림 메뉴를 선택하세요. 알림 설정은 언제 알려줄지 정하는 곳이고, 알림함은 도착한 안내를 확인하는 곳이에요.',tryLabel:'알림 메뉴 열어보기',tryScreen:'reminders',tryTarget:'reminders',tryBody:'알림 설정에서 개인 준비·외래 알림을 관리하고, 알림함에서 발행·개정·철회와 도래한 알림을 확인하세요. 앱을 열었을 때만 확인하는 로컬 시연이며 외부로 전송하지 않아요.'}
 ];
 export function installPatientComfort(adapter){
  let storage;try{storage=localStorage}catch{}
@@ -40,18 +40,20 @@ export function installPatientComfort(adapter){
  async function write(mutator){
   if(saving)return false;
   const owner={repo,dialog,publication:openedPublication};
-  const commit=()=>{
+  const failed=error=>{if(dialog===owner.dialog){notice='저장하지 못했어요. '+error.message;draw(true);}return false;};
+  const commit=()=>{try{
    if(owner.dialog!==dialog||owner.repo!==repo)throw Error('화면이 바뀌어 저장을 취소했어요.');
    const c=context();if(owner.publication!==pubKey(c))throw Error('발행본이 바뀌었어요. 알림 관리를 다시 열어 주세요.');
-   const next=structuredClone(currentData());mutator(next,c);next.revision++;repo.save(next);loaded={data:next,error:null};
-  };
+   const next=structuredClone(currentData());mutator(next,c);next.revision++;repo.save(next);loaded={data:next,error:null};return true;
+  }catch(error){return failed(error);}};
   saving=true;pendingSave=new AbortController();dialog?.setAttribute('aria-busy','true');notice='저장 중이에요.';const status=dialog?.querySelector('#comfort-notice');if(status)status.textContent=notice;dialog?.querySelectorAll('form input,form select,form button,[data-comfort^=personal],[data-comfort=seen]').forEach(e=>e.disabled=true);
   try{
    // Participating same-origin tabs serialize the compare-and-write operation.
    if(!navigator.locks)throw Error('동시 탭 보호를 지원하는 HTTPS/localhost 브라우저가 필요해요.');
-   await navigator.locks.request('carebridge:'+repo.key,{signal:pendingSave.signal},commit);
+   const committed=await navigator.locks.request('carebridge:'+repo.key,{signal:pendingSave.signal},commit);
+   if(!committed)return false;
    if(dialog===owner.dialog){notice='이 브라우저에 저장했어요. 외부로 전송하지 않았어요.';draw();decorate();}return true;
-  }catch(error){if(dialog===owner.dialog){notice='저장하지 못했어요. '+error.message;draw(true);}return false;}
+  }catch(error){return failed(error);}
   finally{saving=false;pendingSave=null;dialog?.removeAttribute('aria-busy');if(refreshQueued){refreshQueued=false;refreshInbox();}}
  }
  function changePlan(mutator){return write((next,c)=>{if(c.status!=='PUBLISHED'||!c.publication)throw Error('유효한 발행본이 없어요.');next.plans[c.publication.publicationId]=structuredClone(planPreferences(next,c.publication));mutator(next.plans[c.publication.publicationId],next,c);});}
@@ -108,20 +110,28 @@ export function installPatientComfort(adapter){
   for(const draft of drafts){const f=[...dialog.querySelectorAll('form')].find(f=>f.dataset.comfortForm===draft.kind&&f.dataset.id===draft.id);if(f)for(const v of draft.values){const e=f.elements.namedItem(v.name);if(e){e.value=v.value;if(e.type==='checkbox')e.checked=v.checked;}}}
   dialog.scrollTop=oldScroll;(notice?dialog.querySelector('#comfort-notice'):dialog.querySelector('[data-comfort=close]'))?.focus({preventScroll:true});
  }
+ function refreshHub(){
+  const hub=document.querySelector('[data-reminder-hub]');if(!hub)return;
+  const c=context(),fresh=createReminderRepository(storage,c).load();
+  hub.querySelector('[data-hub-upcoming]').innerHTML=upcoming(c,fresh.data,fresh.error);
+  hub.querySelector('[data-hub-count]').textContent=fresh.error?'저장 자료를 읽지 못했어요. 알림 관리에서 상태를 확인하세요.':`확인하지 않은 앱 내 안내 ${inboxEvents(c,fresh.data).filter(e=>!e.seen).length}건`;
+ }
  function decorate(){
   const c=context();if(!bound(c))return;
   const header=document.querySelector('.topline'),nav=header?.querySelector('.patient-journey,.connected-controls');
   if(nav&&!header.querySelector('[data-comfort="menu"]')){nav.id='patient-journey-menu';header.querySelector('.meta').append(Object.assign(document.createElement('button'),{type:'button',className:'top-font patient-menu-toggle',textContent:'메뉴'}));const b=header.querySelector('.patient-menu-toggle');b.dataset.comfort='menu';b.setAttribute('aria-controls',nav.id);b.setAttribute('aria-expanded','false');}
-  // Standalone B originally put profile only in the crowded header.
-  const bottom=document.querySelector('.bottom-nav');if(c.source==='independent'&&bottom&&!bottom.querySelector('[data-nav="profile"]')){const b=document.createElement('button');b.dataset.nav='profile';b.innerHTML='<svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>내 정보';if(c.view==='profile')b.setAttribute('aria-current','page');bottom.append(b);bottom.classList.add('comfort-four-tabs');}
-  const main=document.querySelector('#main-content');if(!main||main.querySelector('.comfort-quick'))return;
+  const bottom=document.querySelector('.bottom-nav');if(c.source==='independent'&&bottom&&!bottom.querySelector('[data-nav="profile"]')){const b=document.createElement('button');b.dataset.nav='profile';b.innerHTML='<svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>내 정보';if(c.view==='profile')b.setAttribute('aria-current','page');bottom.append(b);}
+  bottom?.classList.add('comfort-five-tabs');
+  const main=document.querySelector('#main-content');if(!main)return;if(main.dataset.comfortDecorated){refreshHub();return;}main.dataset.comfortDecorated='true';
   const add=(where,html)=>{if(where)where.insertAdjacentHTML('beforeend',html)};
   if(c.publication){
-   const links='<section class="comfort-quick" aria-label="환자 편의 기능">'+button('settings','알림 관리')+button('inbox','알림함')+button('documents','안내 문서')+button('tour','사용 안내 (선택)')+'</section>';
-   const profile=main.querySelector('.profile-layout'),home=main.querySelector('.page-head');
-   add(profile||home||main,links);
-   const appointment=main.querySelector('.appointment');add(appointment,button('settings','외래 알림 설정'));
-   if(c.view==='today'||c.section==='medication')add(main.querySelector('.tasks,.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
+   const hub=main.querySelector('[data-reminder-hub]');
+   if(hub){hub.innerHTML=`<div class="eyebrow">나의 알림 · 이 브라우저에 저장</div><h1>알림</h1><p>개인 준비·외래 알림 설정과 도착한 안내를 나누어 확인해요.</p><div class="reminder-hub-actions"><section><h2>알림 설정</h2><p>개인이 정한 준비 알림과 발행된 확정 외래 알림을 켜거나 변경해요.</p>${button('settings','알림 관리')}</section><section><h2>알림 내역</h2><p data-hub-count role="status"></p>${button('inbox','알림함')}</section></div><section class="hub-upcoming"><h2>예정 알림</h2><div data-hub-upcoming></div></section><p>앱을 열었을 때 확인하는 로컬 시연이에요. 앱 종료·백그라운드 발송이나 외부 메시지 전송은 하지 않아요.</p>${button('tour','사용 안내 (선택)')}`;refreshHub();}
+   const appointment=main.querySelector('.appointment');if(appointment){appointment.insertAdjacentHTML('afterbegin','<div class="appointment-help">'+button('tour','사용 안내 (선택)')+'</div>');add(appointment,button('settings','외래 알림 설정'));}
+   add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents','관련 안내 문서 보기')+'</div>');
+   if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+button('tour','사용 안내 (선택)')+'</section>');
+   if(c.view==='help')add(main.querySelector('.service-page'),button('tour','사용 안내 (선택)'));
+   if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
   }else add(main,'<section class="comfort-quick">'+button('inbox','발행·철회 알림함')+'</section>');
   if(['schedule','help'].includes(c.view)){
    const appointments=c.publication?.items.filter(i=>i.section==='followup')||[];
@@ -137,7 +147,7 @@ export function installPatientComfort(adapter){
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
    if(!c.publication)return;
-   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>document.querySelector(name==='today'?'.hero-panel':name==='schedule'?'.schedule-layout':'.service-page'),context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:()=>document.querySelector('[data-comfort="tour"]')};
+   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>{const selectors={'today-task':'.tasks .task',detail:'.detail-wrap',schedule:'.schedule-layout',reminders:'.reminder-hub-actions','schedule-tab':'.side [data-view=schedule],.side [data-nav=schedule]','reminders-tab':'.side [data-view=reminders],.side [data-nav=reminders]'};const navName=name==='schedule-tab'?'schedule':name==='reminders-tab'?'reminders':null;return navName?[...document.querySelectorAll(selectors[name]+`,.bottom-nav [data-view=${navName}],.bottom-nav [data-nav=${navName}]`)].find(e=>e.getClientRects().length):document.querySelector(selectors[name]);},context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:()=>document.querySelector('[data-comfort="tour"]')};
    openPatientTour(b,bridge,{brief:true,steps});return;
   }
   if(a==='seen'){write(next=>next.seen[b.dataset.id]=true);return;}
@@ -162,6 +172,7 @@ export function installPatientComfort(adapter){
  }
  window.addEventListener('patient-render',()=>{decorate();if(dialog&&(!bound(context())||openedPublication!==pubKey(context())))changedPublication();});
  window.addEventListener('storage',e=>{
+  refreshHub();
   if(repo&&(e.key===repo.key||e.key===null)&&dialog){
    // A delayed storage event must not erase the failed compare-and-write result.
    if(!notice.startsWith('저장하지 못했어요.'))notice='다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 닫고 다시 열어 주세요.';
@@ -170,7 +181,7 @@ export function installPatientComfort(adapter){
   if(dialog&&openedPublication!==pubKey(context()))changedPublication();
  });
  // Foreground refresh never reloads an editable repository's compare-and-write token.
- function tick(){if(!dialog||document.visibilityState!=='visible')return;if(openedPublication!==pubKey(context()))changedPublication();else if(mode==='inbox')refreshInbox();else if(mode==='settings')refreshUpcoming();}
+ function tick(){refreshHub();if(!dialog||document.visibilityState!=='visible')return;if(openedPublication!==pubKey(context()))changedPublication();else if(mode==='inbox')refreshInbox();else if(mode==='settings')refreshUpcoming();}
  window.addEventListener('focus',tick);document.addEventListener('visibilitychange',tick);
  let timer=setInterval(tick,60000);
  window.addEventListener('pagehide',()=>clearInterval(timer));

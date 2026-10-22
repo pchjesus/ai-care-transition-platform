@@ -1,17 +1,12 @@
 {
-  "sourceCommit": "50f166b606da5ae57fbac228879282f1825776a9",
-  "previousPagesCommit": "00eed8d43f0af54137c9cadfab61c4d4bd0f3b68",
+  "sourceCommit": "de85a0c17beea082af26a9c998f5a031e543385f",
+  "previousPagesCommit": "fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436",
   "isSyntheticDemo": true,
   "files": [
     {
       "path": ".nojekyll",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "README.md",
-      "bytes": 2000,
-      "sha256": "0016c37313c187fc7116f800cbc3d7dc4c9adc6d71077533fb32d2f0441a695f"
     },
     {
       "path": "a2/app.js",
@@ -110,8 +105,8 @@
     },
     {
       "path": "patient/index.html",
-      "bytes": 332283,
-      "sha256": "e25d0df10fe9d67c40fabc21386c238b064e3efdd7b0f0f51c80630ff442884a"
+      "bytes": 332498,
+      "sha256": "17ec2df93b1aed7aa42480ec4e22cfc4ffb56dfc19c75f489fd5e91ddd17029f"
     },
     {
       "path": "prototypes/hospital-a2/app.js",
@@ -175,8 +170,8 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/app.js",
-      "bytes": 87239,
-      "sha256": "ad42a554e540531cac0d5d06eebf7afb2010dd005891b38afd8808d6df21e188"
+      "bytes": 90864,
+      "sha256": "fe1deb1ffa01ccf7d19c14aa2f82122f02a6a792f1aa524cdc8437a514536477"
     },
     {
       "path": "prototypes/integrated-v10/a3/data.js",
@@ -205,8 +200,13 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/index.html",
-      "bytes": 12388,
-      "sha256": "e97865b4241a088d357011905fbe4ccc8c39ad8029c0ebe62837a006202dafa1"
+      "bytes": 12454,
+      "sha256": "20e48e8af18a241a8ececfaaba06bd2565f9c523cb706ff581876f40a4d24aa1"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/review-display.js",
+      "bytes": 730,
+      "sha256": "1e61cfdf985f81d043eac274722aecde36305aa3b2744a093a63b7878a8a3475"
     },
     {
       "path": "prototypes/integrated-v10/a3/source-library.js",
@@ -225,13 +225,13 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/tutorial-tour.css",
-      "bytes": 2705,
-      "sha256": "a29f85d82dcc105186d39971518a29da8097c28355deefa7cfeb550f8442cd81"
+      "bytes": 2977,
+      "sha256": "48f307425ea76011affb60d95a6590edd0d4af76df8ebc441b53f16d0c74dc18"
     },
     {
       "path": "prototypes/integrated-v10/a3/tutorial-tour.js",
-      "bytes": 14171,
-      "sha256": "88a19a284f44dc8203886e618cd15da83fe27f0806645dfc1d37d19423bb58c2"
+      "bytes": 14914,
+      "sha256": "bbfa926356f3f5fa91da2351a189e183a163aca45eedcd690695d01797b65cad"
     },
     {
       "path": "prototypes/integrated-v10/a3/workflow.js",
@@ -250,18 +250,18 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/app.js",
-      "bytes": 36202,
-      "sha256": "8918140e6c5d85d55cd4e312616801b8d2754545e1acc01648365a6a6869d490"
+      "bytes": 36498,
+      "sha256": "4d1cf3856d322cf9b74ceb3962a944370d44c51ff276399b22f98a9e68ad096b"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 24948,
-      "sha256": "1e0253676d133752befb5dec90180059c3b19ddf21163bcfd534874d08159c83"
+      "bytes": 28265,
+      "sha256": "40a60998391fbb43ed761a3290878352c9bf2e83cb0ad80824bddcc77683b6c2"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
-      "bytes": 4575,
-      "sha256": "23459bd0e1152507e0b0efbfe514a3a87291d107c639e69b1ea07168903957da"
+      "bytes": 6457,
+      "sha256": "48ef87d47987486c37cc01345b5411de872b62a556f1b9dea8050b82f8f968fa"
     },
     {
       "path": "prototypes/integrated-v10/patient/connected.css",
@@ -340,8 +340,13 @@
     },
     {
       "path": "prototypes/integrated-v10/unified.css",
-      "bytes": 6718,
-      "sha256": "c4cd9d567140219927a0eaf14136b7e07e2b0facb567f798a7feb6d3c068425d"
+      "bytes": 8741,
+      "sha256": "b5d2d90a860fbac1aac46e9fad9ee6bc4c439aa19bdaa811dd9ccf2f1bfe731b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2000,
+      "sha256": "0016c37313c187fc7116f800cbc3d7dc4c9adc6d71077533fb32d2f0441a695f"
     },
     {
       "path": "shared/apply-handoff.js",
