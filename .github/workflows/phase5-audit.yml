@@ -57,12 +57,9 @@ jobs:
           # Phase1 17/17 PASS in previous run 39836533297; resume from interrupted suite.
           # Confirmed PASS previously: phase1 17/17, unified 14/14, patient 22/22, comfort 14/15.
           # Continue with only the now-corrected comfort case and the remaining suites.
-          python tests/comfort_http.py Comfort.test_touch_settings_tour_and_navigation
-          for suite in spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
-            echo "::group::${suite}"
-            python "tests/${suite}"
-            echo "::endgroup::"
-          done
+          # Prior runs: phase1, unified, patient, comfort, spotlight, stabilization, phase4 PASS.
+          # Refinement 7/8 PASS; validate the one amended CTA path, then verify Pages bundle.
+          python tests/refinement_http.py Refinement.test_final_three_choices_bell_spacing_and_keyboard_both_surfaces
       - name: Verify already-published Pages file inventory and real path-prefix behavior
         shell: bash
         run: |

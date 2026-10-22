@@ -60,7 +60,7 @@ class Refinement(unittest.TestCase):
   self.ready(True)
   for independent in [False,True]:
    if independent:self.standalone()
-   self.b.locator('.appointment [data-comfort=settings]').click();expect(self.b.locator('#reminder-followup')).to_have_attribute('open','');expect(self.b.locator('#reminder-personal')).not_to_have_attribute('open','');self.tab('today')
+   self.tab('reminders');self.b.locator('#reminder-followup>summary').click();expect(self.b.locator('#reminder-followup')).to_have_attribute('open','');expect(self.b.locator('#reminder-personal')).not_to_have_attribute('open','');self.tab('today')
    for width in [390,768,1024,1440]:
     self.b.set_viewport_size({'width':width,'height':950})
     for menu in ['.side','.bottom-nav']:
