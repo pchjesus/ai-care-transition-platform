@@ -82,7 +82,7 @@ export function openPatientTour(trigger){
   const control=event.target.closest('[data-tour-control]');
   if(!control)return;
   switch(control.dataset.tourControl){
-   case 'next':current=Math.min(steps.length-1,current+1);draw();next.focus();break;
+   case 'next':current=Math.min(steps.length-1,current+1);draw();(next.hidden?finish:next).focus();break;
    case 'previous':current=Math.max(0,current-1);draw();prev.focus();break;
    case 'skip':current=steps.length-1;draw();finish.focus();break;
    case 'close':dialog.close();break;
@@ -92,17 +92,19 @@ export function openPatientTour(trigger){
   if(event.key==='ArrowRight'&&!event.altKey){event.preventDefault();current=Math.min(steps.length-1,current+1);draw();}
   if(event.key==='ArrowLeft'&&!event.altKey){event.preventDefault();current=Math.max(0,current-1);draw();}
  };
+ const onFinish=()=>dialog.close();
  const onClose=()=>{
   dialog.removeEventListener('click',onClick);
   dialog.removeEventListener('keydown',onKey);
   dialog.removeEventListener('close',onClose);
+  finish.removeEventListener('click',onFinish);
   window.removeEventListener('resize',draw);
   if(trigger&&trigger.isConnected)trigger.focus({preventScroll:true});
  };
  dialog.addEventListener('click',onClick);
  dialog.addEventListener('keydown',onKey);
  dialog.addEventListener('close',onClose);
- finish.addEventListener('click',()=>dialog.close(),{once:true});
+ finish.addEventListener('click',onFinish);
  window.addEventListener('resize',draw);
  dialog.showModal();
  draw();
