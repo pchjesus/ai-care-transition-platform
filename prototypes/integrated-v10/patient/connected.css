@@ -20,3 +20,17 @@
 @media(max-width:1023px){.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.bottom-nav button{font-size:calc(12px * var(--font-scale,1))}}
 @media(max-width:600px){.connected-dialog:not(.pdf-panel){padding:18px}.connected-dialog.pdf-panel{height:calc(100dvh - 24px)}.meta .version-meta{max-width:100%}.connected-controls{gap:5px}.connected-controls .top-font{padding:8px}}
 @media print{.connected-dialog,.connected-controls,.bottom-nav{display:none!important}}
+
+/* Connected B repair: use the original v1.3 vertical card typography, not inline title/description. */
+.service-card .service-card-text{display:flex;flex:1;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-width:0;max-width:100%}
+.service-card .service-card-text strong{display:block;max-width:100%;line-height:1.45;word-break:keep-all;overflow-wrap:break-word}
+.service-card .service-card-text small{display:block;max-width:100%;line-height:1.65;word-break:keep-all;overflow-wrap:break-word;margin:0}
+.service-card>svg{flex:none}
+.service-list,.service-card,.task-content,.content-grid{min-width:0}
+.connected-appointment-date{min-width:116px;color:#2f6149;display:grid;gap:6px;align-content:start}
+.connected-appointment-date b{font-size:calc(17px * var(--font-scale,1));line-height:1.4;overflow-wrap:anywhere}
+.connected-appointment-date small{font-size:calc(13px * var(--font-scale,1));line-height:1.5}
+.demo-mode-option{margin:7px 0 0;font-size:calc(14px * var(--font-scale,1));line-height:1.6}
+.demo-mode-option a{color:#275d46;text-underline-offset:3px}
+.independent-demo-link{white-space:nowrap;text-decoration:underline!important;text-underline-offset:3px}
+@media(max-width:600px){.event{grid-template-columns:1fr;gap:11px}.connected-appointment-date{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline}}

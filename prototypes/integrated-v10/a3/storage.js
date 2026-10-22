@@ -1,5 +1,5 @@
 import {CASES,DOMAINS,SECTIONS} from './data.js';
-import {deepCopy,makeInitial,linkedSources} from './workflow.js';
+import {deepCopy,makeInitial,linkedSources,validAppointment} from './workflow.js';
 
 // Candidate data must never overwrite the read-only v0.3 baseline on a shared origin.
 export const STORAGE_KEYS={normal:'care-transition-integrated-v10-a3-synthetic-only',study:'care-transition-integrated-v10-study-synthetic-only'};
@@ -13,7 +13,7 @@ export function validStoredRecord(r,id){
  if(!Array.isArray(a.domainResults)||a.domainResults.length!==DOMAINS.length||!DOMAINS.every(domain=>a.domainResults.some(result=>result.id===domain.id&&Array.isArray(result.facts)&&Array.isArray(result.missing)&&Array.isArray(result.conflicting))))return false;
  if(!strings(d,['version','status','createdAt','updatedAt'])||!['DRAFT','REVIEW_REQUESTED','CHANGES_REQUESTED','APPROVED','PUBLISHED','REVOKED'].includes(d.status))return false;
  if(!Array.isArray(d.items)||!d.items.every(i=>
-  strings(i,['id','section','title','text','source','visibility'])&&SECTIONS.some(s=>s.id===i.section)&&typeof i.verified==='boolean'&&
+  strings(i,['id','section','title','text','source','visibility'])&&SECTIONS.some(s=>s.id===i.section)&&typeof i.verified==='boolean'&&(i.appointment===undefined||(i.section==='followup'&&validAppointment(i.appointment)))&&
   (i.sources===undefined||(Array.isArray(i.sources)&&i.sources.length>=1&&i.sources.length<=12&&
    i.sources.every(s=>typeof s==='string'&&s.length>0)&&
    new Set(i.sources).size===i.sources.length&&i.source===linkedSources(i)[0]))
@@ -31,7 +31,7 @@ export function validStoredRecord(r,id){
      ((q.status!=='PENDING')&&(!strings(q,['reviewedAt','reviewedBy'])||q.reviewedBy!=='APPROVER')))return false;
  }
  if(!Array.isArray(r.audit)||!r.audit.every(e=>strings(e,['at','role','event','details'])))return false;
- if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text']))&&Array.isArray(p.snapshot.documents)))return false;
+ if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text'])&&(i.appointment===undefined||(i.section==='followup'&&validAppointment({...i.appointment,status:'CONFIRMED'}))))&&Array.isArray(p.snapshot.documents)))return false;
  if(r.unlockedSources!==undefined&&(!Array.isArray(r.unlockedSources)||!r.unlockedSources.every(s=>typeof s==='string')))return false;
  if(r.a2Values!==undefined&&(!isObject(r.a2Values)||!DOMAINS.every(domain=>isObject(r.a2Values[domain.id]))))return false;
  return true;
