@@ -61,3 +61,6 @@
  .content-grid>.aside-stack{margin-top:16px}
 }
 @media print{.home-top-grid{display:block}.home-top-grid>.appointment{break-inside:avoid;margin-top:12px}}
+
+/* Preserve both home columns; wrap long Korean/profile text without shrinking taps. */
+.task-content,.service-copy,.profile-grid>div{min-width:0}.task-content small,.service-copy,.profile-grid strong{overflow-wrap:anywhere}.connected-controls a{white-space:nowrap}

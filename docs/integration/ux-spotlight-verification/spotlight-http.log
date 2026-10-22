@@ -1,0 +1,15 @@
+test_all_ten_real_steps_at_four_widths_preserve_storage_context_and_route (__main__.Spotlight.test_all_ten_real_steps_at_four_widths_preserve_storage_context_and_route) ... ok
+test_both_patient_home_hierarchy_large_font_and_four_widths (__main__.Spotlight.test_both_patient_home_hierarchy_large_font_and_four_widths) ... ok
+test_finish_opens_independent_example_and_restores_learning (__main__.Spotlight.test_finish_opens_independent_example_and_restores_learning) ... ok
+test_independent_patient_history_profile_pdf_and_keyboard_preserved (__main__.Spotlight.test_independent_patient_history_profile_pdf_and_keyboard_preserved) ... ok
+test_missing_anchor_scroll_resize_and_keyboard_focus (__main__.Spotlight.test_missing_anchor_scroll_resize_and_keyboard_focus) ... ok
+test_mobile_touch_tour_keeps_workflow_unchanged (__main__.Spotlight.test_mobile_touch_tour_keeps_workflow_unchanged) ... ok
+test_published_and_revoked_records_remain_byte_identical_during_tour (__main__.Spotlight.test_published_and_revoked_records_remain_byte_identical_during_tour) ... ok
+test_short_viewport_explanation_scrolls_by_keyboard (__main__.Spotlight.test_short_viewport_explanation_scrolls_by_keyboard) ... ok
+test_study_mode_role_context_reentry_and_skip_are_read_only (__main__.Spotlight.test_study_mode_role_context_reentry_and_skip_are_read_only) ... ok
+test_two_hundred_percent_visual_zoom_keeps_controls_visible (__main__.Spotlight.test_two_hundred_percent_visual_zoom_keeps_controls_visible) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 21.605s
+
+OK
