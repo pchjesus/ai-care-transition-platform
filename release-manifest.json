@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "de85a0c17beea082af26a9c998f5a031e543385f",
-  "previousPagesCommit": "fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436",
+  "sourceCommit": "cbe1868afb922417b80808f9faf019ec8dabe5f1",
+  "previousPagesCommit": "6e3303b4742bc9bff093044520ea73c134e73caf",
   "isSyntheticDemo": true,
   "files": [
     {
@@ -105,8 +105,8 @@
     },
     {
       "path": "patient/index.html",
-      "bytes": 332498,
-      "sha256": "17ec2df93b1aed7aa42480ec4e22cfc4ffb56dfc19c75f489fd5e91ddd17029f"
+      "bytes": 332733,
+      "sha256": "a950ba41ad1431c0e851f6c3751e892c669e519ae316f22b07d689b56092b870"
     },
     {
       "path": "prototypes/hospital-a2/app.js",
@@ -170,8 +170,8 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/app.js",
-      "bytes": 90864,
-      "sha256": "fe1deb1ffa01ccf7d19c14aa2f82122f02a6a792f1aa524cdc8437a514536477"
+      "bytes": 91082,
+      "sha256": "f9dc2bde78b238e9825f6416af8775ba1f797251124a5bb5d1f2b377a2aa02cd"
     },
     {
       "path": "prototypes/integrated-v10/a3/data.js",
@@ -205,8 +205,8 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/review-display.js",
-      "bytes": 730,
-      "sha256": "1e61cfdf985f81d043eac274722aecde36305aa3b2744a093a63b7878a8a3475"
+      "bytes": 726,
+      "sha256": "e23419ff972db58671e4115c621d4a6c483c1405fbf9cc1a332d6421f6a43e17"
     },
     {
       "path": "prototypes/integrated-v10/a3/source-library.js",
@@ -225,13 +225,13 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/tutorial-tour.css",
-      "bytes": 2977,
-      "sha256": "48f307425ea76011affb60d95a6590edd0d4af76df8ebc441b53f16d0c74dc18"
+      "bytes": 3712,
+      "sha256": "f6a3c0d777fa8ac9bf7ef21f35c6fac26003282644e9177ee427b9cf26c55398"
     },
     {
       "path": "prototypes/integrated-v10/a3/tutorial-tour.js",
-      "bytes": 14914,
-      "sha256": "bbfa926356f3f5fa91da2351a189e183a163aca45eedcd690695d01797b65cad"
+      "bytes": 15424,
+      "sha256": "9bc52f72ac2b5f9d19d9d719239fce562250c4107c02ef2af5ec0ecf8a32b38c"
     },
     {
       "path": "prototypes/integrated-v10/a3/workflow.js",
@@ -250,18 +250,18 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/app.js",
-      "bytes": 36498,
-      "sha256": "4d1cf3856d322cf9b74ceb3962a944370d44c51ff276399b22f98a9e68ad096b"
+      "bytes": 36859,
+      "sha256": "0df04b6fe4f45c883cbaaae697add2a9dcb47e104dd5ba737eaf9a416bfe3a27"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 28265,
-      "sha256": "40a60998391fbb43ed761a3290878352c9bf2e83cb0ad80824bddcc77683b6c2"
+      "bytes": 31466,
+      "sha256": "374b5ec3e923973fc5bf92d752b06729d73dc2e31e3b4919b8a2199559818bac"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
-      "bytes": 6457,
-      "sha256": "48ef87d47987486c37cc01345b5411de872b62a556f1b9dea8050b82f8f968fa"
+      "bytes": 8433,
+      "sha256": "91ae0baac33f2dd4f19a23b528c99a7b8198d3982229146d5d5c841d0a1864f2"
     },
     {
       "path": "prototypes/integrated-v10/patient/connected.css",
@@ -340,8 +340,8 @@
     },
     {
       "path": "prototypes/integrated-v10/unified.css",
-      "bytes": 8741,
-      "sha256": "b5d2d90a860fbac1aac46e9fad9ee6bc4c439aa19bdaa811dd9ccf2f1bfe731b"
+      "bytes": 9690,
+      "sha256": "be19e5919bd3a7510de63134b92ca594c262f8d43bd7341836ed64495f63b120"
     },
     {
       "path": "README.md",

@@ -9,3 +9,6 @@
 @media(prefers-reduced-motion:reduce){.spotlight-tour *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 .spotlight-tour .spot-try-target{min-height:0;position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;pointer-events:auto;cursor:pointer;border-radius:inherit}.spot-try-target:focus-visible{outline:3px solid #214b3b;outline-offset:3px}
+
+/* Patient guidance: two primary actions and quieter secondary links. */
+#patient-brief-tour .spot-mask{background:rgba(12,32,23,.5)}#patient-brief-tour .spot-controls{gap:8px}#patient-brief-tour .tour-secondary-nav{display:flex;gap:18px;justify-content:flex-end;margin-top:10px}#patient-brief-tour .tour-secondary-nav button{border:0;background:transparent;color:#476956;min-height:40px;padding:6px 0;text-decoration:underline;text-underline-offset:4px;font-size:14px}#patient-brief-tour .spot-copy p{margin-bottom:10px}#patient-brief-tour .spot-copy small{font-size:12px}#patient-brief-tour .spot-controls>[data-tour-control=try]{background:transparent;color:#28543e}#patient-brief-tour #tour-boundary{font-size:12px;color:#56715f}

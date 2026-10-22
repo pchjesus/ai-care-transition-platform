@@ -52,6 +52,12 @@ export function openPatientTour(trigger,bridge,options={}){
  const dialog=document.createElement('dialog');dialog.id=brief?'patient-brief-tour':'patient-learning-tour';dialog.className='spotlight-tour';
  dialog.setAttribute('aria-labelledby','tour-step-title');dialog.setAttribute('aria-describedby','tour-description tour-boundary');
  dialog.innerHTML=`<div class="spot-mask spot-top"></div><div class="spot-mask spot-left"></div><div class="spot-mask spot-right"></div><div class="spot-mask spot-bottom"></div><div class="spot-ring"><button type="button" class="spot-try-target" data-tour-control="try" aria-label="강조한 화면 이동 연습" hidden></button></div><section class="spot-tip"><span class="spot-tail" aria-hidden="true"></span><header class="spot-head"><strong id="tour-count"></strong><button type="button" data-tour-control="close" aria-label="튜토리얼 닫기">×</button></header><div class="spot-copy" tabindex="0" role="status" aria-live="polite" aria-atomic="true"><h2 id="tour-step-title"></h2><p id="tour-description"></p><small id="tour-context"></small><p id="tour-boundary">읽기형 화면 안내 · 실제 입력·저장·승인·발행을 실행하지 않아요.</p><p id="tour-fallback" hidden>강조할 영역이 화면 밖에 있거나 표시되지 않았어요. 설명을 읽거나 ‘대상 다시 보기’를 선택하세요.</p></div><footer class="spot-controls"><button type="button" data-tour-control="try" class="spot-primary" hidden></button><button type="button" data-tour-control="previous">이전</button><button type="button" data-tour-control="next" class="spot-primary">다음</button><button type="button" data-tour-control="locate">대상 다시 보기</button><button type="button" data-tour-control="skip">건너뛰기</button><button type="button" id="tour-finish" data-tour-control="finish" class="spot-primary" hidden>안내 마치기</button><a id="tour-open-demo" class="spot-primary" href="../../../patient/index.html" target="_blank" rel="noopener" hidden>독립 B v1.3 직접 체험 ↗</a></footer></section>`;
+ if(brief){
+  const links=document.createElement('nav');links.className='tour-secondary-nav';links.setAttribute('aria-label','사용 안내 보조 이동');
+  for(const name of ['previous','skip'])links.append(dialog.querySelector(`[data-tour-control="${name}"]`));
+  dialog.querySelector('.spot-tip').append(links);dialog.querySelector('[data-tour-control="locate"]').hidden=true;
+  dialog.querySelector('#tour-fallback').textContent='안내 대상을 찾지 못했어요. 다음 단계로 이동하거나 안내를 종료하세요.';
+ }
  document.body.append(dialog);
  const tip=dialog.querySelector('.spot-tip'),ring=dialog.querySelector('.spot-ring');
  let current=0,tried=false,closed=false,frame=0,observed=null,pointerY=null;
@@ -95,7 +101,7 @@ export function openPatientTour(trigger,bridge,options={}){
   dialog.querySelector('[data-tour-control="next"]').hidden=current===steps.length-1;
   dialog.querySelector('#tour-open-demo').hidden=brief||current!==steps.length-1;
   dialog.querySelector('#tour-finish').hidden=!brief||current!==steps.length-1;
-  if(brief)dialog.querySelector('#tour-boundary').textContent='사용법만 둘러봐요. 의료정보·읽음·이해 확인 기록은 바뀌지 않아요.';
+  if(brief)dialog.querySelector('#tour-boundary').textContent='화면 이동 연습 · 기록과 설정은 바뀌지 않아요.';
   locate();
  }
  function close(){
