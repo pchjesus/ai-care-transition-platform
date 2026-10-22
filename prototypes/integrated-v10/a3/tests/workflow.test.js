@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CASES,DOMAINS} from '../data.js';
-import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision} from '../workflow.js';
+import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision,linkedSources,validItemSources} from '../workflow.js';
 
 const readyApproved = () => {
   const r=makeInitial('SYN-002');
@@ -77,4 +77,39 @@ test('new revision keeps existing published snapshot and resets approval',()=>{
 test('fingerprint changes when underlying A2 input snapshot changes',()=>{
  const r=readyApproved();const f=fingerprint(r);r.assessment.values.function.gait='device';
  assert.notEqual(fingerprint(r),f);
+});
+
+test('multiple valid sources stay bound to one draft item and preserve the primary source',()=>{
+ const r=readyApproved(),item=r.draft.items.find(i=>i.section==='support');
+ item.sources=[item.source,'SRC-SYN002-FUN-01'];
+ item.verified=true;
+ assert.equal(blockers(r).length,0);
+ assert.equal(validItemSources(r,item),true);
+ assert.equal(linkedSources(item).length,2);
+});
+test('mismatched, duplicate, cross-patient or unconfirmed added sources prevent approval',()=>{
+ const r=readyApproved(),item=r.draft.items.find(i=>i.section==='support');
+ item.sources=[item.source,'SRC-SYN001-FUN-01'];
+ assert.ok(blockers(r).some(b=>b.id==='item-support-source'));
+ item.sources=[item.source,item.source];
+ assert.ok(blockers(r).some(b=>b.id==='item-support-source'));
+ item.sources=[item.source,'SRC-SYN002-EDU-01'];
+ assert.ok(blockers(r).some(b=>b.id==='item-support-source'));
+ item.sources=[item.source,'SRC-SYN002-FUN-01'];
+ assert.equal(blockers(r).length,0);
+ r.draft.status='REVIEW_REQUESTED';r.draft.approval=null;
+ assert.equal(mayApprove(r,'APPROVER',new Set()),true);
+ const first=fingerprint(r);
+ item.sources.push('SRC-SYN002-SOC-02');
+ assert.notEqual(fingerprint(r),first);
+});
+test('legacy approved publication stays unchanged by new source-array support',()=>{
+ const r=readyApproved(),item=r.draft.items.find(i=>i.section==='today');
+ assert.equal(Object.hasOwn(item,'sources'),false);
+ assert.deepEqual(linkedSources(item),[item.source]);
+ const before=fingerprint(r);
+ assert.equal(blockers(r).length,0);
+ assert.equal(fingerprint(r),before);
+ const projected=publishedPayload(r);
+ assert.ok(!JSON.stringify(projected).includes('SRC-'));
 });

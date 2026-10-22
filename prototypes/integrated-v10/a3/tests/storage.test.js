@@ -38,3 +38,21 @@ test('foreign publication snapshots and malformed view models are rejected',()=>
  r.publications[0].snapshot.patientId='SYN-002';assert.equal(validStoredRecord(r,'SYN-004'),false);
  const t=makeInitial('SYN-001');t.draft.items[0].text={};assert.equal(validStoredRecord(t,'SYN-001'),false);
 });
+
+test('legacy records and multi-source drafts both roundtrip, malformed or inconsistent arrays fail closed',()=>{
+ const old=makeInitial('SYN-002');
+ assert.equal(validStoredRecord(old,'SYN-002'),true);
+ const item=old.draft.items.find(i=>i.section==='support');
+ item.sources=[item.source,'SRC-SYN002-FUN-01'];
+ assert.equal(validStoredRecord(old,'SYN-002'),true);
+ const store=memory(),s=loadRepository(store,'sources');
+ s.records['SYN-002']=old;persistRepository(store,'sources',s);
+ const loaded=loadRepository(store,'sources');
+ assert.equal(loaded.error,null);
+ assert.deepEqual(loaded.records['SYN-002'].draft.items.find(i=>i.section==='support').sources,item.sources);
+ const malformed=structuredClone(old);
+ malformed.draft.items[5].sources=['SRC-SYN002-FUN-01','SRC-SYN002-SOC-01'];
+ assert.equal(validStoredRecord(malformed,'SYN-002'),false);
+ malformed.draft.items[5].sources=[item.source,item.source];
+ assert.equal(validStoredRecord(malformed,'SYN-002'),false);
+});

@@ -35,3 +35,11 @@
 .rail .rail-link:not(.active):hover .rail-short,.rail .rail-link:not(.active):focus-visible .rail-short{background:rgba(255,255,255,.17);border-color:#fff}
 .demo-preview-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .demo-preview-actions a{font-weight:700;min-height:44px;display:inline-flex;align-items:center}
+
+/* A3 multi-source plan evidence, patient-specific and editable only before approval. */
+.multi-source-area{display:grid;gap:9px}
+.multi-source-list{display:grid;gap:7px}
+.multi-source-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1px solid #d8e5dc;background:#f7faf8;border-radius:8px;padding:9px 10px}
+.multi-source-row strong{flex:1 1 150px;min-width:0;font-size:12px;overflow-wrap:anywhere}
+.multi-source-row .source-status{font-size:11px;color:#476a53}
+.multi-source-area>.mini-button{justify-self:start;min-height:36px;font-size:12px}
