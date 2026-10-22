@@ -1,3 +1,4 @@
+import {zoneLabel,commonZones} from './time-zones.js';
 import {createReminderRepository,planPreferences,calculateReminders,inboxEvents,validZone,localInstant} from './reminders.js';
 import {directionsURL} from '../shared/destinations.js';
 import {openPatientTour} from '../a3/tutorial-tour.js';
@@ -16,14 +17,26 @@ export function installPatientComfort(adapter){
  const button=(action,label,extra='')=>`<button type="button" class="secondary-action" data-comfort="${action}" ${extra}>${label}</button>`;
  function refreshPreferences(){const c=context(),key=JSON.stringify([c.source,c.patientId,c.encounterId]);if(key!==contextKey){contextKey=key;repo=createReminderRepository(storage,c);}loaded=repo.load();return loaded.data;}
  function currentData(){return loaded?.data||refreshPreferences();}
- function format(at){return new Intl.DateTimeFormat('ko-KR',{timeZone:currentData().zone,dateStyle:'medium',timeStyle:'short'}).format(at);}
- function close(){if(!dialog)return;if(saving){pendingSave?.abort();const toast=document.createElement('p');toast.className='comfort-toast';toast.setAttribute('role','status');toast.textContent='대기 중이던 알림 저장을 취소했어요. 다시 열어 설정을 확인해 주세요.';document.body.append(toast);setTimeout(()=>toast.remove(),6000);}dialog.close();dialog.remove();dialog=null;const target=returnTrigger?.isConnected?returnTrigger:returnSelector&&document.querySelector(returnSelector);(target||document.querySelector('#main-content'))?.focus({preventScroll:true});}
+ function format(at,zone=currentData().zone){return new Intl.DateTimeFormat('ko-KR',{timeZone:zone,dateStyle:'medium',timeStyle:'short'}).format(at);}
+ let dialogFrame=0;
+ function fitDialog(){
+  dialogFrame=0;if(!dialog?.open)return;const v=window.visualViewport;
+  if(!v||(v.scale<=1.01&&v.width>=innerWidth-24&&v.height>=innerHeight-24)){
+   if(dialog.dataset.fitted){dialog.removeAttribute('style');delete dialog.dataset.fitted;}return;
+  }
+  dialog.dataset.fitted='true';
+  Object.assign(dialog.style,{position:'fixed',margin:'0',right:'auto',bottom:'auto',width:Math.min(700,v.width-24)+'px',maxWidth:(v.width-24)+'px',maxHeight:(v.height-24)+'px'});
+  const r=dialog.getBoundingClientRect();dialog.style.left=(v.offsetLeft+(v.width-r.width)/2)+'px';dialog.style.top=(v.offsetTop+Math.max(12,(v.height-r.height)/2))+'px';
+ }
+ function scheduleDialogFit(){if(dialog&&!dialogFrame)dialogFrame=requestAnimationFrame(fitDialog);}
+ window.visualViewport?.addEventListener('resize',scheduleDialogFit);window.visualViewport?.addEventListener('scroll',scheduleDialogFit);window.addEventListener('resize',scheduleDialogFit);
+ function close(){if(!dialog)return;cancelAnimationFrame(dialogFrame);dialogFrame=0;if(saving){pendingSave?.abort();const toast=document.createElement('p');toast.className='comfort-toast';toast.setAttribute('role','status');toast.textContent='대기 중이던 알림 저장을 취소했어요. 다시 열어 설정을 확인해 주세요.';document.body.append(toast);setTimeout(()=>toast.remove(),6000);}dialog.close();dialog.remove();dialog=null;const target=returnTrigger?.isConnected?returnTrigger:returnSelector&&document.querySelector(returnSelector);(target||document.querySelector('#main-content'))?.focus({preventScroll:true});}
  function open(kind,trigger,itemId){
   close();mode=kind;mapItem=itemId;notice='';returnTrigger=trigger;returnSelector=trigger?.id?'#'+CSS.escape(trigger.id):trigger?.dataset.comfort?`[data-comfort="${trigger.dataset.comfort}"]`:null;
   refreshPreferences();openedPublication=pubKey(context());draw();dialog.querySelector('[data-comfort="close"]')?.focus();
  }
  function plan(){return planPreferences(currentData(),context().publication);}
- let saving=false,pendingSave=null;
+ let saving=false,pendingSave=null,refreshQueued=false;
  async function write(mutator){
   if(saving)return false;
   const owner={repo,dialog,publication:openedPublication};
@@ -39,23 +52,38 @@ export function installPatientComfort(adapter){
    await navigator.locks.request('carebridge:'+repo.key,{signal:pendingSave.signal},commit);
    if(dialog===owner.dialog){notice='이 브라우저에 저장했어요. 외부로 전송하지 않았어요.';draw();decorate();}return true;
   }catch(error){if(dialog===owner.dialog){notice='저장하지 못했어요. '+error.message;draw(true);}return false;}
-  finally{saving=false;pendingSave=null;dialog?.removeAttribute('aria-busy');}
+  finally{saving=false;pendingSave=null;dialog?.removeAttribute('aria-busy');if(refreshQueued){refreshQueued=false;refreshInbox();}}
  }
  function changePlan(mutator){return write((next,c)=>{if(c.status!=='PUBLISHED'||!c.publication)throw Error('유효한 발행본이 없어요.');next.plans[c.publication.publicationId]=structuredClone(planPreferences(next,c.publication));mutator(next.plans[c.publication.publicationId],next,c);});}
  function settings(c,data){
   const pub=c.publication;
   if(!pub)return '<p>현재 유효한 발행본이 없어 알림을 활성화할 수 없어요. 철회된 계획의 알림은 표시하지 않아요.</p>';
-  const s=plan(),all=calculateReminders(c,data),follow=pub.items.filter(i=>i.section==='followup');
+  const s=plan(),follow=pub.items.filter(i=>i.section==='followup');
   const check=(name,value,label)=>`<label class="comfort-check"><input type="checkbox" name="${name}" ${value?'checked':''}> ${label}</label>`;
   return `<p class="comfort-bound">${c.source==='independent'?'독립 합성 예시 · 실제 처방/예약 아님':'승인된 발행본'} · ${esc(c.patientId)} · ${esc(c.encounterId)} · v${esc(pub.planVersion)}</p>
-  <form data-comfort-form="zone"><label>알림 시간대 <input name="zone" value="${esc(data.zone)}" list="comfort-zones" required></label><datalist id="comfort-zones"><option value="Asia/Seoul"><option value="UTC"><option value="America/New_York"></datalist><button type="submit">시간대 저장</button></form>
+  <form data-comfort-form="zone"><label>알림 기준 시간<select name="zone">${commonZones(data.zone).map(zone=>`<option value="${esc(zone)}" ${zone===data.zone?'selected':''}>${esc(zoneLabel(zone))}</option>`).join('')}</select></label><details><summary>다른 지역 시간 직접 입력</summary><label>지역 코드<input name="custom-zone" placeholder="예: Europe/Berlin" aria-describedby="zone-code-help"></label><small id="zone-code-help">목록에 없는 지역을 사용할 때만 입력하세요. 기기에서 확인한 시간대는 자동으로 바꾸지 않아요.</small></details><button type="submit">시간대 저장</button></form>
   <section><h3>복약 관련 개인 알림 시연</h3><p>확인된 구조화 복약 시각이 제공되지 않았어요. PDF나 안내문에서 약 이름·용량·횟수·시각을 추정하지 않아요. 아래 입력은 <b>개인이 정하는 준비 알림</b>이며 의료진 처방이 아니에요. 사전 알림은 일찍 약을 먹으라는 지시가 아니에요.</p>
   <form data-comfort-form="personal"><input name="id" type="hidden"><label>개인 알림 이름<input name="label" maxlength="80" placeholder="예: 안내문 확인 준비" required></label><label>날짜<input type="date" name="date" required></label><label>개인이 정한 시각<input type="time" name="time" required></label><label>준비 알림<select name="lead"><option value="0">정시</option><option value="10">10분 전</option><option value="30">30분 전</option></select></label><button type="submit">개인 알림 저장</button></form>
   <ul class="comfort-list">${s.personal.map(m=>`<li><strong>${esc(m.label)}</strong><p>${esc(m.date)} ${esc(m.time)} · ${m.lead?m.lead+'분 전':'정시'} · ${m.enabled?'켜짐':'꺼짐'} · 개인 입력</p>${button('personal-toggle',m.enabled?'끄기':'켜기',`data-id="${esc(m.id)}"`)} ${button('personal-edit','변경',`data-id="${esc(m.id)}"`)} ${button('personal-delete','삭제',`data-id="${esc(m.id)}"`)}</li>`).join('')||'<li>저장한 개인 알림이 없어요.</li>'}</ul></section>
-  <section><h3>외래 알림</h3><p>유효하게 발행된 확정 일정만 사용해요. 기본 선택은 하루 전 오전 9시이며, 알림을 켠 뒤 저장하세요. 아래 시각은 ${esc(data.zone)} 기준이에요. 날짜만 제공된 일정도 선택한 시각에 안내하며 실제 진료 시각을 뜻하지 않아요.</p>
+  <section><h3>외래 알림</h3><p>유효하게 발행된 확정 일정만 사용해요. 기본 선택은 하루 전 오전 9시이며, 알림을 켠 뒤 저장하세요. 아래 시각은 ${esc(zoneLabel(data.zone))} 기준이에요. 날짜만 제공된 일정도 선택한 시각에 안내하며 실제 진료 시각을 뜻하지 않아요.</p>
   ${follow.map(i=>{const a=i.appointment,f=s.followups[i.id]||{enabled:false,dayBefore:true,sameDay:false,time:'09:00'};return a?`<form data-comfort-form="followup" data-id="${esc(i.id)}"><h4>${esc(i.title)}</h4><p>${esc(a.date)} ${esc(a.time||'진료 시각 미제공')} · ${esc(a.place)}</p>${check('enabled',f.enabled,'알림 켜기')}${check('dayBefore',f.dayBefore,'하루 전')}${check('sameDay',f.sameDay,'당일')}<label>알림 시각<input type="time" name="time" value="${esc(f.time)}" required></label><button type="submit">외래 알림 저장</button></form>`:'<p>일정 확인 필요 · 확정 날짜가 없어 예약 알림을 만들지 않아요.</p>';}).join('')||'<p>발행된 외래 일정이 없어요.</p>'}</section>
   <form data-comfort-form="important"><h3>추가 안내</h3>${check('important',s.important,'중요 안내를 아직 확인하지 않았을 때 앱 내 알림 표시')}<button type="submit">중요 안내 설정 저장</button></form>
-  <section><h3>예정 알림</h3><ul>${all.filter(x=>x.at>Date.now()).map(x=>`<li>${esc(format(x.at))} · ${esc(x.title)} · ${x.personal?'개인 준비 알림':'외래 준비'}</li>`).join('')||'<li>앞으로 예정된 알림이 없어요. 지난 일정은 다시 알리지 않아요.</li>'}</ul></section>`;
+  <section class="comfort-upcoming"><h3>예정 알림</h3><div data-upcoming>${upcoming(c,data)}</div></section>`;
+ }
+ function upcoming(c,data,error=null){
+  if(error)return '<p role="alert">최신 설정을 읽지 못해 예정 알림을 숨겼어요. 저장 상태를 확인해 주세요.</p>';
+  const rows=calculateReminders(c,data).filter(x=>x.at>Date.now());
+  return `<ul>${rows.map(x=>`<li>${esc(format(x.at,data.zone))} · ${esc(x.title)} · ${x.personal?'개인 준비 알림':'외래 준비'}</li>`).join('')||'<li>앞으로 예정된 알림이 없어요. 지난 일정은 다시 알리지 않아요.</li>'}</ul>`;
+ }
+ function refreshUpcoming(){
+  const el=dialog?.querySelector('[data-upcoming]');if(!el)return;
+  const c=context(),fresh=createReminderRepository(storage,c).load();el.innerHTML=upcoming(c,fresh.data,fresh.error);
+ }
+ function refreshInbox(){
+  if(!dialog||mode!=='inbox')return;if(saving){refreshQueued=true;return;}
+  const focused=dialog.contains(document.activeElement)?{action:document.activeElement.dataset.comfort,id:document.activeElement.dataset.id}:null;
+  loaded=repo.load();draw();
+  if(focused){const next=[...dialog.querySelectorAll('[data-comfort]')].find(e=>e.dataset.comfort===focused.action&&e.dataset.id===focused.id);(next||dialog.querySelector('[data-comfort=close]'))?.focus({preventScroll:true});}
  }
  function inbox(c,data){const events=inboxEvents(c,data);return `<p>발행·변경·철회 이력과 앱을 열었을 때 도래한 알림이에요. 알림 열람은 복약 이행·이해 완료 기록이 아니에요.</p><ul class="comfort-list">${events.map(e=>`<li><strong>${esc(e.title)}</strong><p>${e.version?'v'+esc(e.version):''} ${e.seen?'· 알림 확인함':''}</p>${!e.seen?button('seen','알림 확인',`data-id="${esc(e.id)}"`):''}</li>`).join('')||'<li>새 소식이 없어요. 실제로 제공되지 않은 발행 이벤트는 만들지 않아요.</li>'}</ul>`;}
  function maps(c){
@@ -76,7 +104,7 @@ export function installPatientComfort(adapter){
   dialog.innerHTML=`<header><h2 id="comfort-title">${title}</h2>${button('close','닫기')}</header><p class="comfort-scope">앱 내 로컬 시연 · 앱을 열었을 때 확인해요. 앱 종료·백그라운드 정시 발송과 외부 메시지 전송은 하지 않아요.</p><p id="comfort-notice" role="status" tabindex="-1">${esc(notice)}</p>${loaded?.error?'<p role="alert">저장 자료를 읽지 못했어요. 기존 자료를 덮어쓰지 않아요.</p>':''}${mode==='settings'?settings(c,data):mode==='inbox'?inbox(c,data):mode==='map'?maps(c):documents(c)}`;
   document.body.append(dialog);dialog.addEventListener('cancel',e=>{e.preventDefault();close()});
   // draw() after editing replaces a modal, so re-open it and restore focus separately.
-  if(openedPublication!==undefined)dialog.showModal();
+  if(openedPublication!==undefined)dialog.showModal();fitDialog();
   for(const draft of drafts){const f=[...dialog.querySelectorAll('form')].find(f=>f.dataset.comfortForm===draft.kind&&f.dataset.id===draft.id);if(f)for(const v of draft.values){const e=f.elements.namedItem(v.name);if(e){e.value=v.value;if(e.type==='checkbox')e.checked=v.checked;}}}
   dialog.scrollTop=oldScroll;(notice?dialog.querySelector('#comfort-notice'):dialog.querySelector('[data-comfort=close]'))?.focus({preventScroll:true});
  }
@@ -118,7 +146,7 @@ export function installPatientComfort(adapter){
  },true);
  document.addEventListener('submit',e=>{
   const f=e.target;if(!f.matches('[data-comfort-form]'))return;e.preventDefault();e.stopImmediatePropagation();const values=new FormData(f),kind=f.dataset.comfortForm;
-  if(kind==='zone'){const zone=String(values.get('zone')).trim();if(!validZone(zone)){notice='올바른 시간대를 입력해 주세요. 예: Asia/Seoul';draw();return;}write(n=>n.zone=zone);}
+  if(kind==='zone'){const zone=String(values.get('custom-zone')||values.get('zone')).trim();if(!validZone(zone)){notice='시간대를 확인해 주세요. 목록에서 지역을 선택하거나 직접 입력한 지역 코드를 확인하세요.';draw(true);return;}write(n=>n.zone=zone);}
   if(kind==='personal')changePlan(s=>{const m={id:String(values.get('id')||crypto.randomUUID()),label:String(values.get('label')).trim(),date:String(values.get('date')),time:String(values.get('time')),lead:Number(values.get('lead')),enabled:s.personal.find(x=>x.id===String(values.get('id')))?.enabled??true};if(!Number.isFinite(localInstant(m.date,m.time,currentData().zone))||localInstant(m.date,m.time,currentData().zone)<=Date.now())throw Error('유효한 미래 날짜·시각을 입력해 주세요.');const duplicate=s.personal.find(x=>x.id!==m.id&&x.date===m.date&&x.time===m.time&&x.lead===m.lead&&x.label===m.label);if(duplicate)throw Error('같은 개인 알림이 이미 있어요.');s.personal=s.personal.filter(x=>x.id!==m.id);s.personal.push(m);});
   if(kind==='followup')changePlan(s=>{const item=context().publication.items.find(i=>i.id===f.dataset.id&&i.appointment);if(!item)throw Error('확정 일정이 없어요.');if(values.has('enabled')&&!values.has('dayBefore')&&!values.has('sameDay'))throw Error('하루 전 또는 당일 알림을 선택해 주세요.');s.followups[item.id]={enabled:values.has('enabled'),dayBefore:values.has('dayBefore'),sameDay:values.has('sameDay'),time:String(values.get('time'))};});
   if(kind==='important')changePlan(s=>s.important=values.has('important'));
@@ -127,10 +155,25 @@ export function installPatientComfort(adapter){
   if(e.key==='Escape'){const h=document.querySelector('.patient-menu-open');if(h){h.classList.remove('patient-menu-open');const b=h.querySelector('.patient-menu-toggle');b?.setAttribute('aria-expanded','false');b?.focus();}}
   if(e.key==='Tab'&&dialog?.open){const nodes=[...dialog.querySelectorAll('button:not([disabled]),input:not([type=hidden]),select,a[href],textarea')].filter(n=>n.getClientRects().length);if(e.shiftKey&&document.activeElement===nodes[0]){e.preventDefault();nodes.at(-1)?.focus()}else if(!e.shiftKey&&document.activeElement===nodes.at(-1)){e.preventDefault();nodes[0]?.focus()}}
  });
- window.addEventListener('patient-render',()=>{decorate();if(dialog&&(!bound(context())||openedPublication!==pubKey(context()))){notice='발행 상태가 바뀌었어요. 이전 알림은 비활성화됐어요. 새 발행본은 다시 설정하세요.';draw();}});
- window.addEventListener('storage',e=>{if(repo&&(e.key===repo.key||e.key===null)&&dialog){notice='다른 탭에서 설정이 바뀌었어요. 현재 편집은 저장할 수 없어요. 닫고 다시 열어 주세요.';dialog.querySelector('#comfort-notice').textContent=notice;}else if(dialog&&openedPublication!==pubKey(context())){notice='발행 상태가 바뀌었어요. 이전 알림은 비활성화됐어요.';draw();}});
- // Recalculate when returning to the app, plus a foreground minute tick. No background delivery.
- function tick(){if(dialog&&document.visibilityState==='visible'&&(mode==='inbox'||openedPublication!==pubKey(context())))draw();}
- window.addEventListener('focus',tick);document.addEventListener('visibilitychange',tick);const timer=setInterval(tick,60000);window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
+ function changedPublication(){
+  if(!dialog)return;
+  notice='발행 상태가 바뀌었어요. 이전 알림은 비활성화됐어요. 새 발행본은 다시 설정하세요.';
+  if(mode==='inbox'){openedPublication=pubKey(context());refreshInbox();}else draw();
+ }
+ window.addEventListener('patient-render',()=>{decorate();if(dialog&&(!bound(context())||openedPublication!==pubKey(context())))changedPublication();});
+ window.addEventListener('storage',e=>{
+  if(repo&&(e.key===repo.key||e.key===null)&&dialog){
+   // A delayed storage event must not erase the failed compare-and-write result.
+   if(!notice.startsWith('저장하지 못했어요.'))notice='다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 닫고 다시 열어 주세요.';
+   if(mode==='inbox')refreshInbox();else{dialog.querySelector('#comfort-notice').textContent=notice;refreshUpcoming();}
+  }
+  if(dialog&&openedPublication!==pubKey(context()))changedPublication();
+ });
+ // Foreground refresh never reloads an editable repository's compare-and-write token.
+ function tick(){if(!dialog||document.visibilityState!=='visible')return;if(openedPublication!==pubKey(context()))changedPublication();else if(mode==='inbox')refreshInbox();else if(mode==='settings')refreshUpcoming();}
+ window.addEventListener('focus',tick);document.addEventListener('visibilitychange',tick);
+ let timer=setInterval(tick,60000);
+ window.addEventListener('pagehide',()=>clearInterval(timer));
+ window.addEventListener('pageshow',()=>{clearInterval(timer);timer=setInterval(tick,60000);tick();});
  decorate();
 }

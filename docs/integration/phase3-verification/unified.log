@@ -1,0 +1,19 @@
+test_a1_a2_a3_approval_publication_revision_revoke (__main__.Unified.test_a1_a2_a3_approval_publication_revision_revoke) ... ok
+test_all_fields_and_domain_keyboard_navigation (__main__.Unified.test_all_fields_and_domain_keyboard_navigation) ... ok
+test_approval_invalidated_on_edit_before_commit (__main__.Unified.test_approval_invalidated_on_edit_before_commit) ... ok
+test_assessment_reset_and_all_four_learning_scenarios (__main__.Unified.test_assessment_reset_and_all_four_learning_scenarios) ... ok
+test_edit_and_commit_storage_failure_roll_back (__main__.Unified.test_edit_and_commit_storage_failure_roll_back) ... ok
+test_learning_syn004_separate_draft_survives_reload (__main__.Unified.test_learning_syn004_separate_draft_survives_reload) ... ok
+test_other_tab_cannot_overwrite_newer_assessment (__main__.Unified.test_other_tab_cannot_overwrite_newer_assessment) ... ok
+test_patient_drafts_and_url_restore_are_isolated (__main__.Unified.test_patient_drafts_and_url_restore_are_isolated) ... ok
+test_pdf_source_dialog_and_print_regression (__main__.Unified.test_pdf_source_dialog_and_print_regression) ... ok
+test_phase1_approved_storage_backward_compatibility (__main__.Unified.test_phase1_approved_storage_backward_compatibility) ... ok
+test_responsive_all_screens (__main__.Unified.test_responsive_all_screens) ... ok
+test_safe_navigation_home_alias_refresh_and_direct_url (__main__.Unified.test_safe_navigation_home_alias_refresh_and_direct_url) ... ok
+test_syn003_missing_and_conflicting_judgment_and_gate (__main__.Unified.test_syn003_missing_and_conflicting_judgment_and_gate) ... ok
+test_uploaded_pdf_review_invalidation_and_real_print_document (__main__.Unified.test_uploaded_pdf_review_invalidation_and_real_print_document) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 16.615s
+
+OK

@@ -1,0 +1,36 @@
+✔ verified destination uses official HTTPS Kakao URL, no patient/origin/clinical parameters (1.033965ms)
+✔ old records remain compatible; only verified approved metadata and explicit PDF category are projected (4.905617ms)
+✔ destination/category edit changes approval digest; tampered or revoked publication is hidden (1.747629ms)
+✔ lifecycle exposes only actual bound issuance/status metadata, no withdrawn clinical text (1.85036ms)
+✖ publication versions compare integer components rather than floating decimals (1.594062ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.129539
+
+✖ failing tests:
+
+test at prototypes/integrated-v10/shared/destinations.test.js:26:1
+✖ publication versions compare integer components rather than floating decimals (1.594062ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /개정·재발행/. Input:
+
+  '계획 발행 · v1.10'
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/integrated-v10/shared/destinations.test.js:29:115)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '계획 발행 · v1.10',
+    expected: /개정·재발행/,
+    operator: 'match',
+    diff: 'simple'
+  }

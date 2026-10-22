@@ -1,0 +1,8 @@
+test_combined_published_pdf_reminders_tours_revocation (__main__.Release.test_combined_published_pdf_reminders_tours_revocation) ... ok
+test_landing_independent_b_login_settings_and_patient_tour (__main__.Release.test_landing_independent_b_login_settings_and_patient_tour) ... ok
+test_legacy_a2_a3_and_comparison_paths (__main__.Release.test_legacy_a2_a3_and_comparison_paths) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 75.043s
+
+OK

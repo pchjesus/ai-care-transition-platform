@@ -1,0 +1,161 @@
+test_combined_published_pdf_reminders_tours_revocation (__main__.Release.test_combined_published_pdf_reminders_tours_revocation) ... ok
+test_landing_independent_b_login_settings_and_patient_tour (__main__.Release.test_landing_independent_b_login_settings_and_patient_tour) ... FAIL
+test_landing_independent_b_login_settings_and_patient_tour (__main__.Release.test_landing_independent_b_login_settings_and_patient_tour) ... FAIL
+test_legacy_a2_a3_and_comparison_paths (__main__.Release.test_legacy_a2_a3_and_comparison_paths) ... ok
+
+======================================================================
+FAIL: test_landing_independent_b_login_settings_and_patient_tour (__main__.Release.test_landing_independent_b_login_settings_and_patient_tour)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/release_http.py", line 40, in test_landing_independent_b_login_settings_and_patient_tour
+    self.settings();expect(self.b.locator('[data-comfort-form=zone] select option:checked')).to_contain_text('시간');self.close()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22016, in to_contain_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text '시간'
+Actual value: 세계 표준시(UTC+0)
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("[data-comfort-form=zone] select option:checked")
+    14 × locator resolved to <option selected value="UTC">세계 표준시(UTC+0)</option>
+       - unexpected value "세계 표준시(UTC+0)"
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- complementary "주요 메뉴":
+  - text: D. 나의 하루 퇴원 후 관리 나의 계획
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+  - button "내 정보"
+  - text: 가상 퇴원 안내 의료진이 확인한 계획을 환자에게 쉽게 전달합니다.
+- banner:
+  - text: 퇴원 후, 나의 하루
+  - navigation "화면 이동":
+    - link "통합 홈":
+      - /url: ../prototypes/integrated-v10/index.html
+    - button "홈"
+    - button "이전" [disabled]
+    - button "다음" [disabled]
+  - button "내 정보"
+  - button "글자 크기 전환": 글자 크게
+  - text: 의료진 확인 · v1.0 가상 환자
+- main:
+  - text: 퇴원 후 3일째 · 2026년 10월 20일 (가상) 퇴원 후 필요한 관리를 안내합니다.
+  - heading "이정희님, 오늘의 관리 계획" [level=1]:
+    - text: 이정희님,
+    - emphasis: 오늘의 관리 계획
+  - paragraph: 지금 필요한 일부터 모았어요.
+  - text: 가상 의료진 확인 · 2026.10.20 가장 가까운 진료 10.27 화요일 · 오전 10:30
+  - heading "정형외과 외래" [level=3]
+  - paragraph: 가상병원 본관 2층 실제 병원 예약과는 연결되지 않아요.
+  - text: 가상 예약 확정 · 시연용
+  - button "일정 전체 보기"
+  - button "외래 알림 설정"
+  - region "환자 편의 기능":
+    - button "알림 관리"
+    - button "알림함"
+    - button "안내 문서"
+    - button "사용 안내 (선택)"
+  - region "오늘 확인할 안내":
+    - heading "오늘 확인할 안내" [level=2]
+    - button "01 보행 보조기 안내 확인 이동할 때 필요한 안내를 살펴보세요."
+    - button "02 퇴원 약 안내 확인 퇴원하면서 받은 복약 설명서를 확인하세요."
+    - button "03 다음 진료 준비하기 진료 일정과 궁금한 점을 미리 살펴보세요."
+    - button "복약 관련 개인 알림"
+  - complementary:
+    - heading "더 자세한 설명이 필요하신가요?" [level=3]
+    - paragraph: 가족이나 의료인과 함께 볼 수 있도록 전체 계획과 현재 상태를 조금 더 자세히 확인할 수 있어요.
+    - button "계획 전체와 상태 보기"
+  - region "도움이 필요할 때":
+    - heading "도움이 필요할 때" [level=2]
+    - paragraph: 필요한 안내를 선택하거나 다른 서비스를 찾아보세요.
+    - button "서비스 전체 보기"
+    - button "병원 문의"
+    - button "주의사항"
+    - button "돌봄·생활지원"
+  - paragraph: 이 화면의 모든 정보는 가상 사례입니다. 실제 의료진의 지시·진료 예약을 대신하지 않습니다.
+- dialog "알림 관리":
+  - banner:
+    - heading "알림 관리" [level=2]
+    - button "닫기"
+  - paragraph: 앱 내 로컬 시연 · 앱을 열었을 때 확인해요. 앱 종료·백그라운드 정시 발송과 외부 메시지 전송은 하지 않아요.
+  - paragraph: 독립 합성 예시 · 실제 처방/예약 아님 · DEMO-B-LEE · DEMO-B-20261020 · v1.0
+  - text: 알림 기준 시간
+  - combobox "알림 기준 시간":
+    - option "세계 표준시(UTC+0)" [selected]
+    - option "한국 시간(서울, UTC+9)"
+    - option "미국 동부 시간(뉴욕, UTC-4)"
+    - option "미국 서부 시간(로스앤젤레스, UTC-7)"
+    - option "일본 시간(도쿄, UTC+9)"
+    - option "영국 시간(런던, UTC+1)"
+    - option "프랑스 시간(파리, UTC+2)"
+  - group: 다른 지역 시간 직접 입력
+  - button "시간대 저장"
+  - heading "복약 관련 개인 알림 시연" [level=3]
+  - paragraph: 확인된 구조화 복약 시각이 제공되지 않았어요. PDF나 안내문에서 약 이름·용량·횟수·시각을 추정하지 않아요. 아래 입력은 개인이 정하는 준비 알림이며 의료진 처방이 아니에요. 사전 알림은 일찍 약을 먹으라는 지시가 아니에요.
+  - text: 개인 알림 이름
+  - textbox "개인 알림 이름":
+    - /placeholder: "예: 안내문 확인 준비"
+  - text: 날짜
+  - textbox "날짜"
+  - text: 개인이 정한 시각
+  - textbox "개인이 정한 시각"
+  - text: 준비 알림
+  - combobox "준비 알림":
+    - option "정시" [selected]
+    - option "10분 전"
+    - option "30분 전"
+  - button "개인 알림 저장"
+  - list:
+    - listitem: 저장한 개인 알림이 없어요.
+  - heading "외래 알림" [level=3]
+  - paragraph: 유효하게 발행된 확정 일정만 사용해요. 기본 선택은 하루 전 오전 9시이며, 알림을 켠 뒤 저장하세요. 아래 시각은 세계 표준시(UTC+0) 기준이에요. 날짜만 제공된 일정도 선택한 시각에 안내하며 실제 진료 시각을 뜻하지 않아요.
+  - heading "정형외과 외래 (독립 합성 예시)" [level=4]
+  - paragraph: 2026-10-27 10:30 · 가상병원 본관 2층
+  - checkbox "알림 켜기"
+  - text: 알림 켜기
+  - checkbox "하루 전" [checked]
+  - text: 하루 전
+  - checkbox "당일"
+  - text: 당일 알림 시각
+  - textbox "알림 시각": 09:00
+  - button "외래 알림 저장"
+  - heading "추가 안내" [level=3]
+  - checkbox "중요 안내를 아직 확인하지 않았을 때 앱 내 알림 표시"
+  - text: 중요 안내를 아직 확인하지 않았을 때 앱 내 알림 표시
+  - button "중요 안내 설정 저장"
+  - heading "예정 알림" [level=3]
+  - list:
+    - listitem: 앞으로 예정된 알림이 없어요. 지난 일정은 다시 알리지 않아요.
+
+======================================================================
+FAIL: test_landing_independent_b_login_settings_and_patient_tour (__main__.Release.test_landing_independent_b_login_settings_and_patient_tour)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/patient_http.py", line 36, in tearDown
+    self.assertEqual(self.errors,[])
+AssertionError: Lists differ: ['Failed to load resource: the server resp[40 chars]nd)'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'Failed to load resource: the server responded with a status of 404 (File not found)'
+
++ []
+- ['Failed to load resource: the server responded with a status of 404 (File not '
+-  'found)']
+
+----------------------------------------------------------------------
+Ran 3 tests in 80.082s
+
+FAILED (failures=2)

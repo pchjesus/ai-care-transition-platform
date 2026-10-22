@@ -23,3 +23,8 @@ test('destination/category edit changes approval digest; tampered or revoked pub
 test('lifecycle exposes only actual bound issuance/status metadata, no withdrawn clinical text',()=>{
  const r=issued(),storage={getItem:()=>JSON.stringify({[r.patientId]:r})};let events=publicationEvents(storage,r.patientId,r.encounterId);assert.equal(events.length,1);assert(!JSON.stringify(events).includes('합성 장소'));r.publications[0].status='REVOKED';events=publicationEvents(storage,r.patientId,r.encounterId);assert.equal(events.length,2);assert(events.some(e=>e.id==='REVOKED:PUB-X'));assert.deepEqual(publicationEvents(storage,r.patientId,'wrong'),[]);assert.deepEqual(publicationEvents({getItem:()=>'{bad'},r.patientId,r.encounterId),[]);
 });
+test('publication versions compare integer components rather than floating decimals',()=>{
+ const r=issued();r.draft.version='1.10';r.draft.approval.digest=fingerprint(r);r.publications[0].snapshot=publishedPayload(r);
+ const old=structuredClone(r.publications[0]);old.id='PUB-old';old.status='SUPERSEDED';old.snapshot.planVersion='1.9';r.publications.push(old);
+ const events=publicationEvents({getItem:()=>JSON.stringify({[r.patientId]:r})},r.patientId,r.encounterId);assert.match(events.find(e=>e.id==='ISSUED:PUB-X').title,/개정·재발행/);
+});

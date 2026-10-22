@@ -1,0 +1,15 @@
+test_settings_modal_stays_inside_visual_viewport_at_two_hundred_percent (__main__.Stabilization.test_settings_modal_stays_inside_visual_viewport_at_two_hundred_percent) ... FAIL
+
+======================================================================
+FAIL: test_settings_modal_stays_inside_visual_viewport_at_two_hundred_percent (__main__.Stabilization.test_settings_modal_stays_inside_visual_viewport_at_two_hundred_percent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/stabilization_http.py", line 57, in test_settings_modal_stays_inside_visual_viewport_at_two_hundred_percent
+    rect=self.b.locator('#comfort-dialog').evaluate('(e)=>{const r=e.getBoundingClientRect(),v=visualViewport;return {x:r.x-v.offsetLeft,y:r.y-v.offsetTop,w:r.width,h:r.height,vw:v.width,vh:v.height}}');self.assertGreaterEqual(rect['x'],-1);self.assertGreaterEqual(rect['y'],-1);self.assertLessEqual(rect['x']+rect['w'],rect['vw']+1);self.assertLessEqual(rect['y']+rect['h'],rect['vh']+1);self.b.keyboard.press('Escape');session.send('Emulation.setPageScaleFactor',{'pageScaleFactor':1})
+                                                                                                                                                                                                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 378 not less than or equal to 196
+
+----------------------------------------------------------------------
+Ran 1 test in 1.809s
+
+FAILED (failures=1)
