@@ -109,7 +109,7 @@ function overlay(pub){
  return '<dialog id="patient-dialog" class="connected-dialog '+(state.modal==='pdf'?'pdf-panel':'modal-panel')+'" aria-labelledby="dialog-title"><header class="pdf-panel-header"><h2 id="dialog-title">'+esc(title)+'</h2><button class="top-font" data-action="font">'+(state.large?'글자 기본':'글자 크게')+'</button></header>'+body+'<div class="modal-actions"><button class="link-soft" data-action="modal-close">닫기</button>'+actions+'</div></dialog>';
 }
 function content(pub){
- if(!pub)return '<div class="blocked" role="status"><div class="eyebrow">안내 확인 필요</div><h2>아직 발행된 안내가 없어요.</h2><p>의료진이 승인하고 발행한 현재 유효한 합성 계획만 표시합니다. 승인 전 초안, 철회된 계획, 다른 환자의 일정과 자료는 보여주지 않아요.</p></div>';
+ if(!pub)return '<div class="blocked" role="status"><div class="eyebrow">안내 확인 필요</div><h2>아직 발행된 안내가 없어요.</h2><p>이곳에는 승인·발행된 합성 계획만 표시돼요. A3의 <b>검토 요청 → 지정 최종 승인자 역할 선택 → 승인 → 계획 발행</b>을 진행하면 연결됩니다. 승인 전 초안·철회본은 노출하지 않아요.</p><div class="demo-preview-actions"><a class="secondary-action" href="../a3/index.html?screen=patient-preview&amp;patient='+encodeURIComponent(patientId||'SYN-002')+'">발행 전 화면 구성 미리보기 (승인 아님)</a><a class="secondary-action" href="https://pchjesus.github.io/ai-care-transition-platform/patient/index.html" target="_blank" rel="noopener">독립 환자용 B 예시 (별도 합성 데이터)</a></div></div>';
  if(state.view==='detail'){
   const item=pub.items.find(i=>i.id===state.selected);
   if(!item){state.view='today';return content(pub);}

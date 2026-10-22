@@ -15,3 +15,23 @@
 .assessment-actions{padding:14px 18px;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}.assessment-actions summary,.field-guidance summary{cursor:pointer;color:var(--forest)}.a2-fact small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}.a2-big-grade{font-size:26px}.field-guidance{padding-top:16px}
 @media(min-width:900px) and (max-width:1199px){.common-context .patient-strip{grid-template-columns:minmax(0,1fr)}.common-context .patient-chooser{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px}.common-context .patient-overview h2{white-space:nowrap}.common-context .patient-detail{line-height:1.4}}
 @media(max-width:650px){.common-context .gate-banner strong,.aux-actions .btn{word-break:keep-all}.common-context .gate-banner strong{font-size:16px}.a2-fact{gap:10px}.a2-fact b{min-width:85px}.a2-fact small{word-break:break-all}}
+
+/* A2: desktop navigation rail; narrower screens retain the original 6-up / 2-panel flow. */
+@media(min-width:1320px){
+ .a2-three-column{display:grid;grid-template-columns:clamp(148px,11vw,180px) minmax(0,1.35fr) minmax(260px,.9fr);gap:14px;align-items:start}
+ .a2-three-column>.a2-domains{display:flex;flex-direction:column;gap:9px;margin:0;position:sticky;top:18px}
+ .a2-three-column .a2-domain-btn{min-height:66px;gap:5px;align-content:center;padding:11px 12px}
+ .a2-three-column .a2-work-layout{display:contents}
+ .a2-three-column .a2-input-panel,.a2-three-column .a2-judgment-panel{min-width:0}
+ .a2-three-column .a2-judgment-panel{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow-y:auto}
+ .a2-three-column .a2-domain-btn.selected{border-left:4px solid #265b40;padding-left:9px}
+ .a2-three-column .a2-fact{flex-wrap:wrap;gap:5px}
+ .a2-three-column .a2-fact span{text-align:left}
+}
+.workflow-guidance{border:1px solid #c6dfcd;background:#f0f7f1;border-radius:10px;padding:12px 15px;margin:0 0 16px;color:#28543c;font-size:12px;line-height:1.7}
+.rail .rail-short{border:2px solid rgba(255,255,255,.86);color:#fff;background:rgba(255,255,255,.06);font-size:11px}
+.rail .rail-toggle{border:2px solid rgba(255,255,255,.86);color:#fff}
+.rail .rail-link.active .rail-short{background:#fff;color:#214b3b;border-color:#fff}
+.rail .rail-link:not(.active):hover .rail-short,.rail .rail-link:not(.active):focus-visible .rail-short{background:rgba(255,255,255,.17);border-color:#fff}
+.demo-preview-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.demo-preview-actions a{font-weight:700;min-height:44px;display:inline-flex;align-items:center}
