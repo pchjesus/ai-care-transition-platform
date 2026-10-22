@@ -71,3 +71,18 @@ A3 workflow/storage, A2 engine/data, publication 및 알림 계산/저장소 스
 브랜치만 일반 push로 전달한다. 새 PR은 생성하지 않는다. 원격 main `975e1e9cc9ca6419b76f599b748a8ceb08300827`, gh-pages `fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436`을 변경하지 않는다. 기존 PR #1~#4·사업계획서 브랜치·배포 설정은 수정하지 않는다.
 
 [브랜치 변경 비교](https://github.com/pchjesus/ai-care-transition-platform/compare/main...codex/phase4-workflow-ux)
+
+
+## 4차 배포 후속 기록 — 2026-10-23
+
+사용자의 명시적 배포 요청에 따라 독립 개발 브랜치 `codex/phase4-workflow-ux`의 검증된 구현을 `main`에 fast-forward 반영하고, `gh-pages`에 실행 파일만 선택 배포했다.
+
+- 런타임 기준 `main`: `de85a0c17beea082af26a9c998f5a031e543385f` (이 기록을 추가하는 후속 문서 커밋과 구분).
+- `gh-pages`: `6e3303b4742bc9bff093044520ea73c134e73caf`, 이전 `fe58d210ac0bfe8bd4f3c7b158c8b0d1b6dda436`에서 일반 fast-forward.
+- **PASS (Git 객체 검증)**: 실행 파일 48개 중 변경 파일 9개 교체·신규 `review-display.js` 1개 추가, 나머지 38개 동일 Git blob 유지. 기존 배포 파일 삭제 0개, 새 배포 트리에서 10개 교체·추가 파일 모두 원본과 blob SHA 동일. 시작·비교·기존 A2/A3 별칭, `.nojekyll` 보존. `release-manifest.json` 갱신(기준 실행 커밋·이전 Pages 커밋 및 71개 파일).
+- **PASS (원격 상태)**: `main`과 `gh-pages` HEAD를 GitHub에서 다시 읽어 반영 확인하고, `gh-pages`의 `release-manifest.json` 원격 내용도 확인했다.
+- **PASS (기존 Codex 실행 기록)**: 4차 개발에서 Node 98/98 + Chromium 94/94. 배포 작업에서 자동화 테스트를 새로 실행하지 않았으므로 배포 후 독립 실행 PASS로 재표현하지 않는다.
+- **NOT VERIFIED**: GitHub Pages CDN 게시 완료, 공개 URL의 실제 브라우저 렌더링·사용자 상호작용. 공개 주소 직접 열기를 시도했지만 접근 도구의 캐시 실패/접근 제한으로 확인하지 못했다. 정적 원격 Git 객체 검증과 구분한다.
+- 기존 PR #1~#4·사업계획서 브랜치·GitHub Pages 배포 설정은 변경하지 않았다. 추가 제안이었던 알림 아이콘 구분과 일부 이전·다음 이동 보호 경로 개선은 이번 배포 범위에 포함하지 않았다.
+
+공개 URL: https://pchjesus.github.io/ai-care-transition-platform/
