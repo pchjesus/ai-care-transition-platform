@@ -1,6 +1,6 @@
 // Synthetic, same-origin, browser-local A3 -> patient B read projection.
 // This is not an authentication or server authorization boundary.
-import {fingerprint,publishedPayload} from '../a3/workflow.js';
+import {fingerprint,publishedPayload,validAppointment} from '../a3/workflow.js';
 import {STORAGE_KEYS,loadRepository} from '../a3/storage.js';
 
 export const PUBLICATION_STORAGE_KEY=STORAGE_KEYS.normal;
@@ -49,7 +49,10 @@ function project(records, patientId, encounterId){
  }
  if(pubs.some(x=>x!==p&&x.id===p.id))return null;
  if(!Array.isArray(s.items)||s.items.length===0||s.items.length>20||
-    !s.items.every(i=>plain(i)&&str(i.id,80)&&str(i.title,150)&&str(i.text,4000)&&publicSection.has(i.section))||
+    !s.items.every(i=>plain(i)&&str(i.id,80)&&str(i.title,150)&&str(i.text,4000)&&publicSection.has(i.section)&&
+     (i.appointment===undefined||(i.section==='followup'&&plain(i.appointment)&&
+      Object.keys(i.appointment).sort().join(',')==='date,place,time'&&
+      validAppointment({...i.appointment,status:'CONFIRMED'}))))||
     new Set(s.items.map(i=>i.id)).size!==s.items.length)return null;
  if(!Array.isArray(s.documents)||s.documents.length>20||
     !s.documents.every(d=>plain(d)&&str(d.id,100)&&str(d.name,250))||
@@ -58,7 +61,7 @@ function project(records, patientId, encounterId){
   schemaVersion:1,isSynthetic:true,patientId,encounterId,
   publicationId:p.id,assessmentId:p.assessmentId,planVersion:s.planVersion,
   approvedAt:s.approvedAt,issuedAt:s.issuedAt,status:'PUBLISHED',
-  items:s.items.map(({id,title,section,text})=>({id,title,section,text})),
+  items:s.items.map(({id,title,section,text,appointment})=>({id,title,section,text,...(appointment?{appointment:{date:appointment.date,time:appointment.time,place:appointment.place}}:{})})),
   documents:s.documents.map(({id,name})=>({id,name}))
  };
 }

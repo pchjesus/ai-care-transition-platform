@@ -217,7 +217,7 @@ function updateAppointment(input){
  const previous=deepCopy(r),appointment={status:item.appointment?.status||'PENDING',date:item.appointment?.date||'',time:item.appointment?.time||'',place:item.appointment?.place||''};
  appointment[status]=input.value;
  // An empty, pending schedule can stay absent for legacy drafts.
- if(!validAppointment(appointment)){announce('날짜·시간·장소 형식을 확인해 주세요. 실제 예약정보는 입력하지 마세요.');render();return;}
+ if(!validAppointment(appointment)){announce('가상 일정을 확정하려면 날짜·시간·장소를 모두 먼저 입력해 주세요.');render();return;}
  if(!mutateBeforeEdit())return;
  item.appointment=appointment;
  item.verified=false;

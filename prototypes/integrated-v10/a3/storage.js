@@ -31,7 +31,7 @@ export function validStoredRecord(r,id){
      ((q.status!=='PENDING')&&(!strings(q,['reviewedAt','reviewedBy'])||q.reviewedBy!=='APPROVER')))return false;
  }
  if(!Array.isArray(r.audit)||!r.audit.every(e=>strings(e,['at','role','event','details'])))return false;
- if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text']))&&Array.isArray(p.snapshot.documents)))return false;
+ if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text'])&&(i.appointment===undefined||(i.section==='followup'&&validAppointment({...i.appointment,status:'CONFIRMED'}))))&&Array.isArray(p.snapshot.documents)))return false;
  if(r.unlockedSources!==undefined&&(!Array.isArray(r.unlockedSources)||!r.unlockedSources.every(s=>typeof s==='string')))return false;
  if(r.a2Values!==undefined&&(!isObject(r.a2Values)||!DOMAINS.every(domain=>isObject(r.a2Values[domain.id]))))return false;
  return true;

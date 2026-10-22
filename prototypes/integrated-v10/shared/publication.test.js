@@ -93,3 +93,11 @@ test('withdrawn plan can start a fresh revision without restoring revoked public
  const r=published();r.publications[0].status='REVOKED';r.draft.status='REVOKED';const history=structuredClone(r.publications);
  const next=makeRevision(r);assert.equal(next.draft.status,'DRAFT');assert.equal(next.draft.version,'2.0');assert.equal(next.draft.approval,null);assert(next.draft.items.every(i=>!i.verified));assert.deepEqual(next.publications,history);assert.equal(project(next),null);
 });
+
+test('projected publication contains confirmed dates only, not an unconfirmed appointment',()=>{
+ const r=makeInitial('SYN-002'),item=r.draft.items.find(x=>x.section==='followup');
+ item.appointment={status:'PENDING',date:'2026-11-06',time:'14:30',place:'미확정'};
+ assert.equal(Object.hasOwn(publishedPayload(r).items.find(x=>x.section==='followup'),'appointment'),false);
+ item.appointment.status='CONFIRMED';item.appointment.place='가상 병원';
+ assert.deepEqual(publishedPayload(r).items.find(x=>x.section==='followup').appointment,{date:'2026-11-06',time:'14:30',place:'가상 병원'});
+});
