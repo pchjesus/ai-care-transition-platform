@@ -116,7 +116,7 @@ function renderDomains(){const r=get();$('#assessment-stamp').textContent=`A2 �
 }
 function sourceTitle(id){const s=findSource(id,selectedId,get().unlockedSources||[]);return s?s.title:'연결된 자료 없음'}
 function renderPlan(){const r=get(),d=r.draft,readonly=!canEdit();const approvedMessage=readonly?'발행 완료된 계획은 수정할 수 없습니다. 새 버전 개정을 사용하세요.':'';
- $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>환자용 계획 편집</h3><p>환자가 해야 할 행동부터 작성합니다. 항목별 출처와 직종 검토를 확인하세요.</p></div><span class="subtle-count">${d.items.filter(x=>x.verified).length}/${d.items.length} 확인됨</span></div>${approvedMessage?`<p class="notice">${safe(approvedMessage)}</p>`:''}
+ $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>환자용 계획 편집</h3><p>환자가 해야 할 행동부터 작성합니다. 항목별 출처와 직종 검토를 확인하세요.</p></div><div class="a3-plan-head-actions"><button type="button" class="mini-button" data-action="jump-followup">외래 일정 입력 ↗</button><span class="subtle-count">${d.items.filter(x=>x.verified).length}/${d.items.length} 확인됨</span></div></div>${approvedMessage?`<p class="notice">${safe(approvedMessage)}</p>`:''}
  ${d.items.map((item,i)=>`<details class="edit-card ${item.visibility==='INTERNAL'?'internal':''}" data-item="${safe(item.id)}" ${expandedPlanItems.has(item.id)?'open':''}><summary class="edit-title"><b>${String(i+1).padStart(2,'0')} · ${safe(item.title)}</b><span class="status-pill ${item.verified&&validItemSources(r,item)?'green':'red'}">${item.verified&&validItemSources(r,item)?'근거 확인됨':'확인 필요'}</span></summary><div class="edit-card-body">
  <label for="text-${safe(item.id)}">환자에게 전달할 안내문</label><textarea class="edit-textarea" id="text-${safe(item.id)}" data-edit="text" ${readonly?'disabled':''}>${safe(item.text)}</textarea>
  ${item.section==='followup'?`<fieldset class="a3-appointment" aria-label="외래 일정 입력">
@@ -581,6 +581,15 @@ $('#work-pane').addEventListener('change',e=>{
  if(e.target.id==='file-attach')addDoc(e.target.files?.[0]);
 });
 $('#work-pane').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;
+ if(a==='jump-followup'){
+  expandedPlanItems.add('followup');
+  renderPlan();
+  const section=document.querySelector('#work-pane details[data-item="followup"]');
+  section?.scrollIntoView({behavior:'smooth',block:'start'});
+  section?.querySelector('summary')?.focus({preventScroll:true});
+  if(!canEdit())announce('이미 발행된 계획은 새 버전 개정 후 외래 일정을 수정할 수 있어요.');
+  return;
+ }
  if(a==='resolve')resolveIssue(b);
  if(['open-doc','review-doc','remove-doc'].includes(a))docAction(a,b);
  if(a==='select-source')openSourceDialog(b.dataset.sourceKind,b.dataset.sourceTarget);
