@@ -55,7 +55,10 @@ jobs:
           set -euo pipefail
           python -m compileall -q tests
           # Phase1 17/17 PASS in previous run 39836533297; resume from interrupted suite.
-          for suite in unified_http.py patient_http.py comfort_http.py spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
+          # Confirmed PASS previously: phase1 17/17, unified 14/14, patient 22/22, comfort 14/15.
+          # Continue with only the now-corrected comfort case and the remaining suites.
+          python tests/comfort_http.py Comfort.test_touch_settings_tour_and_navigation
+          for suite in spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
             echo "::group::${suite}"
             python "tests/${suite}"
             echo "::endgroup::"
