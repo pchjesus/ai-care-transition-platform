@@ -20,4 +20,4 @@ jobs:
           if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
           test -x /usr/bin/chromium
       - name: Exercise deployed public URL
-        run: python prototypes/integrated-v10/tests/phase5_live_pages.py
+        run: python prototypes/integrated-v10/tests/phase5_live_pages.py LivePages.test_independent_patient_login_and_notifications

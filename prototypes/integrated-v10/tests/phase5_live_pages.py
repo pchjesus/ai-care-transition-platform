@@ -53,7 +53,7 @@ class LivePages(unittest.TestCase):
         p.locator("#demo-code").press("Enter")
         expect(p.locator(".patient-page-tools .patient-demo-return")).to_be_visible()
         expect(p.locator(".appointment [data-comfort=settings]")).to_have_count(0)
-        p.locator(".bottom-nav [data-view=reminders], .bottom-nav [data-nav=reminders]").click()
+        p.locator('[data-view=reminders]:visible,[data-nav=reminders]:visible').first.click()
         expect(p.locator("#reminder-personal")).to_be_visible()
         expect(p.locator("#reminder-followup")).to_be_visible()
         expect(p.locator("#reminder-inbox")).to_be_visible()

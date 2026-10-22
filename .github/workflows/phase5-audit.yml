@@ -1,8 +1,5 @@
 name: Phase 5 scoped regression audit
 on:
-  push:
-    branches:
-      - audit/phase5-regression-refactor-20261023
   workflow_dispatch:
 permissions:
   contents: read
