@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {makeInitial,publishedPayload,makeRevision,fingerprint} from '../a3/workflow.js';
 import {validStoredRecord,STORAGE_KEYS} from '../a3/storage.js';
-import {projectCurrentPublication,readPatientPublication,encounterFor} from './publication.js';
+import {projectCurrentPublication,readPatientPublication,encounterFor,syntheticPatientName} from './publication.js';
 
 function published(version='1.0'){
  const r=makeInitial('SYN-002');
@@ -100,4 +100,11 @@ test('projected publication contains confirmed dates only, not an unconfirmed ap
  assert.equal(Object.hasOwn(publishedPayload(r).items.find(x=>x.section==='followup'),'appointment'),false);
  item.appointment.status='CONFIRMED';item.appointment.place='가상 병원';
  assert.deepEqual(publishedPayload(r).items.find(x=>x.section==='followup').appointment,{date:'2026-11-06',time:'14:30',place:'가상 병원'});
+});
+
+test('patient display name uses the matching synthetic registry only',()=>{
+ assert.equal(syntheticPatientName('SYN-001',encounterFor('SYN-001')),'이정희');
+ assert.equal(syntheticPatientName('SYN-002',encounterFor('SYN-002')),'윤미경');
+ assert.equal(syntheticPatientName('SYN-003',encounterFor('SYN-001')),null);
+ assert.equal(syntheticPatientName('UNKNOWN','ENC-UNKNOWN'),null);
 });

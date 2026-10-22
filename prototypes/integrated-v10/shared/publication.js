@@ -2,6 +2,7 @@
 // This is not an authentication or server authorization boundary.
 import {fingerprint,publishedPayload,validAppointment} from '../a3/workflow.js';
 import {STORAGE_KEYS,loadRepository} from '../a3/storage.js';
+import {CASES} from '../a3/data.js';
 
 export const PUBLICATION_STORAGE_KEY=STORAGE_KEYS.normal;
 export const ENCOUNTERS=Object.freeze({
@@ -11,6 +12,12 @@ export const ENCOUNTERS=Object.freeze({
  'SYN-004':'ENC-SYN-004-DEMO'
 });
 export const encounterFor=id=>ENCOUNTERS[id]||null;
+// Controlled synthetic identity labels, only after patient and encounter match.
+export function syntheticPatientName(id,encounterId){
+ if(ENCOUNTERS[id]!==encounterId)return null;
+ const patient=CASES.find(c=>c.id===id);
+ return patient&&typeof patient.name==='string'?patient.name:null;
+}
 const plain=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
 const str=(x,max=1000)=>typeof x==='string'&&x.length>0&&x.length<=max;
 const instant=x=>str(x,35)&&Number.isFinite(Date.parse(x))&&new Date(x).toISOString()===x;

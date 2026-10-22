@@ -34,3 +34,6 @@
 .demo-mode-option a{color:#275d46;text-underline-offset:3px}
 .independent-demo-link{white-space:nowrap;text-decoration:underline!important;text-underline-offset:3px}
 @media(max-width:600px){.event{grid-template-columns:1fr;gap:11px}.connected-appointment-date{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline}}
+
+/* Registry-verified synthetic greeting, not an EMR identity claim. */
+.connected-synthetic-id{font-weight:500;color:#658076;font-size:calc(12px * var(--font-scale,1))}
