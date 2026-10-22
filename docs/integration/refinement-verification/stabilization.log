@@ -1,0 +1,13 @@
+test_both_patient_inline_four_widths_keyboard_scroll_and_large_font (__main__.Stabilization.test_both_patient_inline_four_widths_keyboard_scroll_and_large_font) ... ok
+test_combined_a1_a2_a3_b_approved_schedule_pdf_reminders_and_tours (__main__.Stabilization.test_combined_a1_a2_a3_b_approved_schedule_pdf_reminders_and_tours) ... ok
+test_inline_settings_at_two_hundred_percent_scroll_and_keyboard (__main__.Stabilization.test_inline_settings_at_two_hundred_percent_scroll_and_keyboard) ... ok
+test_open_inbox_immediately_honors_other_tab_disable_and_corruption (__main__.Stabilization.test_open_inbox_immediately_honors_other_tab_disable_and_corruption) ... ok
+test_patient_tour_zoom_missing_target_and_exact_screen_restore (__main__.Stabilization.test_patient_tour_zoom_missing_target_and_exact_screen_restore) ... ok
+test_readable_zone_preserves_detected_and_saved_zones_and_invalid_input (__main__.Stabilization.test_readable_zone_preserves_detected_and_saved_zones_and_invalid_input) ... ok
+test_settings_keep_stale_writer_blocked_when_live_upcoming_refreshes (__main__.Stabilization.test_settings_keep_stale_writer_blocked_when_live_upcoming_refreshes) ... ok
+test_upcoming_recalculation_preserves_unsaved_input_focus_and_storage (__main__.Stabilization.test_upcoming_recalculation_preserves_unsaved_input_focus_and_storage) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 133.092s
+
+OK

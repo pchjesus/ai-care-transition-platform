@@ -200,6 +200,8 @@ document.addEventListener('click',async event=>{
  if(!state.authenticated)return;
  if(action==='logout'){closeOverlay(false);state.authenticated=false;state.notice='';state.view='today';state.selected=null;state.profileDraft=null;state.editing=false;position=0;visits=[{view:'today',selected:null}];rememberRoute();render();return;}
  if(action==='home'){visit('today');return;}if(action==='back'){traverse(-1);return;}if(action==='next'){traverse(1);return;}
+ // The local publication/revocation inbox remains available without a public plan.
+ if(button.dataset.view==='reminders'){visit('reminders');return;}
  const pub=publication().publication;
  if(!pub){render();return;}
  if(action==='modal-close'){closeOverlay();return;}
@@ -263,6 +265,8 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('pagehide',()=>{openingDocument++;if(state.pdfURL)URL.revokeObjectURL(state.pdfURL);state.pdfURL=null;state.modal=null;});
 installPatientComfort({
  context(){const result=publication(),pub=state.authenticated?result.publication:null;return {source:'connected',patientId,encounterId,authenticated:state.authenticated,status:state.authenticated?result.status:'EMPTY',publication:pub,events:state.authenticated&&result.status!=='ERROR'&&result.status!=='MISMATCH'?publicationEvents(storage,patientId,encounterId):[],view:state.view,section:pub?.items.find(i=>i.id===state.selected)?.section,understanding:personal.understanding[pub?.publicationId]||{}};},
+ navigate:view=>visit(view),
+ hasUnsaved:()=>state.editing&&JSON.stringify(state.profileDraft)!==JSON.stringify(personal.profile),
  capture(){tourReading=true;return {state:structuredClone(state),visits:structuredClone(visits),position};},
  showTour(view){state.view=view;if(view==='detail')state.selected=publication().publication?.items[0]?.id;render();},
  restore(before){Object.assign(state,before.state);visits=before.visits;position=before.position;render();tourReading=false;},

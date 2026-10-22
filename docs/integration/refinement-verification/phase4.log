@@ -1,0 +1,90 @@
+test_both_homes_five_tabs_documents_and_four_widths_large_font (__main__.Phase4.test_both_homes_five_tabs_documents_and_four_widths_large_font) ... ok
+test_both_patient_three_steps_try_actions_are_read_only_and_restore (__main__.Phase4.test_both_patient_three_steps_try_actions_are_read_only_and_restore) ... ok
+test_both_reminder_hubs_save_restore_inbox_and_navigation (__main__.Phase4.test_both_reminder_hubs_save_restore_inbox_and_navigation) ... FAIL
+test_browser_back_forward_commits_focused_hospital_input (__main__.Phase4.test_browser_back_forward_commits_focused_hospital_input) ... ok
+test_failed_lock_callback_is_visible_before_delayed_promise_settles (__main__.Phase4.test_failed_lock_callback_is_visible_before_delayed_promise_settles) ... ok
+test_hospital_context_alignment_patient_identity_and_navigation_save_guard (__main__.Phase4.test_hospital_context_alignment_patient_identity_and_navigation_save_guard) ... ok
+test_hospital_meter_matches_inputs_and_original_codes_are_expandable (__main__.Phase4.test_hospital_meter_matches_inputs_and_original_codes_are_expandable) ... ok
+test_touch_target_and_keyboard_tour_actions_do_not_write_records (__main__.Phase4.test_touch_target_and_keyboard_tour_actions_do_not_write_records) ... ok
+
+======================================================================
+FAIL: test_both_reminder_hubs_save_restore_inbox_and_navigation (__main__.Phase4.test_both_reminder_hubs_save_restore_inbox_and_navigation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/phase4_http.py", line 53, in test_both_reminder_hubs_save_restore_inbox_and_navigation
+    self.tab('reminders');self.settings();self.personal(label='새 알림 메뉴의 개인 준비');self.close();expect(self.b.locator('[data-upcoming]')).to_contain_text('새 알림 메뉴');self.inbox();expect(self.b.locator('#comfort-dialog')).to_be_visible();self.close();self.b.reload()
+                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22016, in to_contain_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text '새 알림 메뉴'
+Actual value: None
+Error: element(s) not found 
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("[data-upcoming]")
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- complementary "주요 메뉴":
+  - text: D. 나의 하루 퇴원 후 관리
+  - navigation "화면 이동":
+    - button "홈"
+    - button "이전"
+    - button "다음" [disabled]
+  - text: 나의 계획
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+  - button "알림"
+  - button "내 정보"
+  - text: 가상 퇴원 안내 의료진이 발행한 자료만 표시합니다.
+  - group: 개발·시연
+- banner: 퇴원 후, 나의 하루 발행 계획 · v1.0 가상 환자
+- main:
+  - button "글자 크게"
+  - button "사용 안내"
+  - text: 윤미경님 · 합성 환자 안내 (SYN-002) 발행된 계획만 표시합니다.
+  - heading "윤미경님, 오늘의 관리 계획" [level=1]:
+    - text: 윤미경님,
+    - emphasis: 오늘의 관리 계획
+  - paragraph: 지금 필요한 일부터 모았어요.
+  - text: 의료진 승인 2026-10-22 · 가상 발행 2026-10-22 · v1.0
+  - region "다가오는 외래 일정":
+    - text: 가장 가까운 진료 · 발행된 안내 2030-01-03 10:00
+    - heading "외래·검사 일정" [level=3]
+    - paragraph: 합성 진료 장소 합성 일정으로 실제 병원 예약과 연결되지 않아요.
+    - text: 승인된 가상 일정
+    - button "일정 안내 보기"
+    - button "외래 알림 설정"
+  - region "오늘 확인할 안내":
+    - heading "오늘 확인할 안내" [level=2]
+    - button "01 오늘 해야 할 일 퇴원 전 받은 자가관리 안내문을 확인해 주세요."
+    - button "02 복약·약물 안내 퇴원 시 확인된 약물 목록과 의료진 안내를 확인하세요. 복용 방법이 불확실하면 담당 의료진 또는 약사에게 문의하세요."
+    - button "03 외래·검사 일정 퇴원 안내문에서 확정된 다음 진료 일정을 확인해 주세요."
+    - button "04 주의사항 개인별 주의사항은 승인된 안내문을 확인하고, 위급한 경우에는 119에 연락하세요."
+    - button "05 도움이 필요할 때 퇴원 시 안내받은 담당 의료기관의 공식 문의처를 확인하세요."
+    - button "06 생활·이동 지원 이동과 돌봄에 도움이 필요한 경우 병원 상담 담당자와 확인해 주세요."
+  - complementary:
+    - heading "더 자세한 설명이 필요하신가요?" [level=3]
+    - paragraph: 발행된 계획 전체를 확인할 수 있어요.
+    - button "전체 계획 보기"
+    - button "관련 안내 문서 보기"
+  - heading "도움이 필요할 때" [level=2]
+  - paragraph: 발행된 도움·문의 안내를 확인해 주세요.
+  - button "도움 안내 보기"
+  - paragraph: 합성 데이터만 사용하는 로컬 시연입니다. 실제 임상 정보·서버 인증·병원 연동이 아닙니다.
+
+----------------------------------------------------------------------
+Ran 8 tests in 69.158s
+
+FAILED (failures=1)

@@ -1,0 +1,11 @@
+test_both_patient_navigation_and_inline_layout_four_widths (__main__.Refinement.test_both_patient_navigation_and_inline_layout_four_widths) ... ok
+test_compact_evidence_and_patient_chooser_four_widths (__main__.Refinement.test_compact_evidence_and_patient_chooser_four_widths) ... ok
+test_inline_drafts_other_form_save_font_and_cancelled_navigation (__main__.Refinement.test_inline_drafts_other_form_save_font_and_cancelled_navigation) ... ok
+test_patient_tour_two_primary_actions_readonly_and_restore (__main__.Refinement.test_patient_tour_two_primary_actions_readonly_and_restore) ... ok
+test_profile_and_browser_back_keep_unsaved_inputs_when_cancelled (__main__.Refinement.test_profile_and_browser_back_keep_unsaved_inputs_when_cancelled) ... ok
+test_stale_inline_writer_reload_and_readonly_refresh (__main__.Refinement.test_stale_inline_writer_reload_and_readonly_refresh) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 72.596s
+
+OK

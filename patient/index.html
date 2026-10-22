@@ -490,7 +490,7 @@ function focusMain(){const node=app.querySelector('#main-content');if(node){node
    catch{closePdf();state.notice='PDF를 열지 못했어요. 브라우저 설정을 확인한 뒤 다시 시도해 주세요.';render();document.querySelector('[data-action=pdf-open]')?.focus();}return;
   }
   if(a==='pdf-close'){closeOverlay();return;}
-  if(a==='font'){state.large=!state.large;const saved=demoRepository.saveLarge(state.large);if(!saved)state.notice='글자 크기를 이 브라우저에 저장하지 못했어요. 현재 화면에는 적용했어요.';render();document.querySelector(state.pdfOpen?'.close-pdf':state.modal?'.modal-panel [data-action=modal-cancel]':'.top-font')?.focus();return}
+  if(a==='font'){state.large=!state.large;const saved=demoRepository.saveLarge(state.large);if(!saved)state.notice='글자 크기를 이 브라우저에 저장하지 못했어요. 현재 화면에는 적용했어요.';render();document.querySelector(state.pdfOpen?'.close-pdf':state.modal?'.modal-panel [data-action=modal-cancel]':'.patient-page-tools [data-action=font]')?.focus();return}
   if(a==='clinician'){if(!previewMode)return;goto('clinician');return}
   if(a==='reset'){if(!previewMode)return;if(!demoRepository.clear()){state.notice='초기화하지 못했어요. 저장 상태를 확인해 주세요.';render();return;}closePdf();state.helpSearchOpen=false;state.helpQuery='';state.supportSelected='hospital';state.view='today';state.selected='mobility';state.quizChoice=null;state.feedback=null;state.read={};state.published=true;state.version=1;state.planChanged=false;state.profile={...initialProfile};state.profileDraft=null;state.editing=false;state.notice='';state.transferStatus='none';state.savedRevision=0;state.lastRequest=null;state.modal=null;state.pdfOpen=false;render();focusMain();return;}
   if(a==='detail-back'){goto('detail');return;}
@@ -509,6 +509,8 @@ function focusMain(){const node=app.querySelector('#main-content');if(node){node
  window.addEventListener('pagehide',closePdf);
  window.patientComfortAdapter={
  context(){const active=state.authenticated&&state.published;return {source:'independent',patientId:'DEMO-B-LEE',encounterId:'DEMO-B-20261020',authenticated:state.authenticated,status:active?'PUBLISHED':'EMPTY',view:state.view,section:state.selected==='meds'?'medication':null,events:[],understanding:state.read,publication:active?{patientId:'DEMO-B-LEE',encounterId:'DEMO-B-20261020',publicationId:'DEMO-PUB-'+state.version,assessmentId:'DEMO-AS-20261020',planVersion:state.version+'.0',items:[{id:'meds',title:'퇴원 약 안내 확인',section:'medication'},{id:'appointment',title:'정형외과 외래 (독립 합성 예시)',section:'followup',appointment:{date:'2026-10-27',time:'10:30',place:'가상병원 본관 2층'}}],documents:state.version===1?[{id:'mobility',name:'보행 보조기 교육자료 (독립 예시)',category:'GENERAL'}]:[]}:null};},
+ navigate:view=>goto(view),
+ hasUnsaved:()=>state.editing&&JSON.stringify(state.profileDraft)!==JSON.stringify(state.profile),
  capture(){return {state:structuredClone(state),visits:structuredClone(patientVisits),position:patientPosition};},
  showTour(view){state.view=view;if(view==='detail')state.selected=items[0].id;render();},
  restore(before){Object.assign(state,before.state);patientVisits=before.visits;patientPosition=before.position;render();},

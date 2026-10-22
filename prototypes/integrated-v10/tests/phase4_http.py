@@ -19,7 +19,7 @@ class Phase4(unittest.TestCase):
   self.open_a3();self.a3.locator('[data-nav=assessment]').click()
   for choice,grade in [('independent',0),('device',2),('assistance',3)]:
    self.a3.locator('#a2-field-gait').select_option(choice);meter=self.a3.locator('.a2-fact').filter(has_text='보행/이동').locator('.grade-meter');expect(meter.locator('.filled')).to_have_count(grade);expect(meter).to_have_attribute('aria-label',__import__('re').compile(str(grade)+'등급'))
-  trace=self.a3.locator('.a2-fact').filter(has_text='보행/이동').locator('.trace-technical');expect(trace.locator('small')).not_to_be_visible();trace.locator('summary').click();expect(trace).to_contain_text('function.gait.assistance')
+  trace=self.a3.locator('.a2-judgment-panel>.trace-technical');expect(trace.locator('code').first).not_to_be_visible();trace.locator('summary').click();expect(trace).to_contain_text('function.gait.assistance')
   self.a3.locator('#handoff-a2').click();self.a3.locator('#gate-banner').click();expect(self.a3.locator('#blockers-dialog')).to_contain_text('발행 차단 사항')
   expect(self.a3.locator('#blockers-dialog')).to_contain_text('우선 검토 사항');expect(self.a3.locator('#blockers-dialog')).to_contain_text('참고·권장 확인 사항')
   expected=self.a3.evaluate("async key=>{const {blockers}=await import('./workflow.js');const r=JSON.parse(localStorage.getItem(key))['SYN-002'];return blockers(r).map(b=>b.id)}",comfort.KEY)
@@ -40,17 +40,17 @@ class Phase4(unittest.TestCase):
   for independent in [False,True]:
    if independent:self.standalone()
    for width in [390,768,1024,1440]:
-    self.b.set_viewport_size({'width':width,'height':950});expect(self.b.locator('.page-head .comfort-quick')).to_have_count(0);expect(self.b.locator('.appointment [data-comfort=tour]')).to_be_visible();expect(self.b.locator('.insight-strip [data-comfort=documents]')).to_be_visible();self.assertFalse(self.b.evaluate('document.documentElement.scrollWidth>innerWidth'))
+    self.b.set_viewport_size({'width':width,'height':950});expect(self.b.locator('.page-head .comfort-quick')).to_have_count(0);expect(self.b.locator('.patient-page-tools [data-comfort=tour]')).to_be_visible();expect(self.b.locator('.insight-strip [data-comfort=documents]')).to_be_visible();self.assertFalse(self.b.evaluate('document.documentElement.scrollWidth>innerWidth'))
     hero=self.b.locator('.home-top-grid .hero-panel').bounding_box();ap=self.b.locator('.home-top-grid .appointment').bounding_box()
     if width>=1024:self.assertAlmostEqual(hero['y'],ap['y'],delta=1);self.assertAlmostEqual(hero['height'],ap['height'],delta=1)
     self.b.screenshot(path=str(out/f'{"independent" if independent else "connected"}-home-{width}.png'),full_page=True)
-    self.tab('reminders');expect(self.b.locator('.reminders-page')).to_contain_text('알림 설정');expect(self.b.locator('.reminders-page')).to_contain_text('알림 내역');expect(self.b.locator('.reminders-page')).to_contain_text('예정 알림');self.tab('today')
-   self.tab('reminders');size=self.b.locator('.reminders-page > p').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)');self.b.locator('[data-action=font]').first.click();self.b.set_viewport_size({'width':390,'height':844});self.assertGreater(self.b.locator('.reminders-page > p').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)'),size);self.assertFalse(self.b.evaluate('document.documentElement.scrollWidth>innerWidth'));self.b.screenshot(path=str(out/f'{"independent" if independent else "connected"}-notifications-large.png'),full_page=True);self.tab('today')
+    self.tab('reminders');expect(self.b.locator('.reminders-page')).to_contain_text('외래 알림 설정');expect(self.b.locator('.reminders-page')).to_contain_text('최근 알림 내역');expect(self.b.locator('.reminders-page')).to_contain_text('예정 알림');self.tab('today')
+   self.tab('reminders');size=self.b.locator('.comfort-inline .comfort-scope').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)');self.b.locator('[data-action=font]').first.click();self.b.set_viewport_size({'width':390,'height':844});self.assertGreater(self.b.locator('.comfort-inline .comfort-scope').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)'),size);self.assertFalse(self.b.evaluate('document.documentElement.scrollWidth>innerWidth'));self.b.screenshot(path=str(out/f'{"independent" if independent else "connected"}-notifications-large.png'),full_page=True);self.tab('today')
  def test_both_reminder_hubs_save_restore_inbox_and_navigation(self):
   self.ready(True)
   for independent in [False,True]:
    if independent:self.standalone()
-   self.tab('reminders');self.settings();self.personal(label='새 알림 메뉴의 개인 준비');self.close();expect(self.b.locator('[data-hub-upcoming]')).to_contain_text('새 알림 메뉴');self.inbox();expect(self.b.locator('#comfort-dialog')).to_be_visible();self.close();self.b.reload()
+   self.tab('reminders');self.settings();self.personal(label='새 알림 메뉴의 개인 준비');expect(self.b.locator('[data-upcoming]')).to_contain_text('새 알림 메뉴');self.inbox();expect(self.b.locator('#comfort-dialog')).to_be_visible();self.close();self.b.reload()
    if self.b.locator('#demo-code').is_visible():self.b.locator('#demo-code').fill('CARE2026');self.b.locator('#demo-code').press('Enter')
    self.tab('reminders');self.settings();expect(self.b.locator('#comfort-dialog')).to_contain_text('새 알림 메뉴의 개인 준비');self.close();self.tab('today');self.b.get_by_role('button',name='이전',exact=True).click();expect(self.b.locator('.reminders-page')).to_be_visible();self.b.get_by_role('button',name='다음',exact=True).click();expect(self.b.locator('.home-top-grid')).to_be_visible()
  def test_browser_back_forward_commits_focused_hospital_input(self):
@@ -58,7 +58,7 @@ class Phase4(unittest.TestCase):
  def test_touch_target_and_keyboard_tour_actions_do_not_write_records(self):
   self.ready();ctx=self.browser.new_context(storage_state=self.ctx.storage_state(),viewport={'width':390,'height':844},has_touch=True,is_mobile=True);p=ctx.new_page();p.on('pageerror',lambda e:self.errors.append(str(e)))
   try:
-   p.goto(self.b.url);p.locator('#demo-code').fill('CARE2026');p.locator('#demo-code').press('Enter');before=p.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})');p.locator('[data-comfort=tour]').tap();p.locator('.spot-ring [data-tour-control=try]').tap();expect(p.locator('.detail-wrap')).to_be_visible();p.locator('[data-tour-control=next]').tap();p.locator('.spot-tip [data-tour-control=try]').focus();p.keyboard.press('Enter');expect(p.locator('.schedule-layout')).to_be_visible();p.locator('[data-tour-control=next]').tap();p.locator('.spot-tip [data-tour-control=try]').tap();expect(p.locator('.reminder-hub-actions')).to_be_visible();p.keyboard.press('Escape');self.assertEqual(p.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
+   p.goto(self.b.url);p.locator('#demo-code').fill('CARE2026');p.locator('#demo-code').press('Enter');before=p.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})');p.locator('[data-comfort=tour]').tap();p.locator('.spot-ring [data-tour-control=try]').tap();expect(p.locator('.detail-wrap')).to_be_visible();p.locator('[data-tour-control=next]').tap();p.locator('.spot-tip [data-tour-control=try]').focus();p.keyboard.press('Enter');expect(p.locator('.schedule-layout')).to_be_visible();p.locator('[data-tour-control=next]').tap();p.locator('.spot-tip [data-tour-control=try]').tap();expect(p.locator('.comfort-inline')).to_be_visible();p.keyboard.press('Escape');self.assertEqual(p.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
   finally:ctx.close()
  def test_both_patient_three_steps_try_actions_are_read_only_and_restore(self):
   self.ready()
@@ -67,7 +67,7 @@ class Phase4(unittest.TestCase):
    for width in [390,1440]:
     self.b.set_viewport_size({'width':width,'height':950});before=self.stores();self.b.locator('[data-comfort=tour]').click()
     self.b.screenshot(path=f'/tmp/phase4-screenshots/{"independent" if independent else "connected"}-tour-{width}.png')
-    for step,selector in [(1,'.detail-wrap'),(2,'.schedule-layout'),(3,'.reminder-hub-actions')]:
+    for step,selector in [(1,'.detail-wrap'),(2,'.schedule-layout'),(3,'.comfort-inline')]:
      expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-step',str(step));self.b.locator('.spot-tip [data-tour-control=try]').click();expect(self.b.locator(selector)).to_be_visible();expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-tried','true');self.assertEqual(self.stores(),before)
      if step<3:self.b.locator('[data-tour-control=next]').click()
     self.b.locator('[data-tour-control=previous]').click();expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-step','2');self.b.keyboard.press('Escape');expect(self.b.locator('.home-top-grid')).to_be_visible();expect(self.b.locator('[data-comfort=tour]')).to_be_focused();self.assertEqual(self.stores(),before)

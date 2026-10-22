@@ -1,0 +1,54 @@
+test_a3_save_failure_does_not_publish (__main__.PatientIntegration.test_a3_save_failure_does_not_publish) ... ok
+test_corrupt_repository_and_local_profile_fail_closed (__main__.PatientIntegration.test_corrupt_repository_and_local_profile_fail_closed) ... ok
+test_failed_revoke_preserves_the_last_persisted_publication (__main__.PatientIntegration.test_failed_revoke_preserves_the_last_persisted_publication) ... ok
+test_help_search_print_and_font_failure_feedback (__main__.PatientIntegration.test_help_search_print_and_font_failure_feedback) ... ok
+test_missing_approved_pdf_is_an_actionable_empty_state (__main__.PatientIntegration.test_missing_approved_pdf_is_an_actionable_empty_state) ... ok
+test_mobile_large_font_all_routes_and_modal_keyboard (__main__.PatientIntegration.test_mobile_large_font_all_routes_and_modal_keyboard) ... ERROR
+test_no_issuance_and_encounter_mismatch (__main__.PatientIntegration.test_no_issuance_and_encounter_mismatch) ... ok
+test_original_patient_styles_and_four_viewports (__main__.PatientIntegration.test_original_patient_styles_and_four_viewports) ... ok
+test_pdf_persistence_failure_blocks_publication (__main__.PatientIntegration.test_pdf_persistence_failure_blocks_publication) ... ok
+test_pdf_staging_rechecks_other_tab_before_committing_publication (__main__.PatientIntegration.test_pdf_staging_rechecks_other_tab_before_committing_publication) ... ok
+test_profile_and_acknowledgment_storage_failures_never_claim_saved (__main__.PatientIntegration.test_profile_and_acknowledgment_storage_failures_never_claim_saved) ... ok
+test_profile_save_modal_focus_refresh_and_local_request (__main__.PatientIntegration.test_profile_save_modal_focus_refresh_and_local_request) ... ok
+test_profile_tabs_do_not_overwrite_concurrent_edits (__main__.PatientIntegration.test_profile_tabs_do_not_overwrite_concurrent_edits) ... ok
+test_publish_revision_revoke_and_tab_refresh (__main__.PatientIntegration.test_publish_revision_revoke_and_tab_refresh) ... ok
+test_published_html_is_literal_not_executable (__main__.PatientIntegration.test_published_html_is_literal_not_executable) ... ok
+test_recovery_after_revoke_requires_new_approval_and_keeps_revoked_history (__main__.PatientIntegration.test_recovery_after_revoke_requires_new_approval_and_keeps_revoked_history) ... ok
+test_revision_keeps_old_text_until_republish_then_revoke_closes_modal (__main__.PatientIntegration.test_revision_keeps_old_text_until_republish_then_revoke_closes_modal) ... ok
+test_touch_mobile_profile_understanding_and_navigation (__main__.PatientIntegration.test_touch_mobile_profile_understanding_and_navigation) ... ok
+test_two_published_patients_never_share_profile_or_understanding (__main__.PatientIntegration.test_two_published_patients_never_share_profile_or_understanding) ... ok
+test_understanding_is_version_specific_and_optional (__main__.PatientIntegration.test_understanding_is_version_specific_and_optional) ... ok
+test_unrepresentable_public_payload_never_claims_publication (__main__.PatientIntegration.test_unrepresentable_public_payload_never_claims_publication) ... ok
+test_valid_pdf_view_download_refresh_and_revoke (__main__.PatientIntegration.test_valid_pdf_view_download_refresh_and_revoke) ... ok
+
+======================================================================
+ERROR: test_mobile_large_font_all_routes_and_modal_keyboard (__main__.PatientIntegration.test_mobile_large_font_all_routes_and_modal_keyboard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/patient_http.py", line 164, in test_mobile_large_font_all_routes_and_modal_keyboard
+    self.b.reload();expect(self.b.locator('.quiz-container')).to_be_visible();self.assertTrue(self.b.locator('body').evaluate("e=>e.classList.contains('large-font')"));self.b.locator('[data-action="home"]:visible').click();self.b.get_by_role('link',name='통합 홈',exact=True).click();expect(self.b.get_by_role('heading',name='병원용 통합 워크벤치')).to_be_visible()
+                                                                                                                                                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 17876, in click
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_locator.py", line 165, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 593, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 6000ms exceeded.
+Call log:
+  - waiting for get_by_role("link", name="통합 홈", exact=True)
+
+
+----------------------------------------------------------------------
+Ran 22 tests in 346.872s
+
+FAILED (errors=1)
