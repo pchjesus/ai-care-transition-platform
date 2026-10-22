@@ -41,6 +41,7 @@ export function validItemSources(record,item){
   (!Array.isArray(item.sources)||item.source===ids[0])&&
   ids.every(id=>typeof id==='string'&&usableSource(findSource(id,record.patientId,record.unlockedSources||[]),'item',item.section,record.patientId));
 }
+export const canRequestRevocation=(record,role)=>['NURSE','PHARMACIST','PHYSICIAN'].includes(role)&&!!currentPublished(record)&&!(record.revocationRequest?.status==='PENDING'&&record.revocationRequest.publicationId===currentPublished(record)?.id);
 export function currentPublished(record){return record.publications.find(p=>p.status==='PUBLISHED')||null;}
 export function blockers(record, availableDocs=new Set()){
  const d=record.draft,res=[],assessmentIssues=issuesFromValues(record.assessment.values);

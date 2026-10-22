@@ -1,6 +1,6 @@
 import {createPatientRepository} from './storage.js';
 import {readPublishedDocument} from '../shared/published-documents.js';
-import {readPatientPublication,PUBLICATION_STORAGE_KEY} from '../shared/publication.js';
+import {readPatientPublication,PUBLICATION_STORAGE_KEY,ENCOUNTERS} from '../shared/publication.js';
 
 // A3-connected B v1.3: same visual shell, but no standalone fixture, mock approval
 // button, fake appointment, medication instruction, or unrelated embedded PDF.
@@ -108,8 +108,18 @@ function overlay(pub){
  }else{title='발행된 안내와 내 기록';body='<p>의료진이 승인·발행한 현재 계획만 안내로 표시합니다. 연락 정보와 이해 확인은 이 브라우저의 개인 시연 기록이며 병원으로 전송하지 않습니다.</p>';}
  return '<dialog id="patient-dialog" class="connected-dialog '+(state.modal==='pdf'?'pdf-panel':'modal-panel')+'" aria-labelledby="dialog-title"><header class="pdf-panel-header"><h2 id="dialog-title">'+esc(title)+'</h2><button class="top-font" data-action="font">'+(state.large?'글자 기본':'글자 크게')+'</button></header>'+body+'<div class="modal-actions"><button class="link-soft" data-action="modal-close">닫기</button>'+actions+'</div></dialog>';
 }
+function availableOtherDemos(){
+ let found=[];
+ try{
+  const current=window.localStorage;
+  found=Object.entries(ENCOUNTERS).filter(([id])=>id!==patientId)
+   .filter(([id,enc])=>readPatientPublication(current,id,enc).status==='PUBLISHED')
+   .map(([id,enc])=>'<a class="secondary-action" href="?patient='+encodeURIComponent(id)+'&amp;encounter='+encodeURIComponent(enc)+'">'+esc(id)+' 발행본 보기</a>');
+ }catch{}
+ return found.length?'<div class="demo-preview-actions"><p>이 브라우저에 다른 가상 환자의 발행본이 있어요.</p>'+found.join('')+'</div>':'';
+}
 function content(pub){
- if(!pub)return '<div class="blocked" role="status"><div class="eyebrow">안내 확인 필요</div><h2>아직 발행된 안내가 없어요.</h2><p>이곳에는 승인·발행된 합성 계획만 표시돼요. A3의 <b>검토 요청 → 지정 최종 승인자 역할 선택 → 승인 → 계획 발행</b>을 진행하면 연결됩니다. 승인 전 초안·철회본은 노출하지 않아요.</p><div class="demo-preview-actions"><a class="secondary-action" href="../a3/index.html?screen=patient-preview&amp;patient='+encodeURIComponent(patientId||'SYN-002')+'">발행 전 화면 구성 미리보기 (승인 아님)</a><a class="secondary-action" href="https://pchjesus.github.io/ai-care-transition-platform/patient/index.html" target="_blank" rel="noopener">독립 환자용 B 예시 (별도 합성 데이터)</a></div></div>';
+ if(!pub)return '<div class="blocked" role="status"><div class="eyebrow">안내 확인 필요</div><h2>아직 발행된 안내가 없어요.</h2><p>이곳에는 승인·발행된 합성 계획만 표시돼요. A3의 <b>검토 요청 → 지정 최종 승인자 역할 선택 → 승인 → 계획 발행</b>을 진행하면 연결됩니다. 승인 전 초안·철회본은 노출하지 않아요.</p>'+availableOtherDemos()+'<div class="demo-preview-actions"><a class="secondary-action" href="../a3/index.html?screen=patient-preview&amp;patient='+encodeURIComponent(patientId||'SYN-002')+'">발행 전 화면 구성 미리보기 (승인 아님)</a><a class="secondary-action" href="https://pchjesus.github.io/ai-care-transition-platform/patient/index.html" target="_blank" rel="noopener">독립 환자용 B 예시 (별도 합성 데이터)</a></div></div>';
  if(state.view==='detail'){
   const item=pub.items.find(i=>i.id===state.selected);
   if(!item){state.view='today';return content(pub);}

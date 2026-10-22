@@ -43,3 +43,7 @@
 .multi-source-row strong{flex:1 1 150px;min-width:0;font-size:12px;overflow-wrap:anywhere}
 .multi-source-row .source-status{font-size:11px;color:#476a53}
 .multi-source-area>.mini-button{justify-self:start;min-height:36px;font-size:12px}
+
+/* Pending revocation remains a visible review request, not a withdrawal. */
+#revocation-status{display:block;color:#9a6326;font-weight:750;line-height:1.5;margin-top:6px}
+#revocation-status[hidden]{display:none}

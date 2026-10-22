@@ -20,6 +20,16 @@ export function validStoredRecord(r,id){
  ))return false;
  if(!Array.isArray(d.docs)||!d.docs.every(doc=>strings(doc,['id','name','fileHash','visibility','status'])&&Number.isFinite(doc.size)))return false;
  if(!Array.isArray(d.issues)||!d.issues.every(i=>strings(i,['id','domain','title','reason','status','source','resolution','reviewer'])))return false;
+ if(r.revocationRequest!==undefined&&r.revocationRequest!==null){
+  const q=r.revocationRequest;
+  if(!strings(q,['publicationId','requestedAt','requestedRole','reason','status'])||
+     !['NURSE','PHARMACIST','PHYSICIAN'].includes(q.requestedRole)||
+     !['PENDING','REJECTED','EXECUTED'].includes(q.status)||
+     q.reason.length<10||q.reason.length>500||
+     !r.publications?.some(p=>p.id===q.publicationId)||
+     ((q.status==='PENDING')&&(q.reviewedAt!==undefined||q.reviewedBy!==undefined))||
+     ((q.status!=='PENDING')&&(!strings(q,['reviewedAt','reviewedBy'])||q.reviewedBy!=='APPROVER')))return false;
+ }
  if(!Array.isArray(r.audit)||!r.audit.every(e=>strings(e,['at','role','event','details'])))return false;
  if(!Array.isArray(r.publications)||!r.publications.every(p=>strings(p,['id','status'])&&p.snapshot?.patientId===id&&strings(p.snapshot,['planVersion','issuedAt'])&&Array.isArray(p.snapshot.items)&&p.snapshot.items.every(i=>strings(i,['id','title','section','text']))&&Array.isArray(p.snapshot.documents)))return false;
  if(r.unlockedSources!==undefined&&(!Array.isArray(r.unlockedSources)||!r.unlockedSources.every(s=>typeof s==='string')))return false;

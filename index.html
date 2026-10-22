@@ -6,8 +6,48 @@
 <main><div class="eyebrow">HOSPITAL UNIFIED MVP · v1.0</div><h1>퇴원 전 평가부터<br>퇴원 후의 하루까지.</h1><p class="lead">하나의 사이트에서 병원용 업무와 환자용 모바일 화면을 둘러볼 수 있어요. 병원용은 <b>A1 환자 목록 → A2 평가 → A3 검토·승인·발행</b>을 한 화면에서 사용할 수 있어요. 환자용 B는 의료진이 승인·발행한 합성 계획과 같은 사이트에서 연결됩니다. 기존 독립 환자용 v1.3 시연도 계속 이용할 수 있어요.</p>
 <div class="grid">
 <section class="panel"><span class="label">HOSPITAL / UNIFIED A1 · A2 · A3</span><b>병원용 워크벤치</b><p>하나의 워크벤치에서 환자 선택, 6개 영역 평가, 의료진 검토·승인·계획 발행까지 진행해 보세요. A2 평가 엔진은 원본 v0.5 그대로 사용합니다.</p><div class="action-row"><a href="./prototypes/integrated-v10/a3/index.html?screen=patients">환자 목록부터 시작 →</a><a class="secondary" href="./prototypes/integrated-v10/a3/index.html?screen=assessment">A2 평가</a><a class="secondary" href="./prototypes/integrated-v10/a3/index.html?screen=plan">A3 검토</a></div></section>
-<section class="panel"><span class="label">PATIENT / A3 CONNECTED B</span><b>퇴원 후, 나의 하루</b><p>병원용 A3에서 SYN-002 환자를 검토 요청 → 승인 → 발행한 다음, 같은 브라우저에서 현재 발행본을 확인하세요. 승인 PDF, 로컬 프로필, 이해 확인도 시연할 수 있어요. 발행 전에는 빈 안내가 표시되는 것이 정상입니다.</p><div class="action-row"><a href="./prototypes/integrated-v10/patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">연동 환자용 B 열기 →</a><a class="secondary" href="./patient/index.html">기존 독립 시연 →</a></div></section>
+<section class="panel"><span class="label">PATIENT / A3 CONNECTED B</span><b>퇴원 후, 나의 하루</b><p>병원용 A3에서 SYN-002 환자를 검토 요청 → 승인 → 발행한 다음, 같은 브라우저에서 현재 발행본을 확인하세요. 승인 PDF, 로컬 프로필, 이해 확인도 시연할 수 있어요. 발행 전에는 빈 안내가 표시되는 것이 정상입니다.</p><div class="action-row"><a id="connected-patient-link" href="./prototypes/integrated-v10/patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">발행된 환자용 B 열기 →</a><a class="secondary" href="./patient/index.html">기존 독립 시연 →</a></div><div id="connected-patient-chooser" aria-live="polite" style="width:100%;color:#52675b;font-size:13px;line-height:1.6"><p id="connected-patient-message">현재 브라우저의 발행본을 확인하고 있어요.</p></div></section>
 </div>
 <a class="compare" href="./compare.html">의료진용·환자용 나란히 비교하기 ↗</a>
 <div class="status"><b>연동 시연 안내:</b> 병원용 A3에서 SYN-002를 선택해 검토 요청 → 지정 최종 승인자 승인 → 발행을 진행하고, A3의 「환자용 B 열기」 또는 위 연동 링크를 이용하세요. B 접속 코드는 <b>CARE2026</b> (시연 코드이며 본인인증 아님). 발행 기록은 같은 브라우저·동일 출처의 로컬 저장소를 사용하며, 다른 기기와 자동 동기화되지 않습니다. 모든 정보는 합성 데이터입니다. 실제 개인정보를 입력하거나 임상·의료업무에 사용하지 마세요.</div>
-</main><footer>CareBridge Lab · 대학생 창업 과제용 프로토타입 / <a href="./prototypes/integrated-v10/a3/index.html?screen=patients">A1</a> · <a href="./prototypes/integrated-v10/a3/index.html?screen=assessment">A2</a> · <a href="./prototypes/integrated-v10/a3/index.html?screen=plan">A3</a> · <a href="./prototypes/integrated-v10/patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">Connected Patient</a> · <a href="./patient/index.html">Original Patient</a></footer></body></html>
+</main><footer>CareBridge Lab · 대학생 창업 과제용 프로토타입 / <a href="./prototypes/integrated-v10/a3/index.html?screen=patients">A1</a> · <a href="./prototypes/integrated-v10/a3/index.html?screen=assessment">A2</a> · <a href="./prototypes/integrated-v10/a3/index.html?screen=plan">A3</a> · <a id="connected-patient-footer" href="./prototypes/integrated-v10/patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">Connected Patient</a> · <a href="./patient/index.html">Original Patient</a></footer><script type="module">
+import {ENCOUNTERS,readPatientPublication} from './prototypes/integrated-v10/shared/publication.js';
+const message=document.getElementById('connected-patient-message');
+const chooser=document.getElementById('connected-patient-chooser');
+const link=document.getElementById('connected-patient-link');
+const footerLink=document.getElementById('connected-patient-footer');
+try{
+ const published=Object.entries(ENCOUNTERS).map(([patient,encounter])=>({
+  patient,encounter,result:readPatientPublication(window.localStorage,patient,encounter)
+ })).filter(entry=>entry.result.status==='PUBLISHED'&&entry.result.publication)
+ .sort((a,b)=>Date.parse(b.result.publication.issuedAt)-Date.parse(a.result.publication.issuedAt));
+ if(published.length){
+  message.textContent='현재 브라우저에서 확인된 발행본 '+published.length+'건 · 열어 볼 가상 환자를 선택해 주세요.';
+  const selector=document.createElement('select');
+  selector.setAttribute('aria-label','발행본을 확인할 가상 환자');
+  selector.style.cssText='max-width:100%;min-height:44px;padding:9px;border:1px solid #b6d0bf;border-radius:8px;background:white;color:#213b31';
+  for(const entry of published){
+   const option=document.createElement('option');
+   option.value=entry.patient;
+   option.textContent=entry.patient+' · 발행 v'+entry.result.publication.planVersion;
+   selector.append(option);
+  }
+  const update=()=>{
+   const entry=published.find(p=>p.patient===selector.value);
+   if(!entry)return;
+   const next=new URL(link.getAttribute('href'),window.location.href);
+   next.searchParams.set('patient',entry.patient);
+   next.searchParams.set('encounter',entry.encounter);
+   link.href=next.href;
+   footerLink.href=next.href;
+  };
+  selector.addEventListener('change',update);
+  chooser.append(selector);
+  update();
+ }else{
+  message.textContent='현재 브라우저에 확인 가능한 발행본이 없어요. 병원용 A3에서 발행한 다음 다시 확인하거나 독립 시연을 이용하세요. 위 링크는 SYN-002 기본 진입입니다.';
+ }
+}catch{
+ message.textContent='브라우저 저장소를 읽지 못했어요. 같은 브라우저에서 A3 발행 상태를 확인하세요.';
+}
+</script></body></html>

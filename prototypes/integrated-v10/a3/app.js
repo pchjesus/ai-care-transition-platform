@@ -4,7 +4,7 @@ import {editEvaluation,commitEvaluation} from '../shared/evaluation-edit.js';
 import {DOMAINS as ENGINE_DOMAINS,SOURCES} from '../a2/data.js';
 import {CASES,DOMAINS,SECTIONS} from './data.js';
 import {recordsForPatient,findSource,usableSource,CASE_MISSIONS} from './source-library.js';
-import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision,linkedSources,validItemSources} from './workflow.js';
+import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision,linkedSources,validItemSources,canRequestRevocation} from './workflow.js';
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
 import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
 import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
@@ -148,16 +148,33 @@ function renderPreview(){const r=get(),p=currentPublished(r);const published=pre
  $('#preview-frame').innerHTML=previewItems(items,published?`의료진 승인 · ${dateTime(p.snapshot.issuedAt)}`:'계획 초안',!!published);
  $('#show-current').textContent=p?(published?'편집 중인 계획 보기':`현재 발행본 v${p.snapshot.planVersion} 보기`):'현재 발행본 없음';$('#show-current').disabled=!p;
 }
-function renderButtons(){const d=get().draft,p=currentPublished(get());for(const id of ['revise','request','return','approve','publish','revoke'])$('#'+id).hidden=true;
+function renderButtons(){
+ const r=get(),d=r.draft,p=currentPublished(r),pending=!!(p&&r.revocationRequest?.status==='PENDING'&&r.revocationRequest.publicationId===p.id);
+ for(const id of ['revise','request','return','approve','publish','request-revoke','reject-revoke','revoke'])$('#'+id).hidden=true;
  $('#revise').textContent=d.status==='REVOKED'?'철회 후 새 버전 작성':'새 버전 개정';
- if(d.status==='REVOKED'){$('#revise').hidden=false;}
- else if(d.status==='PUBLISHED'){$('#revise').hidden=false;$('#revoke').hidden=false}
- else if(d.status==='REVIEW_REQUESTED'){$('#return').hidden=false;$('#approve').hidden=false;$('#approve').disabled=!mayApprove(get(),role,docsAvailable());$('#return').disabled=role!=='APPROVER'}
- else if(d.status==='APPROVED'){$('#publish').hidden=false;$('#publish').disabled=!mayPublish(get(),role,docsAvailable());}
- else if(d.status==='DRAFT'||d.status==='CHANGES_REQUESTED'){$('#request').hidden=false;}
- if(p&&d.status!=='PUBLISHED'){$('#revoke').hidden=false;$('#revoke').disabled=role!=='APPROVER'}
- const steps={DRAFT:'① 환자용 안내 항목 확인 → ② 검토 요청 → ③ 지정 최종 승인자로 역할 전환',CHANGES_REQUESTED:'보완 요청된 항목을 수정·재검토한 뒤 다시 검토를 요청하세요.',REVIEW_REQUESTED:'검토 요청이 기록됐어요. 담당 역할을 지정 최종 승인자로 바꾸고 필수 확인사항을 해결하면 승인할 수 있어요.',APPROVED:'승인 완료. 지정 최종 승인자 역할을 유지하고 계획 발행을 누르면 환자용 B에 표시돼요.',PUBLISHED:'발행 완료. 환자용 B 열기로 동일 환자의 유효 발행본을 볼 수 있어요.',REVOKED:'발행 철회됨. 환자용 B에는 보여주지 않으며 새 버전 작성·재검토·승인이 필요해요.'};
- $('#workflow-guidance').textContent=(steps[d.status]||'현재 작업 상태를 확인하세요.')+' · 이 역할 선택은 합성 시연이며 실제 의료인 인증이 아닙니다.';
+ if(d.status==='REVOKED')$('#revise').hidden=false;
+ else if(d.status==='PUBLISHED')$('#revise').hidden=false;
+ else if(d.status==='REVIEW_REQUESTED'){
+  $('#return').hidden=false;$('#approve').hidden=false;
+  $('#approve').disabled=!mayApprove(r,role,docsAvailable());
+  $('#return').disabled=role!=='APPROVER';
+ }else if(d.status==='APPROVED'){
+  $('#publish').hidden=false;$('#publish').disabled=!mayPublish(r,role,docsAvailable());
+ }else if(d.status==='DRAFT'||d.status==='CHANGES_REQUESTED')$('#request').hidden=false;
+ if(p){
+  if(role==='APPROVER'){
+   $('#revoke').hidden=false;
+   $('#revoke').textContent=pending?'철회 요청 승인·발행 철회':'발행 철회';
+   if(pending)$('#reject-revoke').hidden=false;
+  }else{
+   $('#request-revoke').hidden=false;$('#request-revoke').disabled=!canRequestRevocation(r,role);
+   $('#request-revoke').textContent=pending?'철회 요청 검토 대기':'발행 철회 요청';
+  }
+ }
+ const hint=$('#revocation-status');hint.hidden=!pending;
+ if(pending)hint.textContent='철회 검토 대기 · '+(roleLabel[r.revocationRequest.requestedRole]||r.revocationRequest.requestedRole)+' 요청 · 계획은 아직 환자에게 공개 중';
+ const steps={DRAFT:'① 분야별 근거 확인 → ② 검토 요청 → ③ 지정 최종 승인자로 역할 전환',CHANGES_REQUESTED:'보완한 항목을 재검토한 뒤 다시 검토 요청하세요.',REVIEW_REQUESTED:'검토 요청 완료. 약사·담당 의사는 전문영역 검토를, 지정 최종 승인자는 계획 전체 승인을 진행합니다.',APPROVED:'지정 최종 승인자가 계획 발행을 눌러야 환자용 B에 표시됩니다.',PUBLISHED:'현재 발행 완료. 환자용 B 열기로 같은 환자와 입원건의 발행본을 확인하세요.',REVOKED:'철회 완료. 이 발행본은 환자에게 보여주지 않고 재발행 시 새 승인이 필요합니다.'};
+ $('#workflow-guidance').textContent=(steps[d.status]||'현재 상태를 확인하세요.')+' · 역할 선택은 가상 시연용이며 실제 의료인 인증은 아닙니다.';
 }
 function render(){const c=CASES.find(x=>x.id===selectedId);$('#patient-name').textContent=`${c.name} · ${c.age}세`;
  // A prior patient's print DOM must not survive navigation or plan edits.
@@ -247,10 +264,42 @@ async function publish(){
  finally{button.removeAttribute('aria-busy');renderButtons();}
 }
 function revise(){if(!['PUBLISHED','REVOKED'].includes(get().draft.status))return;const before=deepCopy(get());try{currentStore()[selectedId]=makeRevision(get());}catch(error){announce(error.message);return;}if(!saveWorkflow(before))return;previewMode='draft';render();announce(before.draft.status==='REVOKED'?'철회 기록을 유지하고 새 초안을 만들었습니다. 재검토·승인·발행 전에는 공개하지 않습니다.':'새 버전 초안을 만들었습니다. 기존 발행본은 유지됩니다.');}
-function revoke(){const r=get(),p=currentPublished(r);if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
- if(!confirm(`발행본 v${p.snapshot.planVersion}을 철회할까요?`))return;
+function requestRevocation(){
+ const r=get(),p=currentPublished(r);
+ if(!p||!canRequestRevocation(r,role)){announce('현재 역할에서 새로운 철회 요청을 생성할 수 없습니다.');return}
+ const answer=window.prompt('철회 요청 사유를 10~500자로 작성해 주세요. 요청만으로 환자 안내가 철회되지는 않습니다.','');
+ if(answer===null)return;
+ const reason=answer.trim();
+ if(reason.length<10||reason.length>500){announce('철회 사유는 10~500자로 입력해 주세요.');return}
  const before=deepCopy(r);
- p.status='REVOKED';if(r.draft.status==='PUBLISHED')r.draft.status='REVOKED';audit(r,role,'REVOKED',`발행본 v${p.snapshot.planVersion} 모의 철회`);if(!saveWorkflow(before))return;previewMode='draft';render();announce('발행본을 철회했습니다.');}
+ r.revocationRequest={publicationId:p.id,requestedRole:role,requestedAt:now(),reason,status:'PENDING'};
+ audit(r,role,'REVOCATION_REQUESTED','발행 '+p.id+' 철회 요청: '+reason);
+ if(!saveWorkflow(before))return;
+ render();announce('철회 요청을 기록했습니다. 발행본은 승인자 검토 전까지 유지됩니다.');
+}
+function rejectRevocation(){
+ const r=get(),p=currentPublished(r),q=r.revocationRequest;
+ if(role!=='APPROVER'||!p||q?.status!=='PENDING'||q.publicationId!==p.id){announce('검토 대기 중인 철회 요청이 없습니다.');return}
+ if(!window.confirm('철회 요청을 반려하고 현재 발행본을 유지할까요?'))return;
+ const before=deepCopy(r);
+ q.status='REJECTED';q.reviewedBy='APPROVER';q.reviewedAt=now();
+ audit(r,role,'REVOCATION_REJECTED','발행 '+p.id+' 철회 요청 반려');
+ if(!saveWorkflow(before))return;
+ render();announce('철회 요청을 반려했습니다. 기존 발행본은 그대로 유지됩니다.');
+}
+function revoke(){
+ const r=get(),p=currentPublished(r);
+ if(role!=='APPROVER'||!p){announce('지정 최종 승인자만 기존 발행을 철회할 수 있습니다.');return}
+ if(!window.confirm('발행본 v'+p.snapshot.planVersion+'을 철회할까요?'))return;
+ const before=deepCopy(r);
+ const q=r.revocationRequest;
+ if(q?.status==='PENDING'&&q.publicationId===p.id){q.status='EXECUTED';q.reviewedBy='APPROVER';q.reviewedAt=now();}
+ p.status='REVOKED';
+ if(r.draft.status==='PUBLISHED')r.draft.status='REVOKED';
+ audit(r,role,'REVOKED','발행본 v'+p.snapshot.planVersion+' 모의 철회');
+ if(!saveWorkflow(before))return;
+ previewMode='draft';render();announce('발행본을 철회했습니다. 환자용 B에서 현재 발행본을 숨깁니다.');
+}
 // Navigation and auxiliary clinical workspace are separate from the immutable A2 v0.5 baseline.
 function renderNav(){
  $('#a3-screen').hidden=screen!=='plan';$('#aux-screen').hidden=screen==='plan';
@@ -523,7 +572,7 @@ $('#integrated-discard').addEventListener('click',()=>{
   storage.removeItem(HANDOFF_KEY);refreshIntegrationInbox();announce('미처리 인계 자료를 삭제했습니다.');
  }catch(error){announce('인계함 정리 실패: '+(error?.message||'저장소 오류'));}
 });
-$('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#revoke').addEventListener('click',revoke);
+$('#request').addEventListener('click',requestReview);$('#return').addEventListener('click',returnReview);$('#approve').addEventListener('click',approve);$('#publish').addEventListener('click',publish);$('#revise').addEventListener('click',revise);$('#request-revoke').addEventListener('click',requestRevocation);$('#reject-revoke').addEventListener('click',rejectRevocation);$('#revoke').addEventListener('click',revoke);
 $('#reset').addEventListener('click',()=>{if(!confirm(`현재 ${selectedId}의 작성 내용과 이력을 초기화할까요?`))return;const currentDocIds=new Set(get()?.draft?.docs?.map(d=>d.id)||[]);currentStore()[selectedId]=makeInitial(selectedId);for(const key of currentDocIds)fileStore.delete(key);activeTab='plan';previewMode='draft';expandedPlanItems=new Set(['today']);save();render();announce('작성 내용을 초기화했습니다.')});
 function toggleRail(flag){collapsed=flag;$('#shell').classList.toggle('rail-collapsed',collapsed);$('#rail-toggle').setAttribute('aria-expanded',String(!collapsed));$('#rail-toggle').setAttribute('aria-label',collapsed?'사이드바 펼치기':'사이드바 접기');$('#rail-toggle').title=collapsed?'사이드바 펼치기':'사이드바 접기';try{localStorage.setItem('a3-rail-collapsed-v04',collapsed?'1':'0')}catch{}}
 $('#rail-toggle').addEventListener('click',()=>toggleRail(!collapsed));toggleRail(collapsed);save();journey=[routeEntry()];journeyIndex=0;routeURL();render();updateJourney();bootstrapping=false;
