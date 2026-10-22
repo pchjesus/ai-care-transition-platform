@@ -57,3 +57,40 @@ Node 24.19 / Python Playwright 1.62 / 실제 headless Chromium 154(`/usr/bin/chr
 - 알림은 앱 전경 localStorage 시연이다. 실제 인증·서버 트랜잭션·백그라운드 푸시·카카오톡 발송을 구현하거나 보장하지 않는다. 이미 내려받은 PDF는 철회 후 회수할 수 없다.
 
 저장소 루트에서 `python3 -m http.server 8000`. 병원은 `/prototypes/integrated-v10/a3/index.html?screen=plan&patient=SYN-002`, 독립 B는 `/patient/index.html`(합성 로그인 `CARE2026`). 연동 B는 A3에서 검토 요청 → 지정 최종 승인자 → 승인 → 발행 후 `/prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO`로 접근한다.
+
+## 최종 UI 보완 — 기준 e1487f0
+
+이번 추가 작업의 기준은 원격 `codex/phase4-ux-refinement`의 `e1487f01f58ab12e9cbaf3d983ae8787f37651aa`다. 위의 1차 후속 결과는 당시 기록이며, 아래는 세 가지 최종 보완에 대한 새 검증이다.
+
+- **여백:** 본문 상단 패딩과 도구 모음·모바일 이동 버튼 간격, 사이드바 브랜드 아래 여백을 줄였다. 홈·이전·다음 / 글자 크게·사용 안내의 역할과 배치는 유지했다.
+- **알림:** 개인 준비·외래 설정은 필요한 영역을 펼쳐 입력하고 최근 알림은 바로 확인하게 했다. 시간대·추가 설정·예정 알림은 보조 펼침 영역으로 옮기고 중복 진입 링크·긴 설명을 줄였다. 모든 기존 폼·수정·저장·오류 처리는 유지하며 저장 결과 재렌더링에도 펼침 상태와 다른 폼의 입력을 보존한다. 외래 패널 CTA는 외래 설정을 바로 펼친다. 팝업으로 변경하지 않았다.
+- **아이콘:** 독립/연동 B의 PC 사이드바와 모바일 하단 알림 아이콘만 종으로 변경했다. 일정의 달력 아이콘은 유지했다.
+
+변경 소스는 `patient/index.html`, 통합 경로의 `patient/app.js`, `patient/comfort-ui.js`, `patient/comfort.css` 4개다. 의료진 코드·평가 규칙·발행 모듈·알림 계산·저장 계약은 변경하지 않았다. 관련 테스트 2개 파일을 보완했다.
+
+### 실제 실행 결과
+
+| 검사 | 최종 확인 범위 | 실행 로그 |
+| --- | --- | --- |
+| `npm test` | PASS 98 | [Node](refinement-final-verification/node.log) |
+| `python3 tests/refinement_http.py` | PASS 8 | [새 UX·기존 회귀](refinement-final-verification/refinement.log) |
+| `python3 tests/comfort_http.py` + 실패 항목 재검사 | PASS 15개 범위¹ | [전체 실행](refinement-final-verification/comfort.log), [튜토리얼 재검사](refinement-final-verification/tour-retest.log), [동시 탭 재검사](refinement-final-verification/concurrent-retest.log) |
+| `python3 tests/stabilization_http.py` + 실패 항목 재검사 | PASS 8개 범위¹ | [전체 실행](refinement-final-verification/stabilization.log), [시간대 재검사](refinement-final-verification/zone-retest.log) |
+| `python3 tests/phase4_http.py` | PASS 8 | [4차 회귀](refinement-final-verification/phase4.log) |
+
+¹ comfort 최초 실행은 13 PASS / 2 FAIL, stabilization은 7 PASS / 1 ERROR였다. 펼침 UI에 맞춰 개인 양식을 실제로 여는 경로와 보조 영역만 여는 테스트 준비 절차를 수정했다. 동시 탭 검사는 대기 중인 두 저장을 잠금 해제한 뒤 해당 탭을 전경으로 전환하고 `aria-busy` 종료를 기다리도록 동기화했다. 저장 실패 문구와 실제 저장 데이터의 덮어쓰기 금지 검사는 유지했고 해당 사례는 3회 연속 PASS했다. 나머지 실패 사례도 같은 검사를 재실행하여 PASS했다. 재실행 중복 제외 **Node 98 + Chromium 39 = 137개 최종 PASS**, 미해결 FAIL 없음.
+
+실제 Chromium HTTP에서 독립/연동 B의 390/768/1024/1440px, 큰 글자, 키보드 Enter/Space와 터치, 접기·재펼침 시 입력 보존, 이동 취소, 유효하지 않은 날짜 오류·저장·새로고침 복원을 확인했다. 기존 알림 수정·삭제·중복·시간대·탭 충돌·저장 실패·개정·철회·환자 격리, PDF·지도 링크 계약, 튜토리얼 및 의료진 저장·승인·발행 관련 회귀도 위 실행 범위에 포함한다.
+
+### 동일 조건 화면 비교
+
+기준 커밋과 작업본을 별도 HTTP 경로에서 실행했다. 같은 기본 글자·합성 데이터(연동 SYN-002와 확정 외래 입력 / 독립 B 기본 예시), 390/1440×950으로 전후 **16장**을 캡처했고 실제 이미지를 비교했다. PC의 2열과 모바일 세로 배치, 색상·기존 CTA는 유지하면서 상단 공백과 초기 알림 양식 길이를 줄였다.
+
+| 화면 | 변경 전 | 변경 후 |
+| --- | --- | --- |
+| 연동 B PC 홈 | [전](refinement-final-verification/before-connected-today-1440.png) | [후](refinement-final-verification/after-connected-today-1440.png) |
+| 연동 B 모바일 알림 | [전](refinement-final-verification/before-connected-reminders-390.png) | [후](refinement-final-verification/after-connected-reminders-390.png) |
+| 독립 B PC 알림 | [전](refinement-final-verification/before-independent-reminders-1440.png) | [후](refinement-final-verification/after-independent-reminders-1440.png) |
+| 독립 B 모바일 홈 | [전](refinement-final-verification/before-independent-today-390.png) | [후](refinement-final-verification/after-independent-today-390.png) |
+
+나머지 동일 조건 쌍과 캡처 로그는 같은 폴더에 보존했다. NOT RUN: 실제 기기·Safari/Firefox·스크린리더 및 배포 검증. NOT VERIFIED: 외부 지도 서비스의 실제 경로 결과. 알림은 전경 로컬 MVP이며 백그라운드·외부 발송을 보장하지 않는다. main·gh-pages·기존 PR·사업계획서 브랜치와 배포 설정은 변경하지 않았다.

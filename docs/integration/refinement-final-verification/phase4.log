@@ -1,0 +1,13 @@
+test_both_homes_five_tabs_documents_and_four_widths_large_font (__main__.Phase4.test_both_homes_five_tabs_documents_and_four_widths_large_font) ... ok
+test_both_patient_three_steps_try_actions_are_read_only_and_restore (__main__.Phase4.test_both_patient_three_steps_try_actions_are_read_only_and_restore) ... ok
+test_both_reminder_hubs_save_restore_inbox_and_navigation (__main__.Phase4.test_both_reminder_hubs_save_restore_inbox_and_navigation) ... ok
+test_browser_back_forward_commits_focused_hospital_input (__main__.Phase4.test_browser_back_forward_commits_focused_hospital_input) ... ok
+test_failed_lock_callback_is_visible_before_delayed_promise_settles (__main__.Phase4.test_failed_lock_callback_is_visible_before_delayed_promise_settles) ... ok
+test_hospital_context_alignment_patient_identity_and_navigation_save_guard (__main__.Phase4.test_hospital_context_alignment_patient_identity_and_navigation_save_guard) ... ok
+test_hospital_meter_matches_inputs_and_original_codes_are_expandable (__main__.Phase4.test_hospital_meter_matches_inputs_and_original_codes_are_expandable) ... ok
+test_touch_target_and_keyboard_tour_actions_do_not_write_records (__main__.Phase4.test_touch_target_and_keyboard_tour_actions_do_not_write_records) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 59.891s
+
+OK

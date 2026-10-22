@@ -64,14 +64,14 @@ export function installPatientComfort(adapter){
   const s=plan(),follow=pub.items.filter(i=>i.section==='followup');
   const check=(name,value,label)=>`<label class="comfort-check"><input type="checkbox" name="${name}" ${value?'checked':''}> ${label}</label>`;
   return `<p class="comfort-bound">${c.source==='independent'?'독립 합성 예시 · 실제 처방/예약 아님':'승인된 발행본'} · ${esc(c.patientId)} · ${esc(c.encounterId)} · v${esc(pub.planVersion)}</p>
-  <form data-comfort-form="zone"><label>알림 기준 시간<select name="zone">${commonZones(data.zone).map(zone=>`<option value="${esc(zone)}" ${zone===data.zone?'selected':''}>${esc(zoneLabel(zone))}</option>`).join('')}</select></label><details><summary>다른 지역 시간 직접 입력</summary><label>지역 코드<input name="custom-zone" placeholder="예: Europe/Berlin" aria-describedby="zone-code-help"></label><small id="zone-code-help">목록에 없는 지역을 사용할 때만 입력하세요. 기기에서 확인한 시간대는 자동으로 바꾸지 않아요.</small></details><button type="submit">시간대 저장</button></form>
-  <section id="reminder-personal"><h2>개인 복약 준비 알림</h2><p>확인된 구조화 복약 시각이 제공되지 않았어요. PDF나 안내문에서 약 이름·용량·횟수·시각을 추정하지 않아요. 아래 입력은 <b>개인이 정하는 준비 알림</b>이며 의료진 처방이 아니에요. 사전 알림은 일찍 약을 먹으라는 지시가 아니에요.</p>
+  <details id="reminder-personal" class="reminder-group"><summary class="reminder-sections"><h2>개인 준비 알림</h2><small>직접 정한 준비 시각 · 의료진 처방 아님</small></summary><p>확인된 구조화 복약 시각이 없어 처방 알림을 만들지 않아요. PDF에서 약·용량·시각을 추정하지 않아요. <b>사전 알림은 일찍 약을 먹으라는 지시가 아니에요.</b></p>
   <form data-comfort-form="personal"><input name="id" type="hidden"><label>개인 알림 이름<input name="label" maxlength="80" placeholder="예: 안내문 확인 준비" required></label><label>날짜<input type="date" name="date" required></label><label>개인이 정한 시각<input type="time" name="time" required></label><label>준비 알림<select name="lead"><option value="0">정시</option><option value="10">10분 전</option><option value="30">30분 전</option></select></label><button type="submit">개인 알림 저장</button></form>
-  <ul class="comfort-list">${s.personal.map(m=>`<li><strong>${esc(m.label)}</strong><p>${esc(m.date)} ${esc(m.time)} · ${m.lead?m.lead+'분 전':'정시'} · ${m.enabled?'켜짐':'꺼짐'} · 개인 입력</p>${button('personal-toggle',m.enabled?'끄기':'켜기',`data-id="${esc(m.id)}"`)} ${button('personal-edit','변경',`data-id="${esc(m.id)}"`)} ${button('personal-delete','삭제',`data-id="${esc(m.id)}"`)}</li>`).join('')||'<li>저장한 개인 알림이 없어요.</li>'}</ul></section>
-  <section id="reminder-followup"><h2>외래 알림 설정</h2><p>유효하게 발행된 확정 일정만 사용해요. 기본 선택은 하루 전 오전 9시이며, 알림을 켠 뒤 저장하세요. 아래 시각은 ${esc(zoneLabel(data.zone))} 기준이에요. 날짜만 제공된 일정도 선택한 시각에 안내하며 실제 진료 시각을 뜻하지 않아요.</p>
-  ${follow.map(i=>{const a=i.appointment,f=s.followups[i.id]||{enabled:false,dayBefore:true,sameDay:false,time:'09:00'};return a?`<form data-comfort-form="followup" data-id="${esc(i.id)}"><h4>${esc(i.title)}</h4><p>${esc(a.date)} ${esc(a.time||'진료 시각 미제공')} · ${esc(a.place)}</p>${check('enabled',f.enabled,'알림 켜기')}${check('dayBefore',f.dayBefore,'하루 전')}${check('sameDay',f.sameDay,'당일')}<label>알림 시각<input type="time" name="time" value="${esc(f.time)}" required></label><button type="submit">외래 알림 저장</button></form>`:'<p>일정 확인 필요 · 확정 날짜가 없어 예약 알림을 만들지 않아요.</p>';}).join('')||'<p>발행된 외래 일정이 없어요.</p>'}</section>
+  <ul class="comfort-list">${s.personal.map(m=>`<li><strong>${esc(m.label)}</strong><p>${esc(m.date)} ${esc(m.time)} · ${m.lead?m.lead+'분 전':'정시'} · ${m.enabled?'켜짐':'꺼짐'} · 개인 입력</p>${button('personal-toggle',m.enabled?'끄기':'켜기',`data-id="${esc(m.id)}"`)} ${button('personal-edit','변경',`data-id="${esc(m.id)}"`)} ${button('personal-delete','삭제',`data-id="${esc(m.id)}"`)}</li>`).join('')||'<li>저장한 개인 알림이 없어요.</li>'}</ul></details>
+  <details id="reminder-followup" class="reminder-group"><summary><h2>외래 알림 설정</h2><small>발행된 확정 일정만 사용해요</small></summary><p>하루 전 오전 9시가 기본 선택이에요. 켠 뒤 저장하세요. ${esc(zoneLabel(data.zone))} 기준이며 알림 시각은 진료 시각과 달라요.</p>
+  ${follow.map(i=>{const a=i.appointment,f=s.followups[i.id]||{enabled:false,dayBefore:true,sameDay:false,time:'09:00'};return a?`<form data-comfort-form="followup" data-id="${esc(i.id)}"><h4>${esc(i.title)}</h4><p>${esc(a.date)} ${esc(a.time||'진료 시각 미제공')} · ${esc(a.place)}</p>${check('enabled',f.enabled,'알림 켜기')}${check('dayBefore',f.dayBefore,'하루 전')}${check('sameDay',f.sameDay,'당일')}<label>알림 시각<input type="time" name="time" value="${esc(f.time)}" required></label><button type="submit">외래 알림 저장</button></form>`:'<p>일정 확인 필요 · 확정 날짜가 없어 예약 알림을 만들지 않아요.</p>';}).join('')||'<p>발행된 외래 일정이 없어요.</p>'}</details>
+  <details id="reminder-options" class="reminder-options"><summary>시간대·추가 설정·예정 알림</summary><form data-comfort-form="zone"><label>알림 기준 시간<select name="zone">${commonZones(data.zone).map(zone=>`<option value="${esc(zone)}" ${zone===data.zone?'selected':''}>${esc(zoneLabel(zone))}</option>`).join('')}</select></label><details id="reminder-zone-custom"><summary>다른 지역 시간 직접 입력</summary><label>지역 코드<input name="custom-zone" placeholder="예: Europe/Berlin" aria-describedby="zone-code-help"></label><small id="zone-code-help">목록에 없는 지역을 사용할 때만 입력하세요. 기기에서 확인한 시간대는 자동으로 바꾸지 않아요.</small></details><button type="submit">시간대 저장</button></form>
   <form data-comfort-form="important"><h3>추가 안내</h3>${check('important',s.important,'중요 안내를 아직 확인하지 않았을 때 앱 내 알림 표시')}<button type="submit">중요 안내 설정 저장</button></form>
-  <section class="comfort-upcoming"><h3>예정 알림</h3><div data-upcoming>${upcoming(c,data)}</div></section>`;
+  <section class="comfort-upcoming"><h3>예정 알림</h3><div data-upcoming>${upcoming(c,data)}</div></section></details>`;
  }
  function upcoming(c,data,error=null){
   if(error)return '<p role="alert">최신 설정을 읽지 못해 예정 알림을 숨겼어요. 저장 상태를 확인해 주세요.</p>';
@@ -106,14 +106,16 @@ export function installPatientComfort(adapter){
   if(saving)pendingSave?.abort();return true;
  }
  function draw(preserve=false){
+  const folds=dialog?.querySelector('#comfort-title')?[...dialog.querySelectorAll('details[id]')].map(e=>({id:e.id,open:e.open})):null;
   const inline=dialog?.classList.contains('comfort-inline'),mount=inline?dialog.parentElement:document.body;
   const drafts=preserve&&dialog?snapshotForms(dialog):[],oldScroll=dialog?.scrollTop||0;
   if(dialog){dialog.remove();dialog=null;}
   const c=context(),data=currentData();dialog=document.createElement(inline?'section':'dialog');dialog.id='comfort-dialog';dialog.className='comfort-dialog'+(inline?' comfort-inline':'');dialog.setAttribute('aria-labelledby','comfort-title');
   const title=inline?'알림':{settings:'알림 관리',inbox:'앱 내 알림함',map:'병원 길찾기',documents:'안내 문서'}[mode];
-  const body=inline?`<section id="reminder-settings" aria-label="알림 설정">${settings(c,data)}</section><section id="reminder-inbox" aria-labelledby="inbox-title"><h2 id="inbox-title">최근 알림 내역</h2><div data-live-inbox>${inbox(c,data)}</div></section>`:mode==='map'?maps(c):documents(c);
-  dialog.innerHTML=`<header><h${inline?'1':'2'} id="comfort-title">${title}</h${inline?'1':'2'}>${inline?'':button('close','닫기')}</header><p class="comfort-scope">앱 내 로컬 시연 · 앱을 열었을 때 확인해요. 앱 종료·백그라운드 정시 발송과 외부 메시지 전송은 하지 않아요.</p>${inline?`<nav class="reminder-sections" aria-label="알림 화면 항목">${c.publication?'<a href="#reminder-personal">개인 준비 알림</a><a href="#reminder-followup">외래 알림</a>':''}<a href="#reminder-inbox">최근 알림</a></nav>`:''}<p id="comfort-notice" role="status" tabindex="-1">${esc(notice)}</p>${inline?button('reload','최신 설정 다시 읽기',(loaded?.error||notice.includes('다른 탭')||notice.startsWith('저장하지 못했어요.')?'':'hidden')):''}${loaded?.error?'<p role="alert">저장 자료를 읽지 못했어요. 기존 자료를 덮어쓰지 않아요.</p>':''}${body}`;
+  const body=inline?`<section id="reminder-settings" aria-label="알림 설정">${settings(c,data)}</section><details id="reminder-inbox" class="reminder-group" open><summary><h2 id="inbox-title">최근 알림 내역</h2><small>받은 안내와 확인 상태</small></summary><div data-live-inbox>${inbox(c,data)}</div></details>`:mode==='map'?maps(c):documents(c);
+  dialog.innerHTML=`<header><h${inline?'1':'2'} id="comfort-title">${title}</h${inline?'1':'2'}>${inline?'':button('close','닫기')}</header><p class="comfort-scope">${inline?'앱을 열었을 때 확인하는 로컬 알림이에요. 백그라운드·외부 메시지 발송은 하지 않아요.':'앱 내 로컬 시연 · 앱을 열었을 때 확인해요. 앱 종료·백그라운드 정시 발송과 외부 메시지 전송은 하지 않아요.'}</p><p id="comfort-notice" role="status" tabindex="-1">${esc(notice)}</p>${inline?button('reload','최신 설정 다시 읽기',(loaded?.error||notice.includes('다른 탭')||notice.startsWith('저장하지 못했어요.')?'':'hidden')):''}${loaded?.error?'<p role="alert">저장 자료를 읽지 못했어요. 기존 자료를 덮어쓰지 않아요.</p>':''}${body}`;
   mount?.append(dialog);
+  if(inline){const options=dialog.querySelector('#reminder-options');if(options)dialog.append(options);for(const f of folds||[]){const el=dialog.querySelector('#'+f.id);if(el)el.open=f.open;}}
   if(!inline){dialog.addEventListener('cancel',e=>{e.preventDefault();close()});dialog.showModal();fitDialog();}
   savedForms=snapshotForms(dialog);restoreForms(drafts);
   dialog.scrollTop=oldScroll;if(!inline||notice)dialog.querySelector(inline?'#comfort-notice':'[data-comfort=close]')?.focus({preventScroll:true});
@@ -145,7 +147,7 @@ export function installPatientComfort(adapter){
   if(c.publication){
    const hub=main.querySelector('[data-reminder-hub]');
    if(hub)attachNotifications(hub,c);
-   const appointment=main.querySelector('.appointment');if(appointment)add(appointment,button('settings','외래 알림 설정'));
+   const appointment=main.querySelector('.appointment');if(appointment)add(appointment,button('settings','외래 알림 설정','data-reminder-target="followup"'));
    add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents','관련 안내 문서 보기')+'</div>');
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
@@ -159,7 +161,7 @@ export function installPatientComfort(adapter){
   const nav=e.target.closest('[data-nav],[data-view],[data-action=home],[data-action=back],[data-action=next],[data-action=patient-home],[data-action=patient-back],[data-action=patient-next],[data-action=logout],.demo-tools a');if(nav&&!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
   const b=e.target.closest('[data-comfort]');if(!b||b.disabled)return;e.preventDefault();e.stopImmediatePropagation();const a=b.dataset.comfort,c=context();if(!bound(c))return;
   if(a==='close'){close();return;}
-  if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':'#reminder-personal');el?.scrollIntoView({block:'start'});el?.querySelector('input,button')?.focus({preventScroll:true});return;}
+  if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':b.dataset.reminderTarget==='followup'?'#reminder-followup':'#reminder-personal');if(el?.tagName==='DETAILS')el.open=true;el?.scrollIntoView({block:'start'});el?.querySelector('summary,input,button')?.focus({preventScroll:true});return;}
   if(a==='reload'){if(!permitNavigation())return;refreshPreferences();openedPublication=pubKey(context());notice='최신 설정을 다시 읽었어요.';draw();return;}
   if(['documents','map'].includes(a)){open(a,b,b.dataset.id);return;}
   if(a==='map-fallback'){dialog.querySelector('#map-fallback').hidden=false;dialog.querySelector('textarea').focus();return;}

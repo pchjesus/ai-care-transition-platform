@@ -1,0 +1,6 @@
+test_readable_zone_preserves_detected_and_saved_zones_and_invalid_input (__main__.Stabilization.test_readable_zone_preserves_detected_and_saved_zones_and_invalid_input) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 8.969s
+
+OK

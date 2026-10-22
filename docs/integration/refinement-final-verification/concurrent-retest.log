@@ -1,0 +1,8 @@
+test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled) ... ok
+test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled) ... ok
+test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 24.981s
+
+OK

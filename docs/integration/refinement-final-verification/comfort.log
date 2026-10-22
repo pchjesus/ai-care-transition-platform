@@ -1,0 +1,118 @@
+test_both_tours_four_widths_menu_large_font_storage_keyboard_and_restore (__main__.Comfort.test_both_tours_four_widths_menu_large_font_storage_keyboard_and_restore) ... ok
+test_confirmed_schedule_due_inbox_duplicate_seen_and_past_schedule (__main__.Comfort.test_confirmed_schedule_due_inbox_duplicate_seen_and_past_schedule) ... ok
+test_destination_edit_approval_invalidation_and_failed_save_rollback (__main__.Comfort.test_destination_edit_approval_invalidation_and_failed_save_rollback) ... ok
+test_independent_settings_survive_actual_chromium_restart_without_a3_data (__main__.Comfort.test_independent_settings_survive_actual_chromium_restart_without_a3_data) ... ok
+test_map_verified_snapshot_external_link_blocked_fallback_and_missing_address (__main__.Comfort.test_map_verified_snapshot_external_link_blocked_fallback_and_missing_address) ... ok
+test_medication_pdf_category_exact_download_and_revoke_access (__main__.Comfort.test_medication_pdf_category_exact_download_and_revoke_access) ... ok
+test_optional_important_inbox_read_is_separate_from_understanding (__main__.Comfort.test_optional_important_inbox_read_is_separate_from_understanding) ... ok
+test_patient_tour_restores_profile_and_finish_focus_without_auto_start (__main__.Comfort.test_patient_tour_restores_profile_and_finish_focus_without_auto_start) ... FAIL
+test_pending_schedule_does_not_create_an_appointment_and_personal_is_separate (__main__.Comfort.test_pending_schedule_does_not_create_an_appointment_and_personal_is_separate) ... ok
+test_personal_create_leads_disable_edit_delete_restore_and_no_prescription_inference (__main__.Comfort.test_personal_create_leads_disable_edit_delete_restore_and_no_prescription_inference) ... ok
+test_read_permission_denial_is_not_reported_as_saved (__main__.Comfort.test_read_permission_denial_is_not_reported_as_saved) ... ok
+test_revision_replacement_revoke_and_patient_change_disable_old_settings (__main__.Comfort.test_revision_replacement_revoke_and_patient_change_disable_old_settings) ... ok
+test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled) ... FAIL
+test_stale_tab_quota_denial_and_corruption_preserve_data_and_form (__main__.Comfort.test_stale_tab_quota_denial_and_corruption_preserve_data_and_form) ... ok
+test_touch_settings_tour_and_navigation (__main__.Comfort.test_touch_settings_tour_and_navigation) ... ok
+
+======================================================================
+FAIL: test_patient_tour_restores_profile_and_finish_focus_without_auto_start (__main__.Comfort.test_patient_tour_restores_profile_and_finish_focus_without_auto_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/comfort_http.py", line 117, in test_patient_tour_restores_profile_and_finish_focus_without_auto_start
+    self.ready();self.b.locator('[data-view=reminders]:visible').first.click();entry=self.b.locator('#reminder-personal input[name=label]');expect(entry).to_be_visible();self.close();expect(self.b.locator('#patient-brief-tour')).to_have_count(0);self.b.locator('[data-view=profile]:visible').first.click();before=self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})');self.b.locator('[data-comfort=tour]').click();self.b.locator('[data-tour-control=next]').click();self.b.locator('[data-tour-control=next]').click();self.b.locator('#tour-finish').click();expect(self.b.get_by_role('heading',name='내 정보',exact=True)).to_be_visible();expect(self.b.locator('[data-comfort=tour]')).to_be_focused();self.assertEqual(self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
+                                                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23332, in to_be_visible
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 852, in to_be_visible
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be visible
+Actual value: hidden
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("#reminder-personal input[name=label]")
+    14 × locator resolved to <input required="" name="label" maxlength="80" placeholder="예: 안내문 확인 준비"/>
+       - unexpected value "hidden"
+
+Aria snapshot:
+- link "본문으로 건너뛰기":
+  - /url: "#main-content"
+- complementary "주요 메뉴":
+  - text: D. 나의 하루 퇴원 후 관리
+  - navigation "화면 이동":
+    - button "홈"
+    - button "이전"
+    - button "다음" [disabled]
+  - text: 나의 계획
+  - button "오늘"
+  - button "일정"
+  - button "도움"
+  - button "알림"
+  - button "내 정보"
+  - text: 가상 퇴원 안내 의료진이 발행한 자료만 표시합니다.
+  - group: 개발·시연
+- banner: 퇴원 후, 나의 하루 발행 계획 · v1.0 가상 환자
+- main:
+  - button "글자 크게"
+  - button "사용 안내"
+  - region "알림":
+    - heading "알림" [level=1]
+    - paragraph: 앱을 열었을 때 확인하는 로컬 알림이에요. 백그라운드·외부 메시지 발송은 하지 않아요.
+    - region "알림 설정":
+      - paragraph: 승인된 발행본 · SYN-002 · ENC-SYN-002-DEMO · v1.0
+      - group:
+        - heading "개인 준비 알림" [level=2]
+        - text: 직접 정한 준비 시각 · 의료진 처방 아님
+      - group:
+        - heading "외래 알림 설정" [level=2]
+        - text: 발행된 확정 일정만 사용해요
+    - group:
+      - heading "최근 알림 내역" [level=2]
+      - text: 받은 안내와 확인 상태
+      - paragraph: 발행·변경·철회 이력과 앱을 열었을 때 도래한 알림이에요. 알림 열람은 복약 이행·이해 완료 기록이 아니에요.
+      - list:
+        - listitem:
+          - strong: 계획 발행 · v1.0
+          - paragraph: v1.0
+          - button "알림 확인"
+    - group: 시간대·추가 설정·예정 알림
+
+======================================================================
+FAIL: test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/integrated-v10/tests/comfort_http.py", line 70, in test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled
+    self.a3.evaluate('releaseReminderLock()');expect(self.b.locator('#comfort-notice')).to_contain_text('저장했어요');expect(other.locator('#comfort-notice')).to_contain_text('저장하지 못했어요');labels=[x['label'] for x in next(iter(self.prefs()['plans'].values()))['personal']];self.assertIn('첫 탭 동시 저장',labels);self.assertNotIn('둘째 탭 동시 저장',labels)
+                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22016, in to_contain_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text '저장하지 못했어요'
+Actual value: 다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 입력을 확인한 뒤 최신 설정을 다시 읽어 주세요.
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#comfort-notice")
+    14 × locator resolved to <p role="status" tabindex="-1" id="comfort-notice">다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 입력을 확인한 뒤 …</p>
+       - unexpected value "다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 입력을 확인한 뒤 최신 설정을 다시 읽어 주세요."
+
+Aria snapshot:
+- status: 다른 탭에서 설정이 바뀌었어요. 편집 중인 설정은 저장할 수 없어요. 입력을 확인한 뒤 최신 설정을 다시 읽어 주세요.
+
+----------------------------------------------------------------------
+Ran 15 tests in 223.678s
+
+FAILED (failures=2)

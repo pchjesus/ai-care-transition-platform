@@ -56,4 +56,31 @@ class Refinement(unittest.TestCase):
      expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-step',str(step));self.assertLessEqual(self.b.locator('.spot-controls>button:visible').count(),2);expect(self.b.locator('[data-tour-control=locate]')).not_to_be_visible();self.b.locator('.spot-tip [data-tour-control=try]').click();expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-tried','true')
      if step<3:self.b.locator('[data-tour-control=next]').click()
     self.b.keyboard.press('Escape');self.assertEqual(self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before);expect(self.b.locator('[data-comfort=tour]')).to_be_focused()
+ def test_final_three_choices_bell_spacing_and_keyboard_both_surfaces(self):
+  self.ready(True)
+  for independent in [False,True]:
+   if independent:self.standalone()
+   self.b.locator('.appointment [data-comfort=settings]').click();expect(self.b.locator('#reminder-followup')).to_have_attribute('open','');expect(self.b.locator('#reminder-personal')).not_to_have_attribute('open','');self.tab('today')
+   for width in [390,768,1024,1440]:
+    self.b.set_viewport_size({'width':width,'height':950})
+    for menu in ['.side','.bottom-nav']:
+     expect(self.b.locator(menu+' [data-view=reminders] svg rect,'+menu+' [data-nav=reminders] svg rect')).to_have_count(0)
+     expect(self.b.locator(menu+' [data-view=schedule] svg rect,'+menu+' [data-nav=schedule] svg rect')).to_have_count(1)
+     expect(self.b.locator(menu+' [data-view=reminders] svg path,'+menu+' [data-nav=reminders] svg path')).to_have_count(2)
+    gap=self.b.locator('.patient-page-tools').evaluate('e=>e.getBoundingClientRect().top-e.closest(".app-body").querySelector(".topline").getBoundingClientRect().bottom')
+    self.assertLessEqual(gap,75 if width<1024 else 16);self.assertFalse(self.b.evaluate('document.documentElement.scrollWidth>innerWidth'))
+    self.tab('reminders');expect(self.b.locator('#reminder-personal')).not_to_have_attribute('open','');expect(self.b.locator('#reminder-followup')).not_to_have_attribute('open','');expect(self.b.locator('#reminder-inbox')).to_have_attribute('open','');expect(self.b.locator('#reminder-options')).not_to_have_attribute('open','')
+    for summary in ['#reminder-personal>summary','#reminder-followup>summary','#reminder-inbox>summary']:
+     self.assertGreaterEqual(self.b.locator(summary).bounding_box()['height'],44)
+    self.tab('today')
+   self.tab('reminders');before=self.prefs();summary=self.b.locator('#reminder-personal>summary');summary.focus();self.b.keyboard.press('Enter');field=self.b.locator('[data-comfort-form=personal] [name=label]');field.fill('접어서 보존할 입력');summary.click();summary.focus();self.b.keyboard.press('Space');expect(field).to_have_value('접어서 보존할 입력');self.b.locator('[data-action=font]').click();expect(field).to_have_value('접어서 보존할 입력');self.acceptDialogs=False;self.tab('today');expect(field).to_have_value('접어서 보존할 입력');self.assertEqual(self.prefs(),before)
+   f=self.b.locator('[data-comfort-form=personal]');f.locator('[name=date]').fill('2020-01-02');f.locator('[name=time]').fill('08:00');f.locator('button[type=submit]').click();expect(self.b.locator('#comfort-notice')).to_contain_text('유효한 미래');expect(field).to_have_value('접어서 보존할 입력');expect(field).to_be_visible();self.personal(label='최종 화면 저장');expect(self.b.locator('#comfort-notice')).to_contain_text('저장했어요');expect(field).to_be_visible();self.acceptDialogs=True;self.tab('today');self.b.reload()
+   if self.b.locator('#demo-code').is_visible():self.b.locator('#demo-code').fill('CARE2026');self.b.locator('#demo-code').press('Enter')
+   self.tab('reminders');self.b.locator('#reminder-personal>summary').click();expect(self.b.locator('#reminder-personal')).to_contain_text('최종 화면 저장');self.tab('today')
+ def test_final_mobile_disclosures_touch_both_surfaces(self):
+  self.ready(True);ctx=self.browser.new_context(storage_state=self.ctx.storage_state(),viewport={'width':390,'height':844},has_touch=True,is_mobile=True);page=ctx.new_page();page.on('pageerror',lambda e:self.errors.append(str(e)))
+  try:
+   for path in [self.b.url,self.base.replace('prototypes/integrated-v10/','')+'patient/index.html']:
+    page.goto(path);page.locator('#demo-code').fill('CARE2026');page.locator('#demo-code').press('Enter');page.locator('.bottom-nav [data-view=reminders],.bottom-nav [data-nav=reminders]').tap();page.locator('#reminder-personal>summary').tap();self.personal(page,label='터치로 저장한 준비');expect(page.locator('#comfort-notice')).to_contain_text('저장했어요');page.locator('#reminder-followup>summary').tap();self.followup(page);page.locator('[data-action=font]').tap();expect(page.locator('#reminder-followup')).to_have_attribute('open','');self.assertFalse(page.evaluate('document.documentElement.scrollWidth>innerWidth'))
+  finally:ctx.close()
 if __name__=='__main__':unittest.main(verbosity=2)
