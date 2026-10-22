@@ -55,7 +55,7 @@ class PatientIntegration(unittest.TestCase):
   self.a3.locator('[data-tab="plan"]').click();self.a3.locator('#actor').select_option('APPROVER')
   for sec in ['today','medication','followup','warning','contact','support']:
    card=self.a3.locator(f'[data-item="{sec}"]')
-   if card.get_attribute('open') is None:card.locator('summary').click()
+   if card.get_attribute('open') is None:card.locator(':scope > summary').click()
    card.locator('[data-edit="verified"]').check()
  def personal_key(self,id='SYN-002'):return f'care-transition-connected-b-personal-v1:{id}:ENC-{id}-DEMO'
  def personal(self,page=None,id='SYN-002'):return (page or self.b).evaluate('key=>JSON.parse(localStorage.getItem(key))',self.personal_key(id))
@@ -110,6 +110,8 @@ class PatientIntegration(unittest.TestCase):
   for width in [390,768,1024,1440]:
    self.b.set_viewport_size({'width':width,'height':940})
    self.assertTrue(self.b.locator('.hero-panel').is_visible())
+
+   if self.b.locator('[data-comfort=menu]').is_visible():self.b.locator('[data-comfort=menu]').click()
    self.assertTrue(self.b.locator('[data-action="home"]').is_visible())
    overflow=self.b.evaluate('document.documentElement.scrollWidth > window.innerWidth')
    self.assertFalse(overflow,f'Viewport overflow at {width}px')
@@ -190,7 +192,7 @@ class PatientIntegration(unittest.TestCase):
    page=context.new_page();page.set_default_timeout(6000);page.on('pageerror',lambda e:self.errors.append(str(e)));page.on('console',lambda m:self.errors.append(m.text) if m.type=='error' else None)
    page.goto(self.base+'patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO');page.evaluate('(args)=>localStorage.setItem(args.key,JSON.stringify(args.records))',{'key':KEY,'records':records});page.locator('#demo-code').fill('CARE2026');page.locator('#demo-code').press('Enter')
    page.locator('.bottom-nav [data-view="profile"]').tap();page.locator('[data-action="edit-start"]').tap();page.locator('#address').fill('가상 터치 주소');page.locator('#contact').fill('DEMO-TOUCH');page.locator('#profile-form button[type="submit"]').tap();page.locator('[data-action="modal-save"]').tap();self.assertEqual(self.personal(page)['profile']['address'],'가상 터치 주소')
-   page.locator('.bottom-nav [data-view="today"]').tap();page.locator('[data-item="today"]').tap();page.locator('[data-action="quiz-start"]').tap();page.locator('[data-choice="HELP"]').tap();page.locator('[data-action="understanding-save"]').tap();expect(page.locator('.feedback')).to_contain_text('추가 설명');page.locator('[data-action="back"]').tap();expect(page.locator('.detail-heading')).to_be_visible();page.locator('[data-action="about"]').tap();page.locator('[data-action="modal-close"]').tap();page.locator('[data-action="font"]').tap();self.assertTrue(page.locator('body').evaluate("e=>e.classList.contains('large-font')"));self.assertFalse(page.evaluate('document.documentElement.scrollWidth>innerWidth'))
+   page.locator('.bottom-nav [data-view="today"]').tap();page.locator('[data-item="today"]').tap();page.locator('[data-action="quiz-start"]').tap();page.locator('[data-choice="HELP"]').tap();page.locator('[data-action="understanding-save"]').tap();expect(page.locator('.feedback')).to_contain_text('추가 설명');page.locator('[data-comfort=menu]').tap();page.locator('[data-action="back"]').tap();expect(page.locator('.detail-heading')).to_be_visible();page.locator('[data-action="about"]').tap();page.locator('[data-action="modal-close"]').tap();page.locator('[data-action="font"]').tap();self.assertTrue(page.locator('body').evaluate("e=>e.classList.contains('large-font')"));self.assertFalse(page.evaluate('document.documentElement.scrollWidth>innerWidth'))
   finally:context.close()
 
 if __name__=='__main__':unittest.main(verbosity=2)

@@ -1,3 +1,4 @@
+import {validDestination} from '../shared/destinations.js';
 import {evaluateForReview} from '../shared/assessment-adapter.js';
 import {DOMAINS, CASES, SECTIONS} from './data.js';
 import {findSource,usableSource} from './source-library.js';
@@ -46,6 +47,7 @@ export const canRequestRevocation=(record,role)=>['NURSE','PHARMACIST','PHYSICIA
 export function validAppointment(a){
  if(!a||typeof a!=='object'||Array.isArray(a)||!['PENDING','CONFIRMED'].includes(a.status)||
     !['date','time','place'].every(k=>typeof a[k]==='string'))return false;
+ if(a.destination!==undefined&&!validDestination(a.destination))return false;
  if(a.place.length>160||a.date.length>10||a.time.length>5)return false;
  if(a.status==='PENDING')return (!a.date||/^\d{4}-\d{2}-\d{2}$/.test(a.date))&&(!a.time||/^([01]\d|2[0-3]):[0-5]\d$/.test(a.time));
  return /^\d{4}-\d{2}-\d{2}$/.test(a.date)&&/^([01]\d|2[0-3]):[0-5]\d$/.test(a.time)&&
@@ -82,7 +84,7 @@ export function blockers(record, availableDocs=new Set()){
  return res;
 }
 export function fingerprint(record){
- const d=record.draft;const str=JSON.stringify({patientId:record.patientId,assessment:record.assessment,version:d.version,items:d.items,docs:d.docs.map(({id,name,size,visibility,status,fileHash})=>({id,name,size,visibility,status,fileHash})),issues:d.issues});
+ const d=record.draft;const str=JSON.stringify({patientId:record.patientId,assessment:record.assessment,version:d.version,items:d.items,docs:d.docs.map(({id,name,size,visibility,status,fileHash,category})=>({id,name,size,visibility,status,fileHash,...(category?{category}:{})})),issues:d.issues});
  let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');
 }
 export function mayApprove(record,role,availableDocs){return record.draft.status==='REVIEW_REQUESTED'&&role==='APPROVER'&&blockers(record,availableDocs).length===0;}
@@ -93,9 +95,9 @@ export function publishedPayload(record){
  return {patientId:record.patientId,planVersion:record.draft.version,approvedAt:record.draft.approval?.at||null,
  items:deepCopy(record.draft.items.filter(i=>i.visibility==='PATIENT').map(({id,title,section,text,appointment})=>({
    id,title,section,text,...(section==='followup'&&appointment?.status==='CONFIRMED'&&validAppointment(appointment)?
-    {appointment:{date:appointment.date,time:appointment.time,place:appointment.place}}:{})
+    {appointment:{date:appointment.date,time:appointment.time,place:appointment.place,...(appointment.destination?.verified?{destination:appointment.destination}:{})}}:{})
   }))),
- documents:deepCopy(record.draft.docs.filter(d=>d.visibility==='PATIENT').map(({id,name})=>({id,name}))),issuedAt:now()};
+ documents:deepCopy(record.draft.docs.filter(d=>d.visibility==='PATIENT').map(({id,name,category})=>({id,name,...(category?{category}:{})}))),issuedAt:now()};
 }
 export function makeRevision(record){
  const p=currentPublished(record)||(record.draft.status==='REVOKED'?record.publications.find(p=>p.status==='REVOKED'):null);if(!p||!['PUBLISHED','REVOKED'].includes(record.draft.status))throw Error('No publication available for revision');

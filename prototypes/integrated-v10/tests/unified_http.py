@@ -28,7 +28,7 @@ class Unified(unittest.TestCase):
   self.page.locator('[data-tab="plan"]').click();self.page.locator('#actor').select_option('APPROVER')
   for sec in ['today','medication','followup','warning','contact','support']:
    card=self.page.locator(f'[data-item="{sec}"]')
-   if card.get_attribute('open') is None:card.locator('summary').click()
+   if card.get_attribute('open') is None:card.locator(':scope > summary').click()
    card.locator('[data-edit="verified"]').check()
  def approve(self):self.page.locator('#request').click();self.page.locator('#actor').select_option('APPROVER');self.page.locator('#approve').click()
  def deny_writes(self):self.page.evaluate("key=>{const write=Storage.prototype.setItem;window.restoreWrites=()=>{Storage.prototype.setItem=write;};Storage.prototype.setItem=function(k,v){if(k===key)throw new DOMException('Quota','QuotaExceededError');return write.call(this,k,v)}}",KEY)

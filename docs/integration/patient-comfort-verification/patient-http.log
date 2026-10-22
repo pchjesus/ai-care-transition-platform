@@ -1,0 +1,27 @@
+test_a3_save_failure_does_not_publish (__main__.PatientIntegration.test_a3_save_failure_does_not_publish) ... ok
+test_corrupt_repository_and_local_profile_fail_closed (__main__.PatientIntegration.test_corrupt_repository_and_local_profile_fail_closed) ... ok
+test_failed_revoke_preserves_the_last_persisted_publication (__main__.PatientIntegration.test_failed_revoke_preserves_the_last_persisted_publication) ... ok
+test_help_search_print_and_font_failure_feedback (__main__.PatientIntegration.test_help_search_print_and_font_failure_feedback) ... ok
+test_missing_approved_pdf_is_an_actionable_empty_state (__main__.PatientIntegration.test_missing_approved_pdf_is_an_actionable_empty_state) ... ok
+test_mobile_large_font_all_routes_and_modal_keyboard (__main__.PatientIntegration.test_mobile_large_font_all_routes_and_modal_keyboard) ... ok
+test_no_issuance_and_encounter_mismatch (__main__.PatientIntegration.test_no_issuance_and_encounter_mismatch) ... ok
+test_original_patient_styles_and_four_viewports (__main__.PatientIntegration.test_original_patient_styles_and_four_viewports) ... ok
+test_pdf_persistence_failure_blocks_publication (__main__.PatientIntegration.test_pdf_persistence_failure_blocks_publication) ... ok
+test_pdf_staging_rechecks_other_tab_before_committing_publication (__main__.PatientIntegration.test_pdf_staging_rechecks_other_tab_before_committing_publication) ... ok
+test_profile_and_acknowledgment_storage_failures_never_claim_saved (__main__.PatientIntegration.test_profile_and_acknowledgment_storage_failures_never_claim_saved) ... ok
+test_profile_save_modal_focus_refresh_and_local_request (__main__.PatientIntegration.test_profile_save_modal_focus_refresh_and_local_request) ... ok
+test_profile_tabs_do_not_overwrite_concurrent_edits (__main__.PatientIntegration.test_profile_tabs_do_not_overwrite_concurrent_edits) ... ok
+test_publish_revision_revoke_and_tab_refresh (__main__.PatientIntegration.test_publish_revision_revoke_and_tab_refresh) ... ok
+test_published_html_is_literal_not_executable (__main__.PatientIntegration.test_published_html_is_literal_not_executable) ... ok
+test_recovery_after_revoke_requires_new_approval_and_keeps_revoked_history (__main__.PatientIntegration.test_recovery_after_revoke_requires_new_approval_and_keeps_revoked_history) ... ok
+test_revision_keeps_old_text_until_republish_then_revoke_closes_modal (__main__.PatientIntegration.test_revision_keeps_old_text_until_republish_then_revoke_closes_modal) ... ok
+test_touch_mobile_profile_understanding_and_navigation (__main__.PatientIntegration.test_touch_mobile_profile_understanding_and_navigation) ... ok
+test_two_published_patients_never_share_profile_or_understanding (__main__.PatientIntegration.test_two_published_patients_never_share_profile_or_understanding) ... ok
+test_understanding_is_version_specific_and_optional (__main__.PatientIntegration.test_understanding_is_version_specific_and_optional) ... ok
+test_unrepresentable_public_payload_never_claims_publication (__main__.PatientIntegration.test_unrepresentable_public_payload_never_claims_publication) ... ok
+test_valid_pdf_view_download_refresh_and_revoke (__main__.PatientIntegration.test_valid_pdf_view_download_refresh_and_revoke) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 334.742s
+
+OK

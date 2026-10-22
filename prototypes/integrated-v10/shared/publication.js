@@ -1,3 +1,4 @@
+import {validDestination} from './destinations.js';
 // Synthetic, same-origin, browser-local A3 -> patient B read projection.
 // This is not an authentication or server authorization boundary.
 import {fingerprint,publishedPayload,validAppointment} from '../a3/workflow.js';
@@ -58,18 +59,19 @@ function project(records, patientId, encounterId){
  if(!Array.isArray(s.items)||s.items.length===0||s.items.length>20||
     !s.items.every(i=>plain(i)&&str(i.id,80)&&str(i.title,150)&&str(i.text,4000)&&publicSection.has(i.section)&&
      (i.appointment===undefined||(i.section==='followup'&&plain(i.appointment)&&
-      Object.keys(i.appointment).sort().join(',')==='date,place,time'&&
+      ['date,place,time','date,destination,place,time'].includes(Object.keys(i.appointment).sort().join(','))&&
+      (i.appointment.destination===undefined||(i.appointment.destination.verified===true&&validDestination(i.appointment.destination)))&&
       validAppointment({...i.appointment,status:'CONFIRMED'}))))||
     new Set(s.items.map(i=>i.id)).size!==s.items.length)return null;
  if(!Array.isArray(s.documents)||s.documents.length>20||
-    !s.documents.every(d=>plain(d)&&str(d.id,100)&&str(d.name,250))||
+    !s.documents.every(d=>plain(d)&&str(d.id,100)&&str(d.name,250)&&(d.category===undefined||['MEDICATION','GENERAL'].includes(d.category)))||
     new Set(s.documents.map(d=>d.id)).size!==s.documents.length)return null;
  return {
   schemaVersion:1,isSynthetic:true,patientId,encounterId,
   publicationId:p.id,assessmentId:p.assessmentId,planVersion:s.planVersion,
   approvedAt:s.approvedAt,issuedAt:s.issuedAt,status:'PUBLISHED',
-  items:s.items.map(({id,title,section,text,appointment})=>({id,title,section,text,...(appointment?{appointment:{date:appointment.date,time:appointment.time,place:appointment.place}}:{})})),
-  documents:s.documents.map(({id,name})=>({id,name}))
+  items:s.items.map(({id,title,section,text,appointment})=>({id,title,section,text,...(appointment?{appointment:{date:appointment.date,time:appointment.time,place:appointment.place,...(appointment.destination?{destination:structuredClone(appointment.destination)}:{})}}:{})})),
+  documents:s.documents.map(({id,name,category})=>({id,name,...(category?{category}:{})}))
  };
 }
 export function projectCurrentPublication(records,patientId,encounterId){

@@ -1,3 +1,4 @@
+import {validDestination} from '../shared/destinations.js';
 import {stagePublishedDocuments} from '../shared/published-documents.js';
 import {openPatientTour} from './tutorial-tour.js';
 import {chooseAction,TIER_LABELS} from '../a2/engine.js';
@@ -128,7 +129,7 @@ function renderPlan(){const r=get(),d=r.draft,readonly=!canEdit();const approved
  <label>날짜<input type="date" data-appointment="date" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.date||'')}" ${readonly?'disabled':''}></label>
  <label>시간<input type="time" data-appointment="time" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.time||'')}" ${readonly?'disabled':''}></label>
  <label>장소<input type="text" maxlength="160" placeholder="가상 진료 장소" data-appointment="place" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.place||'')}" ${readonly?'disabled':''}></label>
- </div><small>확정 전에는 입력한 일시가 환자 B에 예약으로 나타나지 않아요. 역할: 담당 의사 또는 최종 승인자 검토.</small>
+ </div><details class="a3-destination" ${item.appointment?.destination?'open':''}><summary>병원 길찾기 목적지 (선택)</summary><p>실제 병원 공식 안내의 주소·지도 좌표를 대조한 경우에만 확인하세요. 현재 가상병원에 주소를 임의로 만들지 마세요. 이 확인은 실제 의료인 인증이 아닙니다. 변경 후 재검토·승인·발행이 필요합니다.</p><div class="a3-appointment-fields">${[['name','병원명'],['address','공식 병원 주소'],['latitude','위도'],['longitude','경도'],['sourceUrl','공식 확인 출처 HTTPS URL']].map(([field,label])=>`<label>${label}<input type="text" data-destination="${field}" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.destination?.[field]||'')}" maxlength="${field==='sourceUrl'?500:180}" ${readonly?'disabled':''}></label>`).join('')}</div><label><input type="checkbox" data-destination="verified" data-item-id="${safe(item.id)}" ${item.appointment?.destination?.verified?'checked':''} ${readonly||!['PHYSICIAN','APPROVER'].includes(role)?'disabled':''}> 담당 의사/최종 승인자가 공식 주소·좌표와 대조함</label></details><small>확정 전에는 입력한 일시가 환자 B에 예약으로 나타나지 않아요. 역할: 담당 의사 또는 최종 승인자 검토.</small>
  </fieldset>`:''}
  <div class="edit-meta"><div><label>관련 원천자료</label><div class="multi-source-area"><div class="multi-source-list">${linkedSources(item).length?linkedSources(item).map(id=>`<div class="multi-source-row"><strong>${safe(sourceTitle(id))}</strong><span class="source-status">${validSource(id,'item',item.section)?'확인 자료':'재확인 필요'}</span><button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(id)}">자료 보기</button><button type="button" class="mini-button" data-action="remove-item-source" data-source-target="${safe(item.id)}" data-source-id="${safe(id)}" ${readonly?'disabled':''} aria-label="${safe(sourceTitle(id))} 근거 연결 해제">연결 해제</button></div>`).join(''):'<span class="source-status">연결된 원천자료가 없습니다.</span>'}</div><button type="button" class="mini-button" data-action="select-source" data-source-kind="item" data-source-target="${safe(item.id)}" ${readonly?'disabled':''}>+ 기록 추가 (${linkedSources(item).length}건)</button></div></div><div><label for="visibility-${safe(item.id)}">공개 범위</label><select data-edit="visibility" id="visibility-${safe(item.id)}" ${readonly?'disabled':''}><option value="PATIENT" ${item.visibility==='PATIENT'?'selected':''}>환자 공개</option><option value="INTERNAL" ${item.visibility==='INTERNAL'?'selected':''}>의료진 전용</option></select></div></div>
  <div class="edit-actions"><label class="inline-check"><input type="checkbox" data-edit="verified" ${item.verified?'checked':''} ${readonly?'disabled':''}> 확인된 내용 (직종 권한 검증)</label><small class="help-text">${safe(DOMAINS.find(x=>x.id===SECTIONS.find(s=>s.id===item.section)?.domain)?.title||'담당자')} 검토</small></div></div></details>`).join('')}
@@ -145,7 +146,7 @@ function renderIssues(){const r=get(),issues=r.draft.issues,grade=r.assessment.d
 function renderDocs(){const d=get().draft;
  $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>PDF·첨부 문서</h3><p>외부 PDF의 내용 검토와 계획서 인쇄/PDF 저장을 구분합니다.</p></div><span class="subtle-count">첨부 ${d.docs.length}건</span></div>
  <div class="file-input"><label for="file-attach" style="font-weight:750;font-size:12px">PDF 첨부</label><input type="file" id="file-attach" accept=".pdf,application/pdf" ${!canEdit()?'disabled':''}><small class="help-text">PDF 파일만 첨부 · 최대 4MB</small></div>
- ${d.docs.map(doc=>`<div class="doc-card" data-doc="${safe(doc.id)}"><div class="doc-title"><strong>▤ ${safe(doc.name)}</strong><span class="status-pill ${doc.status==='REVIEWED'?'green':'red'}">${doc.status==='REVIEWED'?'내용 검토됨':'검토 전'}</span></div><p class="help-text">${(doc.size/1024).toFixed(1)} KB · SHA-256 ${safe(doc.fileHash.slice(0,14))}… · ${fileStore.has(doc.id)?'현재 세션의 파일 사용 가능':'파일 다시 첨부 필요'}</p><div class="doc-settings"><label>공개 범위</label><select data-doc-edit="visibility" ${!canEdit()?'disabled':''}><option value="INTERNAL" ${doc.visibility==='INTERNAL'?'selected':''}>의료진 전용</option><option value="PATIENT" ${doc.visibility==='PATIENT'?'selected':''}>환자 공개</option></select><button class="mini-button" data-action="open-doc" ${!fileStore.has(doc.id)?'disabled':''}>PDF 보기</button><button class="mini-button" data-action="review-doc" ${!canEdit()?'disabled':''}>검토 확인</button><button class="mini-button" data-action="remove-doc" ${!canEdit()?'disabled':''}>제외</button></div></div>`).join('')||'<div class="empty">추가된 PDF가 없습니다.<br>환자 공개 파일은 최종 승인 전에 내용·버전을 확인해야 합니다.</div>'}
+ ${d.docs.map(doc=>`<div class="doc-card" data-doc="${safe(doc.id)}"><div class="doc-title"><strong>▤ ${safe(doc.name)}</strong><span class="status-pill ${doc.status==='REVIEWED'?'green':'red'}">${doc.status==='REVIEWED'?'내용 검토됨':'검토 전'}</span></div><p class="help-text">${(doc.size/1024).toFixed(1)} KB · SHA-256 ${safe(doc.fileHash.slice(0,14))}… · ${fileStore.has(doc.id)?'현재 세션의 파일 사용 가능':'파일 다시 첨부 필요'}</p><div class="doc-settings"><label>공개 범위</label><select data-doc-edit="visibility" ${!canEdit()?'disabled':''}><option value="INTERNAL" ${doc.visibility==='INTERNAL'?'selected':''}>의료진 전용</option><option value="PATIENT" ${doc.visibility==='PATIENT'?'selected':''}>환자 공개</option></select><label>문서 구분<select data-doc-category ${!canEdit()?'disabled':''}><option value="GENERAL" ${doc.category!=='MEDICATION'?'selected':''}>일반 안내문</option><option value="MEDICATION" ${doc.category==='MEDICATION'?'selected':''}>복약 관련 PDF</option></select></label><button class="mini-button" data-action="open-doc" ${!fileStore.has(doc.id)?'disabled':''}>PDF 보기</button><button class="mini-button" data-action="review-doc" ${!canEdit()?'disabled':''}>검토 확인</button><button class="mini-button" data-action="remove-doc" ${!canEdit()?'disabled':''}>제외</button></div></div>`).join('')||'<div class="empty">추가된 PDF가 없습니다.<br>환자 공개 파일은 최종 승인 전에 내용·버전을 확인해야 합니다.</div>'}
  <div class="divider"></div><div class="pane-head"><div><h3>승인 계획 PDF 생성</h3><p>웹 미리보기와 동일한 계획 데이터를 인쇄용 문서로 구성합니다.</p></div></div><div class="button-row"><button class="btn outline" data-action="print-draft">검토용 계획서 출력</button><button class="btn primary" data-action="print-published" ${currentPublished(get())?'':'disabled'}>현재 발행본 PDF 저장</button></div>`;
 }
 function renderHistory(){const r=get(),d=r.draft,p=currentPublished(r);$('#work-pane').innerHTML=`<div class="pane-head"><div><h3>승인·발행 이력</h3><p>평가·계획 버전과 최종 승인자, 환자 공개 스냅샷을 구분합니다.</p></div><span class="subtle-count">감사 이벤트 ${r.audit.length}건</span></div>
@@ -215,8 +216,8 @@ function updateAppointment(input){
  const status=input.dataset.appointment;
  if(!['status','date','time','place'].includes(status))return;
  if(!protectEdit())return;
- const previous=deepCopy(r),appointment={status:item.appointment?.status||'PENDING',date:item.appointment?.date||'',time:item.appointment?.time||'',place:item.appointment?.place||''};
- appointment[status]=input.value;
+ const previous=deepCopy(r),appointment={status:item.appointment?.status||'PENDING',date:item.appointment?.date||'',time:item.appointment?.time||'',place:item.appointment?.place||'',...(item.appointment?.destination?{destination:deepCopy(item.appointment.destination)}:{})};
+ appointment[status]=input.value;if(status==='place'&&appointment.destination)appointment.destination.verified=false;
  // An empty, pending schedule can stay absent for legacy drafts.
  if(!validAppointment(appointment)){announce('가상 일정을 확정하려면 날짜·시간·장소를 모두 먼저 입력해 주세요.');render();return;}
  if(!mutateBeforeEdit())return;
@@ -225,6 +226,17 @@ function updateAppointment(input){
  audit(r,role,'SYNTHETIC_APPOINTMENT_EDIT','외래 일정 '+status+' 수정 · 다시 검토 필요');
  if(!saveWorkflow(previous))return;
  render();announce(appointment.status==='CONFIRMED'?'가상 일정 입력을 저장했어요. 의료진 검토와 전체 승인·발행이 필요해요.':'미확정 일정으로 저장했어요. 날짜는 환자 예약으로 표시되지 않아요.');
+}
+function updateDestination(input){
+ const r=get(),item=r.draft.items.find(i=>i.id===input.dataset.itemId),field=input.dataset.destination;
+ if(!item||item.section!=='followup'||!['name','address','latitude','longitude','sourceUrl','verified'].includes(field)||!protectEdit())return;
+ if(field==='verified'&&!['PHYSICIAN','APPROVER'].includes(role)){announce('담당 의사 또는 최종 승인자 확인이 필요해요.');render();return;}
+ const before=deepCopy(r),a=deepCopy(item.appointment||{status:'PENDING',date:'',time:'',place:''});
+ const dest=a.destination||{name:'',address:'',latitude:'',longitude:'',sourceUrl:'',verified:false};
+ dest[field]=field==='verified'?input.checked:input.value; if(field!=='verified')dest.verified=false;
+ if(!validDestination(dest)){announce('공식 병원명·주소·좌표·HTTPS 출처를 모두 확인해 주세요.');render();return;}
+ if(!mutateBeforeEdit())return;a.destination=dest;item.appointment=a;item.verified=false;
+ audit(r,role,'DESTINATION_EDIT','공식 병원 목적지 변경 · 다시 검토 필요');if(saveWorkflow(before))render();
 }
 function updateIssue(target){const article=target.closest('[data-issue]');if(!article)return;const issue=get().draft.issues.find(x=>x.id===article.dataset.issue);if(!issue||!mutateBeforeEdit())return;issue[target.dataset.issueEdit]=target.value;save();/* deliberately no full render: preserve form typing */}
 function resolveIssue(target){const article=target.closest('[data-issue]'),issue=get().draft.issues.find(x=>x.id===article?.dataset.issue);if(!issue)return;
@@ -593,8 +605,10 @@ $('#domain-grid').addEventListener('click',e=>{const button=e.target.closest('[d
 $('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;activeTab=b.dataset.tab;render()});
 $('#work-pane').addEventListener('change',e=>{
  if(e.target.matches('[data-edit]'))updatePlan(e.target);
+ if(e.target.matches('[data-destination]'))updateDestination(e.target);
  if(e.target.matches('[data-appointment]'))updateAppointment(e.target);
  if(e.target.matches('[data-issue-edit]'))updateIssue(e.target);
+ if(e.target.matches('[data-doc-category]')){const doc=get().draft.docs.find(d=>d.id===e.target.closest('[data-doc]')?.dataset.doc);if(doc&&['MEDICATION','GENERAL'].includes(e.target.value)){const before=deepCopy(get());if(mutateBeforeEdit()){doc.category=e.target.value;doc.status='REGISTERED';audit(get(),role,'PDF_CATEGORY_CHANGED','문서 구분 변경 · 재검토 필요');if(saveWorkflow(before))render();}}}
  if(e.target.matches('[data-doc-edit]')){const doc=get().draft.docs.find(d=>d.id===e.target.closest('[data-doc]')?.dataset.doc);if(doc&&mutateBeforeEdit()){doc.visibility=e.target.value;doc.status='REGISTERED';audit(get(),role,'PDF_SCOPE_CHANGED',`${doc.name}: ${doc.visibility}`);save();render()}}
  if(e.target.id==='file-attach')addDoc(e.target.files?.[0]);
 });
@@ -694,4 +708,6 @@ $('#aux-screen').addEventListener('input',e=>{
  container.innerHTML=FAQ.filter(([a,b])=>(a+b).includes(learnFilter)).map(([a,b])=>`<details><summary>${safe(a)}</summary><p>${safe(b)}</p></details>`).join('')||'<p>일치하는 설명이 없습니다.</p>';
 });
 
+// Remember expansion synchronously; a fast field change can render before native toggle fires.
+$('#work-pane').addEventListener('click',e=>{const summary=e.target.closest('summary.edit-title');const card=summary?.parentElement;if(!card?.matches('details[data-item]'))return;if(card.open)expandedPlanItems.delete(card.dataset.item);else expandedPlanItems.add(card.dataset.item);},true);
 $('#work-pane').addEventListener('toggle',e=>{const details=e.target.closest('details[data-item]');if(!details)return;if(details.open)expandedPlanItems.add(details.dataset.item);else expandedPlanItems.delete(details.dataset.item)},true);

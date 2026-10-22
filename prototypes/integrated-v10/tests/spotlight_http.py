@@ -87,6 +87,8 @@ class Spotlight(unittest.TestCase):
     for view in ['today','schedule','help','profile']:
      self.b_nav(view,standalone);self.assertLessEqual(self.page.evaluate('document.documentElement.scrollWidth'),width,f'B {standalone} {view} {width}')
      if view=='today':expect(self.page.locator('.home-top-grid>.appointment')).to_have_count(1);expect(self.page.locator('.aside-stack>.insight-strip')).to_have_count(1);self.page.screenshot(path=str(out/f'B-{ "independent" if standalone else "connected" }-{width}.png'),full_page=True)
+
+    if self.page.locator('[data-comfort=menu]').is_visible():self.page.locator('[data-comfort=menu]').click()
     self.page.locator('[data-action="patient-home"], [data-action="home"]').first.click();self.assertTrue(self.page.locator('body').evaluate('e=>e.classList.contains("large-font")'))
  def test_independent_patient_history_profile_pdf_and_keyboard_preserved(self):
   self.login_b(True);expect(self.page.locator('[data-action="patient-back"]')).to_be_disabled();self.b_nav('schedule',True);self.b_nav('help',True);self.b_nav('profile',True);self.page.locator('[data-action="patient-back"]').click();expect(self.page.locator('.service-title')).to_be_visible();self.page.locator('[data-action="patient-next"]').click();expect(self.page.get_by_role('heading',name='내 정보',exact=True)).to_be_visible()

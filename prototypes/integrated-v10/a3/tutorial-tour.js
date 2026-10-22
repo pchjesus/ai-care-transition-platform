@@ -44,20 +44,21 @@ function targetBounds(el){
  return {left,top,right,bottom,width:right-left,height:bottom-top};
 }
 let activeClose=null;
-export function openPatientTour(trigger,bridge){
+export function openPatientTour(trigger,bridge,options={}){
+ const steps=options.steps||GUIDED_TOUR_STEPS,brief=!!options.brief;
  if(activeClose){activeClose();return;}
  if(!bridge)return;
  const snapshot=bridge.capture(),returnScroll={x:scrollX,y:scrollY};
- const dialog=document.createElement('dialog');dialog.id='patient-learning-tour';dialog.className='spotlight-tour';
+ const dialog=document.createElement('dialog');dialog.id=brief?'patient-brief-tour':'patient-learning-tour';dialog.className='spotlight-tour';
  dialog.setAttribute('aria-labelledby','tour-step-title');dialog.setAttribute('aria-describedby','tour-description tour-boundary');
- dialog.innerHTML=`<div class="spot-mask spot-top"></div><div class="spot-mask spot-left"></div><div class="spot-mask spot-right"></div><div class="spot-mask spot-bottom"></div><div class="spot-ring" aria-hidden="true"></div><section class="spot-tip"><span class="spot-tail" aria-hidden="true"></span><header class="spot-head"><strong id="tour-count"></strong><button type="button" data-tour-control="close" aria-label="튜토리얼 닫기">×</button></header><div class="spot-copy" tabindex="0" role="status" aria-live="polite" aria-atomic="true"><h2 id="tour-step-title"></h2><p id="tour-description"></p><small id="tour-context"></small><p id="tour-boundary">읽기형 화면 안내 · 실제 입력·저장·승인·발행을 실행하지 않아요.</p><p id="tour-fallback" hidden>강조할 영역이 화면 밖에 있거나 표시되지 않았어요. 설명을 읽거나 ‘대상 다시 보기’를 선택하세요.</p></div><footer class="spot-controls"><button type="button" data-tour-control="previous">이전</button><button type="button" data-tour-control="next" class="spot-primary">다음</button><button type="button" data-tour-control="locate">대상 다시 보기</button><button type="button" data-tour-control="skip">건너뛰기</button><a id="tour-open-demo" class="spot-primary" href="../../../patient/index.html" target="_blank" rel="noopener" hidden>독립 B v1.3 직접 체험 ↗</a></footer></section>`;
+ dialog.innerHTML=`<div class="spot-mask spot-top"></div><div class="spot-mask spot-left"></div><div class="spot-mask spot-right"></div><div class="spot-mask spot-bottom"></div><div class="spot-ring" aria-hidden="true"></div><section class="spot-tip"><span class="spot-tail" aria-hidden="true"></span><header class="spot-head"><strong id="tour-count"></strong><button type="button" data-tour-control="close" aria-label="튜토리얼 닫기">×</button></header><div class="spot-copy" tabindex="0" role="status" aria-live="polite" aria-atomic="true"><h2 id="tour-step-title"></h2><p id="tour-description"></p><small id="tour-context"></small><p id="tour-boundary">읽기형 화면 안내 · 실제 입력·저장·승인·발행을 실행하지 않아요.</p><p id="tour-fallback" hidden>강조할 영역이 화면 밖에 있거나 표시되지 않았어요. 설명을 읽거나 ‘대상 다시 보기’를 선택하세요.</p></div><footer class="spot-controls"><button type="button" data-tour-control="previous">이전</button><button type="button" data-tour-control="next" class="spot-primary">다음</button><button type="button" data-tour-control="locate">대상 다시 보기</button><button type="button" data-tour-control="skip">건너뛰기</button><button type="button" id="tour-finish" data-tour-control="finish" class="spot-primary" hidden>안내 마치기</button><a id="tour-open-demo" class="spot-primary" href="../../../patient/index.html" target="_blank" rel="noopener" hidden>독립 B v1.3 직접 체험 ↗</a></footer></section>`;
  document.body.append(dialog);
  const tip=dialog.querySelector('.spot-tip'),ring=dialog.querySelector('.spot-ring');
  let current=0,closed=false,frame=0,observed=null,pointerY=null;
  const observer=new ResizeObserver(()=>schedule());
  const tipObserver=new ResizeObserver(()=>schedule());tipObserver.observe(tip);
  const mutations=new MutationObserver(()=>schedule());
- function target(){return bridge.target(GUIDED_TOUR_STEPS[current].target);}
+ function target(){return bridge.target(steps[current].target);}
  function position(){
   frame=0;if(closed)return;
   const el=target();if(el!==observed){observer.disconnect();observed=el;if(el)observer.observe(el);}
@@ -82,14 +83,16 @@ export function openPatientTour(trigger,bridge){
  function schedule(){if(!frame&&!closed)frame=requestAnimationFrame(position);}
  function locate(){const el=target(),scrollTarget=el&&el.getClientRects().length?el:el?.firstElementChild;scrollTarget?.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});schedule();}
  function draw(){
-  const step=GUIDED_TOUR_STEPS[current];bridge.show(step);
+  const step=steps[current];bridge.show(step);
   dialog.dataset.step=String(current+1);
-  dialog.querySelector('#tour-count').textContent=`화면 둘러보기 ${current+1} / ${GUIDED_TOUR_STEPS.length}`;
+  dialog.querySelector('#tour-count').textContent=`${brief?'사용 안내':'화면 둘러보기'} ${current+1} / ${steps.length}`;
   dialog.querySelector('#tour-step-title').textContent=step.title;dialog.querySelector('#tour-description').textContent=step.body;
   dialog.querySelector('#tour-context').textContent=bridge.context();
   dialog.querySelector('[data-tour-control="previous"]').disabled=current===0;
-  dialog.querySelector('[data-tour-control="next"]').hidden=current===GUIDED_TOUR_STEPS.length-1;
-  dialog.querySelector('#tour-open-demo').hidden=current!==GUIDED_TOUR_STEPS.length-1;
+  dialog.querySelector('[data-tour-control="next"]').hidden=current===steps.length-1;
+  dialog.querySelector('#tour-open-demo').hidden=brief||current!==steps.length-1;
+  dialog.querySelector('#tour-finish').hidden=!brief||current!==steps.length-1;
+  if(brief)dialog.querySelector('#tour-boundary').textContent='사용법만 둘러봐요. 의료정보·읽음·이해 확인 기록은 바뀌지 않아요.';
   locate();
  }
  function close(){
@@ -106,12 +109,12 @@ export function openPatientTour(trigger,bridge){
  dialog.addEventListener('click',event=>{
   const control=event.target.closest('[data-tour-control]');if(!control)return;
   const action=control.dataset.tourControl;
-  if(action==='close'||action==='skip'){close();return;}
+  if(action==='close'||action==='skip'||action==='finish'){close();return;}
   if(action==='locate'){locate();return;}
-  if(action==='next')current=Math.min(GUIDED_TOUR_STEPS.length-1,current+1);
+  if(action==='next')current=Math.min(steps.length-1,current+1);
   if(action==='previous')current=Math.max(0,current-1);draw();
   const next=dialog.querySelector('[data-tour-control="next"]'),prev=dialog.querySelector('[data-tour-control="previous"]');
-  (action==='previous'&&!prev.disabled?prev:next.hidden?dialog.querySelector('#tour-open-demo'):next).focus({preventScroll:true});
+  (action==='previous'&&!prev.disabled?prev:next.hidden?dialog.querySelector(brief?'#tour-finish':'#tour-open-demo'):next).focus({preventScroll:true});
  });
  dialog.querySelector('#tour-open-demo').addEventListener('click',()=>setTimeout(close,0));
  dialog.addEventListener('keydown',event=>{
@@ -128,6 +131,6 @@ export function openPatientTour(trigger,bridge){
  for(const type of ['pointerup','pointercancel'])dialog.addEventListener(type,()=>pointerY=null);
  window.addEventListener('resize',schedule);window.addEventListener('scroll',schedule,true);
  window.visualViewport?.addEventListener('resize',schedule);window.visualViewport?.addEventListener('scroll',schedule);
- mutations.observe(document.querySelector('#shell'),{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+ mutations.observe(document.querySelector('#shell')||document.querySelector('#app'),{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
  activeClose=close;dialog.showModal();draw();dialog.querySelector('[data-tour-control="close"]').focus({preventScroll:true});
 }

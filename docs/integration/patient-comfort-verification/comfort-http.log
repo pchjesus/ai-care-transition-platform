@@ -1,0 +1,20 @@
+test_both_tours_four_widths_menu_large_font_storage_keyboard_and_restore (__main__.Comfort.test_both_tours_four_widths_menu_large_font_storage_keyboard_and_restore) ... ok
+test_confirmed_schedule_due_inbox_duplicate_seen_and_past_schedule (__main__.Comfort.test_confirmed_schedule_due_inbox_duplicate_seen_and_past_schedule) ... ok
+test_destination_edit_approval_invalidation_and_failed_save_rollback (__main__.Comfort.test_destination_edit_approval_invalidation_and_failed_save_rollback) ... ok
+test_independent_settings_survive_actual_chromium_restart_without_a3_data (__main__.Comfort.test_independent_settings_survive_actual_chromium_restart_without_a3_data) ... ok
+test_map_verified_snapshot_external_link_blocked_fallback_and_missing_address (__main__.Comfort.test_map_verified_snapshot_external_link_blocked_fallback_and_missing_address) ... ok
+test_medication_pdf_category_exact_download_and_revoke_access (__main__.Comfort.test_medication_pdf_category_exact_download_and_revoke_access) ... ok
+test_optional_important_inbox_read_is_separate_from_understanding (__main__.Comfort.test_optional_important_inbox_read_is_separate_from_understanding) ... ok
+test_patient_tour_restores_profile_and_finish_focus_without_auto_start (__main__.Comfort.test_patient_tour_restores_profile_and_finish_focus_without_auto_start) ... ok
+test_pending_schedule_does_not_create_an_appointment_and_personal_is_separate (__main__.Comfort.test_pending_schedule_does_not_create_an_appointment_and_personal_is_separate) ... ok
+test_personal_create_leads_disable_edit_delete_restore_and_no_prescription_inference (__main__.Comfort.test_personal_create_leads_disable_edit_delete_restore_and_no_prescription_inference) ... ok
+test_read_permission_denial_is_not_reported_as_saved (__main__.Comfort.test_read_permission_denial_is_not_reported_as_saved) ... ok
+test_revision_replacement_revoke_and_patient_change_disable_old_settings (__main__.Comfort.test_revision_replacement_revoke_and_patient_change_disable_old_settings) ... ok
+test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled (__main__.Comfort.test_simultaneous_writers_serialize_and_closed_pending_save_is_cancelled) ... ok
+test_stale_tab_quota_denial_and_corruption_preserve_data_and_form (__main__.Comfort.test_stale_tab_quota_denial_and_corruption_preserve_data_and_form) ... ok
+test_touch_settings_tour_and_navigation (__main__.Comfort.test_touch_settings_tour_and_navigation) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 199.315s
+
+OK
