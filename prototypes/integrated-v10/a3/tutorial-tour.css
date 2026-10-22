@@ -1,0 +1,60 @@
+/* Guided learning: isolated overlay, no change to the production A1/A2/A3 work layout. */
+.tour-learning-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}
+.tour-dialog{border:1px solid #cbded0;border-radius:18px;padding:0;width:min(860px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;background:#fff;color:#203b2c;box-shadow:0 18px 65px #183b293f}
+.tour-dialog::backdrop{background:rgba(10,32,21,.77);backdrop-filter:blur(5px)}
+.tour-dialog button,.tour-dialog a{font:inherit}
+.tour-dialog button:focus-visible,.tour-dialog a:focus-visible{outline:3px solid #d7a257;outline-offset:3px}
+.tour-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:24px 28px 14px}
+.tour-head small{font-size:11px;letter-spacing:.1em;font-weight:750;color:#52816b}
+.tour-head h2{margin:5px 0 0;font-size:23px;letter-spacing:-.04em}
+.tour-close{width:43px;height:43px;flex:none;border:1px solid #d5e0d6;background:#fff;border-radius:10px;font-size:25px!important;color:#2c5440}
+.tour-progress{padding:0 28px 18px;display:flex;align-items:center;gap:13px;font-size:12px;color:#527362}
+.tour-progress-track{flex:1;min-width:20px;height:7px;background:#e9f0e9;border-radius:5px;overflow:hidden}
+#tour-progress-fill{display:block;height:100%;background:#366e50;transition:width .18s ease}
+.tour-progress button{border:0;background:transparent;padding:6px;color:#476b56;text-decoration:underline;text-underline-offset:2px;min-height:37px;cursor:pointer}
+.tour-scene{height:350px;margin:0 28px;background:#f0f5f0;border-radius:13px;overflow:hidden;position:relative;border:1px solid #d0dfd3}
+.tour-mock-header{height:47px;background:#244d3a;color:#fff;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}
+.tour-mock-header span{font-size:10px;color:#c0d9c9}
+.tour-hospital-body{display:grid;grid-template-columns:168px 1fr;height:calc(100% - 47px)}
+.tour-mock-rail{background:#e7efe7;border-right:1px solid #d0ded3;padding:15px 12px;display:grid;gap:9px;align-content:start}
+.tour-mock-rail span{font-size:12px;border-radius:8px;color:#365d48;background:#fff;padding:10px 7px}
+.tour-mock-main{padding:14px 22px;min-width:0}
+.tour-mock-main h3{font-size:19px;margin:2px 0 10px}
+.tour-mock-kicker{font-size:10px;color:#57735c}
+.tour-mock-patient,.tour-mock-domain{background:white;border:1px solid #d7e2da;border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px;min-width:0}
+.tour-mock-main small{font-size:10px;color:#64806d}
+.tour-mock-main strong{font-size:12px}
+.tour-mock-plan{background:#fff;border:1px solid #d7e2da;border-radius:8px;padding:11px 12px;display:grid;gap:7px}
+.tour-mock-plan span{font-size:12px}
+.tour-mock-approval{display:flex;justify-content:flex-end;gap:7px;margin-top:10px}
+.tour-mock-approval>*{font-size:11px;font-weight:750;border-radius:6px;border:1px solid #d4e0d7;background:#fff;padding:8px 10px}
+.tour-mock-approval strong{background:#295b40;color:#fff}
+.tour-shade{position:absolute;inset:0;background:#173a2d98;pointer-events:none;z-index:2}
+.tour-hotspot{position:relative;z-index:1}
+.tour-hotspot.is-active{z-index:3;box-shadow:0 0 0 4px #ffdf7b,0 5px 20px #0004!important;border-radius:8px;background:#fff!important;color:#193b2a!important}
+.tour-mock-approval.is-active{background:#f8fcf9!important;padding:4px}
+.tour-arrow{position:absolute;z-index:4;color:#ffdc74;text-shadow:0 2px 3px #1c3a27;font-weight:1000;font-size:42px;line-height:1;pointer-events:none;animation:tour-arrow-bounce 1.3s ease-in-out infinite}
+@keyframes tour-arrow-bounce{50%{transform:translate(4px,-4px)}}
+.tour-patient-body{display:grid;grid-template-columns:165px 1fr;height:calc(100% - 47px)}
+.tour-patient-body aside{display:flex;flex-direction:column;gap:9px;background:#f7faf8;border-right:1px solid #d5e4db;padding:14px 18px}
+.tour-patient-body aside strong{border-radius:9px;background:#397459;color:#fff;padding:8px;align-self:start;font-size:18px}
+.tour-patient-body aside span{font-size:12px;color:#446453;padding:7px}
+.tour-patient-main{padding:14px 22px;min-width:0;overflow:hidden}
+.tour-patient-main>small{color:#4a755c;font-size:11px}
+.tour-patient-main h3{font-size:22px;margin:4px 0 11px;line-height:1.3;letter-spacing:-.04em}
+.tour-patient-cards,.tour-patient-schedule{border:1px solid #d3e0d7;border-radius:9px;background:#fff;padding:8px 12px;margin-top:8px}
+.tour-patient-cards>strong,.tour-patient-schedule>strong{font-size:12px}
+.tour-patient-cards div{border-top:1px solid #e9efe9;margin-top:7px;padding-top:7px;display:flex;justify-content:space-between;font-size:11px}
+.tour-patient-schedule p{margin:5px 0 0;font-size:11px}
+.tour-guidance{padding:19px 28px 10px;min-height:145px}
+.tour-step-no{font-size:11px;font-weight:800;color:#418061;letter-spacing:.08em}
+.tour-guidance h3{margin:5px 0 5px;font-size:19px}
+.tour-guidance p{font-size:14px;line-height:1.7;margin:0}
+.tour-guidance .tour-boundary{font-size:11px;color:#6b8273;margin-top:7px}
+.tour-controls{padding:10px 28px 23px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.tour-controls button,.tour-controls a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 17px;border:1px solid #b7cdbb;background:#fff;color:#31573e;border-radius:8px;cursor:pointer;text-decoration:none;font-size:13px;font-weight:700}
+.tour-controls button:disabled{opacity:.4;cursor:not-allowed}
+.tour-controls .tour-primary{border-color:#2a5d43;background:#2a5d43;color:white}
+.tour-controls-right{display:flex;gap:10px}
+@media(max-width:650px){.tour-head,.tour-progress,.tour-guidance,.tour-controls{padding-left:18px;padding-right:18px}.tour-scene{margin:0 12px;height:345px}.tour-hospital-body{grid-template-columns:92px 1fr}.tour-mock-rail{padding:8px 4px}.tour-mock-rail span{font-size:10px;padding:10px 3px}.tour-mock-main,.tour-patient-main{padding:10px 8px}.tour-mock-header span{display:none}.tour-mock-domain,.tour-mock-patient{flex-wrap:wrap}.tour-mock-approval{flex-wrap:wrap}.tour-mock-approval>*{padding:6px}.tour-patient-body{grid-template-columns:70px 1fr}.tour-patient-body aside{padding:9px 5px;gap:7px}.tour-patient-body aside span{font-size:10px;padding:6px 1px}.tour-patient-main h3{font-size:18px}.tour-guidance{min-height:175px}.tour-head h2{font-size:20px}.tour-controls-right{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.tour-arrow{animation:none}#tour-progress-fill{transition:none}}
