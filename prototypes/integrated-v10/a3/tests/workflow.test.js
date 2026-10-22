@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CASES,DOMAINS} from '../data.js';
-import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision,linkedSources,validItemSources} from '../workflow.js';
+import {evaluateA2,makeInitial,blockers,mayApprove,mayPublish,fingerprint,publishedPayload,currentPublished,makeRevision,linkedSources,validItemSources,canRequestRevocation} from '../workflow.js';
 
 const readyApproved = () => {
   const r=makeInitial('SYN-002');
@@ -112,4 +112,13 @@ test('legacy approved publication stays unchanged by new source-array support',(
  assert.equal(fingerprint(r),before);
  const projected=publishedPayload(r);
  assert.ok(!JSON.stringify(projected).includes('SRC-'));
+});
+
+test('revocation request rights are separate from final approval',()=>{
+ const r=makeInitial('SYN-004');
+ for(const role of ['NURSE','PHARMACIST','PHYSICIAN'])assert.equal(canRequestRevocation(r,role),true);
+ assert.equal(canRequestRevocation(r,'APPROVER'),false);
+ r.revocationRequest={publicationId:'PUB-SYN004-V1',requestedRole:'NURSE',requestedAt:'2026-10-22T01:00:00.000Z',reason:'발행 후 대상자 안내 수정 사항을 확인했습니다.',status:'PENDING'};
+ for(const role of ['NURSE','PHARMACIST','PHYSICIAN'])assert.equal(canRequestRevocation(r,role),false);
+ assert.equal(currentPublished(r).status,'PUBLISHED');
 });

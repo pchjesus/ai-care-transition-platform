@@ -56,3 +56,14 @@ test('legacy records and multi-source drafts both roundtrip, malformed or incons
  malformed.draft.items[5].sources=[item.source,item.source];
  assert.equal(validStoredRecord(malformed,'SYN-002'),false);
 });
+
+test('optional revocation request validates without corrupting prior saved records',()=>{
+ const r=makeInitial('SYN-004');
+ assert.equal(validStoredRecord(r,'SYN-004'),true);
+ r.revocationRequest={publicationId:'PUB-SYN004-V1',requestedRole:'NURSE',requestedAt:'2026-10-22T01:00:00.000Z',reason:'퇴원 안내문 재확인이 필요합니다.',status:'PENDING'};
+ assert.equal(validStoredRecord(r,'SYN-004'),true);
+ r.revocationRequest.status='REJECTED';r.revocationRequest.reviewedAt='2026-10-22T01:01:00.000Z';r.revocationRequest.reviewedBy='APPROVER';
+ assert.equal(validStoredRecord(r,'SYN-004'),true);
+ r.revocationRequest.publicationId='PUB-SYN001-V1';
+ assert.equal(validStoredRecord(r,'SYN-004'),false);
+});
