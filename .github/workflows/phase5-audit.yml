@@ -1,0 +1,70 @@
+name: Phase 5 scoped regression audit
+on:
+  push:
+    branches:
+      - audit/phase5-regression-refactor-20261023
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: carebridge-phase5-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    name: Node and Chromium integration regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout audit branch and Pages reference
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: JavaScript syntax and Node tests
+        working-directory: prototypes/integrated-v10
+        shell: bash
+        run: |
+          set -euo pipefail
+          find a2 a3 patient shared -type f -name '*.js' ! -name '*.test.js' -print0 | while IFS= read -r -d '' f; do node --check "$f"; done
+          npm test
+      - name: Install browser automation dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check playwright
+          if [ -x /usr/bin/chromium ]; then
+            chromium --version
+          elif [ -x /usr/bin/google-chrome ]; then
+            sudo ln -s /usr/bin/google-chrome /usr/bin/chromium
+            /usr/bin/chromium --version
+          else
+            echo 'No system Chromium/Chrome available at expected path' >&2
+            exit 1
+          fi
+      - name: Chromium HTTP integration suites
+        working-directory: prototypes/integrated-v10
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall -q tests
+          for suite in phase1_http.py unified_http.py patient_http.py comfort_http.py spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
+            echo "::group::${suite}"
+            python "tests/${suite}"
+            echo "::endgroup::"
+          done
+      - name: Verify already-published Pages file inventory and real path-prefix behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin gh-pages
+          mkdir -p /tmp/carebridge-stage
+          git worktree add --detach /tmp/carebridge-stage/ai-care-transition-platform FETCH_HEAD
+          python prototypes/integrated-v10/tests/release_assets.py --source . --stage /tmp/carebridge-stage/ai-care-transition-platform
+          CAREBRIDGE_SITE_PARENT=/tmp/carebridge-stage python prototypes/integrated-v10/tests/release_http.py
