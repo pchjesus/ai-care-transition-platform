@@ -1,0 +1,37 @@
+[
+  {
+    "test": "hospital-a2-smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "test": "hospital-a2-rail_interaction.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "test": "hospital-a2-http_ui.py",
+    "status": "FAIL",
+    "exit": 1
+  },
+  {
+    "test": "hospital-a3-browser_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "test": "hospital-a3-v03_features.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "test": "hospital-a3-v03_full_case.py",
+    "status": "PASS",
+    "exit": 0
+  },
+  {
+    "test": "hospital-a3-pdf_export_smoke.py",
+    "status": "PASS",
+    "exit": 0
+  }
+]

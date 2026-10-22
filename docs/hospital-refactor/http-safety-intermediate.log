@@ -1,0 +1,59 @@
+test_attachment_never_moves_from_normal_to_study (__main__.Safety.test_attachment_never_moves_from_normal_to_study) ... ok
+test_attachment_never_moves_to_different_patient (__main__.Safety.test_attachment_never_moves_to_different_patient) ... ok
+test_corrupt_storage_not_silently_overwritten (__main__.Safety.test_corrupt_storage_not_silently_overwritten) ... ok
+test_current_print_sheet_cleared_on_patient_switch (__main__.Safety.test_current_print_sheet_cleared_on_patient_switch) ... ok
+test_foreign_patient_record_is_not_rendered (__main__.Safety.test_foreign_patient_record_is_not_rendered) ... ok
+test_matching_pdf_restores_approved_attachment_after_reload (__main__.Safety.test_matching_pdf_restores_approved_attachment_after_reload) ... ok
+test_patient_picker_leaves_practice_for_requested_patient (__main__.Safety.test_patient_picker_leaves_practice_for_requested_patient) ... ok
+test_revoke_enabled_after_lower_role_and_reapproval (__main__.Safety.test_revoke_enabled_after_lower_role_and_reapproval) ... ok
+test_text_is_escaped_and_restored_without_cross_patient_or_study_leak (__main__.Safety.test_text_is_escaped_and_restored_without_cross_patient_or_study_leak) ... ERROR
+
+======================================================================
+ERROR: test_text_is_escaped_and_restored_without_cross_patient_or_study_leak (__main__.Safety.test_text_is_escaped_and_restored_without_cross_patient_or_study_leak)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 90, in test_text_is_escaped_and_restored_without_cross_patient_or_study_leak
+    self.select('SYN-002');expect(self.page.locator('[data-item="today"] [data-edit="text"]')).to_have_value(payload)
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 28, in select
+    def select(self,id): self.page.locator('#patient-select').select_option(id)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 20069, in select_option
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_locator.py", line 633, in select_option
+    return await self._frame.select_option(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 814, in select_option
+    return await self._channel.send("selectOption", self._timeout, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.select_option: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("#patient-select")
+    - locator resolved to <select id="patient-select">…</select>
+  - attempting select option action
+    2 × waiting for element to be visible and enabled
+      - element is not visible
+    - retrying select option action
+    - waiting 20ms
+    2 × waiting for element to be visible and enabled
+      - element is not visible
+    - retrying select option action
+      - waiting 100ms
+    10 × waiting for element to be visible and enabled
+       - element is not visible
+     - retrying select option action
+       - waiting 500ms
+
+
+----------------------------------------------------------------------
+Ran 9 tests in 11.401s
+
+FAILED (errors=1)

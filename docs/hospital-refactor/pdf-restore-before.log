@@ -1,0 +1,117 @@
+test_matching_pdf_restores_approved_attachment_after_reload (__main__.Safety.test_matching_pdf_restores_approved_attachment_after_reload) ... FAIL
+
+======================================================================
+FAIL: test_matching_pdf_restores_approved_attachment_after_reload (__main__.Safety.test_matching_pdf_restores_approved_attachment_after_reload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 74, in test_matching_pdf_restores_approved_attachment_after_reload
+    expect(self.page.locator('#publish')).to_be_enabled();expect(self.page.locator('.doc-card')).to_have_count(1)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23209, in to_be_enabled
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 807, in to_be_enabled
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be enabled
+Actual value: disabled
+Call log:
+  - Expect "to_be_enabled" with timeout 5000ms
+  - waiting for locator("#publish")
+    14 × locator resolved to <button disabled hidden="" id="publish" class="btn primary">계획 발행</button>
+       - unexpected value "disabled"
+
+Aria snapshot:
+- complementary "병원 업무 메뉴":
+  - text: D . 퇴원관리 워크벤치 Clinical workspace
+  - button "사이드바 접기" [expanded]: ‹
+  - paragraph: 업무 흐름
+  - button "A1 환자 목록"
+  - button "A2 다영역 평가"
+  - button "A3 계획 검토·발행 ●"
+  - button "B 환자용 미리보기"
+  - button "? 사용법·학습"
+- main:
+  - text: 병원 업무 / 퇴원 전환관리 / A3
+  - button "초기화"
+  - button "빠른 도움말"
+  - text: A3 · 퇴원계획
+  - heading "퇴원 후 관리계획" [level=1]
+  - paragraph: 평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.
+  - text: 초안 작성 중 · v1.0
+  - status: 저장됨
+  - region "환자 컨텍스트":
+    - text: 가 환자 정보
+    - heading "윤미경 · 68세" [level=2]
+    - text: SYN-002 · 근골격계 치료 후 퇴원 · 퇴원 예정 2026-10-23 환자 선택
+    - combobox "환자 선택":
+      - option "이정희 · SYN-001"
+      - option "윤미경 · SYN-002" [selected]
+      - option "최도현 · SYN-003"
+      - option "한서윤 · SYN-004"
+  - button "발행 전 해결할 사항 1건 · 상세 항목 보기":
+    - strong: 발행 전 해결할 사항 1건
+    - text: 눌러서 해결할 항목을 확인하세요. 1건 확인 →
+  - heading "6개 영역 평가 결과" [level=2]
+  - paragraph: 영역을 선택하면 검토 항목을 확인할 수 있습니다.
+  - navigation "A2 영역별 결과":
+    - button "의료 01 필수 3/3 0등급"
+    - button "간호 02 필수 3/3 0등급"
+    - button "약료 03 필수 3/3 0등급"
+    - button "기능 04 필수 3/3 0등급" [pressed]
+    - button "사회환경 05 필수 3/3 0등급"
+    - button "돌봄 연속성 06 필수 3/3 0등급"
+  - tablist "A3 작업":
+    - tab "계획 편집"
+    - tab "근거·미해결"
+    - tab "PDF·첨부" [selected]
+    - tab "승인·이력"
+  - button "미리보기 펼치기"
+  - text: 담당 역할
+  - combobox "담당 역할":
+    - option "작성 간호사"
+    - option "약사"
+    - option "담당 의사"
+    - option "지정 최종 승인자" [selected]
+  - heading "PDF·첨부 문서" [level=3]
+  - paragraph: 외부 PDF의 내용 검토와 계획서 인쇄/PDF 저장을 구분합니다.
+  - text: 첨부 2건 PDF 첨부
+  - button "PDF 첨부"
+  - text: PDF 파일만 첨부 · 최대 4MB
+  - strong: ▤ SYN-002_sample_care_plan.pdf
+  - text: 내용 검토됨
+  - paragraph: 284.3 KB · SHA-256 19a7491bd4cd88… · 파일 다시 첨부 필요
+  - text: 공개 범위
+  - combobox:
+    - option "의료진 전용"
+    - option "환자 공개" [selected]
+  - button "PDF 보기" [disabled]
+  - button "검토 확인"
+  - button "제외"
+  - strong: ▤ SYN-002_sample_care_plan.pdf
+  - text: 검토 전
+  - paragraph: 284.3 KB · SHA-256 19a7491bd4cd88… · 현재 세션의 파일 사용 가능
+  - text: 공개 범위
+  - combobox:
+    - option "의료진 전용" [selected]
+    - option "환자 공개"
+  - button "PDF 보기"
+  - button "검토 확인"
+  - button "제외"
+  - heading "승인 계획 PDF 생성" [level=3]
+  - paragraph: 웹 미리보기와 동일한 계획 데이터를 인쇄용 문서로 구성합니다.
+  - button "검토용 계획서 출력"
+  - button "현재 발행본 PDF 저장" [disabled]
+  - strong: 초안 작성 중
+  - text: 최근 수정 내용 저장됨
+  - button "검토 요청"
+
+----------------------------------------------------------------------
+Ran 1 test in 6.563s
+
+FAILED (failures=1)

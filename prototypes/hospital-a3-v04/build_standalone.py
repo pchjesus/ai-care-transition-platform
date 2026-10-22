@@ -1,0 +1,21 @@
+from pathlib import Path
+import re
+base=Path(__file__).resolve().parent
+html=(base/'index.html').read_text(encoding='utf-8')
+styles=(base/'styles.css').read_text(encoding='utf-8')
+data=(base/'data.js').read_text(encoding='utf-8')
+sources=(base/'source-library.js').read_text(encoding='utf-8')
+workflow=(base/'workflow.js').read_text(encoding='utf-8')
+storage=(base/'storage.js').read_text(encoding='utf-8')
+app=(base/'app.js').read_text(encoding='utf-8')
+workflow=re.sub(r"^import .*?;\n",'',workflow,flags=re.M)
+app=re.sub(r"^import .*?;\n",'',app,flags=re.M)
+storage=re.sub(r"^import .*?;\n",'',storage,flags=re.M)
+storage=re.sub(r'^export (const|function) ',r'\1 ',storage,flags=re.M)
+sources=re.sub(r'^export (const|function) ',r'\1 ',sources,flags=re.M)
+data=re.sub(r'^export (const|function) ',r'\1 ',data,flags=re.M)
+workflow=re.sub(r'^export (const|function) ',r'\1 ',workflow,flags=re.M)
+html=html.replace('<link rel="stylesheet" href="styles.css">','<style>\n'+styles+'\n</style>')
+html=html.replace('<script type="module" src="app.js"></script>', '<script>\n'+data+'\n'+sources+'\n'+workflow+'\n'+storage+'\n'+app+'\n</script>')
+(base/'preview.html').write_text(html,encoding='utf-8')
+print('Built preview.html bytes', (base/'preview.html').stat().st_size)

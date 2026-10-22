@@ -1,0 +1,18 @@
+test_stale_tab_does_not_overwrite_another_tabs_saved_changes (__main__.Safety.test_stale_tab_does_not_overwrite_another_tabs_saved_changes) ... FAIL
+
+======================================================================
+FAIL: test_stale_tab_does_not_overwrite_another_tabs_saved_changes (__main__.Safety.test_stale_tab_does_not_overwrite_another_tabs_saved_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 97, in test_stale_tab_does_not_overwrite_another_tabs_saved_changes
+    self.assertEqual(saved,'Saved first-tab guidance');expect(other.locator('#save-state')).to_have_text('저장 불가');other.close()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Stale second-tab overwrite' != 'Saved first-tab guidance'
+- Stale second-tab overwrite
++ Saved first-tab guidance
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.357s
+
+FAILED (failures=1)

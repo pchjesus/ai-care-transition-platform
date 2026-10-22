@@ -1,0 +1,90 @@
+✖ missing assessment issues cannot bypass review after revision (3.67769ms)
+✖ unknown required option is an assessment issue, never silently accepted (4.476693ms)
+✖ absent issue target is rejected safely (0.242919ms)
+✖ unrecognized source target kind cannot count as an issue (0.193967ms)
+✔ different encounter and unrelated field references are rejected (0.215369ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.365671
+
+✖ failing tests:
+
+test at prototypes/hospital-a3-v04/tests/safety.test.js:6:1
+✖ missing assessment issues cannot bypass review after revision (3.67769ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  true !== false
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/safety.test.js:12:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at prototypes/hospital-a3-v04/tests/safety.test.js:15:1
+✖ unknown required option is an assessment issue, never silently accepted (4.476693ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+    assert.ok(issuesFromValues(r.assessment.values).some(i=>i.id==='ISS-medication-medUnderstanding'))
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/safety.test.js:18:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at prototypes/hospital-a3-v04/tests/safety.test.js:22:1
+✖ absent issue target is rejected safely (0.242919ms)
+  TypeError: Cannot read properties of null (reading 'id')
+      at file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/source-library.js:38:260
+      at Array.some (<anonymous>)
+      at usableSource (file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/source-library.js:38:245)
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/safety.test.js:23:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at prototypes/hospital-a3-v04/tests/safety.test.js:25:1
+✖ unrecognized source target kind cannot count as an issue (0.193967ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  true !== false
+
+      at TestContext.<anonymous> (file:///workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/safety.test.js:26:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

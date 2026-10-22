@@ -1,0 +1,35 @@
+✔ copied A3 schema retains all 30 approved A2 fields, options and scores (1.426946ms)
+✔ A3 evaluation matches untouched A2 for every option, missing and conflict input (10.333187ms)
+✔ missing assessment issues cannot bypass review after revision (2.781535ms)
+✔ unknown required option is an assessment issue, never silently accepted (3.548182ms)
+✔ absent issue target is rejected safely (0.138453ms)
+✔ unrecognized source target kind cannot count as an issue (0.113887ms)
+✔ different encounter and unrelated field references are rejected (0.13591ms)
+✔ case library has four dedicated scenarios and per-patient records (0.83084ms)
+✔ cross-patient or unrelated evidence cannot count as a reviewed plan source (1.243687ms)
+✔ pending medication record cannot satisfy a medical review, confirmed reply can (0.133085ms)
+✔ medication conflict remains hard blocker even if review text and linked evidence are filled (0.383684ms)
+✔ SYN002 complete draft references real synthetic source records (0.366648ms)
+✔ SYN004 contains immutable v1 publication and requires fresh review for v2 (0.583627ms)
+✔ normal, study and baseline use distinct keys and roundtrip patient data (4.278044ms)
+✔ corrupt JSON, wrong shapes and foreign-patient records remain untouched (3.351513ms)
+✔ quota and denied storage errors propagate without claiming a successful save (0.407028ms)
+✔ a stale repository cannot overwrite edits saved by another tab (1.448047ms)
+✔ foreign publication snapshots and malformed view models are rejected (0.414409ms)
+✔ A2 read-only import has six domains and 30 fields (18 required) (1.175567ms)
+✔ SYN-002 all six domains 0, but six basic plan sections still exist (1.539371ms)
+✔ SYN-003 has missing fields and medication conflict block even though A2 assigns 3 (0.651197ms)
+✔ SYN-001 requires an independent, reviewed medication patient instruction (0.399917ms)
+✔ only designated approver can approve and publish a clean, unchanged request (2.390852ms)
+✔ a reviewed patient PDF needs live file bytes during publication (0.532572ms)
+✔ patient-facing projection excludes internal items, raw source IDs, PDF hashes, reviewer identifiers (0.532131ms)
+✔ new revision keeps existing published snapshot and resets approval (0.679568ms)
+✔ fingerprint changes when underlying A2 input snapshot changes (0.572992ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.513456

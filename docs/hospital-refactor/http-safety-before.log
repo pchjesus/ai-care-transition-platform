@@ -1,0 +1,259 @@
+test_attachment_never_moves_from_normal_to_study (__main__.Safety.test_attachment_never_moves_from_normal_to_study) ... FAIL
+test_attachment_never_moves_to_different_patient (__main__.Safety.test_attachment_never_moves_to_different_patient) ... FAIL
+test_corrupt_storage_not_silently_overwritten (__main__.Safety.test_corrupt_storage_not_silently_overwritten) ... FAIL
+test_current_print_sheet_cleared_on_patient_switch (__main__.Safety.test_current_print_sheet_cleared_on_patient_switch) ... FAIL
+test_foreign_patient_record_is_not_rendered (__main__.Safety.test_foreign_patient_record_is_not_rendered) ... FAIL
+test_patient_picker_leaves_practice_for_requested_patient (__main__.Safety.test_patient_picker_leaves_practice_for_requested_patient) ... FAIL
+test_revoke_enabled_after_lower_role_and_reapproval (__main__.Safety.test_revoke_enabled_after_lower_role_and_reapproval) ... ok
+
+======================================================================
+FAIL: test_attachment_never_moves_from_normal_to_study (__main__.Safety.test_attachment_never_moves_from_normal_to_study)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 43, in test_attachment_never_moves_from_normal_to_study
+    self.page.locator('[data-tab="documents"]').click();expect(self.page.locator('.doc-card')).to_have_count(0)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22365, in to_have_count
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 465, in to_have_count
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have count '0'
+Actual value: 1
+Call log:
+  - Expect "to_have_count" with timeout 5000ms
+  - waiting for locator(".doc-card")
+    14 × locator resolved to 1 element
+       - unexpected value "1"
+
+
+======================================================================
+FAIL: test_attachment_never_moves_to_different_patient (__main__.Safety.test_attachment_never_moves_to_different_patient)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 40, in test_attachment_never_moves_to_different_patient
+    self.page.locator('[data-tab="documents"]').click();expect(self.page.locator('.doc-card')).to_have_count(0)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22365, in to_have_count
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 465, in to_have_count
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to have count '0'
+Actual value: 1
+Call log:
+  - Expect "to_have_count" with timeout 5000ms
+  - waiting for locator(".doc-card")
+    14 × locator resolved to 1 element
+       - unexpected value "1"
+
+
+======================================================================
+FAIL: test_corrupt_storage_not_silently_overwritten (__main__.Safety.test_corrupt_storage_not_silently_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 54, in test_corrupt_storage_not_silently_overwritten
+    self.assertEqual(self.page.evaluate('key=>localStorage.getItem(key)',self.key),'{broken-json')
+AssertionError: '{"SYN-001":{"schema":2,"unlockedSources":[[30278 chars]}]}}' != '{broken-json'
+Diff is 30343 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_current_print_sheet_cleared_on_patient_switch (__main__.Safety.test_current_print_sheet_cleared_on_patient_switch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 59, in test_current_print_sheet_cleared_on_patient_switch
+    self.select('SYN-001');expect(self.page.locator('#print-sheet')).to_be_empty()
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 23158, in to_be_empty
+    self._sync(self._impl_obj.to_be_empty(timeout=to_milliseconds(timeout)))
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 783, in to_be_empty
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to be empty
+Actual value: notEmpty
+Call log:
+  - Expect "to_be_empty" with timeout 5000ms
+  - waiting for locator("#print-sheet")
+    14 × locator resolved to <div id="print-sheet" aria-hidden="true">…</div>
+       - unexpected value "notEmpty"
+
+Aria snapshot:
+- complementary "병원 업무 메뉴":
+  - text: D . 퇴원관리 워크벤치 Clinical workspace
+  - button "사이드바 접기" [expanded]: ‹
+  - paragraph: 업무 흐름
+  - button "A1 환자 목록"
+  - button "A2 다영역 평가"
+  - button "A3 계획 검토·발행 ●"
+  - button "B 환자용 미리보기"
+  - button "? 사용법·학습"
+- main:
+  - text: 병원 업무 / 퇴원 전환관리 / A3
+  - button "초기화"
+  - button "빠른 도움말"
+  - text: A3 · 퇴원계획
+  - heading "퇴원 후 관리계획" [level=1]
+  - paragraph: 평가를 확인하고, 환자가 이해할 수 있는 안내로 완성합니다.
+  - text: 초안 작성 중 · v0.1
+  - status: 저장됨
+  - region "환자 컨텍스트":
+    - text: 가 환자 정보
+    - heading "이정희 · 75세" [level=2]
+    - text: SYN-001 · 근골격계 수술 후 퇴원 · 퇴원 예정 2026-10-21 환자 선택
+    - combobox "환자 선택":
+      - option "이정희 · SYN-001" [selected]
+      - option "윤미경 · SYN-002"
+      - option "최도현 · SYN-003"
+      - option "한서윤 · SYN-004"
+  - button "발행 전 해결할 사항 7건 · 상세 항목 보기":
+    - strong: 발행 전 해결할 사항 7건
+    - text: 눌러서 해결할 항목을 확인하세요. 7건 확인 →
+  - heading "6개 영역 평가 결과" [level=2]
+  - paragraph: 영역을 선택하면 검토 항목을 확인할 수 있습니다.
+  - navigation "A2 영역별 결과":
+    - button "의료 01 필수 3/3 1등급"
+    - button "간호 02 필수 3/3 1등급"
+    - button "약료 03 필수 3/3 1등급"
+    - button "기능 04 필수 3/3 2등급" [pressed]
+    - button "사회환경 05 필수 3/3 2등급"
+    - button "돌봄 연속성 06 필수 3/3 2등급"
+  - tablist "A3 작업":
+    - tab "계획 편집" [selected]
+    - tab "근거·미해결 1"
+    - tab "PDF·첨부"
+    - tab "승인·이력"
+  - button "미리보기 펼치기"
+  - text: 담당 역할
+  - combobox "담당 역할":
+    - option "작성 간호사" [selected]
+    - option "약사"
+    - option "담당 의사"
+    - option "지정 최종 승인자"
+  - heading "환자용 계획 편집" [level=3]
+  - paragraph: 환자가 해야 할 행동부터 작성합니다. 항목별 출처와 직종 검토를 확인하세요.
+  - text: 0/6 확인됨
+  - group:
+    - text: 01 · 오늘 해야 할 일 확인 필요 ⌄ 환자에게 전달할 안내문
+    - textbox "환자에게 전달할 안내문": 퇴원 전 받은 자가관리 안내문을 확인해 주세요.
+    - text: 관련 원천자료
+    - strong: 연결된 자료 없음
+    - text: 미연결
+    - button "기록 선택"
+    - text: 공개 범위
+    - combobox "공개 범위":
+      - option "환자 공개" [selected]
+      - option "의료진 전용"
+    - checkbox "확인된 내용 (직종 권한 검증)"
+    - text: 확인된 내용 (직종 권한 검증) 간호 검토
+  - group: 02 · 복약·약물 안내 확인 필요 ⌄
+  - group: 03 · 외래·검사 일정 확인 필요 ⌄
+  - group: 04 · 주의사항 확인 필요 ⌄
+  - group: 05 · 도움이 필요할 때 확인 필요 ⌄
+  - group: 06 · 생활·이동 지원 확인 필요 ⌄
+  - strong: 초안 작성 중
+  - text: 최근 수정 내용 저장됨
+  - button "검토 요청"
+
+======================================================================
+FAIL: test_foreign_patient_record_is_not_rendered (__main__.Safety.test_foreign_patient_record_is_not_rendered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 50, in test_foreign_patient_record_is_not_rendered
+    self.assertEqual(self.page.locator('#save-state').inner_text(),'저장 불가')
+AssertionError: '저장됨' != '저장 불가'
+- 저장됨
++ 저장 불가
+
+
+======================================================================
+FAIL: test_patient_picker_leaves_practice_for_requested_patient (__main__.Safety.test_patient_picker_leaves_practice_for_requested_patient)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/ai-care-transition-platform/prototypes/hospital-a3-v04/tests/http_regression.py", line 45, in test_patient_picker_leaves_practice_for_requested_patient
+    self.practice();self.select('SYN-003');expect(self.page.locator('#patient-name')).to_contain_text('최도현')
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 22016, in to_contain_text
+    self._sync(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 303, in to_contain_text
+    await self._expect_impl(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 128, in _expect_impl
+    _record_soft_or_raise(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 60, in _record_soft_or_raise
+    raise error
+AssertionError: Locator expected to contain text '최도현'
+Actual value: 이정희 · 75세
+Call log:
+  - Expect "to_contain_text" with timeout 5000ms
+  - waiting for locator("#patient-name")
+    14 × locator resolved to <h2 id="patient-name">이정희 · 75세</h2>
+       - unexpected value "이정희 · 75세"
+
+Aria snapshot:
+- complementary "병원 업무 메뉴":
+  - text: D . 퇴원관리 워크벤치 Clinical workspace
+  - button "사이드바 접기" [expanded]: ‹
+  - paragraph: 업무 흐름
+  - button "A1 환자 목록"
+  - button "A2 다영역 평가"
+  - button "A3 계획 검토·발행 ●"
+  - button "B 환자용 미리보기"
+  - button "? 사용법·학습"
+- main:
+  - text: 병원 업무 / 퇴원 전환관리 / 학습
+  - button "초기화"
+  - button "빠른 도움말"
+  - region "보조 작업 화면":
+    - paragraph: 학습 · 가상 사례로 이해하기
+    - heading "설명과 실습" [level=1]
+    - paragraph: 업무 흐름을 배우고, 실제 화면에서 직접 확인해 보세요.
+    - navigation "학습 단원":
+      - button "01 · 시작하기"
+      - button "02 · 화면 읽기"
+      - button "03 · 원천자료"
+      - button "04 · 케이스 실습"
+      - button "05 · 용어·FAQ"
+    - text: L04 · 직접 해보기
+    - heading "케이스별로 실제 조작해 보세요" [level=2]
+    - paragraph: 실습 시작 시 별도의 사본을 사용합니다. 일반 작성 이력은 수정되지 않으며, 다른 화면을 다녀와도 실습 상태를 보존합니다.
+    - heading "SYN-001 · 발행 전 보완 중간" [level=3]
+    - paragraph: "근거 확인과 6개 계획 항목 검토 후 승인·발행 상태: 시작 전"
+    - button "실습 시작"
+    - button "이어하기" [disabled]
+    - heading "SYN-002 · 기본 안내 발행 쉬움" [level=3]
+    - paragraph: "0등급 평가에서도 기본 안내를 승인하고 발행 상태: 진행 중"
+    - button "처음부터 다시 실습"
+    - button "이어하기"
+    - heading "SYN-003 · 누락·상충 해결 어려움" [level=3]
+    - paragraph: "충돌 기록 비교, 추가 회신, A2 수정과 재인계 상태: 시작 전"
+    - button "실습 시작"
+    - button "이어하기" [disabled]
+    - heading "SYN-004 · 발행 이후 개정 중간" [level=3]
+    - paragraph: "기존 v1.0을 유지하면서 새 버전을 검토·발행 상태: 시작 전"
+    - button "실습 시작"
+    - button "이어하기" [disabled]
+
+----------------------------------------------------------------------
+Ran 7 tests in 24.783s
+
+FAILED (failures=6)
