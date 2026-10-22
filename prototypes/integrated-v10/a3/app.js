@@ -1,3 +1,4 @@
+import {validDestination} from '../shared/destinations.js';
 import {stagePublishedDocuments} from '../shared/published-documents.js';
 import {openPatientTour} from './tutorial-tour.js';
 import {chooseAction,TIER_LABELS} from '../a2/engine.js';
@@ -128,7 +129,7 @@ function renderPlan(){const r=get(),d=r.draft,readonly=!canEdit();const approved
  <label>날짜<input type="date" data-appointment="date" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.date||'')}" ${readonly?'disabled':''}></label>
  <label>시간<input type="time" data-appointment="time" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.time||'')}" ${readonly?'disabled':''}></label>
  <label>장소<input type="text" maxlength="160" placeholder="가상 진료 장소" data-appointment="place" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.place||'')}" ${readonly?'disabled':''}></label>
- </div><small>확정 전에는 입력한 일시가 환자 B에 예약으로 나타나지 않아요. 역할: 담당 의사 또는 최종 승인자 검토.</small>
+ </div><details class="a3-destination" ${item.appointment?.destination?'open':''}><summary>병원 길찾기 목적지 (선택)</summary><p>실제 병원 공식 안내의 주소·지도 좌표를 대조한 경우에만 확인하세요. 현재 가상병원에 주소를 임의로 만들지 마세요. 이 확인은 실제 의료인 인증이 아닙니다. 변경 후 재검토·승인·발행이 필요합니다.</p><div class="a3-appointment-fields">${[['name','병원명'],['address','공식 병원 주소'],['latitude','위도'],['longitude','경도'],['sourceUrl','공식 확인 출처 HTTPS URL']].map(([field,label])=>`<label>${label}<input type="text" data-destination="${field}" data-item-id="${safe(item.id)}" value="${safe(item.appointment?.destination?.[field]||'')}" maxlength="${field==='sourceUrl'?500:180}" ${readonly?'disabled':''}></label>`).join('')}</div><label><input type="checkbox" data-destination="verified" data-item-id="${safe(item.id)}" ${item.appointment?.destination?.verified?'checked':''} ${readonly||!['PHYSICIAN','APPROVER'].includes(role)?'disabled':''}> 담당 의사/최종 승인자가 공식 주소·좌표와 대조함</label></details><small>확정 전에는 입력한 일시가 환자 B에 예약으로 나타나지 않아요. 역할: 담당 의사 또는 최종 승인자 검토.</small>
  </fieldset>`:''}
  <div class="edit-meta"><div><label>관련 원천자료</label><div class="multi-source-area"><div class="multi-source-list">${linkedSources(item).length?linkedSources(item).map(id=>`<div class="multi-source-row"><strong>${safe(sourceTitle(id))}</strong><span class="source-status">${validSource(id,'item',item.section)?'확인 자료':'재확인 필요'}</span><button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(id)}">자료 보기</button><button type="button" class="mini-button" data-action="remove-item-source" data-source-target="${safe(item.id)}" data-source-id="${safe(id)}" ${readonly?'disabled':''} aria-label="${safe(sourceTitle(id))} 근거 연결 해제">연결 해제</button></div>`).join(''):'<span class="source-status">연결된 원천자료가 없습니다.</span>'}</div><button type="button" class="mini-button" data-action="select-source" data-source-kind="item" data-source-target="${safe(item.id)}" ${readonly?'disabled':''}>+ 기록 추가 (${linkedSources(item).length}건)</button></div></div><div><label for="visibility-${safe(item.id)}">공개 범위</label><select data-edit="visibility" id="visibility-${safe(item.id)}" ${readonly?'disabled':''}><option value="PATIENT" ${item.visibility==='PATIENT'?'selected':''}>환자 공개</option><option value="INTERNAL" ${item.visibility==='INTERNAL'?'selected':''}>의료진 전용</option></select></div></div>
  <div class="edit-actions"><label class="inline-check"><input type="checkbox" data-edit="verified" ${item.verified?'checked':''} ${readonly?'disabled':''}> 확인된 내용 (직종 권한 검증)</label><small class="help-text">${safe(DOMAINS.find(x=>x.id===SECTIONS.find(s=>s.id===item.section)?.domain)?.title||'담당자')} 검토</small></div></div></details>`).join('')}
@@ -145,7 +146,7 @@ function renderIssues(){const r=get(),issues=r.draft.issues,grade=r.assessment.d
 function renderDocs(){const d=get().draft;
  $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>PDF·첨부 문서</h3><p>외부 PDF의 내용 검토와 계획서 인쇄/PDF 저장을 구분합니다.</p></div><span class="subtle-count">첨부 ${d.docs.length}건</span></div>
  <div class="file-input"><label for="file-attach" style="font-weight:750;font-size:12px">PDF 첨부</label><input type="file" id="file-attach" accept=".pdf,application/pdf" ${!canEdit()?'disabled':''}><small class="help-text">PDF 파일만 첨부 · 최대 4MB</small></div>
- ${d.docs.map(doc=>`<div class="doc-card" data-doc="${safe(doc.id)}"><div class="doc-title"><strong>▤ ${safe(doc.name)}</strong><span class="status-pill ${doc.status==='REVIEWED'?'green':'red'}">${doc.status==='REVIEWED'?'내용 검토됨':'검토 전'}</span></div><p class="help-text">${(doc.size/1024).toFixed(1)} KB · SHA-256 ${safe(doc.fileHash.slice(0,14))}… · ${fileStore.has(doc.id)?'현재 세션의 파일 사용 가능':'파일 다시 첨부 필요'}</p><div class="doc-settings"><label>공개 범위</label><select data-doc-edit="visibility" ${!canEdit()?'disabled':''}><option value="INTERNAL" ${doc.visibility==='INTERNAL'?'selected':''}>의료진 전용</option><option value="PATIENT" ${doc.visibility==='PATIENT'?'selected':''}>환자 공개</option></select><button class="mini-button" data-action="open-doc" ${!fileStore.has(doc.id)?'disabled':''}>PDF 보기</button><button class="mini-button" data-action="review-doc" ${!canEdit()?'disabled':''}>검토 확인</button><button class="mini-button" data-action="remove-doc" ${!canEdit()?'disabled':''}>제외</button></div></div>`).join('')||'<div class="empty">추가된 PDF가 없습니다.<br>환자 공개 파일은 최종 승인 전에 내용·버전을 확인해야 합니다.</div>'}
+ ${d.docs.map(doc=>`<div class="doc-card" data-doc="${safe(doc.id)}"><div class="doc-title"><strong>▤ ${safe(doc.name)}</strong><span class="status-pill ${doc.status==='REVIEWED'?'green':'red'}">${doc.status==='REVIEWED'?'내용 검토됨':'검토 전'}</span></div><p class="help-text">${(doc.size/1024).toFixed(1)} KB · SHA-256 ${safe(doc.fileHash.slice(0,14))}… · ${fileStore.has(doc.id)?'현재 세션의 파일 사용 가능':'파일 다시 첨부 필요'}</p><div class="doc-settings"><label>공개 범위</label><select data-doc-edit="visibility" ${!canEdit()?'disabled':''}><option value="INTERNAL" ${doc.visibility==='INTERNAL'?'selected':''}>의료진 전용</option><option value="PATIENT" ${doc.visibility==='PATIENT'?'selected':''}>환자 공개</option></select><label>문서 구분<select data-doc-category ${!canEdit()?'disabled':''}><option value="GENERAL" ${doc.category!=='MEDICATION'?'selected':''}>일반 안내문</option><option value="MEDICATION" ${doc.category==='MEDICATION'?'selected':''}>복약 관련 PDF</option></select></label><button class="mini-button" data-action="open-doc" ${!fileStore.has(doc.id)?'disabled':''}>PDF 보기</button><button class="mini-button" data-action="review-doc" ${!canEdit()?'disabled':''}>검토 확인</button><button class="mini-button" data-action="remove-doc" ${!canEdit()?'disabled':''}>제외</button></div></div>`).join('')||'<div class="empty">추가된 PDF가 없습니다.<br>환자 공개 파일은 최종 승인 전에 내용·버전을 확인해야 합니다.</div>'}
  <div class="divider"></div><div class="pane-head"><div><h3>승인 계획 PDF 생성</h3><p>웹 미리보기와 동일한 계획 데이터를 인쇄용 문서로 구성합니다.</p></div></div><div class="button-row"><button class="btn outline" data-action="print-draft">검토용 계획서 출력</button><button class="btn primary" data-action="print-published" ${currentPublished(get())?'':'disabled'}>현재 발행본 PDF 저장</button></div>`;
 }
 function renderHistory(){const r=get(),d=r.draft,p=currentPublished(r);$('#work-pane').innerHTML=`<div class="pane-head"><div><h3>승인·발행 이력</h3><p>평가·계획 버전과 최종 승인자, 환자 공개 스냅샷을 구분합니다.</p></div><span class="subtle-count">감사 이벤트 ${r.audit.length}건</span></div>
@@ -215,8 +216,8 @@ function updateAppointment(input){
  const status=input.dataset.appointment;
  if(!['status','date','time','place'].includes(status))return;
  if(!protectEdit())return;
- const previous=deepCopy(r),appointment={status:item.appointment?.status||'PENDING',date:item.appointment?.date||'',time:item.appointment?.time||'',place:item.appointment?.place||''};
- appointment[status]=input.value;
+ const previous=deepCopy(r),appointment={status:item.appointment?.status||'PENDING',date:item.appointment?.date||'',time:item.appointment?.time||'',place:item.appointment?.place||'',...(item.appointment?.destination?{destination:deepCopy(item.appointment.destination)}:{})};
+ appointment[status]=input.value;if(status==='place'&&appointment.destination)appointment.destination.verified=false;
  // An empty, pending schedule can stay absent for legacy drafts.
  if(!validAppointment(appointment)){announce('가상 일정을 확정하려면 날짜·시간·장소를 모두 먼저 입력해 주세요.');render();return;}
  if(!mutateBeforeEdit())return;
@@ -225,6 +226,17 @@ function updateAppointment(input){
  audit(r,role,'SYNTHETIC_APPOINTMENT_EDIT','외래 일정 '+status+' 수정 · 다시 검토 필요');
  if(!saveWorkflow(previous))return;
  render();announce(appointment.status==='CONFIRMED'?'가상 일정 입력을 저장했어요. 의료진 검토와 전체 승인·발행이 필요해요.':'미확정 일정으로 저장했어요. 날짜는 환자 예약으로 표시되지 않아요.');
+}
+function updateDestination(input){
+ const r=get(),item=r.draft.items.find(i=>i.id===input.dataset.itemId),field=input.dataset.destination;
+ if(!item||item.section!=='followup'||!['name','address','latitude','longitude','sourceUrl','verified'].includes(field)||!protectEdit())return;
+ if(field==='verified'&&!['PHYSICIAN','APPROVER'].includes(role)){announce('담당 의사 또는 최종 승인자 확인이 필요해요.');render();return;}
+ const before=deepCopy(r),a=deepCopy(item.appointment||{status:'PENDING',date:'',time:'',place:''});
+ const dest=a.destination||{name:'',address:'',latitude:'',longitude:'',sourceUrl:'',verified:false};
+ dest[field]=field==='verified'?input.checked:input.value; if(field!=='verified')dest.verified=false;
+ if(!validDestination(dest)){announce('공식 병원명·주소·좌표·HTTPS 출처를 모두 확인해 주세요.');render();return;}
+ if(!mutateBeforeEdit())return;a.destination=dest;item.appointment=a;item.verified=false;
+ audit(r,role,'DESTINATION_EDIT','공식 병원 목적지 변경 · 다시 검토 필요');if(saveWorkflow(before))render();
 }
 function updateIssue(target){const article=target.closest('[data-issue]');if(!article)return;const issue=get().draft.issues.find(x=>x.id===article.dataset.issue);if(!issue||!mutateBeforeEdit())return;issue[target.dataset.issueEdit]=target.value;save();/* deliberately no full render: preserve form typing */}
 function resolveIssue(target){const article=target.closest('[data-issue]'),issue=get().draft.issues.find(x=>x.id===article?.dataset.issue);if(!issue)return;
@@ -539,10 +551,10 @@ function renderLearning(){
  const root=$('#aux-screen');const count=Object.keys(studyRepo).length;
  const card=(title,body,action)=>`<div class="learning-card"><h3>${title}</h3><p>${body}</p>${action}</div>`;
  let content='';
- if(learningUnit==='intro') content=`<section class="learning-panel"><div class="learning-kicker">L01 · 시작하기</div><h2>퇴원 후 관리계획, 이렇게 연결돼요</h2><p>환자의 관리 필요도를 확인하고, 담당 의료진이 근거를 검토한 뒤 환자에게 필요한 계획만 발행하는 흐름입니다. 각 단계를 눌러 실제 화면으로 이동할 수 있어요.</p><div class="learning-flow">${[['A1','환자 선택','patients'],['A2','평가 입력·인계','assessment'],['A3','계획 검토·발행','plan'],['B','환자 화면','patient-preview']].map(([id,t,target])=>`<button data-learn-go="${target}">${id}<small>${t}</small></button>`).join('')}</div></section><section class="learning-panel"><h3>1분 실습 안내</h3><p>처음이라면 SYN-002부터 시작하세요. 계획을 읽고, 검토 요청 후 담당 역할을 최종 승인자로 바꿔 승인·발행하는 순서를 직접 경험할 수 있습니다.</p><div class="tour-learning-actions"><button class="btn primary" data-learn-guided-tour="1">화면 따라 체험하기 · 튜토리얼 →</button><button class="mini-button" data-study-start="SYN-002">A3 업무 직접 실습</button></div><p class="learn-copy">튜토리얼은 별도 안내 창에서 진행되고 실제 승인·발행 기록은 바꾸지 않아요. 마지막에는 기존 환자용 B 예시를 바로 열 수 있습니다.</p></section>`;
+ if(learningUnit==='intro') content=`<section class="learning-panel"><div class="learning-kicker">L01 · 시작하기</div><h2>퇴원 후 관리계획, 이렇게 연결돼요</h2><p>환자의 관리 필요도를 확인하고, 담당 의료진이 근거를 검토한 뒤 환자에게 필요한 계획만 발행하는 흐름입니다. 각 단계를 눌러 실제 화면으로 이동할 수 있어요.</p><div class="learning-flow">${[['A1','환자 선택','patients'],['A2','평가 입력·인계','assessment'],['A3','계획 검토·발행','plan'],['B','환자 화면','patient-preview']].map(([id,t,target])=>`<button data-learn-go="${target}">${id}<small>${t}</small></button>`).join('')}</div></section><section class="learning-panel"><h3>1분 실습 안내</h3><p>처음이라면 SYN-002부터 시작하세요. 계획을 읽고, 검토 요청 후 담당 역할을 최종 승인자로 바꿔 승인·발행하는 순서를 직접 경험할 수 있습니다.</p><div class="tour-learning-actions"><button class="btn primary" data-learn-guided-tour="1">화면 따라 체험하기 · 튜토리얼 →</button><button class="mini-button" data-study-start="SYN-002">A3 업무 직접 실습</button></div><p class="learn-copy">튜토리얼은 실제 업무 화면을 읽기 전용으로 둘러보며 승인·발행 기록은 바꾸지 않아요. 마지막에는 기존 환자용 B 예시를 바로 열 수 있습니다.</p></section>`;
  else if(learningUnit==='screen') content=`<section class="learning-panel"><div class="learning-kicker">L02 · 화면 읽기</div><h2>무엇부터 봐야 할까요?</h2><div class="learning-cards">${card('환자 정보','지금 선택한 환자와 입원 건을 확인합니다.','<button class="mini-button" data-learn-go="plan">위치 보기</button>')}${card('발행 전 해결할 사항','숫자를 선택하면 어떤 작업이 남았는지 확인하고 그곳으로 이동할 수 있습니다.','<button class="mini-button" data-learn-go="blockers">확인사항 열기</button>')}${card('A2 6영역','평가 등급은 업무 검토 우선도이고 발행 가능 여부와는 별개입니다.','<button class="mini-button" data-learn-go="assessment">평가 열기</button>')}${card('계획 편집·근거','환자 안내와 원천자료를 연결하고 담당자의 확인을 기록합니다.','<button class="mini-button" data-learn-go="plan">편집으로 이동</button>')}${card('PDF·첨부','자료를 첨부한 뒤 검토·공개 범위를 따로 확인해야 합니다.','<button class="mini-button" data-learn-go="documents">첨부 화면 보기</button>')}${card('승인·발행·이력','역할에 따라 검토 요청, 승인, 발행과 개정·철회를 구분합니다.','<button class="mini-button" data-learn-go="history">이력으로 이동</button>')}</div></section>`;
  else if(learningUnit==='source') content=`<section class="learning-panel"><div class="learning-kicker">L03 · 원천자료 이해</div><h2>원천자료를 읽고 연결하기</h2><p>자료 ID를 기억할 필요는 없습니다. 제목으로 내용을 확인하고, 해당 환자·항목에 맞는 자료를 선택하세요. 연결만으로 검토가 끝나지는 않습니다.</p><div class="learning-cards">${CASES.map(c=>card(`${safe(c.name)} · ${safe(c.id)}`,`${recordsForPatient(c.id).length}개 가상 원천자료 · ${safe(c.context)}`,`<button class="mini-button" data-learn-source-patient="${c.id}">자료 목록 보기</button>`)).join('')}</div></section><section class="learning-panel"><h3>상충된 기록의 예시</h3><p>SYN-003에는 상충하는 퇴원약 목록 A/B와 잠긴 담당자 회신 C가 있어요. 어느 하나를 임의로 선택해서 해결 완료하면 안 됩니다. 담당자 회신을 받은 다음 A2 자료도 수정하여 인계해야 합니다.</p><button class="mini-button" data-study-start="SYN-003">상충 실습 시작</button></section>`;
- else if(learningUnit==='practice') content=`<section class="learning-panel"><div class="learning-kicker">L04 · 직접 해보기</div><div class="tour-learning-actions"><button class="btn primary" data-learn-guided-tour="1">튜토리얼 창으로 먼저 익히기 →</button></div><h2>케이스별로 실제 조작해 보세요</h2><p>실습 시작 시 별도의 사본을 사용합니다. 일반 작성 이력은 수정되지 않으며, 다른 화면을 다녀와도 실습 상태를 보존합니다.</p><div class="learning-cards">${CASES.map(c=>{const m=CASE_MISSIONS[c.id];return card(`${safe(c.id)} · ${safe(m.title)} <span class="source-flag">${safe(m.difficulty)}</span>`,`${safe(m.description)}<br><b>상태: ${learningStatusFor(c.id)}</b>`,`<button class="mini-button" data-study-start="${c.id}">${studyRepo[c.id]?'처음부터 다시 실습':'실습 시작'}</button><button class="mini-button" data-study-resume="${c.id}" ${studyRepo[c.id]?'':'disabled'}>이어하기</button>`)}).join('')}</div></section>${practiceMode?`<section class="learning-panel"><h3>현재 실습: ${safe(selectedId)} · ${safe(CASE_MISSIONS[selectedId].title)}</h3>${CASE_MISSIONS[selectedId].steps.map((t,i)=>`<div class="learn-task ${i===0?'completed':''}">${String(i+1).padStart(2,'0')} · ${safe(t)}</div>`).join('')}<p>현재 상태: <b>${learningStatusFor(selectedId)}</b> · 발행 전 확인 ${blockers(get(),docsAvailable()).length}건</p><button class="mini-button" data-learn-go="plan">현재 실습 계속</button><button class="mini-button" data-learn-hint="1">단계별 힌트</button><p class="learn-copy" id="learn-hint-text"></p></section>`:''}`;
+ else if(learningUnit==='practice') content=`<section class="learning-panel"><div class="learning-kicker">L04 · 직접 해보기</div><div class="tour-learning-actions"><button class="btn primary" data-learn-guided-tour="1">실제 화면 둘러보기 · 튜토리얼 →</button></div><h2>케이스별로 실제 조작해 보세요</h2><p>실습 시작 시 별도의 사본을 사용합니다. 일반 작성 이력은 수정되지 않으며, 다른 화면을 다녀와도 실습 상태를 보존합니다.</p><div class="learning-cards">${CASES.map(c=>{const m=CASE_MISSIONS[c.id];return card(`${safe(c.id)} · ${safe(m.title)} <span class="source-flag">${safe(m.difficulty)}</span>`,`${safe(m.description)}<br><b>상태: ${learningStatusFor(c.id)}</b>`,`<button class="mini-button" data-study-start="${c.id}">${studyRepo[c.id]?'처음부터 다시 실습':'실습 시작'}</button><button class="mini-button" data-study-resume="${c.id}" ${studyRepo[c.id]?'':'disabled'}>이어하기</button>`)}).join('')}</div></section>${practiceMode?`<section class="learning-panel"><h3>현재 실습: ${safe(selectedId)} · ${safe(CASE_MISSIONS[selectedId].title)}</h3>${CASE_MISSIONS[selectedId].steps.map((t,i)=>`<div class="learn-task ${i===0?'completed':''}">${String(i+1).padStart(2,'0')} · ${safe(t)}</div>`).join('')}<p>현재 상태: <b>${learningStatusFor(selectedId)}</b> · 발행 전 확인 ${blockers(get(),docsAvailable()).length}건</p><button class="mini-button" data-learn-go="plan">현재 실습 계속</button><button class="mini-button" data-learn-hint="1">단계별 힌트</button><p class="learn-copy" id="learn-hint-text"></p></section>`:''}`;
  else content=`<section class="learning-panel"><div class="learning-kicker">L05 · 용어 및 FAQ</div><h2>헷갈리는 개념 찾아보기</h2><label for="learn-search">설명 검색</label><input id="learn-search" type="search" value="${safe(learnFilter)}" placeholder="예: 스냅샷, 승인, 상충" style="width:100%;padding:12px;margin:10px 0 18px;border:1px solid var(--line);border-radius:9px"><div class="learn-faq">${FAQ.filter(([a,b])=>(a+b).includes(learnFilter)).map(([a,b])=>`<details><summary>${safe(a)}</summary><p>${safe(b)}</p></details>`).join('')||'<p>일치하는 설명이 없습니다.</p>'}</div></section>`;
  root.innerHTML=`<header class="learning-head"><p class="eyebrow">학습 · 가상 사례로 이해하기</p><h1>설명과 실습</h1><p>업무 흐름을 배우고, 실제 화면에서 직접 확인해 보세요.</p></header>${practiceMode?`<div class="study-banner"><strong>실습 모드 · ${safe(selectedId)} · ${safe(CASE_MISSIONS[selectedId].title)}</strong><div><button class="mini-button" data-learn-go="plan">실습 계속</button><button class="mini-button" data-study-leave="1">일반 작업으로 돌아가기</button></div></div>`:''}<div class="learning-layout"><nav class="learning-nav" aria-label="학습 단원">${LEARN_TABS.map(([id,title])=>`<button data-learn-unit="${id}" class="${id===learningUnit?'active':''}" aria-current="${id===learningUnit?'page':'false'}">${title}</button>`).join('')}</nav><div class="learning-body">${content}</div></div>`;
 }
@@ -568,6 +580,23 @@ function learnNavigate(target){
  go(target);
 }
 
+// Tour-only display bridge: no go(), save(), role/patient or record mutation.
+const tourBridge={
+ capture:()=>({screen,activeTab,selectedDomain,previewCollapsed,previewMode,expanded:[...expandedPlanItems]}),
+ show(step){
+  screen=step.screen;activeTab='plan';
+  if(screen==='plan'){expandedPlanItems=new Set(['today']);if(step.target==='preview')previewCollapsed=false;}
+  render();
+ },
+ target(name){
+  const selectors={patients:'#aux-screen .patient-list','patient-context':'#common-context .patient-strip','assessment-domains':'#a2-domain-tabs','assessment-work':'.a2-work-layout','plan-item':'#work-pane [data-item="today"]','plan-sources':'#work-pane [data-item="today"] .multi-source-area',roles:'.actor-box',workflow:'#workflow-guidance',preview:'#preview-pane'};
+  return document.querySelector(selectors[name]);
+ },
+ context:()=>`${selectedId} · ${encounterFor(selectedId)}${practiceMode?' · 실습 사본':''}`,
+ restore(before){screen=before.screen;activeTab=before.activeTab;selectedDomain=before.selectedDomain;previewCollapsed=before.previewCollapsed;previewMode=before.previewMode;expandedPlanItems=new Set(before.expanded);render();},
+ returnTarget:()=>document.querySelector('[data-learn-guided-tour]')
+};
+
 // Root event handlers
 $('#patient-select').innerHTML=CASES.map(c=>`<option value="${c.id}">${safe(c.name)} · ${c.id}</option>`).join('');
 $('#patient-select').addEventListener('change',e=>{const patientId=e.target.value;if(practiceMode)leavePractice();selectedId=patientId;activeTab='plan';selectedDomain='function';previewMode='draft';expandedPlanItems=new Set(['today']);go(screen)});
@@ -576,8 +605,10 @@ $('#domain-grid').addEventListener('click',e=>{const button=e.target.closest('[d
 $('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;activeTab=b.dataset.tab;render()});
 $('#work-pane').addEventListener('change',e=>{
  if(e.target.matches('[data-edit]'))updatePlan(e.target);
+ if(e.target.matches('[data-destination]'))updateDestination(e.target);
  if(e.target.matches('[data-appointment]'))updateAppointment(e.target);
  if(e.target.matches('[data-issue-edit]'))updateIssue(e.target);
+ if(e.target.matches('[data-doc-category]')){const doc=get().draft.docs.find(d=>d.id===e.target.closest('[data-doc]')?.dataset.doc);if(doc&&['MEDICATION','GENERAL'].includes(e.target.value)){const before=deepCopy(get());if(mutateBeforeEdit()){doc.category=e.target.value;doc.status='REGISTERED';audit(get(),role,'PDF_CATEGORY_CHANGED','문서 구분 변경 · 재검토 필요');if(saveWorkflow(before))render();}}}
  if(e.target.matches('[data-doc-edit]')){const doc=get().draft.docs.find(d=>d.id===e.target.closest('[data-doc]')?.dataset.doc);if(doc&&mutateBeforeEdit()){doc.visibility=e.target.value;doc.status='REGISTERED';audit(get(),role,'PDF_SCOPE_CHANGED',`${doc.name}: ${doc.visibility}`);save();render()}}
  if(e.target.id==='file-attach')addDoc(e.target.files?.[0]);
 });
@@ -657,7 +688,7 @@ $('#source-list').addEventListener('click',e=>{
  const u=e.target.closest('[data-unlock-source]');if(u)unlockSource(u.dataset.unlockSource);
 });
 $('#aux-screen').addEventListener('click',e=>{
- if(e.target.closest('[data-learn-guided-tour]')){openPatientTour(e.target.closest('[data-learn-guided-tour]'));return;}
+ if(e.target.closest('[data-learn-guided-tour]')){openPatientTour(e.target.closest('[data-learn-guided-tour]'),tourBridge);return;}
  const unit=e.target.closest('[data-learn-unit]');if(unit){learningUnit=unit.dataset.learnUnit;renderLearning();return}
  const start=e.target.closest('[data-study-start]');if(start){startPractice(start.dataset.studyStart,true);return}
  const resume=e.target.closest('[data-study-resume]');if(resume){startPractice(resume.dataset.studyResume,false);return}
@@ -677,4 +708,6 @@ $('#aux-screen').addEventListener('input',e=>{
  container.innerHTML=FAQ.filter(([a,b])=>(a+b).includes(learnFilter)).map(([a,b])=>`<details><summary>${safe(a)}</summary><p>${safe(b)}</p></details>`).join('')||'<p>일치하는 설명이 없습니다.</p>';
 });
 
+// Remember expansion synchronously; a fast field change can render before native toggle fires.
+$('#work-pane').addEventListener('click',e=>{const summary=e.target.closest('summary.edit-title');const card=summary?.parentElement;if(!card?.matches('details[data-item]'))return;if(card.open)expandedPlanItems.delete(card.dataset.item);else expandedPlanItems.add(card.dataset.item);},true);
 $('#work-pane').addEventListener('toggle',e=>{const details=e.target.closest('details[data-item]');if(!details)return;if(details.open)expandedPlanItems.add(details.dataset.item);else expandedPlanItems.delete(details.dataset.item)},true);

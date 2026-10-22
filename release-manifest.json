@@ -1,0 +1,357 @@
+{
+  "sourceCommit": "50f166b606da5ae57fbac228879282f1825776a9",
+  "previousPagesCommit": "00eed8d43f0af54137c9cadfab61c4d4bd0f3b68",
+  "isSyntheticDemo": true,
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2000,
+      "sha256": "0016c37313c187fc7116f800cbc3d7dc4c9adc6d71077533fb32d2f0441a695f"
+    },
+    {
+      "path": "a2/app.js",
+      "bytes": 10679,
+      "sha256": "e684fe35fbe2855312cb07d7738fdc44d58c6e51379e2c74b9f122c79e806547"
+    },
+    {
+      "path": "a2/data.js",
+      "bytes": 10328,
+      "sha256": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468"
+    },
+    {
+      "path": "a2/engine.js",
+      "bytes": 3036,
+      "sha256": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff"
+    },
+    {
+      "path": "a2/index.html",
+      "bytes": 1022,
+      "sha256": "0b7b3e318fdbdc2b4f35b0f2eb1d34f75b682ea4d19c26b4379abbac5c860a8e"
+    },
+    {
+      "path": "a2/styles.css",
+      "bytes": 35991,
+      "sha256": "9ed7eacb78ec23a971a2ba68b931eda8edc1681a726ed6a15b6dedb0dd71fc77"
+    },
+    {
+      "path": "a3/app.js",
+      "bytes": 63479,
+      "sha256": "dfa0f5512d8a39888da13578c557bc0cff1ed1add2144d39b6e09ef4824fe939"
+    },
+    {
+      "path": "a3/data.js",
+      "bytes": 9468,
+      "sha256": "dcd22ea3101d55a5414900ec309aa1d7f68ae03114f6e8059c4a8402fb5edce5"
+    },
+    {
+      "path": "a3/examples/SYN-001_보행보조기_교육예시.pdf",
+      "bytes": 45926,
+      "sha256": "ec3c0ea9e8830cd41071b15041005f80621ef94fbaa866d16ecbbaf9df723539"
+    },
+    {
+      "path": "a3/examples/SYN-002_sample_care_plan.pdf",
+      "bytes": 291076,
+      "sha256": "19a7491bd4cd8850949229c9773b25ad00064c525d1e78be197f0fafde03e349"
+    },
+    {
+      "path": "a3/examples/SYN-003_약료상충_비교예시.pdf",
+      "bytes": 44060,
+      "sha256": "a376e3abcbc182a289c49ee563b49c6ebbb117f29bfddecf04aeb4b0b54635d9"
+    },
+    {
+      "path": "a3/examples/SYN-004_일정변경_확인예시.pdf",
+      "bytes": 44137,
+      "sha256": "94a9c4770aab36ad592abb732e35b68d5f3f365a598e1988a9b95db60a231193"
+    },
+    {
+      "path": "a3/index.html",
+      "bytes": 1022,
+      "sha256": "24be5d56a9250d835aa97cfc57e898fb3d7279861dea21f310946b3ef2c888bd"
+    },
+    {
+      "path": "a3/source-library.js",
+      "bytes": 7473,
+      "sha256": "d35b459ea68ec17b825181f9af6594a4cf52c0668fe1410a793cb216255adf71"
+    },
+    {
+      "path": "a3/storage.js",
+      "bytes": 3585,
+      "sha256": "59f019aded0ebc80d170717a6c357531d1d6e28fac3d8b4cac4ac2f81a45fa90"
+    },
+    {
+      "path": "a3/styles.css",
+      "bytes": 34817,
+      "sha256": "ab84418d297a3b6429e70c9568dbfadd27527c35d054bd87b6e79e80ebe9fbfb"
+    },
+    {
+      "path": "a3/workflow.js",
+      "bytes": 8138,
+      "sha256": "0d517678c792169a916fc0a99db000e37095b909fe2d78719556a513a298696f"
+    },
+    {
+      "path": "compare.html",
+      "bytes": 3909,
+      "sha256": "1c6ee6d78c74ece3658ede7b5eb89e0b063f0db996fa218485d42da88acb19f3"
+    },
+    {
+      "path": "index.html",
+      "bytes": 10036,
+      "sha256": "10637a578a123d031e8edbcf2e7382d9f42b4f916c50957f9dfac7586145c4ca"
+    },
+    {
+      "path": "integration.css",
+      "bytes": 888,
+      "sha256": "4f72cfe384aedd1e7cf450bf6484401c92ac6ad25f77088c7728e00ae8462265"
+    },
+    {
+      "path": "patient/index.html",
+      "bytes": 332283,
+      "sha256": "e25d0df10fe9d67c40fabc21386c238b064e3efdd7b0f0f51c80630ff442884a"
+    },
+    {
+      "path": "prototypes/hospital-a2/app.js",
+      "bytes": 9771,
+      "sha256": "467f205a49b976f202bc508ae95aa0023ce6702dd849263bcd2db73f8becdf86"
+    },
+    {
+      "path": "prototypes/hospital-a2/data.js",
+      "bytes": 10328,
+      "sha256": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468"
+    },
+    {
+      "path": "prototypes/hospital-a2/engine.js",
+      "bytes": 3036,
+      "sha256": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff"
+    },
+    {
+      "path": "prototypes/hospital-a2/index.html",
+      "bytes": 6066,
+      "sha256": "21c0fa89cdcb9d095975e13276cec128b40070d7ed65df54f53298b9c8ce0e74"
+    },
+    {
+      "path": "prototypes/hospital-a2/preview.html",
+      "bytes": 64923,
+      "sha256": "474892dff3f98bf3be6f07ea6cdfdc6a465dfa0ea4f408d704e4b294aa694e4d"
+    },
+    {
+      "path": "prototypes/hospital-a2/styles.css",
+      "bytes": 35991,
+      "sha256": "9ed7eacb78ec23a971a2ba68b931eda8edc1681a726ed6a15b6dedb0dd71fc77"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/app.js",
+      "bytes": 10679,
+      "sha256": "e684fe35fbe2855312cb07d7738fdc44d58c6e51379e2c74b9f122c79e806547"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/data.js",
+      "bytes": 10328,
+      "sha256": "1baeab79013ec900c5d9012c32e230fb9f94caaf5eacbbf5c7d4ee8fab86c468"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/engine.js",
+      "bytes": 3036,
+      "sha256": "fc0bfe0178167c307db09f47d0fd023521d3862e5e58d6b131fd67b9e1a16eff"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/index.html",
+      "bytes": 624,
+      "sha256": "00681d10cdcd6094e7a7e7cfc808f94a52b286367e9e86c61680063d8adca07a"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/legacy.html",
+      "bytes": 6413,
+      "sha256": "9e5ce003ec296f22cb793484219728328a7349e71ddc7eff7c0095dcf641a0fe"
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/styles.css",
+      "bytes": 35991,
+      "sha256": "9ed7eacb78ec23a971a2ba68b931eda8edc1681a726ed6a15b6dedb0dd71fc77"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/app.js",
+      "bytes": 87239,
+      "sha256": "ad42a554e540531cac0d5d06eebf7afb2010dd005891b38afd8808d6df21e188"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/data.js",
+      "bytes": 3911,
+      "sha256": "e48adcce55606970b2a2b5452dcb1ae91c8613db514b0c88da4302de7ec42040"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-001_보행보조기_교육예시.pdf",
+      "bytes": 45926,
+      "sha256": "ec3c0ea9e8830cd41071b15041005f80621ef94fbaa866d16ecbbaf9df723539"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-002_sample_care_plan.pdf",
+      "bytes": 291076,
+      "sha256": "19a7491bd4cd8850949229c9773b25ad00064c525d1e78be197f0fafde03e349"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-003_약료상충_비교예시.pdf",
+      "bytes": 44060,
+      "sha256": "a376e3abcbc182a289c49ee563b49c6ebbb117f29bfddecf04aeb4b0b54635d9"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-004_일정변경_확인예시.pdf",
+      "bytes": 44137,
+      "sha256": "94a9c4770aab36ad592abb732e35b68d5f3f365a598e1988a9b95db60a231193"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/index.html",
+      "bytes": 12388,
+      "sha256": "e97865b4241a088d357011905fbe4ccc8c39ad8029c0ebe62837a006202dafa1"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/source-library.js",
+      "bytes": 9495,
+      "sha256": "0cddca1b30edd0e8e5f97c55c89daf79cdcdadcf6398ba6f6f3b82b06477151e"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/storage.js",
+      "bytes": 4752,
+      "sha256": "67b959628f76579d58548bd14544c9ec897fb0fea36b201d6f6261c3dd92e393"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/styles.css",
+      "bytes": 34817,
+      "sha256": "ab84418d297a3b6429e70c9568dbfadd27527c35d054bd87b6e79e80ebe9fbfb"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/tutorial-tour.css",
+      "bytes": 2705,
+      "sha256": "a29f85d82dcc105186d39971518a29da8097c28355deefa7cfeb550f8442cd81"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/tutorial-tour.js",
+      "bytes": 14171,
+      "sha256": "88a19a284f44dc8203886e618cd15da83fe27f0806645dfc1d37d19423bb58c2"
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/workflow.js",
+      "bytes": 9813,
+      "sha256": "1a347e4239ca045b3482db8d781bb17baaf909a0414c8aec2adaceeb48ae8b8d"
+    },
+    {
+      "path": "prototypes/integrated-v10/index.html",
+      "bytes": 2537,
+      "sha256": "668a9a3cc51fcb6d6def0470cdaf09392eddd075fabc22a7a4ea01606158fc76"
+    },
+    {
+      "path": "prototypes/integrated-v10/integration.css",
+      "bytes": 888,
+      "sha256": "4f72cfe384aedd1e7cf450bf6484401c92ac6ad25f77088c7728e00ae8462265"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/app.js",
+      "bytes": 36202,
+      "sha256": "8918140e6c5d85d55cd4e312616801b8d2754545e1acc01648365a6a6869d490"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/comfort-ui.js",
+      "bytes": 24948,
+      "sha256": "1e0253676d133752befb5dec90180059c3b19ddf21163bcfd534874d08159c83"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/comfort.css",
+      "bytes": 4575,
+      "sha256": "23459bd0e1152507e0b0efbfe514a3a87291d107c639e69b1ea07168903957da"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/connected.css",
+      "bytes": 6068,
+      "sha256": "8abcf6ccbaabad3258d07502e38451fad3ccd5e88680426d607d5d1f3a0846f1"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/index.html",
+      "bytes": 734,
+      "sha256": "3d28da5b87834ddfee09c52bd30188bb74e7533f0651dc5eb732cea42ec826e1"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/reminders.js",
+      "bytes": 6424,
+      "sha256": "3bb6695e627294e2965f22d5f795689a029fd38587018bec88394b4f42d9e50b"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/standalone-comfort.js",
+      "bytes": 140,
+      "sha256": "a12fd717f7afdb6724f086de1b654800d0f727f1b65ba132d692d8adef9662fa"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/storage.js",
+      "bytes": 2217,
+      "sha256": "d7f1afd64718dfe395540118c7111a2d54139635d1b0c03dc63725a6f57f9de0"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/styles.css",
+      "bytes": 46434,
+      "sha256": "83a466ff8a60e58eaf23a7988326fae3ad85bed84fda12fd759bfa8b5c78d3a3"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/time-zones.js",
+      "bytes": 1053,
+      "sha256": "4fcaca7477b11087761ecf43b218a55cfc38688790dc3745d0ce8d182441cb55"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/apply-handoff.js",
+      "bytes": 3153,
+      "sha256": "1c1bbfc161ebb7547c2296a8aa548bfa695e86e0eae5fbdce328f58623ae1327"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/assessment-adapter.js",
+      "bytes": 887,
+      "sha256": "dace93ac66db5f59dbdb8c68bfa2e3ac88eb772dd492523408a9ec3ee9140e6b"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/destinations.js",
+      "bytes": 1239,
+      "sha256": "b78c4d3018b905b843a6e9e5adc88cb4f3bb297a27311a42db2705a65cdf9d87"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/evaluation-edit.js",
+      "bytes": 2263,
+      "sha256": "e28a2e4dfcd36460a825868e6fb6c3dae49fd425f6fdee7afaaae8a62a49570f"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/handoff.js",
+      "bytes": 5177,
+      "sha256": "dc50556b7abdc01a8e17b6618675cbb8b9288a8a51a589f25eb27ca28f12b20b"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/publication-events.js",
+      "bytes": 2025,
+      "sha256": "dcfedced41163e09feaba9a58be3ff41140cf644dee2f341ca46bcd3e0640f0d"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/publication.js",
+      "bytes": 5740,
+      "sha256": "94b728cfa98b155b7b1e4414a445c3eb1ba284e8b503db01f96681c9716a3f69"
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/published-documents.js",
+      "bytes": 4481,
+      "sha256": "790648ff07695fe36d9304a174527005056b62eb8fbd0b47c7d6ef96f2b2c7f3"
+    },
+    {
+      "path": "prototypes/integrated-v10/unified.css",
+      "bytes": 6718,
+      "sha256": "c4cd9d567140219927a0eaf14136b7e07e2b0facb567f798a7feb6d3c068425d"
+    },
+    {
+      "path": "shared/apply-handoff.js",
+      "bytes": 3153,
+      "sha256": "1c1bbfc161ebb7547c2296a8aa548bfa695e86e0eae5fbdce328f58623ae1327"
+    },
+    {
+      "path": "shared/handoff.js",
+      "bytes": 5177,
+      "sha256": "dc50556b7abdc01a8e17b6618675cbb8b9288a8a51a589f25eb27ca28f12b20b"
+    }
+  ]
+}

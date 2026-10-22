@@ -18,7 +18,7 @@ export function validStoredRecord(r,id){
    i.sources.every(s=>typeof s==='string'&&s.length>0)&&
    new Set(i.sources).size===i.sources.length&&i.source===linkedSources(i)[0]))
  ))return false;
- if(!Array.isArray(d.docs)||!d.docs.every(doc=>strings(doc,['id','name','fileHash','visibility','status'])&&Number.isFinite(doc.size)))return false;
+ if(!Array.isArray(d.docs)||!d.docs.every(doc=>strings(doc,['id','name','fileHash','visibility','status'])&&Number.isFinite(doc.size)&&(doc.category===undefined||['MEDICATION','GENERAL'].includes(doc.category))))return false;
  if(!Array.isArray(d.issues)||!d.issues.every(i=>strings(i,['id','domain','title','reason','status','source','resolution','reviewer'])))return false;
  if(r.revocationRequest!==undefined&&r.revocationRequest!==null){
   const q=r.revocationRequest;
