@@ -9,13 +9,13 @@ class Stabilization(unittest.TestCase):
  tearDownClass=classmethod(comfort.Comfort.tearDownClass.__func__)
  setUp=comfort.Comfort.setUp
  tearDown=comfort.Comfort.tearDown
- for method in ['ready','open_a3','open_b','publish_v1','verify_items','records','appointment','settings','personal','prefs','followup','close','settled','destination']:
+ for method in ['ready','open_a3','open_b','publish_v1','verify_items','records','appointment','settings','personal','prefs','followup','close','settled','destination','inbox']:
   locals()[method]=getattr(comfort.Comfort,method)
  def other(self):
   page=self.ctx.new_page();page.set_default_timeout(6000);page.on('pageerror',lambda e:self.errors.append(str(e)));page.goto(self.b.url);page.locator('#demo-code').fill('CARE2026');page.locator('#demo-code').press('Enter');return page
  def clock(self,hour,minute):self.b.clock.install(time=datetime(2030,1,2,hour,minute,tzinfo=timezone.utc))
  def test_open_inbox_immediately_honors_other_tab_disable_and_corruption(self):
-  self.ready();before=self.records();self.clock(7,31);self.settings();self.personal();self.close();self.b.locator('[data-comfort=inbox]').first.click();expect(self.b.locator('.comfort-list')).to_contain_text('개인 알림 시연')
+  self.ready();before=self.records();self.clock(7,31);self.settings();self.personal();self.close();self.inbox();expect(self.b.locator('.comfort-list')).to_contain_text('개인 알림 시연')
   other=self.other();self.settings(other);other.locator('[data-comfort=personal-toggle]').first.click();self.settled(other);expect(self.b.locator('.comfort-list')).not_to_contain_text('개인 알림 시연');other.locator('[data-comfort=personal-toggle]').first.click();self.settled(other);expect(self.b.locator('.comfort-list')).to_contain_text('개인 알림 시연')
   other.evaluate('()=>localStorage.setItem(Object.keys(localStorage).find(k=>k.startsWith("carebridge-reminders-v1:")),"{bad")');expect(self.b.locator('#comfort-dialog')).to_contain_text('저장 자료를 읽지 못했어요');expect(self.b.locator('.comfort-list')).not_to_contain_text('개인 알림 시연');self.assertEqual(self.records(),before)
  def test_upcoming_recalculation_preserves_unsaved_input_focus_and_storage(self):
@@ -33,7 +33,7 @@ class Stabilization(unittest.TestCase):
   for step in [1,2,3]:
    self.b.wait_for_timeout(80);r=self.b.locator('.spot-tip').evaluate('(e)=>{const r=e.getBoundingClientRect(),v=visualViewport;return {x:r.x-v.offsetLeft,y:r.y-v.offsetTop,w:r.width,h:r.height,vw:v.width,vh:v.height}}');self.assertGreaterEqual(r['x'],-1);self.assertGreaterEqual(r['y'],-1);self.assertLessEqual(r['x']+r['w'],r['vw']+1);self.assertLessEqual(r['y']+r['h'],r['vh']+1)
    if step<3:self.b.locator('[data-tour-control=next]').evaluate('e=>e.click()')
-  self.b.locator('.service-page').evaluate('e=>e.remove()');expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-fallback','true');self.b.keyboard.press('Escape');session.send('Emulation.setPageScaleFactor',{'pageScaleFactor':1});expect(self.b.get_by_role('heading',name='내 정보',exact=True)).to_be_visible();expect(self.b.locator('[data-comfort=tour]')).to_be_focused();self.assertEqual(self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
+  self.b.locator('[data-view=reminders],[data-nav=reminders]').evaluate_all('nodes=>nodes.forEach(e=>e.remove())');expect(self.b.locator('#patient-brief-tour')).to_have_attribute('data-fallback','true');self.b.keyboard.press('Escape');session.send('Emulation.setPageScaleFactor',{'pageScaleFactor':1});expect(self.b.get_by_role('heading',name='내 정보',exact=True)).to_be_visible();expect(self.b.locator('[data-comfort=tour]')).to_be_focused();self.assertEqual(self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
  def test_combined_a1_a2_a3_b_approved_schedule_pdf_reminders_and_tours(self):
   self.a3.goto(self.base+'a3/index.html?screen=patients&patient=SYN-002');self.a3.locator('[data-patient-pick="SYN-002"][data-target-screen=assessment]:visible').click();self.a3.locator('#a2-field-gait').select_option('device');self.a3.locator('#handoff-a2').click();expect(self.a3.locator('#a3-screen')).to_be_visible();self.a3.locator('[data-tab=plan]').click();self.appointment();self.verify_items();self.destination()
   self.a3.locator('[data-tab=documents]').click();self.a3.locator('#file-attach').set_input_files(str(Path(__file__).resolve().parents[1]/'a3/examples/SYN-002_sample_care_plan.pdf'));self.a3.locator('[data-doc-edit]').select_option('PATIENT');self.a3.locator('[data-doc-category]').select_option('MEDICATION');self.a3.locator('[data-action=review-doc]').click();self.publish_v1();self.open_b();self.settings();self.followup();self.personal(label='조합 준비');pub=self.records()['SYN-002']['publications'][0];self.assertIn(pub['id'],self.prefs()['plans']);self.assertEqual(self.prefs()['plans'][pub['id']]['assessmentId'],pub['assessmentId']);self.close()
@@ -43,7 +43,7 @@ class Stabilization(unittest.TestCase):
   before=self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})');self.b.locator('[data-comfort=tour]').click();self.b.locator('[data-tour-control=next]').click();self.b.locator('[data-tour-control=next]').click();self.b.locator('#tour-finish').click();self.assertEqual(self.b.evaluate('JSON.stringify({local:{...localStorage},session:{...sessionStorage}})'),before)
   self.a3.locator('[data-nav=learn]').click();before=self.a3.evaluate('JSON.stringify({...localStorage})');self.a3.locator('[data-learn-guided-tour]').click()
   for _ in range(9):self.a3.locator('[data-tour-control=next]').click()
-  self.a3.keyboard.press('Escape');self.assertEqual(self.a3.evaluate('JSON.stringify({...localStorage})'),before);self.a3.locator('[data-nav=plan]').click();self.a3.locator('#revoke').click();expect(self.b.locator('.blocked')).to_be_visible();self.b.locator('[data-comfort=inbox]').click();expect(self.b.locator('.comfort-list')).to_contain_text('철회');expect(self.b.locator('.comfort-list')).not_to_contain_text('조합 준비')
+  self.a3.keyboard.press('Escape');self.assertEqual(self.a3.evaluate('JSON.stringify({...localStorage})'),before);self.a3.locator('[data-nav=plan]').click();self.a3.locator('#revoke').click();expect(self.b.locator('.blocked')).to_be_visible();self.inbox();expect(self.b.locator('.comfort-list')).to_contain_text('철회');expect(self.b.locator('.comfort-list')).not_to_contain_text('조합 준비')
  def test_both_patient_modal_four_widths_keyboard_scroll_and_large_font(self):
   self.ready();out=Path('/tmp/phase3-screenshots');out.mkdir(exist_ok=True)
   for standalone in [False,True]:

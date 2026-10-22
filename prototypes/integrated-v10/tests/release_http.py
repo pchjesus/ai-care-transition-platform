@@ -28,7 +28,7 @@ class Release(unittest.TestCase):
   self.ctx.on('response',lambda r:self.errors.append(f'HTTP {r.status}: {r.url}') if r.status>=400 else None)
   self.ctx.on('requestfailed',lambda r:self.errors.append(f'{r.failure}: {r.url}'))
  tearDown=patient.PatientIntegration.tearDown
- for method in ['ready','open_a3','open_b','publish_v1','verify_items','records','appointment','settings','personal','prefs','followup','close','settled','destination']:
+ for method in ['ready','open_a3','open_b','publish_v1','verify_items','records','appointment','settings','personal','prefs','followup','close','settled','destination','inbox']:
   locals()[method]=getattr(comfort.Comfort,method)
  test_combined_published_pdf_reminders_tours_revocation=stabilization.Stabilization.test_combined_a1_a2_a3_b_approved_schedule_pdf_reminders_and_tours
  def test_landing_independent_b_login_settings_and_patient_tour(self):

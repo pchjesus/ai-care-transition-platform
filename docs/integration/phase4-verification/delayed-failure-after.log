@@ -1,0 +1,6 @@
+test_failed_lock_callback_is_visible_before_delayed_promise_settles (__main__.Phase4.test_failed_lock_callback_is_visible_before_delayed_promise_settles) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 8.294s
+
+OK
