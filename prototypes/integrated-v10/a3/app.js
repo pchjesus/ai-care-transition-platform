@@ -399,10 +399,10 @@ function changeItemSource(itemId,id,removeOnly=false){
  if(removeOnly&&!already)return false;
  if(!already&&!validSource(id,'item',item.section)){announce('확인되지 않았거나 해당 환자·항목과 다른 기록은 연결할 수 없습니다.');return false;}
  if(!already&&previous.length>=12){announce('계획 항목에는 최대 12건까지 근거를 연결할 수 있어요.');return false;}
- if(!mutateBeforeEdit())return false;
  const before=deepCopy(r);
+ if(!mutateBeforeEdit())return false;
  const next=already?previous.filter(x=>x!==id):[...previous,id];
- item.sources=next;
+ if(next.length)item.sources=next;else delete item.sources;
  item.source=next[0]||'';
  item.verified=false;
  audit(r,role,already?'EVIDENCE_UNLINKED':'EVIDENCE_LINKED',item.title+': '+id);
@@ -423,8 +423,8 @@ function selectSource(id){
  }
  const r=get(),entry=r.draft.issues.find(i=>i.id===target);
  if(!entry||!validSource(id,'issue',entry)){announce('해당 환자 또는 검토 항목과 일치하지 않는 자료입니다.');return;}
- if(!mutateBeforeEdit())return;
  const before=deepCopy(r);
+ if(!mutateBeforeEdit())return;
  entry.source=id;entry.status='OPEN';entry.reviewer='';
  audit(r,role,'EVIDENCE_LINKED',entry.title+': '+id);
  if(!saveWorkflow(before))return;
