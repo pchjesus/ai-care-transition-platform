@@ -37,3 +37,27 @@
 
 /* Registry-verified synthetic greeting, not an EMR identity claim. */
 .connected-synthetic-id{font-weight:500;color:#658076;font-size:calc(12px * var(--font-scale,1))}
+
+
+/* A3-connected B: align the upcoming visit with the welcome card without changing published data. */
+.home-top-grid{display:grid;grid-template-columns:minmax(0,1.38fr) minmax(270px,.84fr);gap:24px;align-items:stretch;margin-top:8px}
+.home-top-grid>.hero-panel{margin-top:0;min-width:0}
+.home-top-grid>.appointment{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:17px 23px 16px;background:#fff;border:1px solid #d5e3d9;border-radius:18px;box-shadow:0 7px 21px rgba(35,76,52,.035)}
+.home-top-grid .block-overline{margin-bottom:9px;color:#456e58}
+.home-top-grid .date-line{gap:9px;flex-wrap:wrap}
+.home-top-grid .date-big{font-size:calc(36px * var(--font-scale,1))}
+.home-top-grid .date-unit{font-size:calc(13px * var(--font-scale,1))}
+.home-top-grid .ap-title{margin-top:7px}
+.home-top-grid .ap-desc{margin-top:7px;line-height:1.6}
+.home-top-grid .ap-state{margin-top:10px}
+.home-top-grid .ap-bottom{margin-top:10px;padding-top:10px}
+.content-grid{margin-top:23px;gap:24px}
+.content-grid>.aside-stack{min-width:0;display:block;margin-top:0}
+.content-grid>.aside-stack>.insight-strip{margin-top:0}
+@container display (max-width:980px){
+ .home-top-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+ .home-top-grid>.appointment{padding:18px 21px}
+ .content-grid{display:block;margin-top:20px}
+ .content-grid>.aside-stack{margin-top:16px}
+}
+@media print{.home-top-grid{display:block}.home-top-grid>.appointment{break-inside:avoid;margin-top:12px}}
