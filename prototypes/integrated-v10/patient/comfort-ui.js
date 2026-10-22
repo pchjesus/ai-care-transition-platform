@@ -131,7 +131,7 @@ export function installPatientComfort(adapter){
    const mobile=nav.cloneNode(true);mobile.classList.add('patient-mobile-journey');mobile.classList.remove('patient-sidebar-journey');main.prepend(mobile);
   }
   const example=header?.querySelector('.independent-demo-link');if(example)side?.querySelector('.demo-tools')?.append(example);
-  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication)tools.insertAdjacentHTML('beforeend',button('tour','사용 안내'));const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.after(tools);else main.prepend(tools);}
+  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication)tools.insertAdjacentHTML('beforeend',button('tour','사용 안내'));const demoHref=context().source==='independent'?'../prototypes/integrated-v10/index.html':'../index.html';tools.insertAdjacentHTML('beforeend',`<a class="patient-demo-return" href="${demoHref}" aria-label="가상 통합 시연 화면으로 이동">통합 시연 ↗</a>`);const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.after(tools);else main.prepend(tools);}
  }
  function attachNotifications(hub,c){
   if(dialog?.classList.contains('comfort-inline')&&openedPublication===pubKey(c)){hub.append(dialog);refreshHub();}
@@ -147,7 +147,6 @@ export function installPatientComfort(adapter){
   if(c.publication){
    const hub=main.querySelector('[data-reminder-hub]');
    if(hub)attachNotifications(hub,c);
-   const appointment=main.querySelector('.appointment');if(appointment)add(appointment,button('settings','외래 알림 설정','data-reminder-target="followup"'));
    add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents','관련 안내 문서 보기')+'</div>');
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');

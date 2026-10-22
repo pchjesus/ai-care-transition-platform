@@ -66,3 +66,49 @@
 .grade-meter{display:inline-grid;grid-template-columns:repeat(4,11px);gap:3px;vertical-align:middle;margin:0;flex:none}.grade-cell{display:block;height:7px;min-height:0;border:1px solid #91ad9b;background:#eef4f0;border-radius:2px}.grade-cell.filled{background:#326d58;border-color:#326d58}.grade-cell.baseline{border-style:dashed;background:white}.grade-cell.current{outline:0}.domain .grade-meter{width:auto;margin:4px 0}.a2-result-line{display:flex;align-items:center;gap:12px;margin:14px 0}.a2-result-line .a2-big-grade{font-size:18px;margin:0}.a2-fact{display:grid!important;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) 53px;align-items:center;gap:10px;min-height:68px;padding:12px 0}.a2-fact b{min-width:0;font-size:13px;line-height:1.5;overflow-wrap:anywhere}.a2-fact>.fact-decision{display:block;min-width:0;font-size:13px;line-height:1.5;overflow-wrap:anywhere}.fact-decision small{display:block;font-size:12px;color:var(--forest);margin-top:2px}.trace-technical{font-size:13px;margin:14px 0;overflow-wrap:anywhere}.trace-technical summary{cursor:pointer;min-height:36px}.trace-technical code{font-size:12px}.assessment-link{margin:12px 0}.review-priorities{border-block:1px solid var(--line);padding:12px 0}.blocker-list section h3{font-size:16px}.blocker-list section p{font-size:13px;line-height:1.6}
 @media(min-width:900px) and (max-width:1199px){.common-context .summary-row{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}.common-context .patient-strip{grid-template-columns:minmax(0,1fr) minmax(150px,220px)}.common-context .patient-overview{gap:8px}.common-context .avatar{display:none}}
 @media(max-width:650px){.common-context .patient-strip{grid-template-columns:minmax(0,1fr) minmax(130px,43%);padding:14px;gap:8px}.common-context .patient-chooser label{font-size:11px}.common-context .patient-detail{font-size:12px}.common-context .patient-overview{gap:8px}.common-context .avatar{display:none}.common-context .patient-overview h2{font-size:16px}.common-context .gate-banner{padding:14px;min-height:0}.a2-result-line{gap:8px}.a2-result-line .a2-big-grade{font-size:17px}}
+
+/* Phase 5: shared A2/A3 horizontal domain navigation and compact overview. */
+.grade-meter{grid-template-columns:repeat(3,11px);gap:3px}
+.common-context{padding-top:18px;padding-bottom:0}
+.common-context .headline{margin-bottom:11px}
+.common-context .summary-row{gap:12px}
+.common-context .patient-strip,.common-context .gate-banner{min-height:88px;height:auto;padding:10px 14px;box-sizing:border-box;align-items:center}
+.common-context .patient-strip{gap:5px 12px;align-content:center}
+.common-context .patient-detail{line-height:1.35}
+.common-context .patient-overview h2{font-size:18px;margin:2px 0}
+.common-context .patient-chooser{gap:3px}
+.common-context .patient-chooser select{min-height:40px}
+.common-context .context-summary{line-height:1.35}
+.common-context .gate-banner{justify-content:space-between;gap:10px}
+.common-context .gate-banner .gate-left{align-items:center;min-width:0}
+.common-context .gate-banner .gate-sub{margin-top:2px;line-height:1.4}
+.common-context .gate-banner .gate-number{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:7px 10px}
+#a3-screen,#aux-screen{padding-top:12px}
+.domains,.a2-domains{gap:8px;margin-bottom:15px}
+.domain,.a2-domain-btn{min-height:78px;padding:10px 11px;gap:5px;box-sizing:border-box}
+.domain .grade-meter{margin:0}
+.a2-domain-btn{align-content:center;grid-template-rows:auto auto}
+.a2-domain-btn span{font-size:13px;line-height:1.35}
+.a2-domain-btn b{font-size:12px}
+.a2-work-layout{gap:14px}
+.a2-input-panel,.a2-judgment-panel{padding:16px 18px}
+.a2-field{margin-bottom:14px}
+.a2-judgment-panel h3{margin-top:16px}
+@media(min-width:1320px){
+ .a2-three-column{display:block}
+ .a2-three-column>.a2-domains{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:static;top:auto;gap:8px;margin:0 0 15px}
+ .a2-three-column .a2-domain-btn{min-height:78px;padding:10px 11px;align-content:center;gap:5px}
+ .a2-three-column .a2-domain-btn.selected{border-left:1px solid #81a78d;padding-left:11px}
+ .a2-three-column .a2-work-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr);gap:14px}
+ .a2-three-column .a2-judgment-panel{position:static;top:auto;max-height:none;overflow:visible}
+ .a2-three-column .a2-fact{flex-wrap:nowrap}
+}
+@media(min-width:1281px){.domains,.a2-domains{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(min-width:651px) and (max-width:1280px){.domains,.a2-domains{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){
+ .domains,.a2-domains{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .common-context .patient-strip,.common-context .gate-banner{min-height:0;padding:11px 12px}
+ .common-context .gate-banner .gate-left{align-items:center}
+ .common-context .gate-banner .gate-number{white-space:normal}
+ .a2-input-panel,.a2-judgment-panel{padding:14px}
+}

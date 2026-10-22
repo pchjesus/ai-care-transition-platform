@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {gradeMeter,priorityDomains} from '../review-display.js';
 import {makeInitial,blockers} from '../workflow.js';
-test('four segments preserve the zero baseline and exactly 0/1/2/3 filled steps',()=>{
+test('three segments fill exactly 0/1/2/3 steps without a misleading baseline cell',()=>{
  for(let grade=0;grade<=3;grade++){
   const html=gradeMeter(grade);
-  assert.equal((html.match(/class="grade-cell /g)||[]).length,4);
+  assert.equal((html.match(/class="grade-cell /g)||[]).length,3);
   assert.equal((html.match(/ filled /g)||[]).length,grade);
   assert.match(html,new RegExp(grade+'등급'));assert.match(html,/임상 위험도 아님/);
  }
