@@ -1,0 +1,23 @@
+name: Phase 5 live public Pages smoke
+on:
+  push:
+    branches: [audit/phase5-regression-refactor-20261023]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-pages-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up system Chromium
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
+          test -x /usr/bin/chromium
+      - name: Exercise deployed public URL
+        run: python prototypes/integrated-v10/tests/phase5_live_pages.py
