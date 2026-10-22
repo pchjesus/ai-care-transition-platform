@@ -11,6 +11,14 @@ const base=(patient)=>[
  record(patient,'CON-01','문의 경로 안내 기록','continuity',['continuity.contact'],['contact'],'CONFIRMED','퇴원 후 문의 경로를 확인한 기록.','실제 병원 전화번호를 제공하지 않는 가상 문의 경로 자료입니다.'),
  record(patient,'SOC-01','가정 복귀·이동 상담 기록','social',['social.caregiver','social.housing','social.travel','function.gait'],['support'],'CONFIRMED','이동과 돌봄 지원 필요 사항을 검토.','기능 관찰 및 주거 지원 필요도 확인을 위해 사용됩니다.'),
  record(patient,'FUN-01','보행·이동 관찰 기록','function',['function.gait','function.transfer'],['today','support'],'CONFIRMED','이동 능력 및 보조기 안내 확인.','체중부하 허용 범위는 본 자료로 판단할 수 없습니다.'),
+ record(patient,'NUR-02','퇴원 간호 교육 점검표','nursing',['nursing.education','nursing.selfCare'],['today'],'CONFIRMED','퇴원 자가관리 설명을 확인한 기록.','합성 교육 기록이며 구체적 의료 처치 지시는 포함하지 않습니다.'),
+ record(patient,'NUR-03','생활 자가관리 안내 대조','nursing',['nursing.selfCare'],['today'],'CONFIRMED','가정에서 확인할 생활 안내문을 대조.','진단별 처치 방법은 별도의 임상 검토 대상입니다.'),
+ record(patient,'MED-03','약물 안내문 이해 확인 기록','medication',['medication.medUnderstanding'],['medication'],'CONFIRMED','약물 안내문 이해 확인을 기록.','용량·횟수·복용 시간은 없는 가상 기록입니다.'),
+ record(patient,'APT-02','외래 일정 안내 전달 기록','medical',['medical.followup'],['followup'],'CONFIRMED','후속 외래 관련 안내 전달 기록.','실제 예약 날짜·장소의 확정을 뜻하지 않습니다.'),
+ record(patient,'WARN-02','퇴원 주의사항 재확인 기록','medical',['medical.warningGuide'],['warning'],'CONFIRMED','주의사항 안내문 확인 여부 기록.','증상별 임상 판단이나 처방은 포함하지 않습니다.'),
+ record(patient,'FUN-02','이동 보조도구 교육 확인','function',['function.gait','function.assistDevice'],['support','today'],'CONFIRMED','보행 보조도구 사용 안내를 확인.','실제 보행 허용 범위는 추정하지 않습니다.'),
+ record(patient,'SOC-02','가정 복귀 환경 상담 기록','social',['social.housing','social.caregiver','social.travel'],['support'],'CONFIRMED','돌봄 지원·이동·주거 환경 상담을 확인.','서비스 적격 여부나 접수 완료 의미가 아닙니다.'),
+ record(patient,'CON-02','퇴원 후 문의 안내 전달 기록','continuity',['continuity.contact'],['contact'],'CONFIRMED','문의 경로에 관한 합성 안내 전달 확인.','실제 병원 연락처와 기관 연동은 제공하지 않습니다.'),
  record(patient,'EDU-01','보행보조기 교육자료 (예시)','function',['function.assistDevice'],['support'],'PENDING','환자 교육용 자료 내용 검토 대기.','자료를 읽어보는 것과 최종 PDF 첨부 승인은 별개의 절차입니다.')
 ];
 const CASE_LIBRARY=[
