@@ -12,3 +12,14 @@
 @media(max-width:1023px){.patient-mobile-journey{display:flex;gap:8px;align-items:center;margin-bottom:6px}.patient-mobile-journey button{min-width:48px;min-height:44px}.topline{padding:12px 20px!important;min-height:60px!important}.topline .meta{width:auto;flex-wrap:wrap;justify-content:flex-end}.topline .tiny-pill,.topline .independent-demo-link{display:none}.topline .version-meta{font-size:12px}.patient-page-tools{padding:6px 0 10px}.bottom-nav.comfort-five-tabs button{font-size:calc(12px * var(--font-scale,1));min-width:0;padding-inline:2px}}
 @media(max-width:600px){.topline{gap:8px!important;align-items:center!important}.topline .kicker{font-size:calc(12px * var(--font-scale,1));min-width:0}.topline .meta{max-width:48%;gap:4px}.topline .version-meta{white-space:normal;overflow-wrap:anywhere;font-size:calc(11px * var(--font-scale,1))}.patient-page-tools{gap:8px}.patient-page-tools button{padding:8px 10px}.comfort-dialog{padding:16px}.comfort-dialog form{padding:12px}.comfort-dialog.comfort-inline{padding:0}.comfort-inline h2{font-size:calc(20px * var(--font-scale,1))}.comfort-quick button{flex:1 1 42%}}
 @media print{.comfort-quick,.comfort-map-section,.comfort-med-link,.comfort-dialog,.patient-page-tools,.patient-mobile-journey,.patient-sidebar-journey,.demo-tools{display:none!important}}
+
+/* Phase 5: consistent notification cards and compact patient utilities. */
+.patient-page-tools{gap:6px;flex-wrap:wrap;align-items:center;padding:1px 0 3px;margin:0;border-top:1px solid #dce7e0}
+.patient-page-tools button,.patient-page-tools a.patient-demo-return{box-sizing:border-box;min-height:44px;padding:5px 8px;border:0;border-radius:7px;background:transparent;color:#31584d;font:inherit;font-size:calc(14px * var(--font-scale,1));text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:normal}
+.patient-page-tools button:hover,.patient-page-tools a.patient-demo-return:hover{background:#edf5ef}
+.patient-page-tools a.patient-demo-return{font-weight:700}
+.patient-page-tools a.patient-demo-return:focus-visible{outline:3px solid #9c662a;outline-offset:2px}
+.app-body>.main{padding-top:9px}
+.comfort-inline #reminder-settings,.comfort-inline #reminder-inbox{max-width:none;width:100%;min-width:0;box-sizing:border-box}
+.comfort-inline .reminder-group{width:100%;box-sizing:border-box}
+@media(max-width:600px){.patient-page-tools{justify-content:flex-end;gap:2px}.patient-page-tools button,.patient-page-tools a.patient-demo-return{padding-inline:5px;font-size:calc(13px * var(--font-scale,1))}}

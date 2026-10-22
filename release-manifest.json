@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "cbe1868afb922417b80808f9faf019ec8dabe5f1",
-  "previousPagesCommit": "6e3303b4742bc9bff093044520ea73c134e73caf",
+  "sourceCommit": "898bd1e2fe8b0568b308c4bda996eb21413e5f69",
+  "previousPagesCommit": "6f6da8ab5550164e74e1d353ca5c1b298f0abf47",
   "isSyntheticDemo": true,
   "files": [
     {
@@ -205,8 +205,8 @@
     },
     {
       "path": "prototypes/integrated-v10/a3/review-display.js",
-      "bytes": 726,
-      "sha256": "e23419ff972db58671e4115c621d4a6c483c1405fbf9cc1a332d6421f6a43e17"
+      "bytes": 703,
+      "sha256": "7b3d952600242968923799e3e432752b472c6256b8d70b00ca6db26479e8ed0d"
     },
     {
       "path": "prototypes/integrated-v10/a3/source-library.js",
@@ -255,13 +255,13 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 31466,
-      "sha256": "374b5ec3e923973fc5bf92d752b06729d73dc2e31e3b4919b8a2199559818bac"
+      "bytes": 31573,
+      "sha256": "b9ae2cd50766ac35fa3ba9e5297e390c7d6b03bac3a2cabbe4732e54c135a9f1"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
-      "bytes": 8433,
-      "sha256": "91ae0baac33f2dd4f19a23b528c99a7b8198d3982229146d5d5c841d0a1864f2"
+      "bytes": 9674,
+      "sha256": "16d54159cf7d1895786a5081be9cca1b849ee7f463e855617a9c5452a2d2f9e0"
     },
     {
       "path": "prototypes/integrated-v10/patient/connected.css",
@@ -340,8 +340,8 @@
     },
     {
       "path": "prototypes/integrated-v10/unified.css",
-      "bytes": 9690,
-      "sha256": "be19e5919bd3a7510de63134b92ca594c262f8d43bd7341836ed64495f63b120"
+      "bytes": 12521,
+      "sha256": "b3c528003bff0a4195f15e57b9ace11c6fe24b74f1dbdb1fa7e83c029537ac3d"
     },
     {
       "path": "README.md",
