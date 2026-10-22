@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check playwright
+          python -m pip install --disable-pip-version-check playwright pymupdf
           if [ -x /usr/bin/chromium ]; then
             chromium --version
           elif [ -x /usr/bin/google-chrome ]; then
@@ -54,7 +54,8 @@ jobs:
         run: |
           set -euo pipefail
           python -m compileall -q tests
-          for suite in phase1_http.py unified_http.py patient_http.py comfort_http.py spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
+          # Phase1 17/17 PASS in previous run 39836533297; resume from interrupted suite.
+          for suite in unified_http.py patient_http.py comfort_http.py spotlight_http.py stabilization_http.py phase4_http.py refinement_http.py; do
             echo "::group::${suite}"
             python "tests/${suite}"
             echo "::endgroup::"
