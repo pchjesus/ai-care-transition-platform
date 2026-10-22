@@ -6,7 +6,7 @@
 
 의료진이 가상 퇴원정보에서 계획 초안을 작성·검토·승인하면, 환자·보호자에게 이해하기 쉬운 행동 중심 안내를 제공하는 **B2B2C 사업 가설**을 검증합니다. 병원 및 지자체의 공식 진료·지원계획과 제품의 연구용 평가·안내는 명확히 구분합니다.
 
-**현재 한계:** 실제 의료기관 제휴/유료 고객/실환자정보/임상 성능 검증은 없으며, 병원용 A2는 가상 데이터로 작동하는 연구용 **평가 워크벤치 목업**을 포함하지만, Firebase·실제 병원 연계·실환자 인증·임상 예측모델은 구현되지 않았습니다. 환자용 시안은 이 저장소에 통합 배포하지 않았습니다.
+**현재 한계:** 실제 의료기관 제휴·유료 고객·실환자정보·임상 성능 검증은 없습니다. 현재는 A1→A2→A3→환자용 B가 합성 데이터와 동일 출처 브라우저 저장소로 연결되는 연구용 MVP 시연입니다. Firebase·실제 의료기관/EMR 연동·실환자 인증·임상 예측모델은 구현되지 않았습니다.
 
 ## 현재 기준 문서 (ACTIVE DRAFT)
 
@@ -33,6 +33,21 @@
 - [기존 MVP PRD v0.1](docs/MVP_PRD_DRAFT_v0.1.md)
 - [병원 중심 업무·서식·데이터 계약 v0.2](docs/MVP_WORKFLOW_AND_DATA_CONTRACT_DRAFT_v0.2.md)
 - [기존 발표 근거 레지스터](docs/EVIDENCE_REGISTER_v0.1.md)
+
+## 통합 합성 MVP 시연 (2026-10-22)
+
+- [GitHub Pages 통합 화면](https://pchjesus.github.io/ai-care-transition-platform/)
+- [A1 환자 목록](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=patients)
+- [통합 A2 6영역 평가](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=assessment)
+- [A3 계획·검토·발행](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=plan)
+- [A3 연동 환자용 B](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO)
+- [별도 환자용 독립 시연](https://pchjesus.github.io/ai-care-transition-platform/patient/index.html)
+
+**시연:** SYN-002를 선택 → A3의 「검토 요청」 → 「담당 역할 (가상 전환)」에서 「지정 최종 승인자」 선택 → 검토 차단사항 확인 → 승인 → 계획 발행 → 환자용 B에서 체험 코드 `CARE2026` 입력. 승인 전 실제 B는 미발행 안내를 숨기며, 기존 독립 시연 또는 A3 미리보기를 별도 사용한다. 역할 선택은 실제 인증이나 의료기관 승인 절차가 아니다.
+
+현재 A2는 넓은 데스크톱에서 영역 선택/입력/판단 3패널로 표시하며 좁은 화면에서는 기존 가로형 영역 선택·2패널을 유지한다. A3의 합성 기록 선택에는 의료·간호·약료·기능·사회환경·연속성 관련 추가 근거 예시가 포함된다. SYN-003의 상충된 약료자료는 승인 가능한 근거로 승격하지 않는다.
+
+공개 Pages는 별도 `gh-pages` 정적 게시이며 `main`과 같은 브라우저 저장소를 공유하지 않는 오프라인 복사본이 아니다. 실제 의료정보 입력 금지. 배포/사용자·실기기 검증 수준은 별도 기록에서 확인한다.
 
 ## 병원용 A2 평가 워크벤치 (디자인 승인 기준선 v0.5, 2026-10-21)
 
