@@ -1,5 +1,5 @@
 import {CASES,DOMAINS,SECTIONS} from './data.js';
-import {deepCopy,makeInitial} from './workflow.js';
+import {deepCopy,makeInitial,linkedSources} from './workflow.js';
 
 // Candidate data must never overwrite the read-only v0.3 baseline on a shared origin.
 export const STORAGE_KEYS={normal:'care-transition-integrated-v10-a3-synthetic-only',study:'care-transition-integrated-v10-study-synthetic-only'};
@@ -12,7 +12,12 @@ export function validStoredRecord(r,id){
  if(!DOMAINS.every(domain=>isObject(a.values[domain.id])))return false;
  if(!Array.isArray(a.domainResults)||a.domainResults.length!==DOMAINS.length||!DOMAINS.every(domain=>a.domainResults.some(result=>result.id===domain.id&&Array.isArray(result.facts)&&Array.isArray(result.missing)&&Array.isArray(result.conflicting))))return false;
  if(!strings(d,['version','status','createdAt','updatedAt'])||!['DRAFT','REVIEW_REQUESTED','CHANGES_REQUESTED','APPROVED','PUBLISHED','REVOKED'].includes(d.status))return false;
- if(!Array.isArray(d.items)||!d.items.every(i=>strings(i,['id','section','title','text','source','visibility'])&&SECTIONS.some(s=>s.id===i.section)&&typeof i.verified==='boolean'))return false;
+ if(!Array.isArray(d.items)||!d.items.every(i=>
+  strings(i,['id','section','title','text','source','visibility'])&&SECTIONS.some(s=>s.id===i.section)&&typeof i.verified==='boolean'&&
+  (i.sources===undefined||(Array.isArray(i.sources)&&i.sources.length>=1&&i.sources.length<=12&&
+   i.sources.every(s=>typeof s==='string'&&s.length>0)&&
+   new Set(i.sources).size===i.sources.length&&i.source===linkedSources(i)[0]))
+ ))return false;
  if(!Array.isArray(d.docs)||!d.docs.every(doc=>strings(doc,['id','name','fileHash','visibility','status'])&&Number.isFinite(doc.size)))return false;
  if(!Array.isArray(d.issues)||!d.issues.every(i=>strings(i,['id','domain','title','reason','status','source','resolution','reviewer'])))return false;
  if(!Array.isArray(r.audit)||!r.audit.every(e=>strings(e,['at','role','event','details'])))return false;

@@ -4,7 +4,7 @@ import {editEvaluation,commitEvaluation} from '../shared/evaluation-edit.js';
 import {DOMAINS as ENGINE_DOMAINS,SOURCES} from '../a2/data.js';
 import {CASES,DOMAINS,SECTIONS} from './data.js';
 import {recordsForPatient,findSource,usableSource,CASE_MISSIONS} from './source-library.js';
-import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision} from './workflow.js';
+import {deepCopy,now,evaluateA2,makeInitial,currentPublished,blockers,fingerprint,mayApprove,mayPublish,audit,publishedPayload,makeRevision,linkedSources,validItemSources} from './workflow.js';
 import {STORAGE_KEYS,loadRepository,initializePatients,persistRepository} from './storage.js';
 import {HANDOFF_KEY,readPendingHandoff,clearPendingHandoff} from '../shared/handoff.js';
 import {applyAssessmentHandoff} from '../shared/apply-handoff.js';
@@ -117,9 +117,9 @@ function renderDomains(){const r=get();$('#assessment-stamp').textContent=`A2 �
 function sourceTitle(id){const s=findSource(id,selectedId,get().unlockedSources||[]);return s?s.title:'연결된 자료 없음'}
 function renderPlan(){const r=get(),d=r.draft,readonly=!canEdit();const approvedMessage=readonly?'발행 완료된 계획은 수정할 수 없습니다. 새 버전 개정을 사용하세요.':'';
  $('#work-pane').innerHTML=`<div class="pane-head"><div><h3>환자용 계획 편집</h3><p>환자가 해야 할 행동부터 작성합니다. 항목별 출처와 직종 검토를 확인하세요.</p></div><span class="subtle-count">${d.items.filter(x=>x.verified).length}/${d.items.length} 확인됨</span></div>${approvedMessage?`<p class="notice">${safe(approvedMessage)}</p>`:''}
- ${d.items.map((item,i)=>`<details class="edit-card ${item.visibility==='INTERNAL'?'internal':''}" data-item="${safe(item.id)}" ${expandedPlanItems.has(item.id)?'open':''}><summary class="edit-title"><b>${String(i+1).padStart(2,'0')} · ${safe(item.title)}</b><span class="status-pill ${item.verified&&item.source?'green':'red'}">${item.verified&&item.source?'근거 확인됨':'확인 필요'}</span></summary><div class="edit-card-body">
+ ${d.items.map((item,i)=>`<details class="edit-card ${item.visibility==='INTERNAL'?'internal':''}" data-item="${safe(item.id)}" ${expandedPlanItems.has(item.id)?'open':''}><summary class="edit-title"><b>${String(i+1).padStart(2,'0')} · ${safe(item.title)}</b><span class="status-pill ${item.verified&&validItemSources(r,item)?'green':'red'}">${item.verified&&validItemSources(r,item)?'근거 확인됨':'확인 필요'}</span></summary><div class="edit-card-body">
  <label for="text-${safe(item.id)}">환자에게 전달할 안내문</label><textarea class="edit-textarea" id="text-${safe(item.id)}" data-edit="text" ${readonly?'disabled':''}>${safe(item.text)}</textarea>
- <div class="edit-meta"><div><label>관련 원천자료</label><div class="source-choose"><strong>${safe(sourceTitle(item.source))}</strong><span class="source-status">${item.source?(validSource(item.source,'item',item.section)?'확인 자료':'다시 확인 필요'):'미연결'}</span><button type="button" class="mini-button" data-action="select-source" data-source-kind="item" data-source-target="${safe(item.id)}" ${readonly?'disabled':''}>기록 선택</button>${item.source?`<button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(item.source)}">자료 보기</button>`:''}</div></div><div><label for="visibility-${safe(item.id)}">공개 범위</label><select data-edit="visibility" id="visibility-${safe(item.id)}" ${readonly?'disabled':''}><option value="PATIENT" ${item.visibility==='PATIENT'?'selected':''}>환자 공개</option><option value="INTERNAL" ${item.visibility==='INTERNAL'?'selected':''}>의료진 전용</option></select></div></div>
+ <div class="edit-meta"><div><label>관련 원천자료</label><div class="multi-source-area"><div class="multi-source-list">${linkedSources(item).length?linkedSources(item).map(id=>`<div class="multi-source-row"><strong>${safe(sourceTitle(id))}</strong><span class="source-status">${validSource(id,'item',item.section)?'확인 자료':'재확인 필요'}</span><button type="button" class="mini-button" data-action="view-source" data-source-id="${safe(id)}">자료 보기</button><button type="button" class="mini-button" data-action="remove-item-source" data-source-target="${safe(item.id)}" data-source-id="${safe(id)}" ${readonly?'disabled':''} aria-label="${safe(sourceTitle(id))} 근거 연결 해제">연결 해제</button></div>`).join(''):'<span class="source-status">연결된 원천자료가 없습니다.</span>'}</div><button type="button" class="mini-button" data-action="select-source" data-source-kind="item" data-source-target="${safe(item.id)}" ${readonly?'disabled':''}>+ 기록 추가 (${linkedSources(item).length}건)</button></div></div><div><label for="visibility-${safe(item.id)}">공개 범위</label><select data-edit="visibility" id="visibility-${safe(item.id)}" ${readonly?'disabled':''}><option value="PATIENT" ${item.visibility==='PATIENT'?'selected':''}>환자 공개</option><option value="INTERNAL" ${item.visibility==='INTERNAL'?'selected':''}>의료진 전용</option></select></div></div>
  <div class="edit-actions"><label class="inline-check"><input type="checkbox" data-edit="verified" ${item.verified?'checked':''} ${readonly?'disabled':''}> 확인된 내용 (직종 권한 검증)</label><small class="help-text">${safe(DOMAINS.find(x=>x.id===SECTIONS.find(s=>s.id===item.section)?.domain)?.title||'담당자')} 검토</small></div></div></details>`).join('')}
 `;
 }
@@ -175,7 +175,7 @@ function updatePlan(target){const article=target.closest('[data-item]');if(!arti
  if(key==='verified'&&target.checked&&!permitted(item.section)){announce('해당 항목을 확인할 권한이 없는 역할입니다.');render();return}
  if(!mutateBeforeEdit())return;
  if(key==='verified'){
-   if(target.checked){if(!validSource(item.source,'item',item.section)||!item.text.trim()){announce('해당 환자·항목과 일치하는 확인 자료 및 안내문이 필요합니다.');render();return}}
+   if(target.checked){if(!validItemSources(get(),item)||!item.text.trim()){announce('해당 환자·항목과 일치하는 확인 자료 및 안내문이 필요합니다.');render();return}}
    item.verified=target.checked;
  }else if(key==='visibility'){item.visibility=target.value;item.verified=false;}
  else if(key==='text'){item.text=target.value;item.verified=false;}
@@ -384,23 +384,51 @@ function openSourceDialog(kind,target=null,viewId=null,patientOverride=null){
  const sources=viewId?all.filter(s=>s.id===viewId):[...all].sort((a,b)=>Number(applicable(b))-Number(applicable(a))||a.title.localeCompare(b.title,'ko'));
 
  $('#source-list').innerHTML=sources.length?sources.map(rec=>{
-  const valid=applicable(rec);
+  const valid=applicable(rec),selected=kind==='item'&&linkedSources(get().draft.items.find(i=>i.id===target)||{}).includes(rec.id);
   const status={CONFIRMED:'확인됨',PENDING:'추가 확인',CONFLICTING:'상충',LOCKED:'회신 대기'}[rec.verificationStatus]||'자료 확인';
-  return `<article class="source-card ${valid?'':'no-use'}"><div class="source-card-actions"><h3>${safe(rec.title)}</h3><span class="source-flag">${status}</span></div><p>${safe(rec.summary)}</p><p>${safe(rec.detail)}</p><small>분야 ${safe(DOMAINS.find(d=>d.id===rec.domain)?.title||rec.domain)} · 기준 ${safe(rec.observedAt)} · 연결 ${safe(rec.fieldRefs.join(', '))}</small><details><summary class="learn-copy" style="cursor:pointer;margin-top:8px">기록 식별·기술 정보 보기</summary><p class="learn-copy">${safe(rec.id)} · ${safe(rec.encounterId)} · 문서 v${safe(rec.documentVersion)}</p></details><div class="source-card-actions">${rec.exampleFile?`<a class="mini-button" href="${safe(rec.exampleFile)}" target="_blank" rel="noopener noreferrer">예시 PDF 열기 ↗</a>`:''}${canChoose?`<button type="button" class="mini-button" data-connect-source="${safe(rec.id)}" ${valid?'':'disabled'}>${valid?'이 근거 연결':'확인·대상 불일치'}</button>`:''}${rec.verificationStatus==='LOCKED'&&practiceMode&&selectedId==='SYN-003'?`<button type="button" class="mini-button" data-unlock-source="${safe(rec.id)}">가상 담당자 회신 받기</button>`:''}</div></article>`;
+  return `<article class="source-card ${valid?'':'no-use'}"><div class="source-card-actions"><h3>${safe(rec.title)}</h3><span class="source-flag">${status}</span></div><p>${safe(rec.summary)}</p><p>${safe(rec.detail)}</p><small>분야 ${safe(DOMAINS.find(d=>d.id===rec.domain)?.title||rec.domain)} · 기준 ${safe(rec.observedAt)} · 연결 ${safe(rec.fieldRefs.join(', '))}</small><details><summary class="learn-copy" style="cursor:pointer;margin-top:8px">기록 식별·기술 정보 보기</summary><p class="learn-copy">${safe(rec.id)} · ${safe(rec.encounterId)} · 문서 v${safe(rec.documentVersion)}</p></details><div class="source-card-actions">${rec.exampleFile?`<a class="mini-button" href="${safe(rec.exampleFile)}" target="_blank" rel="noopener noreferrer">예시 PDF 열기 ↗</a>`:''}${canChoose?`<button type="button" class="mini-button" data-connect-source="${safe(rec.id)}" ${valid||selected?'':'disabled'}>${selected?'연결 해제':valid?'이 근거 추가':'확인·대상 불일치'}</button>`:''}${rec.verificationStatus==='LOCKED'&&practiceMode&&selectedId==='SYN-003'?`<button type="button" class="mini-button" data-unlock-source="${safe(rec.id)}">가상 담당자 회신 받기</button>`:''}</div></article>`;
  }).join(''):'<p class="empty">연결된 원천자료를 찾지 못했습니다.</p>';
- $('#source-dialog').showModal();
+ if(!$('#source-dialog').open)$('#source-dialog').showModal();
+}
+// Item sources form an additive, ordered set; legacy item.source stays its first ID.
+function changeItemSource(itemId,id,removeOnly=false){
+ const r=get(),item=r.draft.items.find(i=>i.id===itemId);
+ if(!item){announce('선택한 계획 항목을 찾을 수 없습니다.');return false;}
+ const previous=linkedSources(item);
+ const already=previous.includes(id);
+ if(removeOnly&&!already)return false;
+ if(!already&&!validSource(id,'item',item.section)){announce('확인되지 않았거나 해당 환자·항목과 다른 기록은 연결할 수 없습니다.');return false;}
+ if(!already&&previous.length>=12){announce('계획 항목에는 최대 12건까지 근거를 연결할 수 있어요.');return false;}
+ const before=deepCopy(r);
+ if(!mutateBeforeEdit())return false;
+ const next=already?previous.filter(x=>x!==id):[...previous,id];
+ if(next.length)item.sources=next;else delete item.sources;
+ item.source=next[0]||'';
+ item.verified=false;
+ audit(r,role,already?'EVIDENCE_UNLINKED':'EVIDENCE_LINKED',item.title+': '+id);
+ if(!saveWorkflow(before))return false;
+ render();
+ return true;
 }
 function selectSource(id){
  const {kind,target}=sourceTarget||{};
  if(!['item','issue'].includes(kind))return;
- const r=get(),entry=kind==='item'?r.draft.items.find(i=>i.id===target):r.draft.issues.find(i=>i.id===target);
- if(!entry||!validSource(id,kind,kind==='item'?entry.section:entry)){announce('해당 환자 또는 검토 항목과 일치하지 않는 자료입니다.');return;}
+ if(kind==='item'){
+  const box=$('#source-list'),scroll=box.scrollTop;
+  if(!changeItemSource(target,id))return;
+  openSourceDialog(kind,target);
+  $('#source-list').scrollTop=scroll;
+  announce('근거 연결 목록을 변경했어요. 전체 자료를 확인한 뒤 직종별 검토를 다시 완료하세요.');
+  return;
+ }
+ const r=get(),entry=r.draft.issues.find(i=>i.id===target);
+ if(!entry||!validSource(id,'issue',entry)){announce('해당 환자 또는 검토 항목과 일치하지 않는 자료입니다.');return;}
+ const before=deepCopy(r);
  if(!mutateBeforeEdit())return;
- entry.source=id;
- if(kind==='item')entry.verified=false;
- else{entry.status='OPEN';entry.reviewer='';}
- audit(r,role,'EVIDENCE_LINKED',`${kind==='item'?entry.title:entry.title}: ${id}`);
- save();$('#source-dialog').close();render();announce('자료가 연결되었습니다. 담당 역할로 검토를 완료해야 합니다.');
+ entry.source=id;entry.status='OPEN';entry.reviewer='';
+ audit(r,role,'EVIDENCE_LINKED',entry.title+': '+id);
+ if(!saveWorkflow(before))return;
+ $('#source-dialog').close();render();announce('자료가 연결되었습니다. 담당 역할로 검토를 완료해야 합니다.');
 }
 function unlockSource(id){
  if(!practiceMode||selectedId!=='SYN-003'||!id.endsWith('MED-C'))return;
@@ -479,6 +507,7 @@ $('#work-pane').addEventListener('click',e=>{const b=e.target.closest('[data-act
  if(a==='resolve')resolveIssue(b);
  if(['open-doc','review-doc','remove-doc'].includes(a))docAction(a,b);
  if(a==='select-source')openSourceDialog(b.dataset.sourceKind,b.dataset.sourceTarget);
+ if(a==='remove-item-source')changeItemSource(b.dataset.sourceTarget,b.dataset.sourceId,true);
  if(a==='view-source')openSourceDialog('view',null,b.dataset.sourceId);
  if(a==='print-draft')buildPrint(null,true);
  if(a==='print-published'){const p=currentPublished(get());if(p)buildPrint(p.snapshot,false)}

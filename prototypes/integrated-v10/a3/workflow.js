@@ -30,6 +30,17 @@ export function makeInitial(caseId){
  }
  return record;
 }
+// Support old single-source drafts without mutating their saved fingerprint.
+export function linkedSources(item){
+ if(Array.isArray(item.sources))return item.sources;
+ return typeof item.source==='string'&&item.source?[item.source]:[];
+}
+export function validItemSources(record,item){
+ const ids=linkedSources(item);
+ return ids.length>0&&ids.length<=12&&new Set(ids).size===ids.length&&
+  (!Array.isArray(item.sources)||item.source===ids[0])&&
+  ids.every(id=>typeof id==='string'&&usableSource(findSource(id,record.patientId,record.unlockedSources||[]),'item',item.section,record.patientId));
+}
 export function currentPublished(record){return record.publications.find(p=>p.status==='PUBLISHED')||null;}
 export function blockers(record, availableDocs=new Set()){
  const d=record.draft,res=[],assessmentIssues=issuesFromValues(record.assessment.values);
@@ -48,8 +59,7 @@ export function blockers(record, availableDocs=new Set()){
    if(!patientItems.some(i=>i.section===sec&&i.text.trim()))res.push({id:`section-${sec}`,label:`필수 안내 '${SECTIONS.find(s=>s.id===sec).label}' 없음`,group:'plan'});
  }
  for(const item of patientItems){if(!item.text.trim())res.push({id:`item-${item.id}-text`,label:`${item.title}: 안내 내용이 비어 있음`,group:'plan'});
-   const src=findSource(item.source,record.patientId,record.unlockedSources||[]);
-   if(!item.verified||!usableSource(src,'item',item.section,record.patientId))res.push({id:`item-${item.id}-source`,label:`${item.title}: 확인된 원천정보·검토 누락`,group:'plan'});
+   if(!item.verified||!validItemSources(record,item))res.push({id:`item-${item.id}-source`,label:`${item.title}: 확인된 원천정보·검토 누락`,group:'plan'});
  }
  for(const doc of d.docs.filter(x=>x.visibility==='PATIENT')){
    if(doc.status!=='REVIEWED')res.push({id:`doc-${doc.id}`,label:`${doc.name}: 환자 공개용 PDF 검토 미완료`,group:'docs'});
