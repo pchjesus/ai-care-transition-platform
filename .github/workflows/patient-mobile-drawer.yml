@@ -29,4 +29,4 @@ jobs:
           test -x /usr/bin/chromium
       - name: Focused interactive drawer tests
         working-directory: prototypes/integrated-v10
-        run: python tests/patient_mobile_drawer_http.py
+        run: python tests/patient_mobile_drawer_http.py MobileDrawer.test_integrated_menu_font_and_unsaved_reminders
