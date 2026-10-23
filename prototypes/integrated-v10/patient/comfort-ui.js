@@ -11,7 +11,7 @@ const steps=[
 export function installPatientComfort(adapter){
  let storage;try{storage=localStorage}catch{}
  let savedForms=[];
- let repo,loaded,contextKey='',dialog=null,returnSelector=null,returnTrigger=null,mode='settings',openedPublication=null,notice='',mapItem=null;
+ let repo,loaded,contextKey='',dialog=null,returnSelector=null,returnTrigger=null,mode='settings',openedPublication=null,notice='',mapItem=null,taxiChoice='regular';
  const context=()=>adapter.context();
  const bound=c=>c.authenticated&&c.patientId&&c.encounterId;
  const pubKey=c=>c.publication?JSON.stringify([c.publication.publicationId,c.publication.planVersion,c.publication.assessmentId]):null;
@@ -33,7 +33,7 @@ export function installPatientComfort(adapter){
  window.visualViewport?.addEventListener('resize',scheduleDialogFit);window.visualViewport?.addEventListener('scroll',scheduleDialogFit);window.addEventListener('resize',scheduleDialogFit);
  function close(){if(!dialog)return;const inline=dialog.classList.contains('comfort-inline');cancelAnimationFrame(dialogFrame);dialogFrame=0;if(saving){pendingSave?.abort();const toast=document.createElement('p');toast.className='comfort-toast';toast.setAttribute('role','status');toast.textContent='대기 중이던 알림 저장을 취소했어요. 다시 열어 설정을 확인해 주세요.';document.body.append(toast);setTimeout(()=>toast.remove(),6000);}if(!inline)dialog.close();dialog.remove();dialog=null;const target=returnTrigger?.isConnected?returnTrigger:returnSelector&&document.querySelector(returnSelector);(target||document.querySelector('#main-content'))?.focus({preventScroll:true});}
  function open(kind,trigger,itemId){
-  close();mode=kind;mapItem=itemId;notice='';returnTrigger=trigger;returnSelector=trigger?.id?'#'+CSS.escape(trigger.id):trigger?.dataset.comfort?`[data-comfort="${trigger.dataset.comfort}"]`:null;
+  close();mode=kind;mapItem=itemId;taxiChoice='regular';notice='';returnTrigger=trigger;returnSelector=trigger?.id?'#'+CSS.escape(trigger.id):trigger?.dataset.comfort?`[data-comfort="${trigger.dataset.comfort}"]`:null;
   refreshPreferences();openedPublication=pubKey(context());draw();dialog.querySelector('[data-comfort="close"]')?.focus();
  }
  function plan(){return planPreferences(currentData(),context().publication);}
@@ -94,6 +94,30 @@ export function installPatientComfort(adapter){
   if(!url)return '<p>의료진이 공식 주소·좌표를 확인하고 승인·발행한 목적지가 없어요. 병원 주소를 직접 확인해 주세요. 임의의 가상 주소로 길찾기를 시작하지 않아요.</p>';
   return `<p>카카오맵 외부 앱·웹으로 이동해요. 앱이 설치되지 않은 경우 웹 지도를 이용할 수 있어요. 현재 위치나 환자·입원건·의료정보를 자동 전송하지 않아요. 출발지는 외부 서비스에서 직접 선택하세요.</p><h3>${esc(d.name)}</h3><p>${esc(d.address)}</p><a class="secondary-action" data-map-link href="${esc(url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">카카오맵 길찾기 열기 ↗</a><p>앱/지도가 열리지 않으면 아래 공식 주소를 사용해 병원에 문의하거나 지도에서 직접 검색하세요. 연결 성공이나 도착시간을 확인하는 기능은 없어요.</p>${button('map-fallback','연결이 안 돼요')}<div id="map-fallback" hidden><label>직접 복사할 병원 주소<textarea readonly>${esc(d.address)}</textarea></label><a href="${esc(d.sourceUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">의료진이 대조한 공식 출처 ↗</a></div>`;
  }
+
+ function taxiChoiceDetails(){
+  const steps=taxiChoice==='assisted'
+   ?['휠체어 탑승, 부축 등 필요한 이동 도움을 먼저 확인하세요.','거주 지역의 교통약자 이동지원기관에 이용 자격과 차량·예약 가능 여부를 직접 문의하세요.','탑승 장소, 보호자 동행 및 귀가 방법을 확인하세요.']
+   :['외래 안내에서 병원 이름과 주소를 확인하세요.','이 앱이 아닌 실제 택시 앱 또는 전화로 출발지·목적지를 직접 전달하세요.','차량 탑승 장소와 예상 요금을 직접 확인하세요.'];
+  return `<section class="travel-steps" aria-label="선택한 이동 방법 안내"><h3>${taxiChoice==='assisted'?'이동에 도움이 필요한 경우':'일반 택시를 이용하는 경우'}</h3><ol>${steps.map((step,i)=>`<li><span class="travel-step-index">${i+1}</span><span>${step}</span></li>`).join('')}</ol></section>`;
+ }
+ function taxiPanel(c){
+  const destinations=c.publication?.items.filter(i=>i.section==='followup'&&directionsURL(i.appointment?.destination))||[];
+  const destination=destinations.length===1?destinations[0].appointment.destination:null;
+  const destinationBox=destination
+   ?`<div class="travel-destination"><strong>의료진이 확인해 발행한 목적지</strong><p>${esc(destination.name)}</p><p class="travel-address">${esc(destination.address)}</p><small>이 주소는 택시 앱에 자동으로 전달되지 않아요.</small></div>`
+   :`<div class="travel-destination travel-pending"><strong>${destinations.length>1?'방문할 병원 선택이 필요해요':'병원 주소 확인이 필요해요'}</strong><p>${destinations.length>1?'확인된 목적지가 여러 곳이에요. 외래 일정에서 방문할 병원을 먼저 확인해 주세요.':'발행된 확정 목적지가 없어요. 병원 안내문이나 담당 기관에서 주소를 먼저 확인해 주세요.'}</p></div>`;
+  return `<div class="travel-screen" data-travel-screen="taxi">
+    <p class="travel-intro">택시를 이용하려면 어떤 도움이 필요한지 먼저 골라보세요.</p>
+    <div class="travel-choice-grid" role="group" aria-label="이동 방법 선택">
+      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="regular" aria-pressed="${taxiChoice==='regular'}"><span class="travel-choice-icon" aria-hidden="true">🚕</span><strong>일반 택시</strong><small>직접 택시를 이용할 때</small></button>
+      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="assisted" aria-pressed="${taxiChoice==='assisted'}"><span class="travel-choice-icon" aria-hidden="true">♿</span><strong>이동에 도움 필요</strong><small>휠체어·부축 등이 필요할 때</small></button>
+    </div>
+    <div data-taxi-steps>${taxiChoiceDetails()}</div>
+    ${destinationBox}
+    <p class="travel-limitation"><strong>이 화면에서는 택시가 호출되지 않아요.</strong> 예약, 요금 조회, 결제 및 이동지원 차량 배정은 연결되지 않았어요. 의료적 이송이 필요한 경우 일반 택시 이용을 전제로 판단하지 마세요.</p>
+  </div>`;
+ }
  function documents(c){
   const docs=c.publication?.documents||[];
   return `<p>${c.source==='independent'?'독립 예시 자료이며 A3 발행본이 아니에요.':'현재 승인·발행된 문서만 열 수 있어요.'} PDF 내용을 복약 시각이나 처방으로 자동 변환하지 않아요. 이미 내려받은 PDF는 철회 후 회수할 수 없어요.</p>${['MEDICATION','GENERAL'].map(cat=>`<section><h3>${cat==='MEDICATION'?'복약 관련 PDF':'일반 안내문'}</h3>${docs.filter(d=>(d.category||'GENERAL')===cat).map(d=>`<p><strong>${esc(d.name)}</strong> ${button('document-open','열기·다운로드',`data-id="${esc(d.id)}"`)}</p>`).join('')||'<p>이 분류에 제공된 문서가 없어요.</p>'}</section>`).join('')}`;
@@ -111,9 +135,9 @@ export function installPatientComfort(adapter){
   const drafts=preserve&&dialog?snapshotForms(dialog):[],oldScroll=dialog?.scrollTop||0;
   if(dialog){dialog.remove();dialog=null;}
   const c=context(),data=currentData();dialog=document.createElement(inline?'section':'dialog');dialog.id='comfort-dialog';dialog.className='comfort-dialog'+(inline?' comfort-inline':'');dialog.setAttribute('aria-labelledby','comfort-title');
-  const title=inline?'알림':{settings:'알림 관리',inbox:'앱 내 알림함',map:'병원 길찾기',documents:'안내 문서'}[mode];
-  const body=inline?`<section id="reminder-settings" aria-label="알림 설정">${settings(c,data)}</section><details id="reminder-inbox" class="reminder-group" open><summary><h2 id="inbox-title">최근 알림 내역</h2><small>받은 안내와 확인 상태</small></summary><div data-live-inbox>${inbox(c,data)}</div></details>`:mode==='map'?maps(c):documents(c);
-  dialog.innerHTML=`<header><h${inline?'1':'2'} id="comfort-title">${title}</h${inline?'1':'2'}>${inline?'':button('close','닫기')}</header><p class="comfort-scope">${inline?'앱을 열었을 때 확인하는 로컬 알림이에요. 백그라운드·외부 메시지 발송은 하지 않아요.':'앱 내 로컬 시연 · 앱을 열었을 때 확인해요. 앱 종료·백그라운드 정시 발송과 외부 메시지 전송은 하지 않아요.'}</p><p id="comfort-notice" role="status" tabindex="-1">${esc(notice)}</p>${inline?button('reload','최신 설정 다시 읽기',(loaded?.error||notice.includes('다른 탭')||notice.startsWith('저장하지 못했어요.')?'':'hidden')):''}${loaded?.error?'<p role="alert">저장 자료를 읽지 못했어요. 기존 자료를 덮어쓰지 않아요.</p>':''}${body}`;
+  const title=inline?'알림':{settings:'알림 관리',inbox:'앱 내 알림함',map:'병원 길찾기',taxi:'택시 이용 안내',documents:'안내 문서'}[mode];
+  const body=inline?`<section id="reminder-settings" aria-label="알림 설정">${settings(c,data)}</section><details id="reminder-inbox" class="reminder-group" open><summary><h2 id="inbox-title">최근 알림 내역</h2><small>받은 안내와 확인 상태</small></summary><div data-live-inbox>${inbox(c,data)}</div></details>`:mode==='map'?maps(c):mode==='taxi'?taxiPanel(c):documents(c);
+  dialog.innerHTML=`<header><h${inline?'1':'2'} id="comfort-title">${title}</h${inline?'1':'2'}>${inline?'':button('close','닫기')}</header><p class="comfort-scope">${inline?'앱을 열었을 때 확인하는 로컬 알림이에요. 백그라운드·외부 메시지 발송은 하지 않아요.':mode==='map'?'길찾기는 주소 확인 후 외부 지도에서 열려요. 실제 예약이나 병원 시스템 연동은 아니에요.':mode==='taxi'?'화면 구성 시연입니다. 실제 택시 호출·예약·결제 및 이동지원기관 연동은 하지 않아요.':'앱 내 시연입니다. 실제 의료 안내와 문서의 발행 범위만 확인해 주세요.'}</p><p id="comfort-notice" role="status" tabindex="-1">${esc(notice)}</p>${inline?button('reload','최신 설정 다시 읽기',(loaded?.error||notice.includes('다른 탭')||notice.startsWith('저장하지 못했어요.')?'':'hidden')):''}${loaded?.error?'<p role="alert">저장 자료를 읽지 못했어요. 기존 자료를 덮어쓰지 않아요.</p>':''}${body}`;
   mount?.append(dialog);
   if(inline){const options=dialog.querySelector('#reminder-options');if(options)dialog.append(options);for(const f of folds||[]){const el=dialog.querySelector('#'+f.id);if(el)el.open=f.open;}}
   if(!inline){dialog.addEventListener('cancel',e=>{e.preventDefault();close()});dialog.showModal();fitDialog();}
@@ -151,9 +175,17 @@ export function installPatientComfort(adapter){
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
   }else if(c.view==='reminders'){const hub=document.createElement('div');hub.dataset.reminderHub='';main.append(hub);attachNotifications(hub,c);}else add(main,'<section class="comfort-quick">'+button('inbox','발행·철회 알림함')+'</section>');
-  if(['schedule','help'].includes(c.view)){
-   const appointments=c.publication?.items.filter(i=>i.section==='followup')||[];
-   add(main,'<section class="comfort-map-section"><h2>병원 길찾기</h2>'+appointments.map(i=>{const available=!!directionsURL(i.appointment?.destination);return `<p>${esc(i.title)} ${button('map','병원 길찾기',`data-id="${esc(i.id)}" ${available?'':'disabled'}`)}${available?'':' · 확인된 병원 주소가 없어요.'}</p>`;}).join('')+'<p>일반 이동 안내이며 의료적 이송·택시 호출·예약 서비스가 아니에요.</p></section>');
+
+  if(c.publication&&['schedule','help'].includes(c.view)){
+   const appointments=c.publication.items.filter(i=>i.section==='followup');
+   const routeCards=appointments.map(i=>{
+    const confirmed=!!directionsURL(i.appointment?.destination);
+    return `<button type="button" class="travel-entry travel-route" data-comfort="map" data-id="${esc(i.id)}" ${confirmed||c.source==='independent'?'':'disabled'}><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>${esc(i.title)} · ${confirmed?'확인된 목적지로 지도 열기':'병원 주소 확인 필요'}</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>`;
+   }).join('');
+   const route=routeCards||(c.source==='independent'?'<button type="button" class="travel-entry travel-route" data-comfort="map"><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>병원 주소 확인 방법 보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>':'<p class="travel-no-address">발행된 외래 목적지가 없어 길찾기를 시작할 수 없어요.</p>');
+   const travelMarkup=`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`;
+   const anchor=main.querySelector('.schedule-layout .sublead,.service-page .service-lead');
+   if(anchor)anchor.insertAdjacentHTML('afterend',travelMarkup);else add(main,travelMarkup);
   }
  }
  document.addEventListener('click',e=>{
@@ -162,7 +194,8 @@ export function installPatientComfort(adapter){
   if(a==='close'){close();return;}
   if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':b.dataset.reminderTarget==='followup'?'#reminder-followup':'#reminder-personal');if(el?.tagName==='DETAILS')el.open=true;el?.scrollIntoView({block:'start'});el?.querySelector('summary,input,button')?.focus({preventScroll:true});return;}
   if(a==='reload'){if(!permitNavigation())return;refreshPreferences();openedPublication=pubKey(context());notice='최신 설정을 다시 읽었어요.';draw();return;}
-  if(['documents','map'].includes(a)){open(a,b,b.dataset.id);return;}
+  if(['documents','map','taxi'].includes(a)){open(a,b,b.dataset.id);return;}
+  if(a==='taxi-option'&&mode==='taxi'&&dialog){const choice=b.dataset.choice;if(!['regular','assisted'].includes(choice))return;taxiChoice=choice;dialog.querySelectorAll('[data-comfort=taxi-option]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.choice===choice)));const target=dialog.querySelector('[data-taxi-steps]');if(target)target.innerHTML=taxiChoiceDetails();return;}
   if(a==='map-fallback'){dialog.querySelector('#map-fallback').hidden=false;dialog.querySelector('textarea').focus();return;}
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
