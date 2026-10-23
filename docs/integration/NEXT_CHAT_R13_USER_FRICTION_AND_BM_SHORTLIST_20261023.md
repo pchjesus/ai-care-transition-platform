@@ -1,0 +1,30 @@
+# 케어브릿지랩 — 다음 채팅 인수인계: R13 사용자 불편 × 유망 BM 심화
+
+기준일: 2026-10-23. 이번 작업은 **기획·관찰·사업가설 비교**, 신규 상업 서비스 구현·Codex 최종 검증은 보류.
+
+## 1. 한 번에 읽을 두 문서
+
+**Track A — R13 불편 발견:** `docs/research/R13_USER_FRICTION_EXPERT_REVIEW_WORKBOARD_v0.1.md`  
+12개 UX 가설/고령·보호자 관점 과업/인지적 워크스루/심각도 및 실제 관찰과 추측 구분을 포함. 현재는 사람 대상 평가 NOT RUN.
+
+**Track B — 사업성 후보 심화:** `docs/business/HIGH_POTENTIAL_BM_SHORTLIST_v0.1.md`  
+본업인 병원 B2B SaaS와 숙박·보조기구·교통·공공급여·보호자·주거안전·통합돌봄 등 10개 그룹을 나눠 고객가설, 수익 주체, 검증 질문, 법적 제약 및 GO/NO-GO 기준을 정리. **실제 제휴·수익·가격 검증 없음**.
+
+필요 시에만 전체 조사 원본 `docs/business/PATIENT_JOURNEY_PARTNERSHIP_DEEP_DIVE_20261023_DRAFT.md` 조회. 기존 계획·코드의 전면 재분석 금지.
+
+## 2. 개발/배포 최신 상태
+
+- `main`: `24e16bee0a6158002d513e63294b5333d7df0dc9`; `gh-pages`: `600d19db15750016914afeee5a0ceb463897b514` (다음 채팅에서 GitHub HEAD 갱신 확인).
+- 모바일 상단 햄버거·슬라이드 사이드바 개발 브랜치: `feature/patient-mobile-drawer-krds-20261023`. 58px 단일 헤더와 편의 기능 사이드바 이전, 기존 하단 5개 탭 보존. JavaScript/Node 98 PASS 및 독립 모바일·연동 미저장 보호 중심 Chromium **분산 PASS**. **main/gh-pages 미반영**. 시연 기준 화면 버전 구분.
+- 현재 앱은 합성 데이터 기반 간호대학생 MVP. 의료진 확인·승인·발행·수정·철회, 환자/입원건 식별, 기록/저장 일관성 보존. 외부 카카오 T, 숙박/의료기기 제휴·실제 EMR/서버 인증 미구현.
+
+## 3. 작업 순서
+
+1. **Track A 먼저:** 이미 있는 두 환자앱/모바일 드로어의 사용자 관점 문제를 예상하고, 코드를 읽어 확인 가능한 사실과 AI 가설을 분리. 영향이 큰 3~5개를 선택하되 바로 무단 수정하지 않음.
+2. **Track B:** 유망 BM 10개군에서 고객·지불주체·구매 시점·제휴 조건·규제 리스크·핵심 수치 확인 질문을 비교해 **첫 실사할 3개**를 선정. 숙박(Agoda/Airbnb/Booking/Trip/Expedia/국내)·의료기상사/장기요양 복지용구·이동/보호자·병원 SaaS 구분.
+3. 사용자와 UI/사업 범위 결정 후 **최소 구현 → 6.1 Sol Medium Codex 회귀/안전 검증 1회 → 통과 시 main 및 Pages 반영**. 복잡한 의료진 승인·발행/저장 데이터 계약 변경 때만 더 깊은 검증.
+4. 실제 고령 참가자 1~2명 관찰이 가능하면 연구윤리·동의 판단 후 별도 실시. AI 평가 결과를 실제 사용자 실측 데이터로 발표하지 않음.
+
+## 4. 다음 채팅 시작용 문장
+
+> 케어브릿지랩의 사용자 불편 탐색(R13)과 사업성 유망 후보 심화를 이어가자. GitHub `pchjesus/ai-care-transition-platform`의 `docs/r13-service-ideas-20261023` 브랜치에서 `docs/integration/NEXT_CHAT_R13_USER_FRICTION_AND_BM_SHORTLIST_20261023.md`를 먼저 읽고, 그 안의 Track A/B 두 문서를 필요한 만큼만 살펴봐. Track A에서 예상되는 사용성 위험 상위 3~5개를 근거·시나리오로 평가하고, Track B에서 실사 가치가 높은 후보 3개를 비교해 발전시키자. 기존 기능과 확정 UX 및 의료정보 계약을 보존하고, 신규 제휴나 수익을 사실로 주장하지 마. 아직 Codex 검증·main/Pages 변경은 하지 마.
