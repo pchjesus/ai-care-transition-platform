@@ -55,7 +55,7 @@ class TravelUI(unittest.TestCase):
         expect(self.b.locator('[data-comfort=taxi]')).to_be_enabled()
         self.assert_taxi_ui(patient_is_verified=True)
         self.b.locator('[data-comfort=taxi]').click()
-        expect(self.b.locator('#comfort-dialog')).to_contain_text('병원 주소 확인이 필요해요')
+        expect(self.b.locator('#comfort-dialog')).to_contain_text('의료진이 확인·발행한 병원 주소가 없어요')
         expect(self.b.locator('#comfort-dialog [data-map-link]')).to_have_count(0)
         self.close()
         self.a3.locator('#revoke').click()
