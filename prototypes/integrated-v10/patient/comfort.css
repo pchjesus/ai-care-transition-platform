@@ -70,3 +70,47 @@
 }
 @media(max-width:360px){.comfort-dialog .travel-choice-grid{grid-template-columns:minmax(0,1fr)}}
 
+
+
+/* R13: readable three-step taxi preparation demo (no external vendor call). */
+.comfort-dialog .travel-tips{margin:6px 0 14px;border:1px solid #d9e4dc;border-radius:11px;padding:0 12px}
+.comfort-dialog .travel-tips>summary{font-size:calc(15px * var(--font-scale,1));color:#315b46;min-height:44px;padding:9px 4px;cursor:pointer;font-weight:700}
+.comfort-dialog .travel-tips .travel-steps{margin:0 0 10px}
+.comfort-dialog .travel-tips .travel-steps li{font-size:calc(15px * var(--font-scale,1));padding:9px}
+.comfort-dialog .travel-builder{background:#f8fbf9;border:1px solid #d0e0d4;border-radius:15px;padding:18px;margin:15px 0}
+.comfort-dialog .travel-progress{display:flex;align-items:center;gap:9px;margin:0 0 16px;justify-content:center}
+.travel-progress span{display:grid;place-items:center;width:36px;height:36px;border:1px solid #bbd2c3;border-radius:50%;background:white;color:#5a7064;font-size:calc(16px * var(--font-scale,1));font-weight:750}
+.travel-progress span+span:before{content:''}
+.travel-progress span.current{background:#2c694f;border-color:#2c694f;color:#fff}
+.comfort-dialog .travel-stage h3{font-size:calc(20px * var(--font-scale,1));margin:17px 0 11px;line-height:1.4}
+.comfort-dialog .travel-stage h3:first-child{margin-top:0}
+.comfort-dialog .travel-input-label{font-size:calc(16px * var(--font-scale,1));color:#2a4839;font-weight:750;margin:10px 0 8px;line-height:1.5}
+.comfort-dialog .travel-input-label small{display:block;font-size:calc(14px * var(--font-scale,1));font-weight:500;color:#5d7165}
+.comfort-dialog .travel-stage input:not([type=checkbox]),.comfort-dialog .travel-stage select{background:#fff;min-height:52px;font-size:calc(16px * var(--font-scale,1))}
+.comfort-dialog .travel-stage .travel-destination{margin-top:12px}
+.travel-pending-text{padding:14px;background:#fff8ef;border-radius:10px;border:1px solid #ebd4ac;line-height:1.6}
+.comfort-dialog .travel-hint{font-size:calc(14px * var(--font-scale,1));line-height:1.65;color:#566e60;padding:4px 0}
+.comfort-dialog fieldset.travel-options{margin:12px 0 20px;padding:0;border:0;min-width:0}
+.comfort-dialog fieldset.travel-options legend{font-weight:800;font-size:calc(17px * var(--font-scale,1));line-height:1.5;margin-bottom:10px;color:#284936}
+.travel-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.comfort-dialog .travel-check{display:flex;align-items:center;gap:10px;border:1px solid #cbdccf;border-radius:11px;padding:13px 12px;min-height:60px;margin:0;background:#fff;font-weight:650;line-height:1.45;cursor:pointer;font-size:calc(15px * var(--font-scale,1))}
+.comfort-dialog .travel-check:has(input:checked){background:#e7f3eb;border-color:#6b9c7b}
+.comfort-dialog .travel-check input[type=checkbox]{width:23px;height:23px;flex:0 0 23px;margin:0;accent-color:#2f7455}
+.travel-stage-actions{display:flex;gap:10px;justify-content:space-between;margin-top:18px}
+.comfort-dialog .travel-stage-actions button{min-height:52px;margin:0;font-size:calc(16px * var(--font-scale,1));padding:10px 17px}
+.comfort-dialog .travel-stage-actions [data-comfort=taxi-next]{margin-left:auto;background:#2d6a50;color:#fff;border-color:#2d6a50;font-weight:750}
+.travel-preview-list{display:grid;gap:0;margin:12px 0}
+.travel-preview-list>div{display:grid;grid-template-columns:minmax(110px,.7fr) minmax(0,1.4fr);gap:12px;padding:12px 3px;border-bottom:1px solid #d7e4da;font-size:calc(15px * var(--font-scale,1));line-height:1.6}
+.travel-preview-list dt{color:#617469;font-weight:650}
+.travel-preview-list dd{margin:0;overflow-wrap:anywhere;color:#294737;font-weight:750}
+.travel-share-boundary{padding:14px 15px;border-radius:11px;border:1px solid #cbd9d1;background:#fff}
+.travel-share-boundary>strong{font-size:calc(16px * var(--font-scale,1));color:#284f3c}
+.travel-share-boundary p{line-height:1.65;font-size:calc(14px * var(--font-scale,1));margin:8px 0 0}
+.comfort-dialog .travel-future-action[disabled]{display:flex;width:100%;min-height:56px;margin:18px 0 7px;border:1px dashed #95ae9f;background:#e6ece8;color:#435a4d;cursor:not-allowed;opacity:1;font-size:calc(17px * var(--font-scale,1));font-weight:750}
+@media(max-width:520px){
+ .comfort-dialog .travel-builder{padding:14px 12px}
+ .travel-check-grid{grid-template-columns:minmax(0,1fr)}
+ .travel-preview-list>div{grid-template-columns:minmax(0,1fr);gap:3px}
+ .comfort-dialog .travel-check{min-height:56px}
+ .comfort-dialog .travel-stage-actions button{padding:9px 13px}
+}
