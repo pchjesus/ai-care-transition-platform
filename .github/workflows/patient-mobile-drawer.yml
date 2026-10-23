@@ -1,0 +1,32 @@
+name: Patient compact mobile drawer regression
+on:
+  push:
+    branches: [feature/patient-mobile-drawer-krds-20261023]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  drawer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax and Node contract tests
+        working-directory: prototypes/integrated-v10
+        run: |
+          node --check patient/comfort-ui.js
+          npm test
+      - name: Install browser automation
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
+          test -x /usr/bin/chromium
+      - name: Focused interactive drawer tests
+        working-directory: prototypes/integrated-v10
+        run: python tests/patient_mobile_drawer_http.py
