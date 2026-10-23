@@ -11,7 +11,7 @@ const steps=[
 export function installPatientComfort(adapter){
  let storage;try{storage=localStorage}catch{}
  let savedForms=[];
- let repo,loaded,contextKey='',dialog=null,returnSelector=null,returnTrigger=null,mode='settings',openedPublication=null,notice='',mapItem=null,taxiChoice='regular';
+ let repo,loaded,contextKey='',dialog=null,returnSelector=null,returnTrigger=null,mode='settings',openedPublication=null,notice='',mapItem=null,taxiChoice='regular',taxiStep=1,taxiDraft=null;
  const context=()=>adapter.context();
  const bound=c=>c.authenticated&&c.patientId&&c.encounterId;
  const pubKey=c=>c.publication?JSON.stringify([c.publication.publicationId,c.publication.planVersion,c.publication.assessmentId]):null;
@@ -33,7 +33,7 @@ export function installPatientComfort(adapter){
  window.visualViewport?.addEventListener('resize',scheduleDialogFit);window.visualViewport?.addEventListener('scroll',scheduleDialogFit);window.addEventListener('resize',scheduleDialogFit);
  function close(){if(!dialog)return;const inline=dialog.classList.contains('comfort-inline');cancelAnimationFrame(dialogFrame);dialogFrame=0;if(saving){pendingSave?.abort();const toast=document.createElement('p');toast.className='comfort-toast';toast.setAttribute('role','status');toast.textContent='대기 중이던 알림 저장을 취소했어요. 다시 열어 설정을 확인해 주세요.';document.body.append(toast);setTimeout(()=>toast.remove(),6000);}if(!inline)dialog.close();dialog.remove();dialog=null;const target=returnTrigger?.isConnected?returnTrigger:returnSelector&&document.querySelector(returnSelector);(target||document.querySelector('#main-content'))?.focus({preventScroll:true});}
  function open(kind,trigger,itemId){
-  close();mode=kind;mapItem=itemId;taxiChoice='regular';notice='';returnTrigger=trigger;returnSelector=trigger?.id?'#'+CSS.escape(trigger.id):trigger?.dataset.comfort?`[data-comfort="${trigger.dataset.comfort}"]`:null;
+  close();mode=kind;mapItem=itemId;taxiChoice='regular';taxiStep=1;taxiDraft=kind==='taxi'?{pickup:'',destinationId:'',demoDestination:'',equipment:[],arrivalHelp:[],companion:'unknown'}:null;notice='';returnTrigger=trigger;returnSelector=trigger?.id?'#'+CSS.escape(trigger.id):trigger?.dataset.comfort?`[data-comfort="${trigger.dataset.comfort}"]`:null;
   refreshPreferences();openedPublication=pubKey(context());draw();dialog.querySelector('[data-comfort="close"]')?.focus();
  }
  function plan(){return planPreferences(currentData(),context().publication);}
@@ -95,27 +95,75 @@ export function installPatientComfort(adapter){
   return `<p>카카오맵 외부 앱·웹으로 이동해요. 앱이 설치되지 않은 경우 웹 지도를 이용할 수 있어요. 현재 위치나 환자·입원건·의료정보를 자동 전송하지 않아요. 출발지는 외부 서비스에서 직접 선택하세요.</p><h3>${esc(d.name)}</h3><p>${esc(d.address)}</p><a class="secondary-action" data-map-link href="${esc(url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">카카오맵 길찾기 열기 ↗</a><p>앱/지도가 열리지 않으면 아래 공식 주소를 사용해 병원에 문의하거나 지도에서 직접 검색하세요. 연결 성공이나 도착시간을 확인하는 기능은 없어요.</p>${button('map-fallback','연결이 안 돼요')}<div id="map-fallback" hidden><label>직접 복사할 병원 주소<textarea readonly>${esc(d.address)}</textarea></label><a href="${esc(d.sourceUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">의료진이 대조한 공식 출처 ↗</a></div>`;
  }
 
+
+ // Taxi preview is ephemeral. No real passenger data, call payload, or booking is persisted/sent.
+ const gearChoices=[['none','없음'],['folding','접이식 휠체어'],['powered','전동 휠체어'],['walker','워커·보행기'],['cane','지팡이·목발']];
+ const helpChoices=[['none','필요 없음'],['entrance','병원 출입구·승하차 위치 안내'],['assist','하차 시 부축 문의'],['rental','병원 휠체어 대여 문의'],['meet','보호자·동행인과 합류']];
+ const choiceLabels=(keys,choices)=>keys.map(key=>choices.find(x=>x[0]===key)?.[1]).filter(Boolean).join(', ')||'아직 선택하지 않았어요';
+ function taxiDestinations(c){
+  return (c.publication?.items||[]).filter(i=>i.section==='followup'&&directionsURL(i.appointment?.destination)).map(i=>({id:String(i.id),label:i.title,d:i.appointment.destination}));
+ }
  function taxiChoiceDetails(){
   const steps=taxiChoice==='assisted'
-   ?['휠체어 탑승, 부축 등 필요한 이동 도움을 먼저 확인하세요.','거주 지역의 교통약자 이동지원기관에 이용 자격과 차량·예약 가능 여부를 직접 문의하세요.','탑승 장소, 보호자 동행 및 귀가 방법을 확인하세요.']
-   :['외래 안내에서 병원 이름과 주소를 확인하세요.','이 앱이 아닌 실제 택시 앱 또는 전화로 출발지·목적지를 직접 전달하세요.','차량 탑승 장소와 예상 요금을 직접 확인하세요.'];
-  return `<section class="travel-steps" aria-label="선택한 이동 방법 안내"><h3>${taxiChoice==='assisted'?'이동에 도움이 필요한 경우':'일반 택시를 이용하는 경우'}</h3><ol>${steps.map((step,i)=>`<li><span class="travel-step-index">${i+1}</span><span>${step}</span></li>`).join('')}</ol></section>`;
+   ?['휠체어 탑승, 부축 등 필요한 도움과 차량 이용 가능 여부를 확인하세요.','교통약자 이동지원기관에 이용 자격과 서비스 가능 여부를 직접 문의하세요.','병원 도착 후 도움은 병원 측에 별도로 확인해야 해요.']
+   :['가상 출발지와 병원 목적지를 확인하세요.','실제 택시 이용 시 외부 앱에서 직접 위치와 차량 조건을 확인하세요.','탑승 인원과 차량 이용 가능 여부는 별도 확인이 필요해요.'];
+  return `<details class="travel-tips"><summary>이용 전에 알아둘 점</summary><section class="travel-steps" aria-label="택시 이용 안내"><ol>${steps.map((step,i)=>`<li><span class="travel-step-index">${i+1}</span><span>${step}</span></li>`).join('')}</ol></section></details>`;
+ }
+ function taxiCheckedGroup(group,options,label){
+  return `<fieldset class="travel-options" aria-label="${label}"><legend>${label}</legend><div class="travel-check-grid">${options.map(([value,name])=>`<label class="travel-check"><input type="checkbox" data-taxi-group="${group}" value="${value}" ${taxiDraft[group].includes(value)?'checked':''}><span>${name}</span></label>`).join('')}</div></fieldset>`;
+ }
+ function taxiBuilder(c){
+  const destinations=taxiDestinations(c),only=destinations.length===1?destinations[0]:null;
+  if(only&&!taxiDraft.destinationId)taxiDraft.destinationId=only.id;
+  if(!destinations.some(x=>x.id===taxiDraft.destinationId))taxiDraft.destinationId=only?.id||'';
+  const chosen=destinations.find(x=>x.id===taxiDraft.destinationId);
+  let inner='';
+  if(taxiStep===1){
+   inner=`<div class="travel-stage"><h3>1. 어디에서 출발하시나요?</h3>
+      <label class="travel-input-label" for="taxi-pickup">출발 장소 메모 <small>선택 사항 · 실제 집 주소 입력 금지</small></label>
+      <input id="taxi-pickup" data-taxi-field="pickup" maxlength="80" autocomplete="off" placeholder="예: 가상 아파트 앞 승차 위치" value="${esc(taxiDraft.pickup)}">
+      <h3>어느 병원으로 가시나요?</h3>
+      ${destinations.length?`<label class="travel-input-label" for="taxi-destination">의료진이 확인해 발행한 목적지</label><select id="taxi-destination" data-taxi-field="destinationId">
+      <option value="">${destinations.length>1?'방문할 병원을 선택하세요':'목적지 선택'}</option>
+      ${destinations.map(x=>`<option value="${esc(x.id)}" ${taxiDraft.destinationId===x.id?'selected':''}>${esc(x.label)} · ${esc(x.d.name)}</option>`).join('')}</select>
+      ${chosen?`<div class="travel-destination"><strong>확인된 병원 정보</strong><p>${esc(chosen.d.name)}</p><p class="travel-address">${esc(chosen.d.address)}</p></div>`:''}`
+      :c.source==='independent'
+       ?`<label class="travel-input-label" for="taxi-demo-dest">가상 목적지 메모 <small>병원 확인 주소가 아닙니다</small></label><input id="taxi-demo-dest" data-taxi-field="demoDestination" maxlength="80" autocomplete="off" placeholder="예: 가상병원 정문 (예시)" value="${esc(taxiDraft.demoDestination)}"><p class="travel-pending-text">이 앱에 확인된 병원 주소가 없어요. 실제 호출을 위한 목적지가 아니에요.</p>`
+       :'<p class="travel-pending-text">의료진이 확인·발행한 병원 주소가 없어요. 병원에 목적지를 먼저 확인해 주세요.</p>'}
+      <p class="travel-hint">이 화면에 입력한 정보는 시연용으로만 표시돼요. 다른 앱이나 병원으로 전송되지 않아요.</p>
+   </div>`;
+  }else if(taxiStep===2){
+   inner=`<div class="travel-stage"><h3>2. 가지고 탈 물건과 이동 도움</h3>
+     ${taxiCheckedGroup('equipment',gearChoices,'차량에 가지고 탈 보조기구')}
+     ${taxiCheckedGroup('arrivalHelp',helpChoices,'병원에 내린 뒤 필요한 도움')}
+     <label class="travel-input-label" for="taxi-companion">동행하는 사람이 있나요?</label>
+     <select id="taxi-companion" data-taxi-field="companion"><option value="unknown" ${taxiDraft.companion==='unknown'?'selected':''}>아직 모르겠어요</option><option value="alone" ${taxiDraft.companion==='alone'?'selected':''}>혼자 이동해요</option><option value="with" ${taxiDraft.companion==='with'?'selected':''}>보호자·동행인과 함께 가요</option></select>
+     <p class="travel-hint">전동 휠체어 등은 일반 택시 탑승이 어려울 수 있어요. 차량 조건 및 이동지원 서비스 자격은 별도로 확인하세요. 병원에는 요청이 자동 전달되지 않아요.</p>
+   </div>`;
+  }else{
+   const destinationText=chosen?`${chosen.d.name} · ${chosen.d.address}`:c.source==='independent'?`${taxiDraft.demoDestination||'가상 목적지 미입력'} (확인되지 않은 예시)`:'확인된 병원 목적지 없음';
+   const companionName={alone:'혼자 이동',with:'보호자·동행인 동행',unknown:'미정'}[taxiDraft.companion];
+   inner=`<div class="travel-stage travel-preview" data-taxi-preview><h3>3. 선택한 내용을 확인해 주세요</h3>
+     <dl class="travel-preview-list"><div><dt>이용 방법</dt><dd>${taxiChoice==='assisted'?'이동지원 필요':'일반 택시'}</dd></div><div><dt>출발 장소</dt><dd>${esc(taxiDraft.pickup||'외부 앱에서 직접 설정')}</dd></div><div><dt>병원 목적지</dt><dd>${esc(destinationText)}</dd></div><div><dt>가지고 탈 보조기구</dt><dd>${esc(choiceLabels(taxiDraft.equipment,gearChoices))}</dd></div><div><dt>병원에서 필요한 도움</dt><dd>${esc(choiceLabels(taxiDraft.arrivalHelp,helpChoices))}</dd></div><div><dt>동행 여부</dt><dd>${companionName}</dd></div></dl>
+     <div class="travel-share-boundary"><strong>향후 카카오 T 연동 시 검토할 항목</strong><p>출발지·목적지 입력을 외부 택시 앱에 연결하는 방식은 추후 공식 제공 범위와 동의를 확인해 설계할 예정이에요.</p><p><strong>보조기구·도착 후 도움 정보는 현재 병원이나 택시 회사에 전송되지 않아요.</strong> 향후에도 별도 동의와 실제 지원 가능 여부 확인이 필요해요.</p></div>
+     <button type="button" class="travel-future-action" disabled aria-disabled="true">카카오 T 연결 · 준비 중</button>
+     <p class="travel-hint">현재는 택시 호출, 배차, 요금 조회, 결제, 의료기관 도움 요청이 실행되지 않아요.</p>
+   </div>`;
+  }
+  const steps=[1,2,3].map(n=>`<span class="${n===taxiStep?'current':''}" aria-label="${n}단계 ${n===taxiStep?'진행 중':''}">${n}</span>`).join('');
+  const controls=`<div class="travel-stage-actions">${taxiStep>1?button('taxi-prev','이전 단계'):''}${taxiStep<3?button('taxi-next',taxiStep===1?'다음 · 보조기구 선택':'선택 내용 확인'):''}</div>`;
+  return `<section class="travel-builder" data-taxi-builder aria-label="택시 호출 준비 시연"><div class="travel-progress" aria-label="3단계 준비 과정">${steps}</div>${inner}${controls}</section>`;
  }
  function taxiPanel(c){
-  const destinations=c.publication?.items.filter(i=>i.section==='followup'&&directionsURL(i.appointment?.destination))||[];
-  const destination=destinations.length===1?destinations[0].appointment.destination:null;
-  const destinationBox=destination
-   ?`<div class="travel-destination"><strong>의료진이 확인해 발행한 목적지</strong><p>${esc(destination.name)}</p><p class="travel-address">${esc(destination.address)}</p><small>이 주소는 택시 앱에 자동으로 전달되지 않아요.</small></div>`
-   :`<div class="travel-destination travel-pending"><strong>${destinations.length>1?'방문할 병원 선택이 필요해요':'병원 주소 확인이 필요해요'}</strong><p>${destinations.length>1?'확인된 목적지가 여러 곳이에요. 외래 일정에서 방문할 병원을 먼저 확인해 주세요.':'발행된 확정 목적지가 없어요. 병원 안내문이나 담당 기관에서 주소를 먼저 확인해 주세요.'}</p></div>`;
   return `<div class="travel-screen" data-travel-screen="taxi">
-    <p class="travel-intro">택시를 이용하려면 어떤 도움이 필요한지 먼저 골라보세요.</p>
+    <p class="travel-intro">이동 방법과 필요한 도움을 먼저 선택해 주세요. 실제 호출 전에 어떤 정보를 준비할지 확인하는 시연입니다.</p>
     <div class="travel-choice-grid" role="group" aria-label="이동 방법 선택">
-      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="regular" aria-pressed="${taxiChoice==='regular'}"><span class="travel-choice-icon" aria-hidden="true">🚕</span><strong>일반 택시</strong><small>직접 택시를 이용할 때</small></button>
-      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="assisted" aria-pressed="${taxiChoice==='assisted'}"><span class="travel-choice-icon" aria-hidden="true">♿</span><strong>이동에 도움 필요</strong><small>휠체어·부축 등이 필요할 때</small></button>
+      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="regular" aria-pressed="${taxiChoice==='regular'}"><span class="travel-choice-icon" aria-hidden="true">🚕</span><strong>일반 택시</strong><small>일반 차량 이용 준비</small></button>
+      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="assisted" aria-pressed="${taxiChoice==='assisted'}"><span class="travel-choice-icon" aria-hidden="true">♿</span><strong>이동에 도움 필요</strong><small>차량 조건·이동지원 사전 확인</small></button>
     </div>
     <div data-taxi-steps>${taxiChoiceDetails()}</div>
-    ${destinationBox}
-    <p class="travel-limitation"><strong>이 화면에서는 택시가 호출되지 않아요.</strong> 예약, 요금 조회, 결제 및 이동지원 차량 배정은 연결되지 않았어요. 의료적 이송이 필요한 경우 일반 택시 이용을 전제로 판단하지 마세요.</p>
+    ${taxiBuilder(c)}
+    <p class="travel-limitation"><strong>이 화면에서는 택시가 호출되지 않아요.</strong> 택시 예약·요금 조회·결제·배차 및 병원 지원 요청은 연결되지 않았어요. 의료적 이송이 필요한 경우 일반 택시를 대안으로 판단하지 마세요.</p>
   </div>`;
  }
  function documents(c){
@@ -195,7 +243,8 @@ export function installPatientComfort(adapter){
   if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':b.dataset.reminderTarget==='followup'?'#reminder-followup':'#reminder-personal');if(el?.tagName==='DETAILS')el.open=true;el?.scrollIntoView({block:'start'});el?.querySelector('summary,input,button')?.focus({preventScroll:true});return;}
   if(a==='reload'){if(!permitNavigation())return;refreshPreferences();openedPublication=pubKey(context());notice='최신 설정을 다시 읽었어요.';draw();return;}
   if(['documents','map','taxi'].includes(a)){open(a,b,b.dataset.id);return;}
-  if(a==='taxi-option'&&mode==='taxi'&&dialog){const choice=b.dataset.choice;if(!['regular','assisted'].includes(choice))return;taxiChoice=choice;dialog.querySelectorAll('[data-comfort=taxi-option]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.choice===choice)));const target=dialog.querySelector('[data-taxi-steps]');if(target)target.innerHTML=taxiChoiceDetails();return;}
+  if(a==='taxi-option'&&mode==='taxi'&&dialog){const choice=b.dataset.choice;if(!['regular','assisted'].includes(choice))return;taxiChoice=choice;dialog.querySelectorAll('[data-comfort=taxi-option]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.choice===choice)));const target=dialog.querySelector('[data-taxi-steps]');if(target)target.innerHTML=taxiChoiceDetails();if(taxiStep===3)dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);return;}
+  if((a==='taxi-next'||a==='taxi-prev')&&mode==='taxi'&&dialog){taxiStep=Math.max(1,Math.min(3,taxiStep+(a==='taxi-next'?1:-1)));dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);dialog.querySelector('.travel-stage h3')?.focus({preventScroll:true});dialog.querySelector('[data-taxi-builder]')?.scrollIntoView({block:'nearest'});return;}
   if(a==='map-fallback'){dialog.querySelector('#map-fallback').hidden=false;dialog.querySelector('textarea').focus();return;}
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
@@ -206,6 +255,22 @@ export function installPatientComfort(adapter){
   if(a==='seen'){write(next=>next.seen[b.dataset.id]=true);return;}
   if(a==='personal-edit'){const m=plan().personal.find(m=>m.id===b.dataset.id),f=dialog.querySelector('[data-comfort-form="personal"]');if(!m)return;for(const k of ['id','label','date','time','lead'])f.elements[k].value=m[k];f.scrollIntoView({block:'center'});f.elements.label.focus();return;}
   if(a==='personal-toggle'||a==='personal-delete')changePlan(s=>{if(a==='personal-delete')s.personal=s.personal.filter(m=>m.id!==b.dataset.id);else{const m=s.personal.find(m=>m.id===b.dataset.id);if(m)m.enabled=!m.enabled;}});
+ },true);
+ document.addEventListener('input',e=>{
+  if(mode!=='taxi'||!dialog||!dialog.contains(e.target)||!taxiDraft)return;
+  const field=e.target.dataset.taxiField;
+  if(['pickup','demoDestination'].includes(field))taxiDraft[field]=String(e.target.value).slice(0,80);
+ },true);
+ document.addEventListener('change',e=>{
+  if(mode!=='taxi'||!dialog||!dialog.contains(e.target)||!taxiDraft)return;
+  const el=e.target,field=el.dataset.taxiField,group=el.dataset.taxiGroup;
+  if(['destinationId','companion'].includes(field)){taxiDraft[field]=String(el.value);if(field==='destinationId'){const builder=dialog.querySelector('[data-taxi-builder]');if(builder)builder.outerHTML=taxiBuilder(context());}return;}
+  if(!['equipment','arrivalHelp'].includes(group))return;
+  const allowed=(group==='equipment'?gearChoices:helpChoices).map(x=>x[0]);
+  if(!allowed.includes(el.value))return;
+  if(el.checked){taxiDraft[group]=el.value==='none'?['none']:[...taxiDraft[group].filter(v=>v!=='none'&&v!==el.value),el.value];}
+  else taxiDraft[group]=taxiDraft[group].filter(v=>v!==el.value);
+  dialog.querySelectorAll('[data-taxi-group="'+group+'"]').forEach(input=>{input.checked=taxiDraft[group].includes(input.value)});
  },true);
  document.addEventListener('submit',e=>{
   const f=e.target;if(!f.matches('[data-comfort-form]'))return;e.preventDefault();e.stopImmediatePropagation();const values=new FormData(f),kind=f.dataset.comfortForm,submitted={kind,id:f.dataset.id};
