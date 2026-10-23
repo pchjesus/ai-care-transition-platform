@@ -199,7 +199,22 @@ export function installPatientComfort(adapter){
   const layout=document.querySelector('.app-layout'),side=layout?.querySelector('.side');
   return {layout,side,trigger:layout?.querySelector('[data-patient-drawer-toggle]'),backdrop:layout?.querySelector('[data-patient-drawer-close].patient-drawer-backdrop')};
  }
+ // Geometry alone includes some closed-details descendants; exclude those too.
+ function visibleFocusTarget(el){
+  if(!el?.isConnected||el.matches(':disabled')||el.closest('[inert]')||!el.getClientRects().length||getComputedStyle(el).visibility!=='visible')return false;
+  for(let parent=el.parentElement;parent;parent=parent.parentElement){
+   if(parent.matches('details:not([open])')&&!parent.querySelector(':scope > summary')?.contains(el))return false;
+  }
+  return true;
+ }
+ function drawerFocusTargets(side){return [...side.querySelectorAll('button,a[href],input,select,textarea,summary,[tabindex]')].filter(el=>el.tabIndex>=0&&visibleFocusTarget(el));}
+ function patientTourReturnTarget(){
+  const {trigger}=drawerNodes();
+  return visibleFocusTarget(trigger)?trigger:[...document.querySelectorAll('[data-comfort=tour]')].find(visibleFocusTarget)||document.querySelector('#main-content');
+ }
+ let drawerFocusFrame=0;
  function closeDrawer(restoreFocus=true){
+  cancelAnimationFrame(drawerFocusFrame);drawerFocusFrame=0;
   const {layout,side,trigger,backdrop}=drawerNodes();
   if(!layout?.classList.contains('patient-drawer-open'))return;
   layout.classList.remove('patient-drawer-open');
@@ -215,7 +230,17 @@ export function installPatientComfort(adapter){
   trigger.setAttribute('aria-expanded','true');
   backdrop?.removeAttribute('hidden');
   side.setAttribute('role','dialog');side.setAttribute('aria-modal','true');
-  side.querySelector('[data-patient-drawer-close].patient-drawer-close')?.focus({preventScroll:true});
+  // visibility transitions can reject focus in the opening click's task.
+  cancelAnimationFrame(drawerFocusFrame);
+  const focusInside=()=>{
+   drawerFocusFrame=0;
+   if(!layout.isConnected||!layout.classList.contains('patient-drawer-open')||!visibleFocusTarget(trigger))return;
+   if(side.contains(document.activeElement))return;
+   const target=side.querySelector('.patient-drawer-close');
+   if(visibleFocusTarget(target))target.focus({preventScroll:true});
+   if(!side.contains(document.activeElement))drawerFocusFrame=requestAnimationFrame(focusInside);
+  };
+  drawerFocusFrame=requestAnimationFrame(focusInside);
  }
  document.addEventListener('click',e=>{
   if(e.target.closest('[data-patient-drawer-toggle]')){e.preventDefault();e.stopImmediatePropagation();const {layout}=drawerNodes();if(layout?.classList.contains('patient-drawer-open'))closeDrawer();else openDrawer();return;}
@@ -234,10 +259,11 @@ export function installPatientComfort(adapter){
   if(!layout?.classList.contains('patient-drawer-open')||!side)return;
   if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();closeDrawer();return;}
   if(e.key!=='Tab')return;
-  const focusable=[...side.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled])')].filter(el=>el.getClientRects().length>0);
+  const focusable=drawerFocusTargets(side);
   if(!focusable.length)return;
   const first=focusable[0],last=focusable.at(-1);
-  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  if(!focusable.includes(document.activeElement)){e.preventDefault();(e.shiftKey?last:first).focus();}
+  else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
  },true);
  function patientNavigation(main){
@@ -308,7 +334,7 @@ export function installPatientComfort(adapter){
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
    if(!c.publication||!permitNavigation())return;
-   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>{const selectors={'today-task':'.tasks .task',detail:'.detail-wrap',schedule:'.schedule-layout',reminders:'.reminder-sections','schedule-tab':'.side [data-view=schedule],.side [data-nav=schedule]','reminders-tab':'.side [data-view=reminders],.side [data-nav=reminders]'};const navName=name==='schedule-tab'?'schedule':name==='reminders-tab'?'reminders':null;return navName?[...document.querySelectorAll(selectors[name]+`,.bottom-nav [data-view=${navName}],.bottom-nav [data-nav=${navName}]`)].find(e=>e.getClientRects().length):document.querySelector(selectors[name]);},context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:()=>document.querySelector('[data-comfort="tour"]')};
+   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>{const selectors={'today-task':'.tasks .task',detail:'.detail-wrap',schedule:'.schedule-layout',reminders:'.reminder-sections','schedule-tab':'.side [data-view=schedule],.side [data-nav=schedule]','reminders-tab':'.side [data-view=reminders],.side [data-nav=reminders]'};const navName=name==='schedule-tab'?'schedule':name==='reminders-tab'?'reminders':null;return navName?[...document.querySelectorAll(selectors[name]+`,.bottom-nav [data-view=${navName}],.bottom-nav [data-nav=${navName}]`)].find(e=>e.getClientRects().length):document.querySelector(selectors[name]);},context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:patientTourReturnTarget};
    openPatientTour(b,bridge,{brief:true,steps});return;
   }
   if(a==='seen'){write(next=>next.seen[b.dataset.id]=true);return;}
