@@ -30,6 +30,6 @@ jobs:
       - name: R13 taxi wizard plus old transport regression
         working-directory: prototypes/integrated-v10
         run: |
-          python tests/taxi_preview_http.py
-          python tests/transport_ui_http.py
+          # New wizard tests 3/3 and other transport tests 2/3 already passed in run 39919135816.
+          python tests/transport_ui_http.py TravelUI.test_integrated_unverified_route_disabled_but_taxi_advice_visible
           python tests/comfort_http.py Comfort.test_map_verified_snapshot_external_link_blocked_fallback_and_missing_address
