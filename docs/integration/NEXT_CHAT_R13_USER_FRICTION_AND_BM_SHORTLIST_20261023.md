@@ -50,3 +50,13 @@
 - **환경 한계:** 로컬 Chromium의 `file://`·localhost 및 외부 GitHub Pages 브라우저 네비게이션 차단. 테스트는 브라우저 직접 HTML 삽입을 통한 로컬 화면·조작 확인으로 제한. 기존 독립 B/연동 B 배포/드로어 실물 조작 B01~B04 **NOT RUN**, 실물 기기·스크린리더 **NOT RUN**.
 - 정책: 합성 데이터만; 승인/발행/철회·환자/입원건 격리·저장 보호·하단 5탭 보존. 실제 연락·계약·수익/가격 검증 없음. Codex, PR, `main`, `gh-pages` 변경하지 않음.
 - 다음 우선순위: **(1)** 연결되는 브라우저 환경에서 B01~B04 실사용 조작 기록 **(2)** 조원 내부 리허설 및 사람 대상 IRB·동의 필요 여부 판단 **(3)** 참여자 관찰 **(4)** 확인된 마찰만 독립 목업 최소 수정, 구매주체 실사(병원 SaaS·업체 운영도구·숙박).
+
+
+## 7. 2026-10-23 사전 2차 검증 및 Codex 검증 인계
+
+- 독립 목업 Git blob SHA `aa5b136686ff55fee1ddf442d11cb50d4d4b1c44` 동일 로컬 소스를 Chromium+Node 문법으로 추가 사전검증: **7/7 PASS** (`SYNTAX, FLOW-ALL, KEYBOARD, REFLOW, ZOOM-SIM, LINKS, NO-ERRORS`). 320/360/390/600/768/1440px; 200%는 CSS zoom *모사*, 실제 브라우저 200% 아닐 것. 실제 참가자 이해도/기기 UX 별개.
+- 이전 실행기반 재사용용 4개 테스트를 GitHub에 추가: `prototypes/concepts/tests/test_equipment_pathways_r13.py` (Python Playwright, **이 커밋된 스크립트 자체의 GitHub 브랜치 실행은 아직 NOT RUN**; 동일 목적의 로컬 동작검사는 PASS).
+- Codex에 넘길 범위제한·보존조건·필수 회귀·보고 형식 문서: `docs/integration/R13_CODEX_PREPILOT_AUDIT_TASK_20261023.md`. **Codex 실제 실행은 아직 NOT RUN.**
+- `main`·`gh-pages`·모바일 드로어 원본 브랜치·A1/A2/A3/B 승인 UX/공유 저장 계약을 변경하지 않음. 실행 중 이슈가 있으면 독립 audit 브랜치에서만 안전한 최소 수정 제안.
+- 보조기구 목업 화면의 고령 사용성 가설: 390px 첫 CTA가 폴드 하단 가까이 있음, 행정용어 전문성, 질문 확인 뒤 실제 문의 준비 과업 단절. 이들은 **사람에게 확인하지 않은 가설**.
+- 다음 게이트: Codex의 R13 목업 + 독립 B + A3연동 B 기술 판정 확인 → 실기기/배포 점검 미실행 항목 구분 → 지도교수/기관에 IRB·동의 판단 확인 → 조원 내부 리허설 → 실제 사용자 관찰.
