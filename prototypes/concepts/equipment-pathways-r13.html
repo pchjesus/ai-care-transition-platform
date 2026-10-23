@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>퇴원 후 보조기구 준비 경로 · R13 독립 개념 시연</title>
+<style>
+:root{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--text:#263931;--muted:#556c62;--green:#275945;--soft:#edf4ee;--border:#cddfd2;--page:#f3f6f2;--scale:1;color:var(--text)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);font-size:calc(16px * var(--scale));line-height:1.65;word-break:keep-all}
+button,a{font:inherit}button{cursor:pointer}button:disabled{opacity:.48;cursor:not-allowed}
+button:focus-visible,a:focus-visible{outline:3px solid #aa6821;outline-offset:3px}
+.skip{position:absolute;top:-100px;left:20px;background:#fff;padding:12px;z-index:5}.skip:focus{top:0}
+.frame{width:min(860px,100% - 32px);margin:24px auto 60px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{font-size:calc(17px * var(--scale));font-weight:850;color:var(--green)}
+.font-btn{border:1px solid #a9c3b0;border-radius:10px;padding:10px 14px;background:#fff;color:var(--green);min-height:46px;font-weight:750}
+.notice{border:1px solid #d3c497;background:#fffaf0;padding:14px 18px;border-radius:12px;font-size:calc(14px * var(--scale));line-height:1.7}
+main{background:white;border:1px solid var(--border);border-radius:20px;padding:clamp(20px,5vw,46px);margin-top:16px;box-shadow:0 8px 26px #1933230b;min-height:520px}
+.kicker{font-size:calc(13px * var(--scale));color:var(--green);font-weight:800;letter-spacing:.02em}
+h1{font-size:calc(30px * var(--scale));letter-spacing:-.045em;line-height:1.35;margin:11px 0 15px}
+h2{font-size:calc(22px * var(--scale));line-height:1.4;margin:8px 0 14px}
+p{margin:0 0 18px}
+.lead{color:var(--muted);max-width:650px}
+.steps{display:flex;gap:8px;margin-bottom:30px}
+.steps span{flex:1;padding:10px 4px;text-align:center;color:#547064;background:#edf3ee;border-radius:10px;font-size:calc(13px * var(--scale));font-weight:750}
+.steps span[aria-current=step]{background:var(--green);color:#fff}
+.mini{font-size:calc(14px * var(--scale));color:var(--muted);line-height:1.7}
+.info{background:var(--soft);border-radius:13px;padding:20px 22px;margin:20px 0}
+.info strong{display:block;margin-bottom:5px}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.route{border:1.5px solid var(--border);border-radius:14px;background:white;color:var(--text);padding:19px;text-align:left;min-height:122px;transition:border-color .1s,background .1s}
+.route strong{display:block;font-size:calc(17px * var(--scale));margin-bottom:5px}
+.route span{display:block;font-size:calc(14px * var(--scale));color:var(--muted)}
+.route[aria-pressed=true]{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green);background:#f0f7f1}
+.checks{padding-left:1.5em;margin:20px 0 24px}.checks li{padding:5px 0}
+.actions{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:27px;flex-wrap:wrap}
+.primary{background:var(--green);color:white;border:0;border-radius:11px;min-height:52px;padding:11px 22px;font-weight:750}
+.secondary{background:white;color:var(--green);border:1px solid #8fb49d;border-radius:11px;min-height:52px;padding:11px 18px;font-weight:750}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.links a{border:1px solid var(--border);border-radius:10px;padding:9px 13px;color:var(--green);font-size:calc(14px * var(--scale));font-weight:750;text-decoration:none;background:#fff}
+.links a:hover{text-decoration:underline}
+footer{margin:18px 5px;color:#587064;font-size:calc(13px * var(--scale))}
+[hidden]{display:none!important}
+@media(max-width:560px){.frame{width:calc(100% - 20px);margin-top:12px}.cards{grid-template-columns:1fr}.route{min-height:94px}main{border-radius:16px}.steps span{font-size:calc(12px * var(--scale))}h1{font-size:calc(26px * var(--scale))}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{body{background:white}.font-btn,.actions,.skip{display:none!important}main{box-shadow:none}.frame{width:100%;margin:0}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<div class="frame">
+<header class="head"><span class="brand">케어브릿지랩 <small>R13 독립 목업</small></span><button id="font" class="font-btn" type="button" aria-pressed="false">글자 크게</button></header>
+<div class="notice" role="note"><strong>가상 사례·기획 시연</strong> — 실제 병원 처방·승인·발행, 보조기구 추천, 장기요양 급여판정, 구매·대여 예약 또는 기관 전송이 아닙니다. 실제 품목은 담당 의료진과 확인하세요.</div>
+<main id="main" tabindex="-1">
+<nav class="steps" aria-label="진행 단계"><span id="step1" aria-current="step">1. 준비 확인</span><span id="step2">2. 경로 선택</span><span id="step3">3. 문의 준비</span></nav>
+<section id="intro" aria-labelledby="intro-title">
+<p class="kicker">합성 퇴원환자 시나리오</p>
+<h1 id="intro-title">퇴원 후 보조기구, 어디서 알아보면 좋을까요?</h1>
+<p class="lead">가상 사례에서는 보행에 필요한 장비를 준비하는 방법을 알아보려 합니다. 어떤 품목이 적합한지는 이 화면이 결정하지 않아요.</p>
+<div class="info"><strong>먼저 담당 의료진에게 확인할 내용</strong>어떤 보조기구가 필요한지, 어떤 방식으로 사용해야 하는지, 퇴원 전 병원에서 대여·안내해 주는 물품이 있는지 확인하세요.</div>
+<p class="mini">이 시연은 실제 환자정보와 연결되지 않으며 선택한 내용을 저장하거나 다른 기관에 전달하지 않습니다.</p>
+<div class="actions"><span></span><button class="primary" type="button" id="start">가능한 경로 살펴보기 →</button></div>
+</section>
+<section id="routes" aria-labelledby="routes-title" hidden>
+<p class="kicker">서로 다른 이용조건을 가진 경로</p>
+<h2 id="routes-title">어떤 경로를 먼저 알아볼까요?</h2>
+<p class="lead">공공지원과 일반 구매·대여를 함께 보여드려요. 선택은 알아보기 위한 것일 뿐, 이용 자격이나 구매 여부가 확정되지 않습니다.</p>
+<div id="route-grid" class="cards" role="group" aria-label="준비 경로 선택"></div>
+<div class="actions"><button class="secondary" id="back1" type="button">← 이전</button><button class="primary" id="next" type="button" disabled>확인할 질문 보기 →</button></div>
+</section>
+<section id="details" aria-labelledby="details-title" hidden>
+<p class="kicker">문의 준비 — 미신청 상태</p>
+<h2 id="details-title">확인할 질문을 정리했어요</h2>
+<div class="info"><strong id="picked"></strong><span id="explain"></span></div>
+<p>아래 항목을 해당 기관에 직접 문의하세요.</p>
+<ul class="checks" id="questions"></ul>
+<p class="mini" id="rule"></p>
+<div id="official" class="links" aria-label="공식 정보 출처"></div>
+<div class="notice" style="margin-top:24px"><strong>아직 신청하거나 예약하지 않았습니다.</strong> 경로와 질문을 화면에서 확인했을 뿐, 정보가 병원·공단·업체에 전송되지 않았습니다.</div>
+<div class="actions"><button class="secondary" id="back2" type="button">← 경로 다시 선택</button><button class="primary" id="restart" type="button">처음부터 보기</button></div>
+</section>
+</main>
+<footer>고령 환자·보호자 사용성 실험용 예비 설계. 실제 참여자 평가 NOT RUN. 기존 환자앱·병원앱과 독립적으로 작동합니다.</footer>
+</div>
+<script>
+(function(){
+'use strict';
+const data=[
+ {title:'병원 대여·퇴원 전 문의',desc:'퇴원 전에 병원에서 이용 가능한 안내나 대여 경로가 있는지 확인',text:'병원별 지원 여부와 연락처는 현재 확인하지 않았습니다.',q:['필요한 품목과 사용법을 의료진에게 확인했나요?','병원에서 대여·교육하는 장비가 실제로 있나요?','이용 기간, 반납 절차 및 비용은 어떻게 되나요?'],rule:'병원 제공 가능 여부를 이 화면은 보장하지 않습니다.',links:[]},
+ {title:'장기요양보험 복지용구',desc:'수급 여부와 급여확인서의 품목·구입/대여 조건 확인',text:'장기요양 인정과 복지용구 급여확인서는 공단이 판단합니다.',q:['장기요양 인정 및 복지용구 급여확인서가 있나요?','필요 품목이 급여확인서의 이용 가능 품목인가요?','사업소별 대여·구입, 본인부담, 배송·회수 조건은 무엇인가요?'],rule:'연령이나 퇴원 사실만으로 장기요양 수급 또는 해당 품목 급여가 확정되는 것은 아닙니다.',links:[['국민건강보험공단 급여 안내','https://www.nhis.or.kr/static/html/wbda/c/wbdac04.html']]},
+ {title:'장애인 보조기기·공공센터',desc:'보조기기 상담 및 지원사업 정보와 지역센터 찾기',text:'지원 대상·품목·신청기한·지역별 이용 가능 여부는 실제 담당기관이 확인합니다.',q:['본인 상황에 해당하는 공공 보조기기 지원사업이 있나요?','지역 보조기기센터에서 상담이 가능한가요?','지원요건과 신청서류, 상담·점검 절차는 무엇인가요?'],rule:'장애인 지원 경로는 장기요양보험 복지용구와 별개의 제도입니다.',links:[['국립재활원 보조기기센터','https://www.knat.go.kr/knw/home/knat/knat_map.php']]},
+ {title:'일반 구매·대여',desc:'일반 판매·대여 업체의 상품·배송·회수 조건 직접 문의',text:'민간업체 제휴·재고·가격·안전성·자격 확인은 진행하지 않았습니다.',q:['해당 품목의 의료기기 해당 여부와 판매·임대 자격은 어떻게 확인하나요?','대여 기간·보증금·배송·설치·반납 비용은 어떻게 되나요?','소독·점검·수리·교환·사후관리 기준은 무엇인가요?'],rule:'특정 업체 추천이나 의료적 적합성 판단이 아니며 실제 구매는 외부에서 별도 진행해야 합니다.',links:[]}
+];
+let selected=-1,stage=0;
+const $=id=>document.getElementById(id);
+function show(n){
+ stage=n;
+ ['intro','routes','details'].forEach((id,i)=>$(id).hidden=i!==n);
+ [1,2,3].forEach((i)=>{const e=$('step'+i);if(i===n+1)e.setAttribute('aria-current','step');else e.removeAttribute('aria-current')});
+ if(n===1){fillRoutes();$('next').disabled=selected===-1;}
+ if(n===2)fillDetails();
+ const heading=(n===0?'intro-title':n===1?'routes-title':'details-title');
+ $(heading).setAttribute('tabindex','-1');$(heading).focus({preventScroll:true});
+}
+function fillRoutes(){
+ const grid=$('route-grid');grid.replaceChildren();
+ data.forEach((x,i)=>{
+  const btn=document.createElement('button');btn.type='button';btn.className='route';
+  btn.setAttribute('aria-pressed',String(selected===i));
+  const strong=document.createElement('strong');strong.textContent=x.title;
+  const small=document.createElement('span');small.textContent=x.desc;
+  btn.append(strong,small);btn.addEventListener('click',()=>{selected=i;fillRoutes();$('next').disabled=false;grid.children[i].focus()});
+  grid.append(btn);
+ });
+}
+function fillDetails(){
+ const x=data[selected];if(!x){show(1);return;}
+ $('picked').textContent=x.title;$('explain').textContent=x.text;
+ const qs=$('questions');qs.replaceChildren();
+ x.q.forEach(q=>{const li=document.createElement('li');li.textContent=q;qs.append(li)});
+ $('rule').textContent=x.rule;
+ const links=$('official');links.replaceChildren();
+ x.links.forEach(item=>{const a=document.createElement('a');a.textContent=item[0]+' ↗';a.href=item[1];a.target='_blank';a.rel='noopener noreferrer';a.referrerPolicy='no-referrer';links.append(a)});
+}
+$('start').addEventListener('click',()=>show(1));
+$('back1').addEventListener('click',()=>show(0));
+$('next').addEventListener('click',()=>{if(selected>=0)show(2)});
+$('back2').addEventListener('click',()=>show(1));
+$('restart').addEventListener('click',()=>{selected=-1;show(0)});
+$('font').addEventListener('click',()=>{
+ const large=$('font').getAttribute('aria-pressed')!=='true';
+ $('font').setAttribute('aria-pressed',String(large));
+ $('font').textContent=large?'글자 원래대로':'글자 크게';
+ document.documentElement.style.setProperty('--scale',large?'1.16':'1');
+});
+})();
+</script>
+</body>
+</html>
