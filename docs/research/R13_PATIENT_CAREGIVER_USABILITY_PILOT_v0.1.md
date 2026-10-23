@@ -1,5 +1,7 @@
 # R13 고령 사용자·보호자 과업 중심 사용성 파일럿 프로토콜 v0.1
 
+> **R13 범위 조정(2026-10-23):** 모집 가능 인원을 고려해 1차는 AI/개발자 휴리스틱·인지적 워크스루로 실시하며, 사람 대상 관찰은 가능할 때 **1~2명 탐색적 파일럿**으로 축소한다. 이 수는 통계적 검증 표본이 아니며 실제 고령 환자의 대표성이 없다. 실제 연구자료를 수집·활용하기 전에는 지도교수/기관의 심의 또는 면제 필요 여부, 동의 및 자료 보관·삭제 절차를 확인한다. 아래의 5~8명은 원래의 **확장 목표**이고 완료 기준이 아니다. 구현된 이동 안내 과업은 [교통 UI R13 보충](./R13_TRANSPORT_USABILITY_SCOPE_20261023.md) 참조.
+
 작성: 2026-10-23 · 상태: **준비안(DRAFT) / 실제 모집·동의·평가 NOT RUN**  
 프로젝트: 케어브릿지랩, 합성 데이터 기반 GitHub Pages MVP. 기준 `docs/R00_R13_EVIDENCE_REVIEW_DISCHARGE_PATIENT_CAREGIVER_v0.1.md`, `docs/integration/NEXT_CHAT_HANDOFF_AFTER_PHASE4_FINAL_20261023.md`, `docs/integration/PHASE4_PUBLIC_SITE_SPOTCHECK_20261023.md`.
 
