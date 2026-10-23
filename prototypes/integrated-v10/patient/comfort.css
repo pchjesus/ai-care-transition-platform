@@ -114,3 +114,41 @@
  .comfort-dialog .travel-check{min-height:56px}
  .comfort-dialog .travel-stage-actions button{padding:9px 13px}
 }
+
+
+/* KRDS-inspired mobile header / collapsible nav. Same A3-connected + standalone B.
+   Container query matches both narrow viewport and existing 390px preview frame. */
+.patient-drawer-toggle,.patient-drawer-close,.patient-drawer-backdrop,.mobile-side-actions{display:none}
+@container display (max-width: 760px){
+ .app-layout{position:relative}
+ .app-layout .topline{height:58px!important;min-height:58px!important;display:flex!important;align-items:center!important;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:9px!important;padding:0 14px!important}
+ .app-layout .topline .kicker{font-size:calc(16px * var(--font-scale,1))!important;font-weight:800!important;line-height:1.3;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .app-layout .topline .meta{display:none!important}
+ .app-layout .patient-drawer-toggle{display:inline-grid;place-items:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;border:1px solid #c9ddcf;border-radius:10px;background:#f1f8f3;color:#315b43;padding:0;cursor:pointer}
+ .app-layout .patient-page-tools,.app-layout .patient-mobile-journey{display:none!important}
+ .app-layout .side{display:flex!important;flex-direction:column;position:fixed;inset:0 auto 0 0;width:min(320px,calc(100vw - 48px));max-width:calc(100% - 42px);height:100dvh;box-sizing:border-box;z-index:35;overflow:auto;overscroll-behavior:contain;transform:translateX(-106%);transition:transform .18s ease,visibility .18s ease;visibility:hidden;pointer-events:none;box-shadow:8px 0 28px #152f2440;padding:17px 14px 22px;background:#f8fbfa}
+ .app-layout.patient-drawer-open .side{transform:translateX(0);visibility:visible;pointer-events:auto}
+ .app-layout .patient-drawer-close{display:inline-flex;align-items:center;gap:7px;justify-content:center;position:absolute;top:17px;right:13px;min-width:66px;min-height:44px;background:#edf5f0;border:1px solid #c7d9cc;border-radius:10px;color:#315a43;font:inherit;font-size:calc(15px * var(--font-scale,1));cursor:pointer}
+ .app-layout .patient-drawer-close span{font-size:22px}
+ .app-layout .side-brand{padding:5px 76px 10px 5px;min-height:44px}
+ .app-layout .side-cap{padding:9px 11px}
+ .app-layout .side-nav{padding:12px 13px;min-height:48px}
+ .app-layout .patient-sidebar-journey{display:flex;gap:6px;padding:8px 10px;margin:3px 0 8px;flex-wrap:wrap}
+ .app-layout .mobile-side-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px;border-top:1px solid #d5e3d9;padding:13px 10px 8px}
+ .app-layout .mobile-side-actions h2{font-size:calc(15px * var(--font-scale,1));margin:0 0 3px;color:#516b5c}
+ .app-layout .mobile-side-actions button,.app-layout .mobile-side-actions a{width:100%;min-height:48px;display:flex;justify-content:flex-start;align-items:center;text-align:left;border:1px solid #c7d9ce;border-radius:10px;background:#fff;color:#315846;padding:10px 13px;font:inherit;font-size:calc(16px * var(--font-scale,1));font-weight:650;text-decoration:none;box-sizing:border-box}
+ .app-layout .mobile-side-actions [data-comfort=tour]{font:inherit}
+ .app-layout .side-end{margin-top:10px;padding:14px 10px 8px}
+ .app-layout .patient-drawer-backdrop:not([hidden]){display:block;position:fixed;inset:0;z-index:34;width:100%;height:100dvh;margin:0;padding:0;border:0;background:#11241b85;cursor:pointer}
+ .app-layout .patient-drawer-toggle:focus-visible,.app-layout .patient-drawer-close:focus-visible,.app-layout .mobile-side-actions :focus-visible,.app-layout .side-nav:focus-visible{outline:3px solid #a07942;outline-offset:2px}
+}
+@media(max-width:760px){
+ .app-layout.patient-drawer-open .side{max-height:100dvh}
+}
+@media(prefers-reduced-motion:reduce){
+ .app-layout .side{transition:none}
+}
+@media print{
+ .patient-drawer-toggle,.patient-drawer-close,.patient-drawer-backdrop,.mobile-side-actions{display:none!important}
+}
+
