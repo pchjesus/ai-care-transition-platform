@@ -28,3 +28,14 @@
 ## 4. 다음 채팅 시작용 문장
 
 > 케어브릿지랩의 사용자 불편 탐색(R13)과 사업성 유망 후보 심화를 이어가자. GitHub `pchjesus/ai-care-transition-platform`의 `docs/r13-service-ideas-20261023` 브랜치에서 `docs/integration/NEXT_CHAT_R13_USER_FRICTION_AND_BM_SHORTLIST_20261023.md`를 먼저 읽고, 그 안의 Track A/B 두 문서를 필요한 만큼만 살펴봐. Track A에서 예상되는 사용성 위험 상위 3~5개를 근거·시나리오로 평가하고, Track B에서 실사 가치가 높은 후보 3개를 비교해 발전시키자. 기존 기능과 확정 UX 및 의료정보 계약을 보존하고, 신규 제휴나 수익을 사실로 주장하지 마. 아직 Codex 검증·main/Pages 변경은 하지 마.
+
+
+## 5. 2026-10-23 후속 진행 (이번 채팅)
+
+- 소스 기반 R13 전문가 예비 검토 및 두 B(독립·A3연동)와 보조기구 콘셉트의 **실행 과업 매트릭스**를 작성: `docs/research/R13_STATIC_EXPERT_WALKTHROUGH_AND_TEST_MATRIX_v0.2.md`.
+- 구매자·실무자·공급업체 역할별 **중립 인터뷰 질문과 GO/REVISE/NO-GO 게이트**를 작성: `docs/business/R13_BM_FIRST_CONTACT_DISCOVERY_GUIDE_v0.1.md`.
+- 교정된 버전 관계: 독립 B의 HTML이 동일해도 `standalone-comfort.js`가 공통 `comfort-ui.js`를 import하기 때문에 모바일 드로어 브랜치에서는 **독립 B와 연동 B 모두** 변경 대상이다. 단, 독립 B의 합성 안내와 A3 발행본은 별개로 평가.
+- 우선 가설: 공공급여 자격 오인·행정 용어 장벽·문의 질문의 실제 활용 단계 부족; 기존 B는 발행/시연·알림·택시 완료 오인 관찰.
+- 대상 화면의 실제 390/768/1440px 및 200% 확대 **브라우저 조작 NOT RUN**, 실제 참여자 시험 **NOT RUN**, 제휴·사업모델 실사 **NOT RUN**. 일부 목업 색상 표본 정적 대비 계산 수행. 분석을 사용자 실측 결과로 표현하지 않는다.
+- 이전 파일·합성 목업 이외의 병원/환자 실행 코드 변경 없음. **Codex 검증/PR/main/gh-pages 변경 없음**.
+- 다음 권장 순서: 버전별 브라우저 매트릭스 조작 기록 → 사용자 관찰 윤리·동의 게이트 → 비유도 과업 내부 리허설 → 사용자 범위 결정 후 독립 목업의 최소 UX 수정 여부 검토 → 구매·공급자 예비 실사.
