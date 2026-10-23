@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "bfe412d518b281de0d88a5099f634e373c5f502f",
-  "previousPagesCommit": "da24d7329865e1380fb5e6e8090cc35c1ebce227",
+  "sourceCommit": "24e16bee0a6158002d513e63294b5333d7df0dc9",
+  "previousPagesCommit": "4cca397fa62f8a5a589ab93e358f0f0f3eaee241",
   "isSyntheticDemo": true,
   "files": [
     {
@@ -255,13 +255,13 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 37189,
-      "sha256": "d34ac9228e0d822ca48e544036be252202bff08f28296abfc6d338c915bc50f2"
+      "bytes": 45112,
+      "sha256": "4faf7acd848a6a04aaf1de568e63b5442c33b057fa977424c4faa5f1237e0310"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
-      "bytes": 13792,
-      "sha256": "0285c9a94761ffebfaf13b1ed8cbef3ac7356d8d7d464660f47d06118331e894"
+      "bytes": 18244,
+      "sha256": "270ca48e9de31fad0d0df6793990d2c7fe42d751fcfaa268654585731f08da60"
     },
     {
       "path": "prototypes/integrated-v10/patient/connected.css",
