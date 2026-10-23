@@ -102,10 +102,11 @@ export function installPatientComfort(adapter){
   return `<section class="travel-steps" aria-label="선택한 이동 방법 안내"><h3>${taxiChoice==='assisted'?'이동에 도움이 필요한 경우':'일반 택시를 이용하는 경우'}</h3><ol>${steps.map((step,i)=>`<li><span class="travel-step-index">${i+1}</span><span>${step}</span></li>`).join('')}</ol></section>`;
  }
  function taxiPanel(c){
-  const destination=c.publication?.items.find(i=>i.section==='followup'&&directionsURL(i.appointment?.destination))?.appointment?.destination;
+  const destinations=c.publication?.items.filter(i=>i.section==='followup'&&directionsURL(i.appointment?.destination))||[];
+  const destination=destinations.length===1?destinations[0].appointment.destination:null;
   const destinationBox=destination
    ?`<div class="travel-destination"><strong>의료진이 확인해 발행한 목적지</strong><p>${esc(destination.name)}</p><p class="travel-address">${esc(destination.address)}</p><small>이 주소는 택시 앱에 자동으로 전달되지 않아요.</small></div>`
-   :'<div class="travel-destination travel-pending"><strong>병원 주소 확인이 필요해요</strong><p>발행된 확정 목적지가 없어요. 병원 안내문이나 담당 기관에서 주소를 먼저 확인해 주세요.</p></div>';
+   :`<div class="travel-destination travel-pending"><strong>${destinations.length>1?'방문할 병원 선택이 필요해요':'병원 주소 확인이 필요해요'}</strong><p>${destinations.length>1?'확인된 목적지가 여러 곳이에요. 외래 일정에서 방문할 병원을 먼저 확인해 주세요.':'발행된 확정 목적지가 없어요. 병원 안내문이나 담당 기관에서 주소를 먼저 확인해 주세요.'}</p></div>`;
   return `<div class="travel-screen" data-travel-screen="taxi">
     <p class="travel-intro">택시를 이용하려면 어떤 도움이 필요한지 먼저 골라보세요.</p>
     <div class="travel-choice-grid" role="group" aria-label="이동 방법 선택">
@@ -182,7 +183,9 @@ export function installPatientComfort(adapter){
     return `<button type="button" class="travel-entry travel-route" data-comfort="map" data-id="${esc(i.id)}" ${confirmed||c.source==='independent'?'':'disabled'}><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>${esc(i.title)} · ${confirmed?'확인된 목적지로 지도 열기':'병원 주소 확인 필요'}</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>`;
    }).join('');
    const route=routeCards||(c.source==='independent'?'<button type="button" class="travel-entry travel-route" data-comfort="map"><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>병원 주소 확인 방법 보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>':'<p class="travel-no-address">발행된 외래 목적지가 없어 길찾기를 시작할 수 없어요.</p>');
-   add(main,`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`);
+   const travelMarkup=`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`;
+   const anchor=main.querySelector('.schedule-layout .sublead,.service-page .service-lead');
+   if(anchor)anchor.insertAdjacentHTML('afterend',travelMarkup);else add(main,travelMarkup);
   }
  }
  document.addEventListener('click',e=>{
