@@ -59,6 +59,7 @@ class MobileDrawer(unittest.TestCase):
   expect(p.locator('.comfort-inline')).to_be_visible()
   p.locator('#reminder-personal>summary').click()
   p.locator('[data-comfort-form=personal] [name=label]').fill('보존 중인 임시 내용')
+  p.remove_all_listeners('dialog')
   p.on('dialog',lambda dialog:dialog.dismiss())
   self.open_menu()
   p.locator('.side [data-view=today]').click()
