@@ -220,10 +220,12 @@ export function installPatientComfort(adapter){
  document.addEventListener('click',e=>{
   if(e.target.closest('[data-patient-drawer-toggle]')){e.preventDefault();e.stopImmediatePropagation();const {layout}=drawerNodes();if(layout?.classList.contains('patient-drawer-open'))closeDrawer();else openDrawer();return;}
   if(e.target.closest('[data-patient-drawer-close]')){e.preventDefault();e.stopImmediatePropagation();closeDrawer();return;}
+  if(e.target.closest('.mobile-side-actions [data-comfort=tour]')){closeDrawer(false);return;}
   const {layout}=drawerNodes();
   if(layout?.classList.contains('patient-drawer-open')&&e.target.closest('.side [data-nav],.side [data-view],.side .mobile-side-actions a,.side .demo-tools a,.side [data-action=home],.side [data-action=patient-home],.side [data-action=back],.side [data-action=patient-back],.side [data-action=next],.side [data-action=patient-next]')){
    // Do not dismiss the drawer when an unsaved edited reminder blocks navigation.
    if(!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
+   e.__patientDrawerNavChecked=true;
    closeDrawer(false);
   }
  },true);
@@ -294,7 +296,7 @@ export function installPatientComfort(adapter){
   }
  }
  document.addEventListener('click',e=>{
-  const nav=e.target.closest('[data-nav],[data-view],[data-action=home],[data-action=back],[data-action=next],[data-action=patient-home],[data-action=patient-back],[data-action=patient-next],[data-action=logout],.demo-tools a,.mobile-side-actions a');if(nav&&!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
+  const nav=e.target.closest('[data-nav],[data-view],[data-action=home],[data-action=back],[data-action=next],[data-action=patient-home],[data-action=patient-back],[data-action=patient-next],[data-action=logout],.demo-tools a,.mobile-side-actions a');if(nav&&!e.__patientDrawerNavChecked&&!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
   const b=e.target.closest('[data-comfort]');if(!b||b.disabled)return;e.preventDefault();e.stopImmediatePropagation();const a=b.dataset.comfort,c=context();if(!bound(c))return;
   if(a==='close'){close();return;}
   if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':b.dataset.reminderTarget==='followup'?'#reminder-followup':'#reminder-personal');if(el?.tagName==='DETAILS')el.open=true;el?.scrollIntoView({block:'start'});el?.querySelector('summary,input,button')?.focus({preventScroll:true});return;}
