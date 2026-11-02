@@ -1,0 +1,210 @@
+/* CareBridge Lab Patient B v1.2 — approved five-screen, information-first layout.
+ * Scope: patient surfaces only. Existing 5-tab navigation and publication contracts unchanged.
+ */
+:root{--v12-green:#227443;--v12-dark:#183d2b;--v12-ink:#172b21;--v12-muted:#506558;--v12-line:#dce6dc;--v12-tint:#eff8f0;--v12-white:#fff;--v12-alert:#fff4f2;}
+.v12-shell{max-width:790px;margin:0 auto;padding:0 0 25px;color:var(--v12-ink);font-size:calc(16px * var(--font-scale,1));line-height:1.55}
+.v12-shell button,.v12-shell a{font:inherit}
+.v12-kicker{font-size:calc(13px * var(--font-scale,1));color:var(--v12-muted);margin:0 0 4px}
+.v12-head{margin:9px 0 22px}
+.v12-head h1{font-size:calc(29px * var(--font-scale,1));letter-spacing:-.04em;line-height:1.34;color:#172b20;margin:0 0 5px}
+.v12-head p{font-size:calc(16px * var(--font-scale,1));color:#334d3c;line-height:1.55;margin:0}
+.v12-subtitle{font-size:calc(21px * var(--font-scale,1));font-weight:800;color:#1a3022;line-height:1.4;margin:24px 0 12px}
+.v12-home-appointment{display:block;width:100%;border:1px solid #d4e8d8;border-radius:17px;background:linear-gradient(145deg,#f2faf3,#e7f5e8);padding:21px 22px;text-align:left;color:var(--v12-ink);min-height:120px;cursor:pointer}
+.v12-home-appointment:hover,.v12-home-appointment:focus-visible{border-color:#7cae89;background:#e5f4e7}
+.v12-appointment-label{display:flex;align-items:center;gap:10px;font-weight:800;color:#204f32;margin-bottom:10px}
+.v12-appointment-label svg{color:#188045}
+.v12-appointment-date{display:block;font-size:calc(24px * var(--font-scale,1));font-weight:850;letter-spacing:-.035em;line-height:1.4;color:#172e20}
+.v12-appointment-place{display:block;font-size:calc(14px * var(--font-scale,1));color:#405a48;margin-top:5px}
+.v12-appointment-chev{margin-left:auto;color:#1e6e3b}
+.v12-task-count{border-radius:50px;background:#e8f6eb;color:#215b35;padding:4px 12px;font-size:calc(13px * var(--font-scale,1));font-weight:800}
+.v12-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v12-task-list,.v12-service-list,.v12-document-list{display:grid;gap:10px;margin:0}
+.v12-task-card,.v12-service-card,.v12-document-card{display:flex;align-items:center;gap:14px;width:100%;min-height:81px;text-align:left;background:#fff;border:1px solid var(--v12-line);border-radius:15px;padding:15px;color:var(--v12-ink);box-shadow:none;cursor:pointer}
+.v12-task-card:hover,.v12-service-card:hover,.v12-document-card:hover{background:#f6faf7;border-color:#9fc5ab}
+.v12-task-card:focus-visible,.v12-service-card:focus-visible,.v12-document-card:focus-visible,.v12-home-appointment:focus-visible,.v12-open-btn:focus-visible{outline:3px solid #ce8e38;outline-offset:2px}
+.v12-task-icon,.v12-service-icon,.v12-document-icon{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:11px;background:#eff7f0;color:#178342}
+.v12-task-icon svg,.v12-service-icon svg,.v12-document-icon svg{width:23px;height:23px}
+.v12-card-copy{display:block;flex:1;min-width:0}
+.v12-card-copy strong{display:block;font-weight:800;font-size:calc(16px * var(--font-scale,1));line-height:1.42;color:#192d21;overflow-wrap:anywhere}
+.v12-card-copy small{display:block;margin-top:4px;color:var(--v12-muted);font-size:calc(13px * var(--font-scale,1));line-height:1.55;overflow-wrap:anywhere}
+.v12-card-copy .read-state{font-weight:700;color:#276b42}
+.v12-card-chevron{color:#325c43;flex-shrink:0}
+.v12-card-chevron svg{width:19px;height:19px}
+.v12-quiet-block,.v12-read-note{background:#f6f8f6;border:1px solid #e5ece6;border-radius:15px;padding:17px 18px;margin:16px 0;line-height:1.65;color:#394f41}
+.v12-quiet-block h2,.v12-read-note h2{display:flex;align-items:center;gap:8px;font-size:calc(17px * var(--font-scale,1));font-weight:800;color:#243d2d;margin:0 0 10px}
+.v12-quiet-block p,.v12-read-note p{margin:5px 0}
+.v12-quiet-block ul{margin:7px 0 0;padding-left:18px}
+.v12-quiet-block li+li{margin-top:5px}
+.v12-action-link{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#eff9f1;border:1px solid #b9d8c1;border-radius:12px;text-align:left;color:#205b36;font-weight:800;padding:13px 15px;min-height:51px;width:100%;margin:12px 0}
+.v12-action-link:hover{background:#e4f4e9}
+.v12-confirmed{background:linear-gradient(140deg,#f2faf3,#e5f5e8);border:1px solid #d4e6d7;border-radius:20px;padding:23px 22px;margin:20px 0 16px}
+.v12-confirmed h2{font-weight:800;font-size:calc(18px * var(--font-scale,1));margin:0 0 15px;color:#26583a}
+.v12-date-large{font-size:calc(31px * var(--font-scale,1));line-height:1.34;font-weight:850;color:#1c3123;letter-spacing:-.04em;overflow-wrap:anywhere;margin:0 0 14px}
+.v12-confirmed p{display:flex;gap:9px;align-items:flex-start;margin:9px 0;line-height:1.6;color:#304d37}
+.v12-confirmed p svg{color:#297546;flex-shrink:0}
+.v12-confirmed .v12-fineprint{font-size:calc(13px * var(--font-scale,1));color:#536858;margin-top:18px}
+.v12-secondary-schedule{margin-top:16px}
+.v12-secondary-schedule .event{background:#fff;border:1px solid var(--v12-line);border-radius:14px;padding:15px;margin:8px 0}
+.v12-page-top{display:flex;align-items:center;gap:10px;margin:7px 0 20px}
+.v12-page-top h1{font-size:calc(24px * var(--font-scale,1));font-weight:800;line-height:1.35;margin:0}
+.v12-back{display:inline-grid;place-items:center;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:#243b2a;cursor:pointer}
+.v12-back:hover{background:#eef5ef}
+.v12-doc-intro{margin:0 0 19px;color:#405648}
+.v12-document-card{align-items:flex-start;min-height:100px;flex-wrap:wrap}
+.v12-document-card .v12-card-copy{flex-basis:calc(100% - 100px)}
+.v12-document-card .v12-open-btn{flex-basis:100%;margin:7px 0 0 auto;max-width:188px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px;color:#1c6e3c;background:#eff8f1;border:1px solid #a9cfae;border-radius:9px;font-weight:800}
+.v12-doc-tag{display:inline-block;border:1px solid #f1b5af;color:#d33f36;background:#fff4f3;padding:2px 7px;border-radius:8px;font-size:calc(12px * var(--font-scale,1));font-weight:800;margin-right:7px}
+.v12-service-card{min-height:89px}
+.v12-service-icon{color:#158246}
+.v12-help-bottom{padding:19px;background:#eff6f0;border-radius:17px;margin-top:27px}
+.v12-help-bottom strong{display:block;font-size:calc(18px * var(--font-scale,1))}
+.v12-help-bottom p{margin:6px 0 10px;font-size:calc(14px * var(--font-scale,1))}
+.v12-plain{margin-top:16px}
+.v12-scope{font-size:calc(13px * var(--font-scale,1));line-height:1.65;color:#516858;margin-top:13px}
+.v12-shell .updated{font-size:calc(12px * var(--font-scale,1));background:transparent;color:#456455;line-height:1.5;flex-wrap:wrap;padding:7px 0;margin:9px 0}
+.v12-shell .document-panel{margin-top:15px;background:#fff}
+.v12-shell .document-label{font-weight:800}
+.v12-shell .document-cta{background:#edf7f0}
+.v12-shell .document-unavailable{background:#fafbfa}
+.v12-shell .travel-entry-section{margin-top:21px}
+.v12-shell .travel-entry-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.v12-shell .travel-entry-section .travel-entry{min-height:77px}
+.v12-shell .help-disclaimer{font-size:calc(13px * var(--font-scale,1));line-height:1.7}
+.v12-shell .service-search-launch{margin-top:19px}
+.v12-shell .service-list{display:grid;grid-template-columns:minmax(0,1fr)}
+.v12-shell .service-page,.v12-shell.service-page{max-width:100%}
+.v12-shell .appointment{border-radius:16px;padding:18px}
+@media(max-width:700px){
+ .v12-shell{padding:0 0 22px}
+ .v12-head{margin-top:5px}
+ .v12-head h1{font-size:calc(26px * var(--font-scale,1))}
+ .v12-home-appointment{padding:18px}
+ .v12-appointment-date{font-size:calc(20px * var(--font-scale,1))}
+ .v12-date-large{font-size:calc(27px * var(--font-scale,1))}
+ .v12-task-card,.v12-service-card{padding:13px;min-height:76px}
+ .v12-confirmed{padding:18px}
+ .v12-card-copy strong{font-size:calc(15px * var(--font-scale,1))}
+}
+@media(prefers-reduced-motion:reduce){.v12-task-card,.v12-service-card,.v12-home-appointment{transition:none}}
+
+
+/* Dedicated mobility review visually mirrors the approved single-column status mockup. */
+.comfort-dialog .travel-screen:has([data-taxi-preview])>.travel-intro,
+.comfort-dialog .travel-screen:has([data-taxi-preview])>.travel-choice-grid,
+.comfort-dialog .travel-screen:has([data-taxi-preview])>[data-taxi-steps] {
+  display:none;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview {
+  background:#fff;
+  border:0;
+  padding:0;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview>h3 {
+  font-size:calc(24px * var(--font-scale,1));
+  color:var(--v12-ink);
+  margin:15px 0 10px;
+  line-height:1.35;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview-list {
+  margin:16px 0 20px;
+  border:1px solid #e0e7e0;
+  border-radius:13px;
+  padding:4px 13px;
+  background:#fff;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview-list>div:last-child{border-bottom:0}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary {
+  background:#fff;
+  border:0;
+  border-top:1px solid #e3ebe4;
+  border-radius:0;
+  padding:23px 0 8px;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary h4{
+  font-size:calc(20px * var(--font-scale,1));
+  margin-bottom:17px;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary li{gap:13px}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-next-action{
+  background:#f1f9f1;border:1px solid #b9d4c0;border-radius:13px;margin:17px 0;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-share-boundary {
+  margin-top:19px;
+  border:1px solid #e0e6df;
+  background:#fbfcfb;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-group {
+  border:0;
+  padding:0;
+  background:transparent;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item {
+  border:1px solid var(--v12-line);
+  background:#fff;
+  padding:17px;
+  border-radius:14px;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item strong {
+  font-size:calc(17px * var(--font-scale,1));
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item [data-comfort=document-open] {
+  min-height:47px;
+  background:#eff8f1;
+  color:#24663e;
+  border:1px solid #b8d6be;
+  border-radius:11px;
+  font-weight:800;
+  padding:10px 14px;
+}
+
+
+/* On small screens the final mobility summary is a full-screen reading task,
+   not a visually nested setup wizard. The preceding 3 steps remain unchanged. */
+@media (max-width:700px) {
+  .comfort-dialog:has([data-taxi-preview]) {
+    position:fixed;
+    inset:0;
+    margin:0;
+    box-sizing:border-box;
+    width:100%;
+    max-width:100%;
+    height:100dvh;
+    max-height:100dvh;
+    border:0;
+    border-radius:0;
+    overflow-y:auto;
+    padding:14px 18px max(18px,env(safe-area-inset-bottom));
+    background:#fff;
+  }
+  .comfort-dialog:has([data-taxi-preview])::backdrop{background:#f3f7f3}
+  .comfort-dialog:has([data-taxi-preview])>header{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    margin:0;
+    min-height:49px;
+    background:#fff;
+  }
+  .comfort-dialog:has([data-taxi-preview])>header #comfort-title{display:none}
+  .comfort-dialog:has([data-taxi-preview]) .travel-progress{display:none}
+  .comfort-dialog:has([data-taxi-preview]) .travel-preview>h3{
+    font-size:calc(23px * var(--font-scale,1));
+    padding-top:3px;
+  }
+  .comfort-dialog:has([data-taxi-preview]) .travel-limitation{margin-bottom:20px}
+  .comfort-dialog:has([data-taxi-preview]) .travel-state-summary{padding-top:17px}
+}
+
+/* One compact row for history and tools on mobile; original actions remain. */
+.patient-mobile-toolbar{display:contents}
+@media(max-width:1023px){
+.patient-mobile-toolbar{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;column-gap:10px;row-gap:3px;margin:0 0 15px;padding:3px 0 9px;border-bottom:1px solid #dce7e0}
+.patient-mobile-toolbar .patient-mobile-journey{margin:0;flex:0 0 auto;gap:5px}
+.patient-mobile-toolbar .patient-page-tools{margin:0;padding:0;border:0;flex:0 1 auto;justify-content:flex-end;gap:5px}
+.topline{min-height:53px!important;padding-block:7px!important}
+}
+@media(max-width:600px){
+.patient-mobile-toolbar{justify-content:flex-start;gap:5px 10px}
+.patient-mobile-toolbar .patient-page-tools{justify-content:flex-start}
+.patient-mobile-toolbar .patient-page-tools button,.patient-mobile-toolbar .patient-page-tools a{min-height:44px}
+}

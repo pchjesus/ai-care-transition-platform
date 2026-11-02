@@ -67,7 +67,20 @@ class Comfort(unittest.TestCase):
   other=self.ctx.new_page();other.on('pageerror',lambda e:self.errors.append(str(e)));other.goto(self.b.url);other.locator('#demo-code').fill('CARE2026');other.locator('#demo-code').press('Enter');self.settings(other);self.a3.evaluate("key=>{window.held=false;navigator.locks.request(key,()=>new Promise(resolve=>{window.releaseReminderLock=resolve;window.held=true}))}",key);self.a3.wait_for_function('window.held')
   for page,label in [(self.b,'첫 탭 동시 저장'),(other,'둘째 탭 동시 저장')]:
    f=page.locator('[data-comfort-form=personal]');f.locator('[name=label]').fill(label);f.locator('[name=date]').fill('2030-01-02');f.locator('[name=time]').fill('08:00');f.locator('button').click();expect(page.locator('#comfort-dialog')).to_have_attribute('aria-busy','true')
-  self.a3.evaluate('releaseReminderLock()');other.bring_to_front();self.settled(other);self.settled();expect(self.b.locator('#comfort-notice')).to_contain_text('저장했어요');expect(other.locator('#comfort-notice')).to_contain_text('저장하지 못했어요');labels=[x['label'] for x in next(iter(self.prefs()['plans'].values()))['personal']];self.assertIn('첫 탭 동시 저장',labels);self.assertNotIn('둘째 탭 동시 저장',labels)
+  before=self.prefs()
+  self.a3.evaluate('releaseReminderLock()');other.bring_to_front();self.settled(other);self.settled()
+  # Web Locks serialize cross-tab writes, but neither caller is guaranteed first.
+  notices=[p.locator('#comfort-notice').inner_text() for p in (self.b,other)]
+  self.assertEqual(sum('저장했어요' in s for s in notices),1,notices)
+  self.assertEqual(sum('저장하지 못했어요' in s for s in notices),1,notices)
+  after=self.prefs();self.assertEqual(after['revision'],before['revision']+1)
+  self.assertEqual((after['source'],after['patientId'],after['encounterId']),(before['source'],before['patientId'],before['encounterId']))
+  labels=[x['label'] for x in next(iter(after['plans'].values()))['personal']]
+  contenders=['첫 탭 동시 저장','둘째 탭 동시 저장']
+  self.assertEqual(sum(label in labels for label in contenders),1,labels)
+  winner=0 if contenders[0] in labels else 1
+  self.assertIn('저장했어요',notices[winner]);self.assertIn('저장하지 못했어요',notices[1-winner])
+  self.assertEqual((other if winner==0 else self.b).locator('[data-comfort-form=personal] [name=label]').input_value(),contenders[1-winner])
 
  def test_read_permission_denial_is_not_reported_as_saved(self):
   self.ready();self.b.evaluate('''()=>{const read=Storage.prototype.getItem;Storage.prototype.getItem=function(k){if(k.startsWith('carebridge-reminders-v1:'))throw new DOMException('denied','SecurityError');return read.call(this,k)}}''');self.settings();self.personal();expect(self.b.locator('#comfort-notice')).to_contain_text('저장하지 못했어요');self.assertIsNone(self.b.evaluate('Object.keys(localStorage).find(k=>k.startsWith("carebridge-reminders-v1:"))'))

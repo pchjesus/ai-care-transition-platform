@@ -1,0 +1,52 @@
+name: Patient B v1.2 review screenshots and regression
+on:
+  push:
+    branches:
+      - feature/patient-layout-v12-20261102
+permissions:
+  contents: read
+jobs:
+  patient-v12:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: JavaScript syntax and existing unit contracts
+        working-directory: prototypes/integrated-v10
+        run: |
+          node --check patient/app.js
+          node --check patient/comfort-ui.js
+          npm test
+      - name: Install browser testing dependency
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-cache -f
+          fc-match 'Noto Sans CJK KR'
+          if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
+          test -x /usr/bin/chromium
+      - name: Focused v1.2 mobile tablet desktop visual capture and smoke
+        working-directory: prototypes/integrated-v10
+        run: python tests/patient_v12_visual_qa.py
+      - name: Upload visual screenshots and smoke results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-v12-review-screenshots
+          path: artifacts/patient-v12/
+          if-no-files-found: warn
+      - name: Existing taxi preparation and transport regression
+        working-directory: prototypes/integrated-v10
+        run: |
+          python tests/taxi_preview_http.py
+          python tests/transport_ui_http.py
+      - name: Existing clinician publication and patient comfort regression
+        working-directory: prototypes/integrated-v10
+        run: python tests/comfort_http.py
