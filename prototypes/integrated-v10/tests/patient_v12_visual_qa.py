@@ -50,7 +50,7 @@ try:
             if width == 1440:
                 assert page.evaluate("getComputedStyle(document.querySelector('.v12-home')).display") == "grid", "PC homepage grid missing"
                 expect(page.locator('.side-brand')).to_contain_text('케어브릿지랩')
-                assert page.locator('.v12-home > section[aria-labelledby="today-tasks"]').bounding_box()["x"] < page.locator('.v12-home > section[aria-label="다음 외래 일정"]').bounding_box()["x"]
+                assert page.locator('.v12-home > section[aria-labelledby="today-tasks"]').bounding_box()["x"] < page.locator('.v12-home > section[aria-label="다음 외래 진료"]').bounding_box()["x"]
             if width == 390:
                 assert page.evaluate("getComputedStyle(document.querySelector('.v12-home')).display") != "grid", "Mobile must remain single column"
             shot(page, "01-home", width)
