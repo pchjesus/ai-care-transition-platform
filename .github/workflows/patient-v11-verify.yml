@@ -31,6 +31,13 @@ jobs:
       - name: Focused v1.1 mobile tablet desktop visual capture and smoke
         working-directory: prototypes/integrated-v10
         run: python tests/patient_v11_visual_qa.py
+      - name: Upload visual screenshots and smoke results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-v11-review-screenshots
+          path: artifacts/patient-v11/
+          if-no-files-found: warn
       - name: Existing taxi preparation and transport regression
         working-directory: prototypes/integrated-v10
         run: |
@@ -39,10 +46,3 @@ jobs:
       - name: Existing clinician publication and patient comfort regression
         working-directory: prototypes/integrated-v10
         run: python tests/comfort_http.py
-      - name: Upload visual screenshots and smoke results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: patient-v11-review-screenshots
-          path: artifacts/patient-v11/
-          if-no-files-found: warn
