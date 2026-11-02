@@ -194,3 +194,17 @@
   .comfort-dialog:has([data-taxi-preview]) .travel-limitation{margin-bottom:20px}
   .comfort-dialog:has([data-taxi-preview]) .travel-state-summary{padding-top:17px}
 }
+
+/* One compact row for history and tools on mobile; original actions remain. */
+.patient-mobile-toolbar{display:contents}
+@media(max-width:1023px){
+.patient-mobile-toolbar{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;column-gap:10px;row-gap:3px;margin:0 0 15px;padding:3px 0 9px;border-bottom:1px solid #dce7e0}
+.patient-mobile-toolbar .patient-mobile-journey{margin:0;flex:0 0 auto;gap:5px}
+.patient-mobile-toolbar .patient-page-tools{margin:0;padding:0;border:0;flex:0 1 auto;justify-content:flex-end;gap:5px}
+.topline{min-height:53px!important;padding-block:7px!important}
+}
+@media(max-width:600px){
+.patient-mobile-toolbar{justify-content:flex-start;gap:5px 10px}
+.patient-mobile-toolbar .patient-page-tools{justify-content:flex-start}
+.patient-mobile-toolbar .patient-page-tools button,.patient-mobile-toolbar .patient-page-tools a{min-height:44px}
+}

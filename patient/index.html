@@ -473,7 +473,7 @@ function createDemoRepository(provided){
      <div class="v12-document-list">
       ${available?`<div class="v12-document-card"><span class="v12-document-icon">${icon('file',23)}</span>
        <span class="v12-card-copy"><strong>보행 보조기 안내문</strong><small>퇴원 후 보행 보조기 사용 관련 설명을 원문으로 확인하세요.</small><small><span class="v12-doc-tag">PDF</span>합성 시연용 자료 · 실제 의료지시가 아니에요.</small></span>
-       <button type="button" class="v12-open-btn" data-detail="mobility">자료 자세히 보기 ${icon('chev',16)}</button></div>`:
+       <button type="button" class="v12-open-btn" data-action="pdf-open-from-list">PDF 바로 열기 ${icon('chev',16)}</button></div>`:
       '<div class="v12-quiet-block">현재 계획 버전에 제공된 PDF가 없습니다. 이전 자료를 최신 안내처럼 보여주지 않아요.</div>'}
      </div>
      <div class="v12-read-note"><h2>${icon('info',20)} PDF는 어떤 자료인가요?</h2>
@@ -529,7 +529,7 @@ function focusMain(){const node=app.querySelector('#main-content');if(node){node
   if(btn.dataset.helpChip!==undefined){const q=btn.dataset.helpChip;const input=document.querySelector('[data-help-search]');if(input){input.value=q;runHelpSearch(q);input.focus();}return;}
   const a=btn.dataset.action;if(!a)return;
   if(!state.authenticated&&!['login-enter','login-back','font'].includes(a))return;
-  if(!state.published&&['edit-start','modal-save','transfer-open','modal-transfer','pdf-open','quiz-start','quiz-check'].includes(a))return;
+  if(!state.published&&['edit-start','modal-save','transfer-open','modal-transfer','pdf-open','pdf-open-from-list','quiz-start','quiz-check'].includes(a))return;
   if(a==='login-enter'){if(!state.codeVerified)return;state.authenticated=true;state.loginError='';state.view='today';render();focusMain();return;}
   if(a==='login-back'){state.codeVerified=false;state.loginCode='';render();return;}
   if(a==='patient-home'){goto('today');return;}
@@ -553,10 +553,12 @@ function focusMain(){const node=app.querySelector('#main-content');if(node){node
    if(!demoRepository.persist({profile:state.profile,revision:state.savedRevision,lastRequest:request})){state.notice='요청 기록을 저장하지 못했어요. 실제 기관으로 전송되지 않았습니다.';closeOverlay();return;}
    state.lastRequest=request;state.transferStatus='requested';state.notice='업데이트 요청을 이 브라우저에 기록했어요. 실제 기관으로 전송되지 않았습니다.';closeOverlay();return;
   }
-  if(a==='pdf-open'){
-   if(state.version!==1||state.selected!=='mobility')return;
-   try{if(!state.pdfUrl)state.pdfUrl=createDemoPdfUrl();state.pdfPreviewError=false;state.pdfOpen=true;overlayReturnFocus='[data-action=pdf-open]';render();document.querySelector('.close-pdf')?.focus();}
-   catch{closePdf();state.notice='PDF를 열지 못했어요. 브라우저 설정을 확인한 뒤 다시 시도해 주세요.';render();document.querySelector('[data-action=pdf-open]')?.focus();}return;
+  if(a==='pdf-open'||a==='pdf-open-from-list'){
+   // A list shortcut may open only a currently supplied synthetic document.
+   if(!state.published||state.version!==1||(a==='pdf-open'&&state.selected!=='mobility'))return;
+   const trigger=a==='pdf-open'?'[data-action=pdf-open]':'[data-action=pdf-open-from-list]';
+   try{if(!state.pdfUrl)state.pdfUrl=createDemoPdfUrl();state.pdfPreviewError=false;state.pdfOpen=true;overlayReturnFocus=trigger;render();document.querySelector('.close-pdf')?.focus();}
+   catch{closePdf();state.notice='PDF를 열지 못했어요. 브라우저 설정을 확인한 뒤 다시 시도해 주세요.';render();document.querySelector(trigger)?.focus();}return;
   }
   if(a==='pdf-close'){closeOverlay();return;}
   if(a==='font'){state.large=!state.large;const saved=demoRepository.saveLarge(state.large);if(!saved)state.notice='글자 크기를 이 브라우저에 저장하지 못했어요. 현재 화면에는 적용했어요.';render();document.querySelector(state.pdfOpen?'.close-pdf':state.modal?'.modal-panel [data-action=modal-cancel]':'.patient-page-tools [data-action=font]')?.focus();return}

@@ -191,7 +191,7 @@ function content(pub){
    <section class="v12-read-note insight-strip" aria-label="안내 문서">
     <h2>${icon('file',20)} 함께 볼 안내문</h2>
     <p>${pub.documents.length?'의료진이 발행한 PDF를 열어 상세 내용을 확인할 수 있어요.':'이번 발행본에는 PDF가 제공되지 않았어요.'}</p>
-    ${pub.documents.length?'<button class="v12-action-link" type="button" data-comfort="documents">안내문 열어보기 (PDF) '+icon('chev',17)+'</button>':'<span class="v12-scope">문서가 발행되면 이곳에서 확인할 수 있어요.</span>'}
+    ${pub.documents.length===1?'<button class="v12-action-link" type="button" data-document="'+esc(pub.documents[0].id)+'">PDF 바로 열기 '+icon('chev',17)+'</button>':pub.documents.length?'<button class="v12-action-link" type="button" data-comfort="documents">발행된 PDF 목록 보기 '+icon('chev',17)+'</button>':'<span class="v12-scope">문서가 발행되면 이곳에서 확인할 수 있어요.</span>'}
     <button class="text-action" data-view="overview">전체 계획 보기 ${icon('chev',15)}</button>
    </section>
    <section class="v12-help-bottom">
