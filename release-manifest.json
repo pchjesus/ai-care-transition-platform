@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "d8410e34d71f163565183717d9eca2ab58beed0e",
-  "previousPagesCommit": "600d19db15750016914afeee5a0ceb463897b514",
+  "sourceCommit": "1ea11ae2712a663bb69d664407e2d365d66f6174",
+  "previousPagesCommit": "df1d5fb94b5e5a8c5988eec0fad9e4d5d9cfc2c1",
   "isSyntheticDemo": true,
   "files": [
     {
@@ -255,8 +255,8 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 47205,
-      "sha256": "2aa7a76a8b7b9279aa15792baaeacc6b9e632522d8ab27d064d9d2d07d363084"
+      "bytes": 47358,
+      "sha256": "43fc87f83f533b493ff3d5204d8478ce0e68167cd4c8297b5c6717b6319a909f"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
@@ -280,8 +280,8 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/patient-v12.css",
-      "bytes": 12496,
-      "sha256": "2985730934b6472f244e799b21f98ee2356e7fc488b0b161e0f83b025e48bbe7"
+      "bytes": 15869,
+      "sha256": "63453dc9186203bcabf2bbad000220aa96a47d102c1895f0d88fd3cd923ef1c9"
     },
     {
       "path": "prototypes/integrated-v10/patient/reminders.js",
