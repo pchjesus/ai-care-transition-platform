@@ -143,10 +143,11 @@ export function installPatientComfort(adapter){
   }else{
    const destinationText=chosen?`${chosen.d.name} · ${chosen.d.address}`:c.source==='independent'?`${taxiDraft.demoDestination||'가상 목적지 미입력'} (확인되지 않은 예시)`:'확인된 병원 목적지 없음';
    const companionName={alone:'혼자 이동',with:'보호자·동행인 동행',unknown:'미정'}[taxiDraft.companion];
-   inner=`<div class="travel-stage travel-preview" data-taxi-preview><h3>3. 선택한 내용을 확인해 주세요</h3>
+   inner=`<div class="travel-stage travel-preview" data-taxi-preview><h3>이동 준비 내용 확인</h3><p class="v12-scope">선택한 사항과 현재 진행 상태를 한눈에 확인해 주세요.</p>
      <dl class="travel-preview-list"><div><dt>이용 방법</dt><dd>${taxiChoice==='assisted'?'이동지원 필요':'일반 택시'}</dd></div><div><dt>출발 장소</dt><dd>${esc(taxiDraft.pickup||'외부 앱에서 직접 설정')}</dd></div><div><dt>병원 목적지</dt><dd>${esc(destinationText)}</dd></div><div><dt>가지고 탈 보조기구</dt><dd>${esc(choiceLabels(taxiDraft.equipment,gearChoices))}</dd></div><div><dt>병원에서 필요한 도움</dt><dd>${esc(choiceLabels(taxiDraft.arrivalHelp,helpChoices))}</dd></div><div><dt>동행 여부</dt><dd>${companionName}</dd></div></dl>
+     <section class="travel-state-summary" aria-label="현재 진행 상태"><h4>현재 진행 상태</h4><ul><li class="prepared"><span class="state-indicator" aria-hidden="true">✓</span><div><strong>선택 내용이 화면에 정리됐어요</strong><small>입력한 준비사항을 이 화면에서 확인할 수 있어요.</small></div></li><li class="pending"><span class="state-indicator" aria-hidden="true">○</span><div><strong>택시 예약은 아직 하지 않았어요</strong><small>차량 예약·배차는 별도로 진행해야 해요.</small></div></li><li class="pending"><span class="state-indicator" aria-hidden="true">○</span><div><strong>병원에 도움 요청이 전달되지 않았어요</strong><small>병원 측에 직접 문의해야 해요.</small></div></li></ul></section>
      <div class="travel-share-boundary"><strong>향후 카카오 T 연동 시 검토할 항목</strong><p>출발지·목적지 입력을 외부 택시 앱에 연결하는 방식은 추후 공식 제공 범위와 동의를 확인해 설계할 예정이에요.</p><p><strong>보조기구·도착 후 도움 정보는 현재 병원이나 택시 회사에 전송되지 않아요.</strong> 향후에도 별도 동의와 실제 지원 가능 여부 확인이 필요해요.</p></div>
-     <button type="button" class="travel-future-action" disabled aria-disabled="true">카카오 T 연결 · 준비 중</button>
+     <section class="travel-next-action"><h4>다음에 할 일</h4><p>실제 예약이 필요하면 이용할 택시 업체나 이동지원기관에 직접 문의해 주세요. 병원에서 필요한 도움도 별도로 확인해야 해요.</p></section><button type="button" class="travel-future-action" disabled aria-disabled="true">카카오 T 연결 (아직 지원하지 않아요)</button>
      <p class="travel-hint">현재는 택시 호출, 배차, 요금 조회, 결제, 의료기관 도움 요청이 실행되지 않아요.</p>
    </div>`;
   }
@@ -168,7 +169,7 @@ export function installPatientComfort(adapter){
  }
  function documents(c){
   const docs=c.publication?.documents||[];
-  return `<p>${c.source==='independent'?'독립 예시 자료이며 A3 발행본이 아니에요.':'현재 승인·발행된 문서만 열 수 있어요.'} PDF 내용을 복약 시각이나 처방으로 자동 변환하지 않아요. 이미 내려받은 PDF는 철회 후 회수할 수 없어요.</p>${['MEDICATION','GENERAL'].map(cat=>`<section><h3>${cat==='MEDICATION'?'복약 관련 PDF':'일반 안내문'}</h3>${docs.filter(d=>(d.category||'GENERAL')===cat).map(d=>`<p><strong>${esc(d.name)}</strong> ${button('document-open','열기·다운로드',`data-id="${esc(d.id)}"`)}</p>`).join('')||'<p>이 분류에 제공된 문서가 없어요.</p>'}</section>`).join('')}`;
+  return `<p class="comfort-document-intro">${c.source==='independent'?'독립 예시 자료이며 A3 발행본이 아니에요.':'현재 승인·발행된 문서만 열 수 있어요.'} PDF 내용을 복약 시각이나 처방으로 자동 변환하지 않아요. 이미 내려받은 PDF는 철회 후 회수할 수 없어요.</p>${['MEDICATION','GENERAL'].map(cat=>`<section class="comfort-document-group"><h3>${cat==='MEDICATION'?'복약 관련 PDF':'일반 안내문'}</h3>${docs.filter(d=>(d.category||'GENERAL')===cat).map(d=>`<article class="comfort-document-item"><strong>${esc(d.name)}</strong><p>${cat==='MEDICATION'?'복약 관련 발행 자료예요. 정확한 내용은 원문을 확인해 주세요.':'의료진이 제공한 상세 안내문이에요. 필요한 내용을 원문으로 확인할 수 있어요.'}</p>${button('document-open','안내문 열어보기 (PDF)',`data-id="${esc(d.id)}"`)}</article>`).join('')||'<p>이 분류에 제공된 문서가 없어요.</p>'}</section>`).join('')}`;
  }
  function snapshotForms(node){return [...node.querySelectorAll('form')].map(f=>({kind:f.dataset.comfortForm,id:f.dataset.id,values:[...f.elements].filter(e=>e.name).map(e=>({name:e.name,value:e.value,checked:e.checked}))}));}
  function restoreForms(drafts){for(const draft of drafts){const f=[...dialog.querySelectorAll('form')].find(f=>f.dataset.comfortForm===draft.kind&&f.dataset.id===draft.id);if(f)for(const v of draft.values){const e=f.elements.namedItem(v.name);if(e){e.value=v.value;if(e.type==='checkbox')e.checked=v.checked;}}}}
@@ -200,10 +201,10 @@ export function installPatientComfort(adapter){
    const home=nav.querySelector('a');if(home){const tools=document.createElement('details');tools.className='demo-tools';tools.innerHTML='<summary>개발·시연</summary>';tools.append(home);side?.querySelector('.side-end')?.append(tools);}
    nav.classList.add('patient-sidebar-journey');for(const b of nav.querySelectorAll('button')){const previous=['back','patient-back'].includes(b.dataset.action),next=['next','patient-next'].includes(b.dataset.action);if(previous||next){const label=previous?'이전':'다음';b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${previous?'m15 5-7 7 7 7':'m9 5 7 7-7 7'}"/></svg>`;}}
    side?.querySelector('.side-brand')?.after(nav);
-   const mobile=nav.cloneNode(true);mobile.classList.add('patient-mobile-journey');mobile.classList.remove('patient-sidebar-journey');main.prepend(mobile);
+   const mobile=nav.cloneNode(true);mobile.classList.add('patient-mobile-journey');mobile.classList.remove('patient-sidebar-journey');const toolbar=document.createElement('div');toolbar.className='patient-mobile-toolbar';toolbar.append(mobile);main.prepend(toolbar);
   }
   const example=header?.querySelector('.independent-demo-link');if(example)side?.querySelector('.demo-tools')?.append(example);
-  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication)tools.insertAdjacentHTML('beforeend',button('tour','사용 안내'));const demoHref=context().source==='independent'?'../prototypes/integrated-v10/index.html':'../index.html';tools.insertAdjacentHTML('beforeend',`<a class="patient-demo-return" href="${demoHref}" aria-label="가상 통합 시연 화면으로 이동">통합 시연 ↗</a>`);const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.after(tools);else main.prepend(tools);}
+  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication)tools.insertAdjacentHTML('beforeend',button('tour','사용 안내'));const demoHref=context().source==='independent'?'../prototypes/integrated-v10/index.html':'../index.html';tools.insertAdjacentHTML('beforeend',`<a class="patient-demo-return" href="${demoHref}" aria-label="가상 통합 시연 화면으로 이동">통합 시연 ↗</a>`);const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.parentElement.append(tools);else main.prepend(tools);}
  }
  function attachNotifications(hub,c){
   if(dialog?.classList.contains('comfort-inline')&&openedPublication===pubKey(c)){hub.append(dialog);refreshHub();}
@@ -219,7 +220,7 @@ export function installPatientComfort(adapter){
   if(c.publication){
    const hub=main.querySelector('[data-reminder-hub]');
    if(hub)attachNotifications(hub,c);
-   add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents','관련 안내 문서 보기')+'</div>');
+   if(!main.querySelector('.v12-read-note'))add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents',c.publication.documents?.length?'안내문 열어보기 (PDF)':'안내 문서 제공 여부 확인')+'</div>');
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
   }else if(c.view==='reminders'){const hub=document.createElement('div');hub.dataset.reminderHub='';main.append(hub);attachNotifications(hub,c);}else add(main,'<section class="comfort-quick">'+button('inbox','발행·철회 알림함')+'</section>');
@@ -232,7 +233,10 @@ export function installPatientComfort(adapter){
    }).join('');
    const route=routeCards||(c.source==='independent'?'<button type="button" class="travel-entry travel-route" data-comfort="map"><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>병원 주소 확인 방법 보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>':'<p class="travel-no-address">발행된 외래 목적지가 없어 길찾기를 시작할 수 없어요.</p>');
    const travelMarkup=`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`;
-   const anchor=main.querySelector('.schedule-layout .sublead,.service-page .service-lead');
+   // Keep the approved primary information first: appointment before travel, help cards before travel.
+   const anchor=c.view==='schedule'
+     ?(main.querySelector('.schedule-layout .v12-confirmed')||main.querySelector('.schedule-layout .timeline')||main.querySelector('.schedule-layout .sublead'))
+     :(main.querySelector('.service-page .services-panel')||main.querySelector('.service-page .service-lead'));
    if(anchor)anchor.insertAdjacentHTML('afterend',travelMarkup);else add(main,travelMarkup);
   }
  }
@@ -244,7 +248,7 @@ export function installPatientComfort(adapter){
   if(a==='reload'){if(!permitNavigation())return;refreshPreferences();openedPublication=pubKey(context());notice='최신 설정을 다시 읽었어요.';draw();return;}
   if(['documents','map','taxi'].includes(a)){open(a,b,b.dataset.id);return;}
   if(a==='taxi-option'&&mode==='taxi'&&dialog){const choice=b.dataset.choice;if(!['regular','assisted'].includes(choice))return;taxiChoice=choice;dialog.querySelectorAll('[data-comfort=taxi-option]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.choice===choice)));const target=dialog.querySelector('[data-taxi-steps]');if(target)target.innerHTML=taxiChoiceDetails();if(taxiStep===3)dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);return;}
-  if((a==='taxi-next'||a==='taxi-prev')&&mode==='taxi'&&dialog){taxiStep=Math.max(1,Math.min(3,taxiStep+(a==='taxi-next'?1:-1)));dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);dialog.querySelector('.travel-stage h3')?.focus({preventScroll:true});dialog.querySelector('[data-taxi-builder]')?.scrollIntoView({block:'nearest'});return;}
+  if((a==='taxi-next'||a==='taxi-prev')&&mode==='taxi'&&dialog){taxiStep=Math.max(1,Math.min(3,taxiStep+(a==='taxi-next'?1:-1)));dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);dialog.querySelector('.travel-stage h3')?.focus({preventScroll:true});if(taxiStep===3)dialog.scrollTop=0;else dialog.querySelector('[data-taxi-builder]')?.scrollIntoView({block:'nearest'});return;}
   if(a==='map-fallback'){dialog.querySelector('#map-fallback').hidden=false;dialog.querySelector('textarea').focus();return;}
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){

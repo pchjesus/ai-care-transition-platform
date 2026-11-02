@@ -1,6 +1,6 @@
 {
-  "sourceCommit": "24e16bee0a6158002d513e63294b5333d7df0dc9",
-  "previousPagesCommit": "4cca397fa62f8a5a589ab93e358f0f0f3eaee241",
+  "sourceCommit": "d8410e34d71f163565183717d9eca2ab58beed0e",
+  "previousPagesCommit": "600d19db15750016914afeee5a0ceb463897b514",
   "isSyntheticDemo": true,
   "files": [
     {
@@ -105,8 +105,8 @@
     },
     {
       "path": "patient/index.html",
-      "bytes": 332733,
-      "sha256": "a950ba41ad1431c0e851f6c3751e892c669e519ae316f22b07d689b56092b870"
+      "bytes": 335211,
+      "sha256": "f9b1fa22c06e2d1b32cb92a7202d6e2269d2d86994c85ea61981fae2ca1d9e0a"
     },
     {
       "path": "prototypes/hospital-a2/app.js",
@@ -250,13 +250,13 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/app.js",
-      "bytes": 36859,
-      "sha256": "0df04b6fe4f45c883cbaaae697add2a9dcb47e104dd5ba737eaf9a416bfe3a27"
+      "bytes": 39199,
+      "sha256": "5b67149bc05bd7d56d9f9f3dde85c3a84d163481a60828eb3453985b88071b71"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort-ui.js",
-      "bytes": 45112,
-      "sha256": "4faf7acd848a6a04aaf1de568e63b5442c33b057fa977424c4faa5f1237e0310"
+      "bytes": 47205,
+      "sha256": "2aa7a76a8b7b9279aa15792baaeacc6b9e632522d8ab27d064d9d2d07d363084"
     },
     {
       "path": "prototypes/integrated-v10/patient/comfort.css",
@@ -270,8 +270,18 @@
     },
     {
       "path": "prototypes/integrated-v10/patient/index.html",
-      "bytes": 734,
-      "sha256": "3d28da5b87834ddfee09c52bd30188bb74e7533f0651dc5eb732cea42ec826e1"
+      "bytes": 827,
+      "sha256": "4e42d5b3786782d149a54348079c189ef21994ff7e812840c0c1fb76cb9abe7a"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v11.css",
+      "bytes": 6539,
+      "sha256": "5b11ec237827bc382c4bc48181354ddc8af071a167aba7ef3abbbb98c3ddd77f"
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v12.css",
+      "bytes": 12496,
+      "sha256": "2985730934b6472f244e799b21f98ee2356e7fc488b0b161e0f83b025e48bbe7"
     },
     {
       "path": "prototypes/integrated-v10/patient/reminders.js",
