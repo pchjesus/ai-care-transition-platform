@@ -26,6 +26,10 @@ jobs:
       - name: Install browser testing dependency
         run: |
           python -m pip install --disable-pip-version-check playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          fc-cache -f
+          fc-match 'Noto Sans CJK KR'
           if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
           test -x /usr/bin/chromium
       - name: Focused v1.1 mobile tablet desktop visual capture and smoke
