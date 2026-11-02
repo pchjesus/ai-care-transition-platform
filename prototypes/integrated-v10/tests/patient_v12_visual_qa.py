@@ -51,6 +51,7 @@ try:
 
             pdf_shortcut = page.locator('button[data-nav="documents"]')
             expect(pdf_shortcut).to_be_visible()
+            expect(page.locator(".v12-read-note button")).to_have_count(1)
             pdf_shortcut.click()
             expect(page.locator(".v12-documents")).to_be_visible()
             expect(page.locator(".v12-document-card")).to_have_count(1)
@@ -64,6 +65,7 @@ try:
             expect(page.locator(".travel-entry-section")).to_be_visible()
             ensure_no_hscroll(page)
             expect(page.locator(".v12-confirmed")).to_be_visible()
+            assert page.locator(".v12-confirmed").bounding_box()["y"] < page.locator(".travel-entry-section").bounding_box()["y"], "Visit card must appear above mobility tools"
             shot(page, "04-schedule", width)
 
             page.locator('[data-comfort="taxi"]').click()
@@ -85,6 +87,7 @@ try:
             expect(page.locator(".service-card").first).to_be_visible()
             check_min_taps(page, ".service-card")
             expect(page.locator(".v12-help")).to_be_visible()
+            assert page.locator(".services-panel").bounding_box()["y"] < page.locator(".travel-entry-section").bounding_box()["y"], "Help choices must appear before mobility tools"
             shot(page, "06-help", width)
             ensure_no_hscroll(page)
             summary[str(width)] = "PASS: v12 home/PDF list+detail/schedule/taxi/help, tap size, no overflow"
