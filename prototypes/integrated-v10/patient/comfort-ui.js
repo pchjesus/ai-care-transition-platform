@@ -145,8 +145,9 @@ export function installPatientComfort(adapter){
    const companionName={alone:'혼자 이동',with:'보호자·동행인 동행',unknown:'미정'}[taxiDraft.companion];
    inner=`<div class="travel-stage travel-preview" data-taxi-preview><h3>3. 선택한 내용을 확인해 주세요</h3>
      <dl class="travel-preview-list"><div><dt>이용 방법</dt><dd>${taxiChoice==='assisted'?'이동지원 필요':'일반 택시'}</dd></div><div><dt>출발 장소</dt><dd>${esc(taxiDraft.pickup||'외부 앱에서 직접 설정')}</dd></div><div><dt>병원 목적지</dt><dd>${esc(destinationText)}</dd></div><div><dt>가지고 탈 보조기구</dt><dd>${esc(choiceLabels(taxiDraft.equipment,gearChoices))}</dd></div><div><dt>병원에서 필요한 도움</dt><dd>${esc(choiceLabels(taxiDraft.arrivalHelp,helpChoices))}</dd></div><div><dt>동행 여부</dt><dd>${companionName}</dd></div></dl>
+     <section class="travel-state-summary" aria-label="현재 진행 상태"><h4>현재 진행 상태</h4><ul><li class="prepared"><span class="state-indicator" aria-hidden="true">✓</span><div><strong>선택 내용이 화면에 정리됐어요</strong><small>입력한 준비사항을 이 화면에서 확인할 수 있어요.</small></div></li><li class="pending"><span class="state-indicator" aria-hidden="true">○</span><div><strong>택시 예약은 아직 하지 않았어요</strong><small>차량 예약·배차는 별도로 진행해야 해요.</small></div></li><li class="pending"><span class="state-indicator" aria-hidden="true">○</span><div><strong>병원에 도움 요청이 전달되지 않았어요</strong><small>병원 측에 직접 문의해야 해요.</small></div></li></ul></section>
      <div class="travel-share-boundary"><strong>향후 카카오 T 연동 시 검토할 항목</strong><p>출발지·목적지 입력을 외부 택시 앱에 연결하는 방식은 추후 공식 제공 범위와 동의를 확인해 설계할 예정이에요.</p><p><strong>보조기구·도착 후 도움 정보는 현재 병원이나 택시 회사에 전송되지 않아요.</strong> 향후에도 별도 동의와 실제 지원 가능 여부 확인이 필요해요.</p></div>
-     <button type="button" class="travel-future-action" disabled aria-disabled="true">카카오 T 연결 · 준비 중</button>
+     <section class="travel-next-action"><h4>다음에 할 일</h4><p>실제 예약이 필요하면 이용할 택시 업체나 이동지원기관에 직접 문의해 주세요. 병원에서 필요한 도움도 별도로 확인해야 해요.</p></section><button type="button" class="travel-future-action" disabled aria-disabled="true">카카오 T 연결 (아직 지원하지 않아요)</button>
      <p class="travel-hint">현재는 택시 호출, 배차, 요금 조회, 결제, 의료기관 도움 요청이 실행되지 않아요.</p>
    </div>`;
   }
@@ -168,7 +169,7 @@ export function installPatientComfort(adapter){
  }
  function documents(c){
   const docs=c.publication?.documents||[];
-  return `<p>${c.source==='independent'?'독립 예시 자료이며 A3 발행본이 아니에요.':'현재 승인·발행된 문서만 열 수 있어요.'} PDF 내용을 복약 시각이나 처방으로 자동 변환하지 않아요. 이미 내려받은 PDF는 철회 후 회수할 수 없어요.</p>${['MEDICATION','GENERAL'].map(cat=>`<section><h3>${cat==='MEDICATION'?'복약 관련 PDF':'일반 안내문'}</h3>${docs.filter(d=>(d.category||'GENERAL')===cat).map(d=>`<p><strong>${esc(d.name)}</strong> ${button('document-open','열기·다운로드',`data-id="${esc(d.id)}"`)}</p>`).join('')||'<p>이 분류에 제공된 문서가 없어요.</p>'}</section>`).join('')}`;
+  return `<p class="comfort-document-intro">${c.source==='independent'?'독립 예시 자료이며 A3 발행본이 아니에요.':'현재 승인·발행된 문서만 열 수 있어요.'} PDF 내용을 복약 시각이나 처방으로 자동 변환하지 않아요. 이미 내려받은 PDF는 철회 후 회수할 수 없어요.</p>${['MEDICATION','GENERAL'].map(cat=>`<section class="comfort-document-group"><h3>${cat==='MEDICATION'?'복약 관련 PDF':'일반 안내문'}</h3>${docs.filter(d=>(d.category||'GENERAL')===cat).map(d=>`<article class="comfort-document-item"><strong>${esc(d.name)}</strong><p>${cat==='MEDICATION'?'복약 관련 발행 자료예요. 정확한 내용은 원문을 확인해 주세요.':'의료진이 제공한 상세 안내문이에요. 필요한 내용을 원문으로 확인할 수 있어요.'}</p>${button('document-open','안내문 열어보기 (PDF)',`data-id="${esc(d.id)}"`)}</article>`).join('')||'<p>이 분류에 제공된 문서가 없어요.</p>'}</section>`).join('')}`;
  }
  function snapshotForms(node){return [...node.querySelectorAll('form')].map(f=>({kind:f.dataset.comfortForm,id:f.dataset.id,values:[...f.elements].filter(e=>e.name).map(e=>({name:e.name,value:e.value,checked:e.checked}))}));}
  function restoreForms(drafts){for(const draft of drafts){const f=[...dialog.querySelectorAll('form')].find(f=>f.dataset.comfortForm===draft.kind&&f.dataset.id===draft.id);if(f)for(const v of draft.values){const e=f.elements.namedItem(v.name);if(e){e.value=v.value;if(e.type==='checkbox')e.checked=v.checked;}}}}
