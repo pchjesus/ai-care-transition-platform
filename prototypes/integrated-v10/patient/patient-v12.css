@@ -86,3 +86,73 @@
  .v12-card-copy strong{font-size:calc(15px * var(--font-scale,1))}
 }
 @media(prefers-reduced-motion:reduce){.v12-task-card,.v12-service-card,.v12-home-appointment{transition:none}}
+
+
+/* Dedicated mobility review visually mirrors the approved single-column status mockup. */
+.comfort-dialog .travel-screen:has([data-taxi-preview])>.travel-intro,
+.comfort-dialog .travel-screen:has([data-taxi-preview])>.travel-choice-grid,
+.comfort-dialog .travel-screen:has([data-taxi-preview])>[data-taxi-steps] {
+  display:none;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview {
+  background:#fff;
+  border:0;
+  padding:0;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview>h3 {
+  font-size:calc(24px * var(--font-scale,1));
+  color:var(--v12-ink);
+  margin:15px 0 10px;
+  line-height:1.35;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview-list {
+  margin:16px 0 20px;
+  border:1px solid #e0e7e0;
+  border-radius:13px;
+  padding:4px 13px;
+  background:#fff;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-preview-list>div:last-child{border-bottom:0}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary {
+  background:#fff;
+  border:0;
+  border-top:1px solid #e3ebe4;
+  border-radius:0;
+  padding:23px 0 8px;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary h4{
+  font-size:calc(20px * var(--font-scale,1));
+  margin-bottom:17px;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-state-summary li{gap:13px}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-next-action{
+  background:#f1f9f1;border:1px solid #b9d4c0;border-radius:13px;margin:17px 0;
+}
+.comfort-dialog .travel-screen:has([data-taxi-preview]) .travel-share-boundary {
+  margin-top:19px;
+  border:1px solid #e0e6df;
+  background:#fbfcfb;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-group {
+  border:0;
+  padding:0;
+  background:transparent;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item {
+  border:1px solid var(--v12-line);
+  background:#fff;
+  padding:17px;
+  border-radius:14px;
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item strong {
+  font-size:calc(17px * var(--font-scale,1));
+}
+.comfort-dialog:has(.comfort-document-group) .comfort-document-item [data-comfort=document-open] {
+  min-height:47px;
+  background:#eff8f1;
+  color:#24663e;
+  border:1px solid #b8d6be;
+  border-radius:11px;
+  font-weight:800;
+  padding:10px 14px;
+}
