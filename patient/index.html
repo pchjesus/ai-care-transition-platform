@@ -410,7 +410,7 @@ function createDemoRepository(provided){
  if(demoRepository.failed)state.notice='저장된 정보를 확인할 수 없어 덮어쓰기를 중지했어요. 기존 데이터를 보관한 뒤 브라우저 저장 상태를 확인해 주세요.';
  const task=id=>items.find(x=>x.id===id)||items[0];
  const isPatientView=()=>state.view!=='clinician';
- const key=(v)=>v==='detail'||v==='quiz'? 'today':v==='support'?'help':v==='overview'?'today':v;
+ const key=(v)=>v==='detail'||v==='quiz'||v==='documents'? 'today':v==='support'?'help':v==='overview'?'today':v;
  function render(){
   if(!state.authenticated||!state.published){state.modal=null;closePdf();}
   stage.dataset.preview=state.preview;
@@ -419,7 +419,7 @@ function createDemoRepository(provided){
   const demoFont=document.querySelector('.devbar [data-action=font]');if(demoFont)demoFont.textContent=state.large?'기본 글자':'글자 크게';
   const k=key(state.view);
   if(!state.authenticated){app.innerHTML=loginScreen();window.dispatchEvent(new Event('patient-render'));return;}
-  let page=state.view==='today'?home():state.view==='detail'?detail():state.view==='quiz'?quiz():state.view==='schedule'?schedule():state.view==='help'?help():state.view==='support'?support():state.view==='overview'?overview():state.view==='reminders'?'<div class="reminders-page" data-reminder-hub></div>':state.view==='profile'?profilePage():(previewMode?clinician():home());
+  let page=state.view==='today'?home():state.view==='documents'?documentHub():state.view==='detail'?detail():state.view==='quiz'?quiz():state.view==='schedule'?schedule():state.view==='help'?help():state.view==='support'?support():state.view==='overview'?overview():state.view==='reminders'?'<div class="reminders-page" data-reminder-hub></div>':state.view==='profile'?profilePage():(previewMode?clinician():home());
   app.innerHTML=`<div class="app-layout"${state.modal||state.pdfOpen?' inert':''}><aside class="side" aria-label="주요 메뉴"><div class="side-brand"><div class="side-logo">D.</div><div><b>나의 하루</b><small>퇴원 후 관리</small></div></div><div class="side-cap">나의 계획</div>${nav('today','오늘', 'home',k)}${nav('schedule','일정', 'calendar',k)}${nav('help','도움', 'help',k)}${nav('reminders','알림', 'bell',k)}${nav('profile','내 정보', 'user',k)}<div class="side-end"><b>가상 퇴원 안내</b><br>의료진이 확인한 계획을<br>환자에게 쉽게 전달합니다.</div></aside><div class="app-body"><header class="topline"><span class="kicker">퇴원 후, 나의 하루</span><div class="meta"><nav class="patient-journey" aria-label="화면 이동"><a class="top-font" href="../prototypes/integrated-v10/index.html">통합 홈</a><button class="top-font" data-action="patient-home">홈</button><button class="top-font" data-action="patient-back" ${patientPosition===0?'disabled':''}>이전</button><button class="top-font" data-action="patient-next" ${patientPosition===patientVisits.length-1?'disabled':''}>다음</button></nav><button class="top-profile" data-nav="profile">내 정보</button><button class="top-font" data-action="font" aria-label="글자 크기 전환">${state.large?'글자 기본':'글자 크게'}</button><span class="version-meta">${state.published?(state.planChanged?'변경된 안내 · v'+state.version+'.0':'의료진 확인 · v1.0'):'안내 철회됨'}</span><span class="tiny-pill">가상 환자</span></div></header><main id="main-content" class="main" tabindex="-1">${isPatientView()&&!state.published?blocked():page}</main><nav class="bottom-nav" aria-label="모바일 주요 메뉴">${mobileNav('today','오늘','home',k)}${mobileNav('schedule','일정','calendar',k)}${mobileNav('help','도움','help',k)}${mobileNav('reminders','알림','bell',k)}</nav></div></div>${state.notice&&state.view!=='profile'?`<div class="toast" role="status">${escapeAttribute(state.notice)}</div>`:''}${state.modal?confirmDialog():''}${state.pdfOpen?pdfViewer():''}`;
   if(state.view==='help'&&state.helpSearchOpen&&state.published)runHelpSearch(state.helpQuery);
   window.dispatchEvent(new Event('patient-render'));
@@ -454,7 +454,7 @@ function createDemoRepository(provided){
     <section class="v12-read-note insight-strip" aria-label="함께 볼 자료">
       <h2>${icon('file',20)} 함께 볼 안내문</h2>
       <p>${availableDoc?'보행 보조기 사용 안내를 PDF 원문으로 자세히 확인할 수 있어요.':'최신 가상 계획에 제공된 PDF가 있는지 확인할 수 있어요.'}</p>
-      <button type="button" class="v12-action-link" data-detail="mobility">${availableDoc?'보행 보조기 안내문 살펴보기':'보행 관련 안내 확인하기'} ${icon('chev',18)}</button>
+      <button type="button" class="v12-action-link" data-nav="documents">${availableDoc?'안내자료(PDF) 보기':'안내자료 제공 여부 확인'} ${icon('chev',18)}</button>
     </section>
     <section class="v12-help-bottom">
       <strong>도움이 필요하신가요?</strong><p>퇴원 후 이용 가능한 도움과 문의 방법을 알아보세요.</p>
@@ -463,6 +463,24 @@ function createDemoRepository(provided){
     </section>
     <p class="v12-scope">이 화면은 합성 시연용입니다. 실제 진료예약·의료지시를 제공하지 않습니다.</p>
   </div>`;
+ }
+
+ function documentHub(){
+  const available=state.version===1;
+  return `<div class="v12-shell v12-documents">
+     <header class="v12-page-top"><button class="v12-back" data-nav="today" aria-label="홈으로 돌아가기">${icon('back',23)}</button><h1>안내자료</h1></header>
+     <p class="v12-doc-intro">퇴원 후 생활에 도움이 되는 자세한 정보를 확인하세요. 필요한 내용이 있는지 살펴봐 주세요.</p>
+     <div class="v12-document-list">
+      ${available?`<div class="v12-document-card"><span class="v12-document-icon">${icon('file',23)}</span>
+       <span class="v12-card-copy"><strong>보행 보조기 안내문</strong><small>퇴원 후 보행 보조기 사용 관련 설명을 원문으로 확인하세요.</small><small><span class="v12-doc-tag">PDF</span>합성 시연용 자료 · 실제 의료지시가 아니에요.</small></span>
+       <button type="button" class="v12-open-btn" data-detail="mobility">자료 자세히 보기 ${icon('chev',16)}</button></div>`:
+      '<div class="v12-quiet-block">현재 계획 버전에 제공된 PDF가 없습니다. 이전 자료를 최신 안내처럼 보여주지 않아요.</div>'}
+     </div>
+     <div class="v12-read-note"><h2>${icon('info',20)} PDF는 어떤 자료인가요?</h2>
+      <p>홈 화면에 나온 짧은 안내 외에 더 자세한 내용을 읽을 수 있는 문서예요. 자료가 제공된 경우에만 열 수 있습니다.</p>
+     </div>
+     <p class="v12-scope">가상 문서는 실제 의료진의 지시를 대신하지 않습니다.</p>
+    </div>`;
  }
  function detail(){const x=task(state.selected);const pdf=x.id==='mobility'&&state.version===1;return `<div class="detail-wrap"><button class="back-button" data-nav="today">${icon('back',19)} 오늘 화면으로</button><div class="detail-heading"><div class="eyebrow">내 퇴원 안내 · ${x.number} / 03</div><h1>${x.title}</h1><p>${x.intro}</p></div><section class="focus-panel"><h2 class="focus-title">먼저 확인할 내용</h2><ol class="steps">${x.steps.map((s,i)=>`<li><span>${String(i+1).padStart(2,'0')}</span><div>${s}</div></li>`).join('')}</ol></section><section class="document-panel" aria-label="추가 안내 자료"><div class="document-label">${icon('info',19)} 함께 볼 안내문</div><h2 class="document-title">${pdf?'보행 보조기 안내문을 열어보세요':'더 자세한 안내가 필요한가요?'}</h2><p class="document-desc">${pdf?'보행 보조기 관련 내용을 자세히 확인할 수 있는 시연용 자료예요.':'의료진이 제공한 관련 자료가 있다면 여기에서 확인할 수 있어요.'}</p>${pdf?`<div class="document-meta">${icon('print',18)} 보행 보조기 안내문 · PDF · 시연용 자료 · 계획 v1.0 예시</div><button class="document-cta" type="button" data-action="pdf-open">보행 보조기 안내문 열어보기 (PDF) ${icon('chev',18)}</button><span class="source-link-placeholder">상세 내용을 읽고 필요한 경우 저장할 수 있어요. 실제 의료지시는 아니에요.</span>`:`<div class="document-unavailable">${x.id==='mobility'&&state.version>1?'새로운 계획 버전에 연결된 PDF는 아직 없어요. 이전 자료를 최신 지시처럼 보여주지 않습니다.':'현재 첨부된 PDF는 없어요. 필요하면 담당 의료진에게 자료를 요청해 주세요.'}</div>`}</section><div class="note-block">${icon('info',20)}<span>${x.note}</span></div><p class="approval-line">가상 의료진 확인 · 계획 v${state.version}.0 · PDF는 실제 의료 지침이 아닌 시연용 자료입니다.</p><div class="detail-secondary-row"><button class="primary" data-nav="today">오늘 안내로 돌아가기 ${icon('chev',18)}</button><button class="quiz-optional" data-action="quiz-start">${state.read[x.id]?'확인 문제 다시 풀기':'안내 확인 문제 풀어보기 (선택)'} ${icon('chev',17)}</button></div><p class="quiz-explain">확인 문제를 풀지 않아도 모든 안내를 볼 수 있어요.</p></div>`}
  function quiz(){const x=task(state.selected);const chosen=state.quizChoice;const submitted=state.feedback!==null;return `<div class="quiz-container"><button class="back-button" data-action="detail-back">${icon('back',19)} ${x.title}</button><div class="quiz-context">안내 확인 문제 · 1문제</div><h1 class="quiz-title">${x.question}</h1><p class="quiz-expl">짧은 확인 문제예요. 참여는 선택이며, 답변은 실제 건강관리 수행 여부를 뜻하지 않아요.</p><div class="choices" role="group" aria-label="답변 선택">${x.choices.map((choice,i)=>`<button class="choice" data-choice="${i}" aria-pressed="${chosen===i}" ${submitted?'disabled':''}><span class="radio"></span><span>${choice}</span></button>`).join('')}</div>${submitted?`<div class="feedback ${state.feedback==='correct'?'correct':''}" role="status"><b>${state.feedback==='correct'?'안내와 맞는 답을 골랐어요.':'안내 내용을 다시 살펴볼까요?'}</b><p>${x.why}</p></div>`:''}<div class="action-row">${submitted?`<button class="primary" data-action="quiz-done">${state.feedback==='correct'?'오늘 화면으로 돌아가기':'안내 다시 보기'} ${icon('chev',18)}</button>`:`<button class="primary" data-action="quiz-check" ${chosen===null?'disabled':''}>선택한 답 확인하기 ${icon('chev',18)}</button>`}<button class="link-soft" data-nav="help">도움말 보기</button></div></div>`}
