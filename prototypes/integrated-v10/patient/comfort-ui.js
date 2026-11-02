@@ -235,8 +235,8 @@ export function installPatientComfort(adapter){
    const travelMarkup=`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`;
    // Keep the approved primary information first: appointment before travel, help cards before travel.
    const anchor=c.view==='schedule'
-     ?main.querySelector('.schedule-layout .v12-confirmed,.schedule-layout .timeline,.schedule-layout .sublead')
-     :main.querySelector('.service-page .services-panel,.service-page .service-lead');
+     ?(main.querySelector('.schedule-layout .v12-confirmed')||main.querySelector('.schedule-layout .timeline')||main.querySelector('.schedule-layout .sublead'))
+     :(main.querySelector('.service-page .services-panel')||main.querySelector('.service-page .service-lead'));
    if(anchor)anchor.insertAdjacentHTML('afterend',travelMarkup);else add(main,travelMarkup);
   }
  }
