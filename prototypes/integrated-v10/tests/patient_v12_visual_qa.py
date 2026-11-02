@@ -1,4 +1,4 @@
-"""Patient B v1.1 synthetic-only screenshot and usability smoke for PR review."""
+"""Patient B v1.2 synthetic-only screenshot and usability smoke for PR review."""
 from pathlib import Path
 import json
 import subprocess
@@ -60,6 +60,12 @@ try:
             expect(page.locator('[data-action="pdf-open"]')).to_be_visible()
             expect(page.locator('[data-action="pdf-open"]')).to_contain_text("PDF")
             shot(page, "03-document-detail", width)
+            page.locator('[data-action=pdf-open]').click()
+            expect(page.locator('.pdf-panel')).to_be_visible()
+            page.keyboard.press('Escape')
+            page.locator('[data-action=quiz-start]').click()
+            page.locator('[data-choice]').first.click(); page.locator('[data-action=quiz-check]').click()
+            expect(page.locator('.feedback')).to_be_visible()
 
             tab(page, "schedule")
             expect(page.locator(".travel-entry-section")).to_be_visible()
@@ -90,6 +96,11 @@ try:
             assert page.locator(".services-panel").bounding_box()["y"] < page.locator(".travel-entry-section").bounding_box()["y"], "Help choices must appear before mobility tools"
             shot(page, "06-help", width)
             ensure_no_hscroll(page)
+            page.evaluate('document.documentElement.style.zoom="2"')
+            ensure_no_hscroll(page); shot(page,"standalone-css-200",width)
+            page.evaluate('document.documentElement.style.zoom="1"')
+            page.locator('[data-nav=profile]:visible').first.focus(); page.keyboard.press('Enter')
+            expect(page.get_by_role('heading',name='내 정보',exact=True)).to_be_visible()
             summary[str(width)] = "PASS: v12 home/PDF list+detail/schedule/taxi/help, tap size, no overflow"
             page.close()
         browser.close()
@@ -101,3 +112,48 @@ finally:
         server.wait(timeout=5)
     except subprocess.TimeoutExpired:
         server.kill()
+
+# Verify A3 publications as well as the standalone demonstration.
+import comfort_http as baseline
+baseline.Comfort.setUpClass()
+t = baseline.Comfort(); t.setUp()
+try:
+    t.ready()
+    expect(t.b.locator('.v12-home-appointment')).to_contain_text('일정 확인 필요')
+    expect(t.b.locator('[data-comfort=documents]')).to_have_count(0)
+    t.a3.locator('#revise').click(); t.appointment()
+    baseline.baseline.PatientIntegration.attach_pdf(t); t.verify_items(); t.publish_v1()
+    expect(t.b.locator('.v12-home-appointment')).to_contain_text('2030-01-03 10:00')
+    for width in (390,768,1440):
+        t.b.set_viewport_size({'width':width,'height':900})
+        tab(t.b,'today'); shot(t.b,'connected-01-home',width)
+        tab(t.b,'schedule')
+        expect(t.b.locator('.v12-confirmed')).to_contain_text('2030-01-03')
+        expect(t.b.locator('.v12-secondary-schedule .event')).to_have_count(0)
+        shot(t.b,'connected-02-schedule',width)
+        t.b.locator('[data-comfort=taxi]').click()
+        t.b.locator('[data-taxi-field=pickup]').fill('가상 승차 위치')
+        t.b.locator('[data-comfort=taxi-next]').click()
+        t.b.locator('[data-taxi-group=equipment][value=walker]').check()
+        t.b.locator('[data-comfort=taxi-next]').click()
+        expect(t.b.locator('[data-taxi-preview]')).to_contain_text('가상 승차 위치')
+        shot(t.b,'connected-03-travel',width); t.close()
+        tab(t.b,'today'); t.b.locator('[data-comfort=documents]').click()
+        shot(t.b,'connected-04-documents',width)
+        t.b.locator('[data-comfort=document-open]').click()
+        expect(t.b.locator('iframe.pdf-frame')).to_be_visible()
+        t.b.keyboard.press('Escape'); tab(t.b,'help'); shot(t.b,'connected-05-help',width)
+        ensure_no_hscroll(t.b)
+        # CSS approximation, not native browser 200% zoom.
+        t.b.evaluate('document.documentElement.style.zoom="2"')
+        ensure_no_hscroll(t.b); shot(t.b,'connected-css-200',width)
+        t.b.evaluate('document.documentElement.style.zoom="1"')
+        t.b.locator('[data-view=profile]:visible').first.focus(); t.b.keyboard.press('Enter')
+        expect(t.b.get_by_role('heading',name='내 정보',exact=True)).to_be_visible()
+    t.a3.locator('#revoke').click()
+    expect(t.b.locator('.blocked')).to_be_visible()
+    expect(t.b.locator('[data-comfort=documents]')).to_have_count(0)
+    summary['connected']='PASS: pending/confirmed, five screens, PDF/revocation, keyboard/CSS zoom'
+    (OUTPUT/'RESULTS.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2))
+finally:
+    t.tearDown(); baseline.Comfort.tearDownClass()

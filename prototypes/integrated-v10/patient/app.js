@@ -153,9 +153,10 @@ function content(pub){
      <h2>${icon('calendar',23)} ${ap?'다음 외래 진료':'일정 확인 필요'}</h2>
      <div class="v12-date-large">${ap?esc(ap.date)+'<br>'+esc(ap.time):'확정된 일시가 없어요'}</div>
      <p>${icon('home',20)} ${ap?esc(verified.title)+' · '+esc(ap.place):'담당 의료진에게 일정을 확인해 주세요.'}</p>
+     ${verified?'<div class="v12-visit-note">'+paragraph(verified.text)+'</div>':''}
      <p class="v12-fineprint">의료진이 승인·발행한 합성 안내를 표시하며 실제 병원 예약은 아닙니다.</p>
    </section>
-   ${follow.length?'<section class="v12-secondary-schedule"><h2 class="v12-subtitle">발행된 일정 안내</h2>'+follow.map(x=>'<article class="event"><div class="connected-appointment-date">'+(x.appointment?'<b>'+esc(x.appointment.date)+'</b><small>'+esc(x.appointment.time)+'</small>':'<b>일정 확인 필요</b><small>날짜 미제공</small>')+'</div><div><h3>'+esc(x.title)+'</h3>'+paragraph(x.text)+'</div></article>').join('')+'</section>':'<div class="v12-quiet-block">발행된 외래 일정 정보가 없어요.</div>'}
+   ${follow.some(x=>x!==verified)?'<section class="v12-secondary-schedule"><h2 class="v12-subtitle">발행된 일정 안내</h2>'+follow.filter(x=>x!==verified).map(x=>'<article class="event"><div class="connected-appointment-date">'+(x.appointment?'<b>'+esc(x.appointment.date)+'</b><small>'+esc(x.appointment.time)+'</small>':'<b>일정 확인 필요</b><small>날짜 미제공</small>')+'</div><div><h3>'+esc(x.title)+'</h3>'+paragraph(x.text)+'</div></article>').join('')+'</section>':(verified?'':'<div class="v12-quiet-block">발행된 외래 일정 정보가 없어요.</div>')}
   </div>`;
  }
 
