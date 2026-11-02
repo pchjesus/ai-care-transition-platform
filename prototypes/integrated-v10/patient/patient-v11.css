@@ -109,6 +109,26 @@
   line-height: 1.6;
   margin: 7px 0 11px;
 }
+.home-pdf-shortcut {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 52px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #b9d6c4;
+  border-radius: 11px;
+  background: #f0f8f2;
+  color: #275c42;
+  text-align: left;
+  font: inherit;
+  font-weight: 750;
+  font-size: calc(15px * var(--font-scale, 1));
+}
+.home-pdf-shortcut:hover { background: #e8f3e9; }
+.home-pdf-shortcut:focus-visible { outline: 3px solid #dd9a46; outline-offset: 3px; }
 .document-unavailable {
   border-radius: 12px;
   overflow-wrap: anywhere;
