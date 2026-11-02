@@ -166,7 +166,11 @@ try:
         t.b.locator('.v12-read-note [data-document]').click()
         expect(t.b.locator('iframe.pdf-frame')).to_be_visible()
         shot(t.b,'connected-04-pdf-direct',width)
-        t.b.keyboard.press('Escape'); tab(t.b,'help'); shot(t.b,'connected-05-help',width)
+        t.b.keyboard.press('Escape')
+        t.b.locator('.v12-read-note [data-comfort=documents]').click()
+        expect(t.b.locator('[data-comfort=document-open]')).to_be_visible()
+        t.close()
+        tab(t.b,'help'); shot(t.b,'connected-05-help',width)
         ensure_no_hscroll(t.b)
         # CSS approximation, not native browser 200% zoom.
         t.b.evaluate('document.documentElement.style.zoom="2"')
