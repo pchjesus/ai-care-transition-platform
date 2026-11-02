@@ -220,7 +220,7 @@ export function installPatientComfort(adapter){
   if(c.publication){
    const hub=main.querySelector('[data-reminder-hub]');
    if(hub)attachNotifications(hub,c);
-   add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents',c.publication.documents?.length?'안내문 열어보기 (PDF)':'안내 문서 제공 여부 확인')+'</div>');
+   if(!main.querySelector('.v12-read-note'))add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents',c.publication.documents?.length?'안내문 열어보기 (PDF)':'안내 문서 제공 여부 확인')+'</div>');
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
   }else if(c.view==='reminders'){const hub=document.createElement('div');hub.dataset.reminderHub='';main.append(hub);attachNotifications(hub,c);}else add(main,'<section class="comfort-quick">'+button('inbox','발행·철회 알림함')+'</section>');
@@ -233,7 +233,10 @@ export function installPatientComfort(adapter){
    }).join('');
    const route=routeCards||(c.source==='independent'?'<button type="button" class="travel-entry travel-route" data-comfort="map"><span class="travel-entry-icon" aria-hidden="true">🗺️</span><span class="travel-entry-text"><strong>병원 길찾기</strong><small>병원 주소 확인 방법 보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button>':'<p class="travel-no-address">발행된 외래 목적지가 없어 길찾기를 시작할 수 없어요.</p>');
    const travelMarkup=`<section class="comfort-map-section travel-entry-section" aria-labelledby="travel-section-title"><div class="travel-section-heading"><h2 id="travel-section-title">병원에 가는 방법</h2><p>원하는 방법을 선택해 주세요.</p></div><div class="travel-entry-grid">${route}<button type="button" class="travel-entry travel-taxi" data-comfort="taxi"><span class="travel-entry-icon" aria-hidden="true">🚕</span><span class="travel-entry-text"><strong>택시 이용 안내</strong><small>일반 택시·이동지원 방법 알아보기</small></span><span class="travel-entry-arrow" aria-hidden="true">→</span></button></div><p class="travel-section-note">가상 안내 화면입니다. 택시 예약·호출·결제는 연결되지 않아요. 길찾기는 확인된 목적지가 있을 때만 외부 지도를 열 수 있어요.</p></section>`;
-   const anchor=main.querySelector('.schedule-layout .sublead,.service-page .service-lead');
+   // Keep the approved primary information first: appointment before travel, help cards before travel.
+   const anchor=c.view==='schedule'
+     ?main.querySelector('.schedule-layout .v12-confirmed,.schedule-layout .timeline,.schedule-layout .sublead')
+     :main.querySelector('.service-page .services-panel,.service-page .service-lead');
    if(anchor)anchor.insertAdjacentHTML('afterend',travelMarkup);else add(main,travelMarkup);
   }
  }
@@ -245,7 +248,7 @@ export function installPatientComfort(adapter){
   if(a==='reload'){if(!permitNavigation())return;refreshPreferences();openedPublication=pubKey(context());notice='최신 설정을 다시 읽었어요.';draw();return;}
   if(['documents','map','taxi'].includes(a)){open(a,b,b.dataset.id);return;}
   if(a==='taxi-option'&&mode==='taxi'&&dialog){const choice=b.dataset.choice;if(!['regular','assisted'].includes(choice))return;taxiChoice=choice;dialog.querySelectorAll('[data-comfort=taxi-option]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.choice===choice)));const target=dialog.querySelector('[data-taxi-steps]');if(target)target.innerHTML=taxiChoiceDetails();if(taxiStep===3)dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);return;}
-  if((a==='taxi-next'||a==='taxi-prev')&&mode==='taxi'&&dialog){taxiStep=Math.max(1,Math.min(3,taxiStep+(a==='taxi-next'?1:-1)));dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);dialog.querySelector('.travel-stage h3')?.focus({preventScroll:true});dialog.querySelector('[data-taxi-builder]')?.scrollIntoView({block:'nearest'});return;}
+  if((a==='taxi-next'||a==='taxi-prev')&&mode==='taxi'&&dialog){taxiStep=Math.max(1,Math.min(3,taxiStep+(a==='taxi-next'?1:-1)));dialog.querySelector('[data-taxi-builder]').outerHTML=taxiBuilder(c);dialog.querySelector('.travel-stage h3')?.focus({preventScroll:true});if(taxiStep===3)dialog.scrollTop=0;else dialog.querySelector('[data-taxi-builder]')?.scrollIntoView({block:'nearest'});return;}
   if(a==='map-fallback'){dialog.querySelector('#map-fallback').hidden=false;dialog.querySelector('textarea').focus();return;}
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
