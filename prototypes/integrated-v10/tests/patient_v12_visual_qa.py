@@ -86,7 +86,17 @@ try:
             expect(dlg.locator(".travel-future-action")).to_be_disabled()
             expect(dlg.locator(".travel-next-action")).to_be_visible()
             expect(dlg.locator(".travel-state-summary")).to_be_visible()
-            shot(page, "05-taxi-status", width)
+            # Full-page screenshots of a fixed-height dialog can visually stitch
+            # the document behind it into the dialog. Capture the dialog viewport
+            # and its scrolled sections separately to check actual readability.
+            status = dlg.locator(".travel-state-summary")
+            boundary = dlg.locator(".travel-share-boundary")
+            status_box = status.bounding_box()
+            boundary_box = boundary.bounding_box()
+            assert status_box and boundary_box and status_box["y"] + status_box["height"] <= boundary_box["y"] + 2, "Status section overlaps following guidance"
+            page.screenshot(path=str(OUTPUT / f"{width}-05-taxi-viewport.png"), full_page=False, animations="disabled")
+            status.screenshot(path=str(OUTPUT / f"{width}-05-taxi-status-section.png"), animations="disabled")
+            dlg.locator(".travel-next-action").screenshot(path=str(OUTPUT / f"{width}-05-taxi-next-action.png"), animations="disabled")
             page.locator('[data-comfort="close"]').click()
 
             tab(page, "help")
@@ -137,7 +147,16 @@ try:
         t.b.locator('[data-taxi-group=equipment][value=walker]').check()
         t.b.locator('[data-comfort=taxi-next]').click()
         expect(t.b.locator('[data-taxi-preview]')).to_contain_text('가상 승차 위치')
-        shot(t.b,'connected-03-travel',width); t.close()
+        connected_dlg = t.b.locator("#comfort-dialog")
+        status = connected_dlg.locator(".travel-state-summary")
+        boundary = connected_dlg.locator(".travel-share-boundary")
+        status_box = status.bounding_box()
+        boundary_box = boundary.bounding_box()
+        assert status_box and boundary_box and status_box["y"] + status_box["height"] <= boundary_box["y"] + 2, "Connected status section overlaps following guidance"
+        t.b.screenshot(path=str(OUTPUT / f"{width}-connected-03-travel-viewport.png"), full_page=False, animations="disabled")
+        status.screenshot(path=str(OUTPUT / f"{width}-connected-03-travel-status-section.png"), animations="disabled")
+        connected_dlg.locator(".travel-next-action").screenshot(path=str(OUTPUT / f"{width}-connected-03-travel-next-action.png"), animations="disabled")
+        t.close()
         tab(t.b,'today'); t.b.locator('[data-comfort=documents]').click()
         shot(t.b,'connected-04-documents',width)
         t.b.locator('[data-comfort=document-open]').click()
