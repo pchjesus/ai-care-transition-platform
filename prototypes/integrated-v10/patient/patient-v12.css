@@ -334,3 +334,60 @@
     overscroll-behavior:contain;
   }
 }
+
+/* Patient B v1.3 desktop concept: existing synthetic data and actions, new visual hierarchy.
+   Container query keeps the approved 390px/768px mobile and tablet layouts intact. */
+@container display (min-width:960px){
+ .app-layout{grid-template-columns:244px minmax(0,1fr)}
+ .app-layout>.side{background:#fbfdfb;border-color:#e0e8e1;padding:29px 18px 22px}
+ .side-brand{padding:0 7px 16px;gap:10px}
+ .side-logo{width:41px;height:43px;flex:0 0 41px;border-radius:0;background:transparent;color:#237e46}
+ .side-logo svg{display:block}
+ .side-brand b{font-size:calc(17px * var(--font-scale,1));font-weight:850;color:#204633;letter-spacing:-.045em;white-space:nowrap}
+ .side-brand small{color:#708578;font-size:calc(11px * var(--font-scale,1))}
+ .side-cap{color:#849289;font-size:calc(12px * var(--font-scale,1))}
+ .side-nav{border-radius:12px;min-height:52px;color:#53675b}
+ .side-nav:hover{background:#edf5ee}
+ .side-nav[aria-current=page]{color:#1b683d;background:#e8f4eb;font-weight:800}
+ .side-end{background:#fff;border:1px solid #e0e8e1;border-radius:14px;padding:17px;color:#6c7d70}
+ .side-end b{color:#375b46}
+ .app-body>.topline{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.98);border-color:#e0e8e1;padding:10px 34px!important}
+ .topline .kicker{color:#214b37;font-size:calc(16px * var(--font-scale,1));font-weight:850}
+ .topline .meta{flex-wrap:wrap;justify-content:flex-end;gap:10px}
+ .topline .patient-header-help{background:#f2f8f3;color:#285b3b;border-color:#cce2d1}
+ .app-body>.main{max-width:1220px;padding:30px 34px 88px}
+ .patient-mobile-toolbar .patient-page-tools{padding:3px 0 13px}
+ .patient-mobile-toolbar .patient-demo-return{color:#607d69;font-size:calc(12px * var(--font-scale,1))}
+ .v12-shell{max-width:940px}
+ .v12-home{max-width:1120px;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(265px,.82fr);gap:20px;align-items:start}
+ .v12-home>.v12-head{grid-column:1/-1;margin:4px 0 0}
+ .v12-home>.v12-head h1{font-size:calc(31px * var(--font-scale,1));line-height:1.35;color:#192b21}
+ .v12-home>.v12-head p{margin-top:6px;color:#637269}
+ .v12-home>.v12-head .updated{margin-top:10px;color:#4d8060}
+ .v12-home>section[aria-labelledby="today-tasks"]{grid-column:1;grid-row:2/span 2;min-width:0;border:1px solid #e0e8e1;border-radius:18px;padding:23px;background:#fff;box-shadow:0 10px 32px rgba(33,70,47,.035)}
+ .v12-home>section[aria-labelledby="today-tasks"] .v12-subtitle{margin:0 0 14px;font-size:calc(20px * var(--font-scale,1))}
+ .v12-home .v12-task-list{border:0;gap:10px}
+ .v12-home .v12-task-card{border:1px solid #e2eae3;border-radius:13px;background:#fff;min-height:90px;padding:16px 14px;gap:13px}
+ .v12-home .v12-task-card:hover{background:#f7faf7;border-color:#b6d3be}
+ .v12-home .v12-task-icon{width:43px;height:43px;flex-basis:43px;background:#eff6f0;color:#328353;border-radius:12px}
+ .v12-home .v12-card-copy strong{color:#243a2b}
+ .v12-home .v12-card-copy small{color:#687b6e}
+ .v12-home>section[aria-label="다음 외래 일정"],.v12-home>section[aria-label="다음 외래 진료"]{grid-column:2;grid-row:2;min-width:0}
+ .v12-home .v12-home-appointment{min-height:205px;padding:24px;border:1px solid #d4e7d7;border-radius:18px;background:linear-gradient(140deg,#f4faf5,#e9f5eb);box-shadow:0 10px 32px rgba(33,70,47,.035)}
+ .v12-home .v12-appointment-date{font-size:calc(26px * var(--font-scale,1));line-height:1.4;margin:15px 0}
+ .v12-home .v12-appointment-place{font-size:calc(13px * var(--font-scale,1));line-height:1.65;overflow-wrap:anywhere}
+ .v12-home>.v12-read-note{grid-column:2;grid-row:3;min-width:0;margin:0;padding:22px;background:#fff;border:1px solid #e0e8e1;border-radius:18px;box-shadow:0 10px 32px rgba(33,70,47,.035)}
+ .v12-home>.v12-read-note h2{font-size:calc(17px * var(--font-scale,1))}
+ .v12-home>.v12-read-note .v12-action-link{background:#fff;border-color:#9ac5a5;color:#23663d}
+ .v12-home>.v12-help-bottom{grid-column:1/-1;grid-row:4;display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:10px 17px;min-width:0;margin:0;padding:16px 22px;background:#f7faf7;border:1px solid #e5ece6;border-radius:15px}
+ .v12-home>.v12-help-bottom strong{font-size:calc(16px * var(--font-scale,1))}
+ .v12-home>.v12-help-bottom p{flex:1 1 170px;margin:0;color:#65746a}
+ .v12-home>.v12-help-bottom .v12-action-link{width:auto;min-width:144px;min-height:44px;margin:0}
+ .v12-home>.v12-help-bottom .text-action{min-height:44px}
+ .v12-home>.v12-scope{grid-column:1/-1;grid-row:5;margin:0;color:#748076}
+ .v12-schedule{max-width:1030px}
+ .v12-schedule .v12-secondary-schedule .event-date,
+ .v12-schedule .v12-secondary-schedule .connected-appointment-date{background:#fff5e6;border:1px solid #f4dfbd;color:#946017}
+ .v12-schedule .v12-secondary-schedule .event-date small,
+ .v12-schedule .v12-secondary-schedule .connected-appointment-date small{color:#9f7e49}
+}
