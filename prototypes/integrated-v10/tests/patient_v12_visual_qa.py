@@ -47,6 +47,12 @@ try:
             assert page.evaluate("getComputedStyle(document.querySelector('.tasks .task')).borderRadius") != "0px"
             check_min_taps(page, ".tasks .task")
             ensure_no_hscroll(page)
+            if width == 1440:
+                assert page.evaluate("getComputedStyle(document.querySelector('.v12-home')).display") == "grid", "PC homepage grid missing"
+                expect(page.locator('.side-brand')).to_contain_text('케어브릿지랩')
+                assert page.locator('.v12-home > section[aria-labelledby="today-tasks"]').bounding_box()["x"] < page.locator('.v12-home > section[aria-label="다음 외래 일정"]').bounding_box()["x"]
+            if width == 390:
+                assert page.evaluate("getComputedStyle(document.querySelector('.v12-home')).display") != "grid", "Mobile must remain single column"
             shot(page, "01-home", width)
 
             pdf_shortcut = page.locator('button[data-nav="documents"]')
@@ -140,7 +146,11 @@ try:
     expect(t.b.locator('.v12-home-appointment')).to_contain_text('2030-01-03 10:00')
     for width in (390,768,1440):
         t.b.set_viewport_size({'width':width,'height':900})
-        tab(t.b,'today'); shot(t.b,'connected-01-home',width)
+        tab(t.b,'today')
+        if width == 1440:
+            assert t.b.evaluate("getComputedStyle(document.querySelector('.v12-home')).display") == "grid"
+            expect(t.b.locator('.side-brand')).to_contain_text('케어브릿지랩')
+        shot(t.b,'connected-01-home',width)
         tab(t.b,'schedule')
         expect(t.b.locator('.v12-confirmed')).to_contain_text('2030-01-03')
         expect(t.b.locator('.v12-secondary-schedule .event')).to_have_count(0)

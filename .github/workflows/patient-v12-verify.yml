@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/patient-layout-v12-20261102
+      - feature/patient-desktop-v13-20261102
 permissions:
   contents: read
 jobs:

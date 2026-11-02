@@ -196,6 +196,17 @@ export function installPatientComfort(adapter){
  function refreshHub(){if(!dialog?.isConnected||!dialog.classList.contains('comfort-inline'))return;const c=context(),fresh=createReminderRepository(storage,c).load();refreshUpcoming();const el=dialog.querySelector('[data-live-inbox]');if(el){const html=(fresh.error?'<p role="alert">저장 자료를 읽지 못했어요. 알림을 숨겼어요.</p>':'')+inbox(c,fresh.data);if(el.innerHTML!==html){const id=el.contains(document.activeElement)?document.activeElement.dataset.id:null;el.innerHTML=html;if(id){const next=[...el.querySelectorAll('[data-id]')].find(e=>e.dataset.id===id);(next||dialog.querySelector('[data-comfort=reload]'))?.focus({preventScroll:true});}}}}
  function patientNavigation(main){
   const header=document.querySelector('.topline'),side=document.querySelector('.side'),nav=header?.querySelector('.patient-journey,.connected-controls');
+  // Apply visual branding only; never replace publication/patient content.
+  const sideBrand=side?.querySelector('.side-brand');
+  if(sideBrand){
+   const mark=sideBrand.querySelector('.side-logo');
+   if(mark)mark.innerHTML='<svg viewBox="0 0 48 48" width="39" height="39" fill="none" aria-hidden="true"><circle cx="24" cy="8" r="4" fill="currentColor"/><path d="M8 38C9 28 16 20 24 20c8 0 15 8 16 18" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/><path d="M18 36c1-6 3-9 6-9s5 3 6 9" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>';
+   const heading=sideBrand.querySelector('b'),subtitle=sideBrand.querySelector('small');
+   if(heading)heading.textContent='케어브릿지랩';
+   if(subtitle)subtitle.textContent='CareBridgeLab';
+   const sectionLabel=side.querySelector('.side-cap');
+   if(sectionLabel)sectionLabel.textContent='나의 퇴원 안내';
+  }
   header?.querySelector('.top-profile')?.remove();
   if(nav){
    const home=nav.querySelector('a');if(home){const tools=document.createElement('details');tools.className='demo-tools';tools.innerHTML='<summary>개발·시연</summary>';tools.append(home);side?.querySelector('.side-end')?.append(tools);}
