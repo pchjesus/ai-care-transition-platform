@@ -1,0 +1,182 @@
+/* Patient B v1.1 — information-first visual refinements.
+   Shared by the independent and A3-connected patient demos.
+   No changes to navigation, clinical publication state or persistence. */
+:root {
+  --patient-v11-forest: #276348;
+  --patient-v11-ink: #22352d;
+  --patient-v11-border: #dce7df;
+  --patient-v11-soft: #f0f7f1;
+  --patient-v11-muted: #52675c;
+}
+.app-body, .app-frame { color: var(--patient-v11-ink); }
+.app-body > .main, #main-content { min-width: 0; }
+.hero-panel {
+  background: linear-gradient(135deg, #f4faf5 0%, #eaf4ed 100%);
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 20px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.hero-panel:before, .hero-panel:after { display: none; }
+.hero-panel .hero-title, .page-head .hero-title { letter-spacing: -.035em; }
+.hero-chip { background: #e3f1e7; color: #285a40; }
+.appointment {
+  background: var(--patient-v11-soft);
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 18px;
+}
+.date-big, .connected-appointment-date b { color: var(--patient-v11-forest); }
+.section-title, .service-title { color: var(--patient-v11-ink); }
+.tasks {
+  display: grid;
+  gap: 10px;
+  border: 0;
+}
+.tasks .task {
+  display: flex;
+  align-items: center;
+  min-height: 78px;
+  padding: 15px 17px;
+  gap: 13px;
+  background: #fff;
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 15px;
+  box-shadow: none;
+  transition: background .15s ease, border-color .15s ease;
+}
+.tasks .task:hover { background: #f6faf7; border-color: #a9c4b1; }
+.tasks .task:focus-visible, .service-card:focus-visible,
+.document-cta:focus-visible, .travel-stage-actions button:focus-visible {
+  outline: 3px solid #dd9a46;
+  outline-offset: 3px;
+}
+.task-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  min-width: 34px;
+  min-height: 34px;
+  margin: 0;
+  color: var(--patient-v11-forest);
+  font-weight: 800;
+  background: var(--patient-v11-soft);
+  border-radius: 50%;
+}
+.task-content b {
+  font-size: calc(17px * var(--font-scale, 1));
+  line-height: 1.45;
+  color: var(--patient-v11-ink);
+}
+.task-content small {
+  font-size: calc(14px * var(--font-scale, 1));
+  color: var(--patient-v11-muted);
+  margin-top: 4px;
+}
+.task-chevron { color: var(--patient-v11-forest); }
+.insight-strip, .home-help-wide {
+  background: #f8fbf8;
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 17px;
+  box-shadow: none;
+}
+.focus-panel, .document-panel, .note-block {
+  border-radius: 16px;
+  box-shadow: none;
+}
+.document-panel {
+  background: #f9fcfa;
+  border: 1px solid var(--patient-v11-border);
+}
+.document-title { color: var(--patient-v11-ink); }
+.document-desc { color: var(--patient-v11-muted); }
+.document-cta, .integrated-documents .secondary-action,
+.comfort-document-item .secondary-action {
+  min-height: 48px;
+  border-radius: 11px;
+  font-weight: 750;
+}
+.comfort-document-item {
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px;
+  margin: 10px 0;
+}
+.comfort-document-item strong { display: block; overflow-wrap: anywhere; }
+.comfort-document-item p, .comfort-document-intro {
+  color: var(--patient-v11-muted);
+  font-size: calc(14px * var(--font-scale, 1));
+  line-height: 1.6;
+  margin: 7px 0 11px;
+}
+.document-unavailable {
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.document-unavailable .secondary-action {
+  min-height: 48px;
+  font-weight: 750;
+}
+.service-list { gap: 12px; }
+.service-card, .travel-entry-section .travel-entry {
+  border-radius: 14px;
+  background: #fff;
+  border-color: var(--patient-v11-border);
+  box-shadow: none;
+}
+.service-card {
+  min-height: 84px;
+  padding: 16px 18px;
+}
+.service-card strong, .travel-entry-text strong { color: var(--patient-v11-ink); }
+.service-card small, .travel-entry-text small { color: var(--patient-v11-muted); line-height: 1.55; }
+.schedule-layout .event {
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 15px;
+  padding: 17px;
+  background: #fff;
+  margin-bottom: 12px;
+}
+.connected-appointment-date, .event-date {
+  background: var(--patient-v11-soft);
+  border-radius: 12px;
+}
+.comfort-dialog .travel-state-summary {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--patient-v11-border);
+  border-radius: 14px;
+  background: #fff;
+}
+.comfort-dialog .travel-state-summary h4 {
+  margin: 0 0 12px;
+  font-size: calc(17px * var(--font-scale, 1));
+  color: var(--patient-v11-ink);
+}
+.travel-state-summary ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 13px; }
+.travel-state-summary li { display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+.travel-state-summary .state-indicator { flex: 0 0 auto; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; font-weight: 800; }
+.travel-state-summary .prepared .state-indicator { background: #e3f4e9; color: #217044; }
+.travel-state-summary .pending .state-indicator { border: 2px solid #8a9a91; color: #67756d; }
+.travel-state-summary strong { display: block; color: var(--patient-v11-ink); font-size: calc(15px * var(--font-scale, 1)); }
+.travel-state-summary small { display: block; margin-top: 3px; font-size: calc(13px * var(--font-scale, 1)); color: var(--patient-v11-muted); }
+.comfort-dialog .travel-next-action {
+  border: 1px solid #b5d2bd;
+  border-radius: 13px;
+  background: var(--patient-v11-soft);
+  padding: 16px;
+  margin: 15px 0;
+}
+.travel-next-action h4 { margin: 0 0 7px; font-size: calc(17px * var(--font-scale, 1)); color: #235139; }
+.travel-next-action p { margin: 0; line-height: 1.65; }
+@media (max-width: 680px) {
+  .tasks .task { min-height: 76px; padding: 14px 13px; }
+  .task-number { min-width: 31px; min-height: 31px; }
+  .task-content b { font-size: calc(16px * var(--font-scale, 1)); }
+  .hero-panel { border-radius: 16px; }
+  .service-list { grid-template-columns: minmax(0, 1fr); }
+  .comfort-dialog .travel-state-summary { padding: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tasks .task { transition: none; }
+}
