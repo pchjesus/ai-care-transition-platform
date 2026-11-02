@@ -208,3 +208,81 @@
 .patient-mobile-toolbar .patient-page-tools{justify-content:flex-start}
 .patient-mobile-toolbar .patient-page-tools button,.patient-mobile-toolbar .patient-page-tools a{min-height:44px}
 }
+
+/* Patient B mobile finish: help belongs to the header, not the navigation toolbar. */
+.topline .patient-header-help{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  min-height:44px;
+  padding:8px 12px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#31584d;
+  font:inherit;
+  font-size:calc(14px * var(--font-scale,1));
+  font-weight:750;
+  white-space:nowrap;
+}
+.topline .patient-header-help:hover{background:#edf5ef}
+.topline .patient-header-help:focus-visible{outline:3px solid #9c662a;outline-offset:2px}
+
+/* Pending appointment status as a readable horizontal label, not an oversized date column. */
+.v12-secondary-schedule .event{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:12px;
+}
+.v12-secondary-schedule .event-date,
+.v12-secondary-schedule .connected-appointment-date{
+  display:inline-flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:4px 10px;
+  width:auto;
+  max-width:100%;
+  min-width:0;
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:10px;
+  background:#eff7f0;
+  color:#2d6147;
+  font-size:calc(16px * var(--font-scale,1));
+  line-height:1.45;
+  font-weight:800;
+}
+.v12-secondary-schedule .event-date small,
+.v12-secondary-schedule .connected-appointment-date small{
+  display:inline;
+  margin:0;
+  padding:0;
+  font-size:calc(13px * var(--font-scale,1));
+  font-weight:650;
+  line-height:1.45;
+  color:#526a5c;
+}
+
+/* Existing five tabs stay in view while scrolling on mobile/tablet. */
+@container display (max-width:760px){
+  .bottom-nav.comfort-five-tabs{
+    position:fixed;
+    inset-inline:0;
+    bottom:0;
+    z-index:18;
+    width:100%;
+    margin:0;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    background:#fff;
+    box-shadow:0 -4px 18px rgba(29,56,39,.09);
+  }
+  .app-body>.main{
+    padding-bottom:calc(136px + env(safe-area-inset-bottom,0px));
+  }
+}
+@media print{
+  .topline .patient-header-help,
+  .bottom-nav.comfort-five-tabs{display:none!important}
+}
