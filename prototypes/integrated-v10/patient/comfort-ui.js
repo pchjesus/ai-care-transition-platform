@@ -220,7 +220,7 @@ export function installPatientComfort(adapter){
   if(c.publication){
    const hub=main.querySelector('[data-reminder-hub]');
    if(hub)attachNotifications(hub,c);
-   add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents','관련 안내 문서 보기')+'</div>');
+   add(main.querySelector('.insight-strip,.overview-layout'),'<div class="integrated-documents">'+button('documents',c.publication.documents?.length?'안내문 열어보기 (PDF)':'안내 문서 제공 여부 확인')+'</div>');
    if(c.view==='profile')add(main.querySelector('.profile-layout'),'<section class="comfort-quick" aria-label="알림과 사용 안내">'+button('settings','알림 관리')+button('inbox','알림함')+'</section>');
    if(c.section==='medication'&&c.view==='detail')add(main.querySelector('.detail-secondary-row'),'<div class="comfort-med-link">'+button('settings','복약 관련 개인 알림')+'</div>');
   }else if(c.view==='reminders'){const hub=document.createElement('div');hub.dataset.reminderHub='';main.append(hub);attachNotifications(hub,c);}else add(main,'<section class="comfort-quick">'+button('inbox','발행·철회 알림함')+'</section>');
