@@ -145,9 +145,11 @@ body:has(#shell){background:#f5f8f5;color:var(--hospital-v11-ink)}
 @media(max-width:540px){
  #shell .topbar{gap:8px}
  #shell .headline-meta{align-items:flex-end}
- #shell .common-context .patient-strip{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px}
- #shell .common-context .patient-chooser{flex:1 1 170px}
- #shell .common-context .context-summary{flex:1 1 100%;width:100%}
+ #shell .common-context .patient-strip{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:10px}
+ #shell .common-context .patient-overview,
+ #shell .common-context .patient-chooser,
+ #shell .common-context .context-summary{grid-column:1/-1;min-width:0;width:auto;max-width:100%}
+ #shell .common-context .patient-chooser select{width:100%;max-width:100%}
  #shell .summary-row .gate-banner{flex-wrap:wrap}
  #shell .summary-row .gate-number{width:100%;justify-content:center}
  #shell .a1-search-row{display:grid;grid-template-columns:1fr}
