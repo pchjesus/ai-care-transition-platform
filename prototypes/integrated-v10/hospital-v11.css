@@ -93,6 +93,10 @@ body:has(#shell){background:#f5f8f5;color:var(--hospital-v11-ink)}
 #shell .a1-search-row label:first-child{flex:1 1 250px}
 #shell .a1-search-row input,#shell .a1-search-row select{width:100%;min-height:44px;border:1px solid #d7e4da;background:#fff;color:#294532;border-radius:9px;padding:9px 12px;font-size:14px}
 #shell .a1-search-row select{min-width:183px}
+#shell .a1-selection-hint{margin:-7px 0 14px;color:#6b7c70;font-size:12px;line-height:1.5}
+#shell .audit-original{margin-top:7px;color:#6b7c70;font-size:12px}
+#shell .audit-original summary{cursor:pointer;width:max-content;max-width:100%}
+#shell .audit-original p{margin:5px 0;overflow-wrap:anywhere}
 #shell .a1-patient-list{display:grid;gap:10px}
 #shell .a1-patient-list .patient-list-card{background:#fff;padding:15px 18px;border:1px solid #dfe9e2;border-radius:12px;box-shadow:0 5px 20px rgba(26,63,43,.025);min-width:0}
 #shell .a1-patient-list .patient-list-card:hover{border-color:#b2d2b9}
