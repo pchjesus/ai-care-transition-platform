@@ -1,0 +1,39 @@
+name: Hospital A1 A2 A3 UI v1.1 regression
+on:
+  push:
+    branches:
+      - feature/hospital-ui-v11-20261103
+  pull_request:
+    paths:
+      - 'prototypes/integrated-v10/a3/**'
+      - 'prototypes/integrated-v10/hospital-v11.css'
+      - 'prototypes/integrated-v10/tests/hospital_ui_v11_smoke.py'
+      - '.github/workflows/hospital-ui-v11-verify.yml'
+permissions:
+  contents: read
+jobs:
+  hospital-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Node contracts and JS syntax
+        working-directory: prototypes/integrated-v10
+        run: |
+          node --check a3/app.js
+          npm test
+      - name: Browser dependencies
+        run: |
+          python -m pip install --disable-pip-version-check playwright pymupdf
+          if [ ! -x /usr/bin/chromium ] && [ -x /usr/bin/google-chrome ]; then sudo ln -s /usr/bin/google-chrome /usr/bin/chromium; fi
+          test -x /usr/bin/chromium
+      - name: Approved A1 A2 A3 navigation and display
+        run: python prototypes/integrated-v10/tests/hospital_ui_v11_smoke.py
+      - name: Existing unified A1 A2 A3 data and workflow regression
+        run: python prototypes/integrated-v10/tests/unified_http.py
