@@ -1,0 +1,165 @@
+/* CareBridgeLab Hospital UX v1.1 — approved mockup visual language.
+   This file only styles the existing clinical prototype. Evaluation and
+   approval/publication data contracts remain exclusively in the original modules. */
+:root{
+ --hospital-v11-forest:#183c30;
+ --hospital-v11-green:#237047;
+ --hospital-v11-line:#dfe9e2;
+ --hospital-v11-ink:#20382a;
+ --hospital-v11-muted:#697b70;
+ --hospital-v11-soft:#f7faf7;
+ --hospital-v11-amber:#91601f;
+ --hospital-v11-amber-bg:#fff7eb;
+}
+body:has(#shell){background:#f5f8f5;color:var(--hospital-v11-ink)}
+#shell .rail{background:var(--hospital-v11-forest);color:#dceadf}
+#shell .brand-row{border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:17px;margin-bottom:7px}
+#shell .brand-mark{color:#237047;background:#e5f2e8;border-radius:11px;width:42px;height:42px;display:grid;place-items:center}
+#shell .brand-mark svg{display:block}
+#shell .brand-name b{font-size:16px;color:#fff;letter-spacing:-.035em}
+#shell .brand-name small{font-size:11px;color:#afcaba}
+#shell .rail-cap{color:#adbfaf;font-size:11px;font-weight:750;letter-spacing:.075em}
+#shell .rail-link{min-height:50px;border-radius:10px;color:#d4e6d9;margin-bottom:5px;gap:11px}
+#shell .rail-link:not(.active):hover{background:rgba(255,255,255,.09)}
+#shell .rail-link.active{background:#315e48;color:#fff}
+#shell .rail-link.active .rail-short{color:#235c3c;background:#e7f4e8;border-color:#e7f4e8}
+#shell .rail-short{border-radius:8px;background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.15)}
+#shell .workspace{min-width:0}
+#shell .topbar{background:#fff;border-color:var(--hospital-v11-line);padding-inline:29px;min-height:59px}
+#shell .breadcrumb{color:#748577}
+#shell .journey-nav{background:#f9fcfa;border-color:#e3ebe4}
+#shell .journey-nav button,#shell .journey-nav a{min-height:40px}
+#shell .content{max-width:1512px;padding-inline:30px}
+#shell .common-context{padding-top:23px;padding-bottom:0}
+#shell .common-context .headline{margin-bottom:13px}
+#shell .headline h1{font-size:clamp(26px,2.2vw,32px);letter-spacing:-.05em;line-height:1.3;color:#20382a}
+#shell .headline p{font-size:13px;color:#77877b}
+#shell .headline-meta .version-chip{border-radius:8px;background:#f0f7f1;color:#286b44;border-color:#d2e5d6}
+#shell .save-state{font-size:12px}
+#shell .common-context .summary-row{align-items:stretch;gap:13px;margin-bottom:0}
+#shell .summary-row>.patient-strip,#shell .summary-row>.gate-banner{border-radius:14px;border:1px solid var(--hospital-v11-line);box-shadow:0 6px 23px rgba(26,63,43,.035);padding:15px 17px;min-height:104px}
+#shell .summary-row>.patient-strip{background:#fff}
+#shell .summary-row>.gate-banner{background:#fff8ed;border-color:#efdcb9}
+#shell .summary-row>.gate-banner.good,#shell .summary-row>.gate-banner.issued{background:#f0f8f1;border-color:#d0e8d5}
+#shell .summary-row .gate-banner strong{font-size:15px;line-height:1.4}
+#shell .summary-row .gate-banner .gate-sub{font-size:12px;line-height:1.5;color:#7b6a4f}
+#shell .summary-row .gate-banner.good .gate-sub,#shell .summary-row .gate-banner.issued .gate-sub{color:#52745e}
+#shell .summary-row .gate-number{min-height:42px;display:flex;align-items:center;background:#316a4c;border:1px solid #316a4c;color:#fff;border-radius:8px;font-size:12px;white-space:nowrap;padding:9px 12px}
+#shell .summary-row .gate-banner.good .gate-number,#shell .summary-row .gate-banner.issued .gate-number{background:#fff;color:#2d6745;border-color:#cde5d3}
+#shell .gate-icon{background:#f9e7c7;color:#99621b}
+#shell .gate-banner.good .gate-icon,#shell .gate-banner.issued .gate-icon{background:#d8eedc;color:#236b45}
+#shell .patient-detail{color:#768a7b}
+#shell .patient-overview h2{color:#20382a}
+#shell .patient-chooser label{font-size:11px;color:#728378}
+#shell .patient-chooser select{border-radius:8px;border:1px solid #d7e4da;background:#fff}
+#shell .context-summary{color:#537963;font-size:12px;font-weight:600}
+#shell .section-head h2,#shell .pane-head h3{color:#20382a;letter-spacing:-.035em}
+#shell .section-head p,#shell .pane-head p{color:#748479;font-size:13px}
+#shell .domain,#shell .a2-domain-btn{border:1px solid var(--hospital-v11-line);border-radius:11px;box-shadow:none;background:#fff}
+#shell .domain:hover,#shell .domain.selected,#shell .a2-domain-btn:hover,#shell .a2-domain-btn.selected{background:#f6fbf7;border-color:#8cbaa0}
+#shell .a2-domain-btn.selected{border-left:1px solid #8cbaa0;padding-left:11px;box-shadow:inset 0 0 0 1px #5e9873}
+#shell .grade.pending{background:#fff4e6;color:#94621a}
+#shell .grade.priority{background:#fff3e5;color:#94621a}
+#shell .editor-head{border-color:var(--hospital-v11-line)}
+#shell .tabs{gap:5px;overflow-x:auto;flex-wrap:nowrap;white-space:nowrap}
+#shell .tabs button{padding:13px 13px;min-height:46px;font-size:14px;color:#66796b;border-radius:8px 8px 0 0}
+#shell .tabs button[aria-selected=true]{font-weight:850;color:#245a3b;border-bottom-color:#237047;background:#f5faf6}
+#shell .tabs button:not([aria-selected=true]):hover{background:#f8fbf8;color:#315e48}
+#shell .actor-box{gap:10px}
+#shell .actor-box select{min-height:41px;border-radius:8px;border-color:#d7e4da}
+#shell .work-pane,#shell .preview-pane{border-color:var(--hospital-v11-line);border-radius:15px;box-shadow:0 6px 23px rgba(26,63,43,.03)}
+#shell .work-pane{padding:22px}
+#shell .preview-pane{overflow:hidden}
+#shell .edit-card,#shell .issue-card,#shell .doc-card{border-radius:11px}
+#shell .edit-card summary.edit-title{min-height:53px}
+#shell .edit-card[open] summary.edit-title{background:#f6faf7}
+#shell .edit-card .edit-card-body{line-height:1.65}
+#shell .issue-card:not(.resolved){background:#fffbf5;border-color:#f0dec7}
+#shell .status-pill.red{color:#9a5e1a;background:#fff4e6}
+#shell .status-pill.green{color:#246a42;background:#eff8f0}
+#shell .bottom-actions{border-color:var(--hospital-v11-line);background:#fff;border-radius:14px;padding:17px 20px}
+#shell button:focus-visible,#shell input:focus-visible,#shell select:focus-visible,#shell textarea:focus-visible,#shell a:focus-visible{outline:3px solid #d5a25c;outline-offset:2px}
+#shell .btn,#shell .mini-button{min-height:41px;border-radius:9px}
+#shell .btn.primary{background:#237047;color:#fff;border-color:#237047}
+#shell .btn.primary:hover{background:#195b39}
+#shell .btn:disabled,#shell .mini-button:disabled{opacity:.48}
+#shell .workflow-guidance{color:#506f59}
+#shell .a1-overview{display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;border:1px solid #dfe9e2;border-radius:12px;background:#fff;padding:13px 18px;margin-bottom:17px;color:#455f4b}
+#shell .a1-overview strong{font-size:15px;color:#223d2d}
+#shell .a1-overview>span{font-size:13px;font-weight:750}
+#shell .a1-overview small{font-size:11px;color:#819184;margin-left:auto}
+#shell .a1-search-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+#shell .a1-search-row label{font-size:12px;color:#557563;font-weight:750;display:grid;gap:6px;min-width:185px}
+#shell .a1-search-row label:first-child{flex:1 1 250px}
+#shell .a1-search-row input,#shell .a1-search-row select{width:100%;min-height:44px;border:1px solid #d7e4da;background:#fff;color:#294532;border-radius:9px;padding:9px 12px;font-size:14px}
+#shell .a1-search-row select{min-width:183px}
+#shell .a1-patient-list{display:grid;gap:10px}
+#shell .a1-patient-list .patient-list-card{background:#fff;padding:15px 18px;border:1px solid #dfe9e2;border-radius:12px;box-shadow:0 5px 20px rgba(26,63,43,.025);min-width:0}
+#shell .a1-patient-list .patient-list-card:hover{border-color:#b2d2b9}
+#shell .a1-patient-list .patient-list-card[hidden]{display:none!important}
+#shell .a1-patient-list .patient-list-main{min-width:0}
+#shell .a1-patient-list .patient-list-main strong{font-size:16px;color:#20382a}
+#shell .a1-patient-list .patient-list-main span,#shell .a1-patient-list .patient-list-main small{color:#637969;overflow-wrap:anywhere}
+#shell .a1-patient-list .patient-list-actions{justify-content:flex-end}
+#shell .a1-empty{padding:25px 18px;border:1px dashed #dce7dd;border-radius:12px;background:#fff;color:#6c7d70;text-align:center}
+#shell .a2-three-column{min-width:0}
+#shell .a2-work-layout{gap:17px}
+#shell .a2-input-panel,#shell .a2-judgment-panel{border-color:#dfe9e2;border-radius:14px;box-shadow:0 5px 20px rgba(26,63,43,.025);min-width:0}
+#shell .a2-input-panel h2,#shell .a2-judgment-panel h2{font-size:19px;color:#20382a}
+#shell .a2-side-note{font-size:12px;color:#697b70;line-height:1.6;margin:0 0 11px}
+#shell .a2-field{border-bottom:1px solid #edf1ed;padding-bottom:13px}
+#shell .a2-field:last-child{border:0}
+#shell .a2-field select{min-height:44px;border-radius:9px}
+#shell .a2-field label{color:#294b36}
+#shell .a2-migration-note{border-color:#dfe9e2;background:#f7faf7;color:#536b5a;margin-bottom:15px}
+#shell #a2-jump-required{white-space:normal;text-align:center}
+#shell .a2-judgment-panel .trace-technical{font-size:12px}
+@media(min-width:981px){
+ #shell .common-context .summary-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+ #shell .common-context .patient-strip{grid-template-columns:minmax(0,1fr) minmax(155px,200px);gap:7px 12px}
+ #shell .common-context .gate-banner{gap:9px}
+ #shell .common-context .gate-banner .gate-left{min-width:0}
+ #shell .a2-work-layout{grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr)}
+}
+@media(min-width:981px) and (max-width:1130px){
+ #shell .common-context .avatar{display:none}
+ #shell .common-context .patient-strip{padding:13px 12px}
+ #shell .summary-row .gate-number{white-space:normal;font-size:11px;max-width:128px;text-align:center}
+ #shell .common-context .patient-strip .patient-chooser select{max-width:100%}
+}
+@media(max-width:980px){
+ #shell .common-context .summary-row{grid-template-columns:1fr}
+ #shell .summary-row>.patient-strip,#shell .summary-row>.gate-banner{min-height:0}
+ #shell .a1-overview small{margin-left:0}
+}
+@media(max-width:800px){
+ #shell .rail{position:static;height:auto}
+ #shell .brand-row{border:0;margin:0;padding:0!important}
+ #shell .brand-mark{width:36px;height:36px}
+ #shell .topbar{padding:0 16px}
+ #shell .content{padding-inline:17px}
+ #shell .common-context{padding-top:15px}
+ #shell .tabs button{padding-inline:10px}
+ #shell .a1-patient-list .patient-list-card{align-items:stretch}
+}
+@media(max-width:540px){
+ #shell .topbar{gap:8px}
+ #shell .headline-meta{align-items:flex-end}
+ #shell .common-context .patient-strip{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:10px}
+ #shell .common-context .patient-overview,
+ #shell .common-context .patient-chooser,
+ #shell .common-context .context-summary{grid-column:1/-1;min-width:0;width:auto;max-width:100%}
+ #shell .common-context .patient-chooser select{width:100%;max-width:100%}
+ #shell .summary-row .gate-banner{flex-wrap:wrap}
+ #shell .summary-row .gate-number{width:100%;justify-content:center}
+ #shell .a1-search-row{display:grid;grid-template-columns:1fr}
+ #shell .a1-patient-list .patient-list-actions{justify-content:stretch}
+ #shell .a1-patient-list .patient-list-actions .btn{flex:1 1 110px}
+ #shell .aux-actions{width:100%;justify-content:flex-start}
+ #shell .tabs{width:100%}
+ #shell .work-pane{padding:15px}
+}
+@media print{
+ #shell .rail,#shell .journey-nav,#shell .topbar{display:none!important}
+ #shell .a1-search-row{display:none!important}
+}
