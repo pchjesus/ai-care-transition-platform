@@ -53,3 +53,11 @@ jobs:
           name: carebridge-v05-hospital-html
           path: prototypes/hospital-ux2-v05/index.html
           if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-v05-local-debug
+          path: |
+            prototypes/hospital-ux2-v05/
+            prototypes/integrated-v10/
+          if-no-files-found: error
