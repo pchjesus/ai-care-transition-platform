@@ -37,25 +37,8 @@
       button.innerHTML = icon('reader') + '<span>읽기 설정</span>';
       top.insertBefore(button, meta);
     }
-    const body = layout.querySelector('.app-body');
-    if (!body) return;
-    if (!body.querySelector('.v17-journey')) {
-      const nav = document.createElement('nav');
-      nav.className = 'v17-journey';
-      nav.setAttribute('aria-label', '페이지 이동');
-      nav.innerHTML =
-        '<button type="button" data-v17-action="back">〈 이전</button>' +
-        '<button type="button" data-v17-action="home">오늘 홈</button>' +
-        '<button type="button" data-v17-action="next">다음 〉</button>' +
-        '<a href="../index.html">서비스 홈</a>';
-      const main = body.querySelector('#main-content');
-      if (main) body.insertBefore(nav, main);
-    }
-    for (const action of ['back', 'next']) {
-      const real = top?.querySelector('[data-action="' + action + '"]');
-      const copy = body.querySelector('.v17-journey [data-v17-action="' + action + '"]');
-      if (copy) copy.disabled = !real || real.disabled;
-    }
+    // The original patient comfort UI already creates a mobile home/back/next toolbar.
+    // Do not duplicate navigation or move its controls.
     updateFontButtons();
     applyMotion();
   }
@@ -87,7 +70,7 @@
       const wantLarge = button.dataset.v17Font === 'large';
       const isLarge = document.body.classList.contains('large-font');
       if (wantLarge !== isLarge) {
-        const real = document.querySelector('.v17-app-layout .topline [data-action="font"]');
+        const real = document.querySelector('.v17-app-layout [data-action="font"]');
         if (!real) { if (status) status.textContent = '글씨 크기 조절을 사용할 수 없어요.'; return; }
         real.click(); // Existing B preference and rendering logic owns the change.
       }
@@ -96,10 +79,7 @@
       button.focus();
       return;
     }
-    if (['back', 'home', 'next'].includes(action)) {
-      const real = document.querySelector('.v17-app-layout .topline [data-action="' + action + '"]');
-      if (real && !real.disabled) real.click();
-    }
+
   }, true);
   motionControl?.addEventListener('change', () => {
     motionOff = motionControl.checked;
