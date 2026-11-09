@@ -103,7 +103,15 @@ with sync_playwright() as p:
   assert q.locator('button[data-view="reminders"]').count()>=1
   if w>760: q.locator('.side-nav[data-view="reminders"]').click()
   else: q.locator('.bottom-nav [data-view="reminders"]').click()
-  assert q.locator('.patient-content-enter').count()>=1
+  snapshot=q.evaluate('''() => ({
+    route:document.querySelector('.side-nav[aria-current="page"]')?.dataset.view,
+    mainClass:document.querySelector('#main-content')?.className,
+    reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,
+    navText:document.querySelector('.side-nav[aria-current="page"]')?.innerText,
+    hasPatientMenu:!!document.querySelector('.patient-sidebar-toggle')
+  })''')
+  assert snapshot['route']=='reminders',snapshot
+  assert snapshot['reduced'] or 'patient-content-enter' in snapshot['mainClass'],snapshot
   no_overflow(q,w,'patient')
   assert not qerrors,(label,qerrors)
   checks.append({'scenario':'patient-navigation','viewport':label,'result':'PASS','jsErrors':len(qerrors)})
