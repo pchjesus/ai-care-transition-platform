@@ -1,0 +1,291 @@
+{
+  "release": "hospital-ux2-v07",
+  "sourceCommit": "f7964b634e3ee2aee720603a08747f302c4aee77",
+  "previousPagesCommit": "6c686afbfe3fa3b495f8d09d91a43bcd9138cd54",
+  "createdAt": "2026-11-09",
+  "syntheticDataOnly": true,
+  "entrypoints": {
+    "home": "/prototypes/integrated-v10/index.html",
+    "hospital": "/prototypes/hospital-ux2-v07/index.html",
+    "patient": "/prototypes/integrated-v10/patient/index.html"
+  },
+  "verification": {
+    "domainNode": 94,
+    "integrationBrowser": 16,
+    "regressionBrowser": 11,
+    "ci": "https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42630916998"
+  },
+  "hashType": "git-object-sha1",
+  "assets": [
+    {
+      "path": "prototypes/hospital-ux2-v06/index.html",
+      "gitBlobSha": "8ad48aa923de296b55283944c235727ccaba56d4",
+      "sizeBytes": 191017
+    },
+    {
+      "path": "prototypes/hospital-ux2-v06/integration.css",
+      "gitBlobSha": "cb5a6ce2515c8bdc742fe3a9f5c7de7a14dcca23",
+      "sizeBytes": 6666
+    },
+    {
+      "path": "prototypes/hospital-ux2-v06/integration.js",
+      "gitBlobSha": "0453dd7088acc1e7683db7ecd5ee8a668fd19487",
+      "sizeBytes": 29480
+    },
+    {
+      "path": "prototypes/hospital-ux2-v06/standalone.html",
+      "gitBlobSha": "527db6f6b1a7ca30502a67b048a4118d6e1e11bd",
+      "sizeBytes": 274608
+    },
+    {
+      "path": "prototypes/hospital-ux2-v07/index.html",
+      "gitBlobSha": "0aa18d31d1667f64b229d6cee4385fd057c28775",
+      "sizeBytes": 191209
+    },
+    {
+      "path": "prototypes/hospital-ux2-v07/integration.css",
+      "gitBlobSha": "a1353df1f885918243faddb8f106c49e77a66b86",
+      "sizeBytes": 8931
+    },
+    {
+      "path": "prototypes/hospital-ux2-v07/integration.js",
+      "gitBlobSha": "01096e643452473fe012da319555556cef121fb5",
+      "sizeBytes": 40013
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/app.js",
+      "gitBlobSha": "a4da9963f4c89808c7549324d183b59d3b533318",
+      "sizeBytes": 10679
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/data.js",
+      "gitBlobSha": "c60a17e80f3ebdabfcc11b9c83967f6fba79aa1f",
+      "sizeBytes": 10328
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/engine.js",
+      "gitBlobSha": "55b99744566c98e4e37af8f8d1fcf615370f889f",
+      "sizeBytes": 3036
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/index.html",
+      "gitBlobSha": "ce47e5b004c1a89ea8803ed676e5d0a07378463a",
+      "sizeBytes": 624
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/legacy.html",
+      "gitBlobSha": "2a3f4babdd71290095f96b80ffa8fa30f041573e",
+      "sizeBytes": 6413
+    },
+    {
+      "path": "prototypes/integrated-v10/a2/styles.css",
+      "gitBlobSha": "0dccf106482cf1a5a44b9f7971d819a6f59e1c08",
+      "sizeBytes": 35991
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/app.js",
+      "gitBlobSha": "819a3f8b81c215962a915a9ad91f62016f11dee3",
+      "sizeBytes": 94840
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/data.js",
+      "gitBlobSha": "5168612a6bc61514d2ba1b2d338d97726483a11c",
+      "sizeBytes": 3911
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-001_보행보조기_교육예시.pdf",
+      "gitBlobSha": "c9deae3f4d92151f073be690e053bebc28a2952d",
+      "sizeBytes": 45926
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-002_sample_care_plan.pdf",
+      "gitBlobSha": "1e66ce87a1de98d646e110ad9da4937b2f6e660f",
+      "sizeBytes": 291076
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-003_약료상충_비교예시.pdf",
+      "gitBlobSha": "e215ea853d5078d4b97c2ae23aab1b844b416b02",
+      "sizeBytes": 44060
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/examples/SYN-004_일정변경_확인예시.pdf",
+      "gitBlobSha": "de007213fdd36be90326e610d31ddb0c87019f96",
+      "sizeBytes": 44137
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/index.html",
+      "gitBlobSha": "3e2c113dbd356b49e87a91d1387da1cfefd6f0ee",
+      "sizeBytes": 12861
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/review-display.js",
+      "gitBlobSha": "be30b296222475f1eceef6c55f1d98ad2e509fe1",
+      "sizeBytes": 2451
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/source-library.js",
+      "gitBlobSha": "c8ae50a4325c85451020ef17b11c0554650b384d",
+      "sizeBytes": 9495
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/storage.js",
+      "gitBlobSha": "7092587f0d16187e13aaf0ab4f56faa9c047e36f",
+      "sizeBytes": 4752
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/styles.css",
+      "gitBlobSha": "11100f47c8e8e14e560930f7d4661f0e29c1265f",
+      "sizeBytes": 34817
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/tutorial-tour.css",
+      "gitBlobSha": "7fb7e9c6c8784c9dbd1ed1046eb50339dc855a36",
+      "sizeBytes": 3712
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/tutorial-tour.js",
+      "gitBlobSha": "a96afe40c6949898c4a9d27e853e8cf4ba89a63b",
+      "sizeBytes": 15424
+    },
+    {
+      "path": "prototypes/integrated-v10/a3/workflow.js",
+      "gitBlobSha": "a1fb375611cb892abb8703bd9841f872d4a6a2bf",
+      "sizeBytes": 9813
+    },
+    {
+      "path": "prototypes/integrated-v10/hospital-v11.css",
+      "gitBlobSha": "8b2b9173a63af1021f222368a2cde78991149751",
+      "sizeBytes": 11610
+    },
+    {
+      "path": "prototypes/integrated-v10/index.html",
+      "gitBlobSha": "d67369a4cf250031306f07ea947119a7a730214a",
+      "sizeBytes": 9545
+    },
+    {
+      "path": "prototypes/integrated-v10/integration.css",
+      "gitBlobSha": "79c157e1ca39aed1f75d4c2c03c744d214d01cc2",
+      "sizeBytes": 888
+    },
+    {
+      "path": "prototypes/integrated-v10/legacy-home-v10.html",
+      "gitBlobSha": "7e86255b25ee3f1d1eaa56790233fe653032b8cd",
+      "sizeBytes": 2537
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/app.js",
+      "gitBlobSha": "38fc17382ece5411c2ccff04dba93f9b9dc515ea",
+      "sizeBytes": 39207
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/comfort-ui.js",
+      "gitBlobSha": "caedf7e26e8f5836c75582760c78f9cf3ee2644f",
+      "sizeBytes": 48275
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/comfort.css",
+      "gitBlobSha": "98e8b0634f74db1460272347dc6b4c29e71ba187",
+      "sizeBytes": 18244
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/connected.css",
+      "gitBlobSha": "241cabf28fe04dfb6202f09872b69d2cc40d3109",
+      "sizeBytes": 6068
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/index.html",
+      "gitBlobSha": "ed30e8594e1a4bedfdeecaa2d624e9fc2dae2ebe",
+      "sizeBytes": 898
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v11.css",
+      "gitBlobSha": "1564bc71f76c347b96c0efbb12249a31f40dbceb",
+      "sizeBytes": 6539
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v12.css",
+      "gitBlobSha": "33aa8ac422bb730e0e00a01345c5f69d44fac7e6",
+      "sizeBytes": 20729
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v15.css",
+      "gitBlobSha": "dfd416513f56837c6b16a6cdacdef317854f30cc",
+      "sizeBytes": 3771
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/patient-v15.js",
+      "gitBlobSha": "89f67c93487d192ec515b090d9a3af694520984e",
+      "sizeBytes": 4787
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/reminders.js",
+      "gitBlobSha": "40767b9dd438e9c10a2ed59136511486cb1c1e6c",
+      "sizeBytes": 6424
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/standalone-comfort.js",
+      "gitBlobSha": "bc3f77998b5fac6ec8fc7eefc74d22e887629ffb",
+      "sizeBytes": 140
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/storage.js",
+      "gitBlobSha": "1d793940e73cf1925288b06ae4cb51c97df4d94f",
+      "sizeBytes": 2217
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/styles.css",
+      "gitBlobSha": "f0ba0d348e3a30fae57f4d6f58e103a9c9c79853",
+      "sizeBytes": 46434
+    },
+    {
+      "path": "prototypes/integrated-v10/patient/time-zones.js",
+      "gitBlobSha": "58d1f84516e26270d1165af6d9202c175a760e5d",
+      "sizeBytes": 1053
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/apply-handoff.js",
+      "gitBlobSha": "db29f53df32f64b848ad9c0d18c354eaa3d84e03",
+      "sizeBytes": 3153
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/assessment-adapter.js",
+      "gitBlobSha": "382f34698296ddaf9e286f73c36a1b8794e9d5e4",
+      "sizeBytes": 887
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/destinations.js",
+      "gitBlobSha": "2b047a9a8c2a5988cc68a8f6e7d168c57233f097",
+      "sizeBytes": 1239
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/evaluation-edit.js",
+      "gitBlobSha": "51c989002bf002b18b185a44d4d393831cb78277",
+      "sizeBytes": 2263
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/handoff.js",
+      "gitBlobSha": "adcf8b89f4aa5176b720c2af4d17f8c9ded76ad6",
+      "sizeBytes": 5177
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/publication-events.js",
+      "gitBlobSha": "349e179d96201c9623307adf31bd6e4cf844bf7b",
+      "sizeBytes": 2025
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/publication.js",
+      "gitBlobSha": "ca354a825925eaaa7e2ebb44e0f4a3ce88cc4e9c",
+      "sizeBytes": 5740
+    },
+    {
+      "path": "prototypes/integrated-v10/shared/published-documents.js",
+      "gitBlobSha": "a3b63b963d2b53865c4b2c10bdb8e38b5d639843",
+      "sizeBytes": 4481
+    },
+    {
+      "path": "prototypes/integrated-v10/unified.css",
+      "gitBlobSha": "3a5ce671cdd5bb964df5bae916a84ec95074cd4f",
+      "sizeBytes": 12521
+    }
+  ]
+}
