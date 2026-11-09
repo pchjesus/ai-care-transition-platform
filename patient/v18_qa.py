@@ -131,6 +131,14 @@ with sync_playwright() as pw:
     assert resp.status==200
     assert compare.locator('iframe').count()==2
     assert compare.locator('.panel').count()==2
+    compare.locator('#open-example').click()
+    original_frame=compare.frame_locator('iframe[title="기존 이정희님 환자 앱"]')
+    candidate_frame=compare.frame_locator('iframe[title="새로운 이정희님 환자 앱"]')
+    original_frame.locator('.v12-home').wait_for(timeout=9000)
+    candidate_frame.locator('.v18-home').wait_for(timeout=9000)
+    assert '이정희' in original_frame.locator('h1').first.inner_text()
+    assert '이정희' in candidate_frame.locator('h1').first.inner_text()
+    assert '두 가상 환자 화면' in compare.locator('#example-status').inner_text()
     compare.screenshot(path=str(OUT/'comparison-desktop.png'))
     compare.set_viewport_size({'width':390,'height':844})
     compare.locator('[data-design=original]').click()
