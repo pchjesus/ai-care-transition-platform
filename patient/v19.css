@@ -367,3 +367,14 @@
  color:#204d72!important;position:relative;z-index:1;
 }
 .v19-theme .comfort-dialog:not(.comfort-inline) header [data-comfort=close]{margin-left:auto;flex:none}
+
+/* Optional guided tour uses the same patient palette; no clinical content is animated. */
+.v19-theme .spotlight-tour{color:#214562}
+.v19-theme .spot-mask{background:rgba(17,40,65,.72)}
+.v19-theme .spot-ring{border:3px solid #91b8db;box-shadow:0 0 0 3px #ffffff99}
+.v19-theme .spot-tip{background:#fff;border:1px solid #c8dcf0;border-radius:16px;box-shadow:0 16px 40px #183c602e;color:#234864}
+.v19-theme .spot-head strong,.v19-theme .spot-copy h2{color:#245b89}
+.v19-theme .spot-copy small,.v19-theme #tour-boundary{color:#5b768a}
+.v19-theme .spotlight-tour :where(button,a){border:1px solid #c9dded;background:#f1f7fe;color:#2a5d85;border-radius:11px}
+.v19-theme .spotlight-tour :where(button,a):not(:disabled):hover{background:#e5f0fd}
+.v19-theme .spotlight-tour .spot-primary{background:linear-gradient(135deg,#265d8c,#38749e);color:#fff;border-color:#2a6291;font-weight:800}
