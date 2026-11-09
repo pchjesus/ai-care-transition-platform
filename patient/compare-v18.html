@@ -13,6 +13,10 @@ header p{margin:6px 0 0;color:#586e83;line-height:1.65;font-size:14px}
 .back{color:#315d86;text-decoration:none;font-weight:750}
 main{max-width:1280px;margin:0 auto;padding:18px 16px 34px}
 .notice{background:#e9f2fa;border:1px solid #d1e2f1;border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.7;color:#2f5578}
+.example-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.example-actions button{min-height:48px;background:#275b89;color:#fff;border:0;border-radius:11px;padding:10px 17px;font-weight:820;font-size:14px;cursor:pointer}
+.example-actions button:hover{background:#19486f}
+.example-actions span{font-size:12px;color:#50738a}
 .controls{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:17px 0}
 .controls strong{font-size:14px}
 .tabs{display:flex;gap:5px;padding:4px;border:1px solid #dce5ee;border-radius:12px;background:#eaf1f8}
@@ -32,7 +36,8 @@ iframe{width:100%;height:680px;border:1px solid #dce5ec;border-radius:12px;backg
 <body>
 <header><div class="head"><div><h1>이정희님 가상 사례 · 화면 비교</h1><p>기존 화면과 새 디자인을 <b>같은 환자·안내 내용</b>으로 비교해 볼 수 있어요.</p></div><a class="back" href="../prototypes/integrated-v10/v18-home-preview.html">색상 변경 통합 홈 시안 보기</a></div></header>
 <main>
-<div class="notice"><b>체험코드 CARE2026</b> · 각각의 앱에서 입력해 주세요. 이정희님은 실제 환자가 아닌 합성 사례이며, 이 화면은 A3 발행본과 연결되지 않습니다. 기존 화면과 새 화면의 자료는 같지만 시각 구성·조작은 다릅니다.</div>
+<div class="notice"><b>이정희님 합성 예시 체험코드 CARE2026</b> · 두 화면에 들어 있는 자료는 같아요. 실제 환자정보나 A3 발행본과 연결되지 않습니다.
+<div class="example-actions"><button type="button" id="open-example">이정희님 예시를 두 화면에서 열기</button><span id="example-status" role="status" aria-live="polite">한 번 누르면 두 화면을 함께 열 수 있어요.</span></div></div>
 <div class="controls"><strong>PC는 나란히 비교 · 모바일은 화면 전환</strong><div class="tabs" role="group" aria-label="비교할 디자인"><button data-design="original" aria-pressed="false">기존 화면</button><button data-design="candidate" aria-pressed="true">새 디자인</button></div></div>
 <div class="comparison">
 <section class="panel" data-panel="original"><header><strong>기존 이정희님 예시</strong><span class="tag">원본</span></header><iframe title="기존 이정희님 환자 앱" src="./index.html" loading="eager"></iframe></section>
@@ -42,6 +47,22 @@ iframe{width:100%;height:680px;border:1px solid #dce5ec;border-radius:12px;backg
 </main>
 <script>
 (function(){
+ const run=document.getElementById('open-example');
+ const feedback=document.getElementById('example-status');
+ run.addEventListener('click',()=>{
+  let opened=0, ready=0;
+  for(const frame of document.querySelectorAll('iframe')){
+   const doc=frame.contentDocument;
+   if(!doc)continue;
+   if(doc.querySelector('.app-layout')){opened++;ready++;continue;}
+   const field=doc.querySelector('#demo-code');
+   const form=doc.querySelector('#demo-login');
+   if(!field||!form)continue;
+   ready++;field.value='CARE2026';form.requestSubmit();
+   if(doc.querySelector('.app-layout'))opened++;
+  }
+  feedback.textContent=opened===2?'두 가상 환자 화면을 열었어요.':'두 화면을 모두 불러온 뒤 다시 눌러 주세요.';
+ });
  const buttons=[...document.querySelectorAll('[data-design]')];
  const panels=[...document.querySelectorAll('[data-panel]')];
  const change=(choice)=>{buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.design===choice)));panels.forEach(p=>p.hidden=p.dataset.panel!==choice&&matchMedia('(max-width:760px)').matches)};
