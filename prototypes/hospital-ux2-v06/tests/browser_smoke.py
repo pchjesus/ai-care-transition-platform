@@ -15,6 +15,8 @@ def getrecord(page, pid):
 def choose(page, pid):
     page.locator('.nav-item[data-view="patients"]').click()
     page.locator(f'[data-open="{pid}"]').first.click()
+    if page.viewport_size['width']<=700:
+        page.locator('[data-action="menu-open"]').click()
     page.locator('.patient-route[data-view="plan"]').click()
     page.locator('[data-v6-tab="items"]').wait_for()
     page.locator('#ux6-plan-text').wait_for()
@@ -50,6 +52,7 @@ with sync_playwright() as playwright:
         assert p.locator('[data-v6-pdf]').count()==1
         no_overflow(p,w,name+' docs')
         p.screenshot(path=str(OUT/f'{name}-docs.png'))
+        if w<=700: p.locator('[data-action="menu-open"]').click()
         p.locator('.patient-route[data-view="review"]').click()
         assert p.locator('.ux6-review-grid').count()==1
         no_overflow(p,w,name+' review')
@@ -64,7 +67,7 @@ with sync_playwright() as playwright:
     p.on('pageerror',lambda e:errors.append(str(e)))
     p.goto(H,wait_until='networkidle')
     choose(p,'SYN-002')
-    original=getrecord(p,'SYN-002') if p.evaluate('localStorage.getItem(arguments[0])!==null',KEY) else None
+    original=getrecord(p,'SYN-002') if p.evaluate('(key)=>localStorage.getItem(key)!==null',KEY) else None
     assert original is None or original['draft']['status']=='DRAFT'
     p.locator('#ux6-plan-text').fill('합성 사례용 퇴원 교육 문구 · v0.6 입력 저장 검증')
     p.locator('[data-v6-action="save-text"]').click()
@@ -115,9 +118,13 @@ with sync_playwright() as playwright:
     box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
     box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
     box.locator('[data-v6-resolution]').fill('합성 약물 대조 원본을 확인하여 기록을 보완하였습니다.')
-    # Denied attempt from default nurse
+    # Denied attempt from nurse
+    p.locator('[data-v6-role]').select_option('NURSE')
+    box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
+    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
+    box.locator('[data-v6-resolution]').fill('합성 약물 대조 원본을 확인하여 기록을 보완하였습니다.')
     box.locator('[data-v6-action="resolve"]').click()
-    assert getrecord(p,'SYN-001')['draft']['issues'][-1]['status']=='OPEN'
+    assert next(x for x in getrecord(p,'SYN-001')['draft']['issues'] if x['id']=='ISS-plan-med-original')['status']=='OPEN'
     p.locator('[data-v6-role]').select_option('PHARMACIST')
     box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
     box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
