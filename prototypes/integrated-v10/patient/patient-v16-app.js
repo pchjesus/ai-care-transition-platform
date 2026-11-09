@@ -62,7 +62,7 @@ function traverse(offset){
 }
 function focusContent(){
  const el=document.querySelector('#main-content');
- if(el){el.focus({preventScroll:true});el.scrollIntoView({behavior:'instant',block:'start'});}
+ if(el){el.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
 }
 function badge(pub){return '<div class="updated">'+icon('shield',19)+'<span>의료진 승인 '+esc(pub.approvedAt.slice(0,10))+' · 가상 발행 '+esc(pub.issuedAt.slice(0,10))+' · v'+esc(pub.planVersion)+'</span></div>';}
 function itemCard(x,i,publicationId){
