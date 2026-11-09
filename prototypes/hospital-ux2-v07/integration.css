@@ -82,3 +82,5 @@
 @media(max-width:1200px){.ux7-step{flex-wrap:wrap}.ux7-step small{width:100%}}
 @media(max-width:850px){.ux7-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.ux7-home-link span:last-child{display:none}.ux7-home-link{padding:6px}.topbar-actions{gap:5px}}
 @media(max-width:400px){.ux7-step{padding:9px;gap:6px}.ux7-step strong{font-size:11px}.ux7-steps{gap:6px}.ux7-audit{padding:14px}.ux7-history li{flex-wrap:wrap}}
+
+@media(min-width:701px) and (max-width:850px){.prototype-pill{display:none}}
