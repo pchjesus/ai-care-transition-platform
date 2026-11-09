@@ -54,7 +54,8 @@
   }
   function closeReader() { if (modal?.open) modal.close(); }
   modal?.addEventListener('close', () => {
-    if (returnFocus?.isConnected) returnFocus.focus({preventScroll: true});
+    const backTo = returnFocus?.isConnected ? returnFocus : document.querySelector('.v17-reader-launch');
+    backTo?.focus({preventScroll: true});
     returnFocus = null;
   });
   document.addEventListener('click', event => {
