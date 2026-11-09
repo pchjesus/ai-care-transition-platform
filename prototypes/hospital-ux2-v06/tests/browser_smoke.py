@@ -139,7 +139,10 @@ with sync_playwright() as playwright:
     p.locator('.nav-item[data-view="patients"]').click()
     p.locator('[data-open="SYN-004"]').click()
     p.locator('.patient-route[data-view="plan"]').click()
+    p.wait_for_function("location.hash.includes('/SYN-004/plan')",timeout=3000)
     prior=getrecord(p,'SYN-004')
+    print('SYN-004 diagnostic:',p.evaluate("({hash:location.hash,html:document.querySelector('#main-content')?.innerText?.slice(0,350),n:document.querySelectorAll('[data-v6-action=save-text]').length})"),errors,flush=True)
+    p.locator('[data-v6-action="save-text"]').wait_for(timeout=6000)
     assert p.locator('[data-v6-action="save-text"]').is_disabled()
     assert getrecord(p,'SYN-004')['publications']==prior['publications']
     check(True,'published-plan-immutable')
