@@ -77,7 +77,7 @@ class PatientIntegration(unittest.TestCase):
  def test_publish_revision_revoke_and_tab_refresh(self):
   self.open_a3();self.open_b()
   self.publish_v1()
-  expect(self.b.locator('#main-content')).to_contain_text('오늘의 관리 계획')
+  expect(self.b.locator('#main-content')).to_contain_text('오늘 확인할 일')
   expect(self.b.locator('.version-meta')).to_contain_text('v1.0')
   self.b.locator('[data-item="today"]').click()
   expect(self.b.locator('#main-content')).to_contain_text('의료진이 확인한 내용')
@@ -109,7 +109,7 @@ class PatientIntegration(unittest.TestCase):
   self.open_a3();self.publish_v1();self.open_b()
   for width in [390,768,1024,1440]:
    self.b.set_viewport_size({'width':width,'height':940})
-   self.assertTrue(self.b.locator('.hero-panel').is_visible())
+   self.assertTrue(self.b.locator('#main-content h1').is_visible())
 
    if self.b.locator('[data-comfort=menu]').is_visible():self.b.locator('[data-comfort=menu]').click()
    self.assertTrue(self.b.locator('[data-action="home"]:visible').is_visible())
@@ -139,7 +139,7 @@ class PatientIntegration(unittest.TestCase):
  def test_pdf_persistence_failure_blocks_publication(self):
   self.open_a3();self.attach_pdf();self.a3.locator('#request').click();self.a3.locator('#approve').click();self.open_b();self.a3.evaluate("()=>{IDBFactory.prototype.open=function(){throw new DOMException('Denied','SecurityError')}}");self.a3.locator('#publish').click();expect(self.a3.locator('#toast')).to_contain_text('발행하지 못');self.assertEqual(self.records()['SYN-002']['draft']['status'],'APPROVED');self.assertEqual(self.records()['SYN-002']['publications'],[]);expect(self.b.locator('#main-content')).to_contain_text('아직 발행된')
  def test_failed_revoke_preserves_the_last_persisted_publication(self):
-  self.open_a3();self.publish_v1();self.open_b();before=self.records();self.deny_writes(self.a3,KEY);self.a3.locator('#revoke').click();expect(self.a3.locator('#save-state')).to_have_text('저장 불가');self.assertEqual(self.records(),before);expect(self.b.locator('.hero-panel')).to_be_visible()
+  self.open_a3();self.publish_v1();self.open_b();before=self.records();self.deny_writes(self.a3,KEY);self.a3.locator('#revoke').click();expect(self.a3.locator('#save-state')).to_have_text('저장 불가');self.assertEqual(self.records(),before);expect(self.b.locator('#main-content h1')).to_be_visible()
  def test_profile_tabs_do_not_overwrite_concurrent_edits(self):
   self.open_a3();self.publish_v1();self.open_b();self.profile_edit('가상 초안 A');other=self.ctx.new_page();other.goto(self.b.url)
   if other.locator('#demo-code').is_visible():other.locator('#demo-code').fill('CARE2026');other.locator('#demo-code').press('Enter')
