@@ -3360,7 +3360,7 @@ function render({focus=false,keepScroll=false,routeTransition=false}={}){
  document.getElementById('crumb-current').textContent=names[state.view];
  document.querySelectorAll('.nav-item[data-view]').forEach(el=>{const active=el.dataset.view===state.view;el.classList.toggle('active',active);const disabled=el.classList.contains('patient-route')&&!current();if(disabled){el.setAttribute('aria-disabled','true');el.setAttribute('tabindex','-1');}else{el.removeAttribute('aria-disabled');el.removeAttribute('tabindex');}if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')});
  document.getElementById('nav-patient-label').textContent=current()?current().name:'선택 전';
- document.querySelector('.prototype-pill').textContent='UX 2.0 v0.4 · '+(source.mode==='saved'?'기존 기록 읽기':'원본 사례');
+ document.querySelector('.prototype-pill') .textContent='UX 2.0 v0.5 · '+(source.mode==='saved'?'기존 기록 읽기':'원본 사례');
  paintIcons();if(!keepScroll)window.scrollTo({top:0,behavior:'instant'});if(focus)document.getElementById('main-content').focus({preventScroll:true});
 }
 function closeMenu(){state.menu=false;document.getElementById('sidebar').classList.remove('open');document.getElementById('scrim').hidden=true;}
@@ -3383,7 +3383,7 @@ function doAction(action){
  if(action==='menu-open'){state.menu=true;document.getElementById('sidebar').classList.add('open');document.getElementById('scrim').hidden=false;return;}
  if(action==='menu-close'){closeMenu();return;}
  if(action==='assessment-next'){let i=domains.findIndex(x=>x.id===state.domainId);if(i===domains.length-1)goto('plan');else{state.domainId=domains[i+1].id;render({focus:true})}return;}
- if(action==='review-info'){dialog('실제 승인·발행은 기존 시스템에서 수행합니다.',`<p>UX 2.0 v0.3은 화면과 작업 순서를 검토하는 <strong>독립 프로토타입</strong>입니다. 이 화면에서 검토 요청·승인·발행을 실행하지 않아요.</p><p>기존 시스템은 평가 인계 → 안내·문서 검토 → 검토 요청 → 최종 승인자 승인 → 발행 순서로 동작합니다. 향후 새 화면과 기존 엔진을 연결할 때 동일한 규칙을 유지합니다.</p>`,'기존 기능 보호');return;}
+ if(action==='review-info'){dialog('실제 승인·발행은 기존 시스템에서 수행합니다.',`<p>UX 2.0 v0.5는 A2 평가 입력·저장·인계를 원본 평가 함수에 연결했습니다. A3의 검토 요청·승인·발행은 여전히 기존 시스템에서 수행합니다.</p><p>기존 시스템은 평가 인계 → 안내·문서 검토 → 검토 요청 → 최종 승인자 승인 → 발행 순서로 동작합니다. 새 화면에서도 승인·발행 안전 규칙은 기존 엔진에서만 처리합니다.</p>`,'기존 기능 보호');return;}
 }
 document.addEventListener('click',e=>{
  const action=e.target.closest('[data-action]');if(action){e.preventDefault();doAction(action.dataset.action);return;}

@@ -46,6 +46,8 @@ with sync_playwright() as p:
    page.locator('[data-action="menu-open"]').click()
    assert page.locator('#sidebar.open').count()==1
    assert page.locator('.mobile-menu').get_attribute('aria-expanded')=='true'
+   page.wait_for_function("document.getElementById('sidebar').getBoundingClientRect().left>=-1")
+   assert page.locator('#sidebar').bounding_box()['width']<=w
    page.screenshot(path=str(OUT/f'{label}-hospital-menu.png'))
    page.keyboard.press('Escape')
    assert page.locator('#sidebar.open').count()==0
@@ -88,6 +90,7 @@ with sync_playwright() as p:
    toggle=q.locator('.patient-sidebar-toggle')
    toggle.click()
    assert q.locator('.patient-nav-collapsed').count()==1
+   q.wait_for_function("document.querySelector('.app-layout>.side').getBoundingClientRect().width<=105")
    assert q.locator('.side-nav[aria-current="page"]').get_attribute('aria-label')=='오늘'
    q.screenshot(path=str(OUT/f'{label}-patient-collapsed.png'),full_page=False)
    toggle.click()
@@ -97,6 +100,7 @@ with sync_playwright() as p:
    assert menu.is_visible()
    menu.click()
    assert q.locator('.patient-menu-open').count()==1
+   q.wait_for_function("document.querySelector('.app-layout>.side').getBoundingClientRect().left>=-1")
    assert q.locator('.patient-sidebar-toggle').is_hidden()
    q.screenshot(path=str(OUT/f'{label}-patient-menu.png'),full_page=False)
    q.keyboard.press('Escape')
