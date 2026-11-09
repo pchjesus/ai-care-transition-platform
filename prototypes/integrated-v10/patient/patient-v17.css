@@ -235,3 +235,12 @@
  .v17-page *,.v17-app-layout .patient-content-enter,.v17-reader-dialog *, .v17-app-layout .bottom-nav button,.v17-app-layout .bottom-nav svg{animation:none!important;transition:none!important;scroll-behavior:auto!important;transform:none!important}
 }
 body.v17-motion-off .v17-page *,body.v17-motion-off .v17-app-layout .patient-content-enter,body.v17-motion-off .v17-reader-dialog *,body.v17-motion-off .v17-app-layout .bottom-nav button{animation:none!important;transition:none!important;transform:none!important;scroll-behavior:auto!important}
+
+/* Reuse the actual patient comfort toolbar instead of rendering duplicate history controls. */
+@media(max-width:760px){
+ .v17-app-layout .patient-mobile-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin:0 0 15px;padding:5px 0 12px;border-bottom:1px solid #e0ebe3}
+ .v17-app-layout .patient-mobile-journey{display:flex;gap:8px;align-items:center;margin:0}
+ .v17-app-layout .patient-mobile-journey button{min-width:47px;min-height:45px;padding:9px;border-radius:11px;background:#fff;border:1px solid #d7e5da}
+ .v17-app-layout .patient-mobile-journey button:disabled{background:#f3f6f4}
+ .v17-app-layout .patient-page-tools{display:none}
+}
