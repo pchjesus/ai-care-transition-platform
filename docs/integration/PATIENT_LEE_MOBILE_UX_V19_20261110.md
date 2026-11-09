@@ -43,3 +43,11 @@
 - [UI 패턴 아틀라스](https://github.com/pchjesus/design-kkakgi/blob/main/references/UI_PATTERN_FIELD_ATLAS_v0.1_20261105.md): 선택 상태가 있는 카드, 단계별 이동, 패널 상태 진실성
 - [UI 모션 증보](https://github.com/pchjesus/design-kkakgi/blob/main/references/UI_MOTION_BEHAVIOR_ADDENDUM_v0.1_20261108.md): 시각적 부드러움, 짧은 화면 전환, 선택 반응 및 모션 감소
 - [v1.8 선행 디자인 기록](PATIENT_LEE_EXAMPLE_COLOR_UX_V18_20261110.md)
+
+## 실제 실행 결과 (2026-11-10)
+
+- **PASS:** [GitHub Actions #42720903209](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42720903209), Chromium 15/15 시나리오, 0 FAIL.
+- PASS 범위: 원본·후보 동일 이정희 fixture(안내 3개, 2026-10-27 가상 일정), PC/태블릿/390/320px, 큰 글씨·움직임 줄이기 저장/복원, 포커스 복귀, 5개 탭, 선택형 이해 확인, PDF 열기·닫기, 도움·알림·내 정보, 지도 주소 누락 시 외부 링크 차단, 택시/이동지원 선택 및 3단계 준비/미전송 상태.
+- 후보 CSS·JS 문법 검사 및 원본 `patient/index.html` 비변경 검사는 PASS. 기존 A3→B 발행·개정·철회 전체 회귀는 **NOT RUN**(데이터/코드를 변경하지 않은 별도 시안).
+- 대표 캡처: Actions의 `patient-Lee-v19-full-UX-screenshots` 아티팩트.
+- 운영 `main`/`gh-pages`에 반영하지 않았으므로 `v19.html`이 현재 공개 Pages에서 열리는 버전이라고 주장하지 않는다.
