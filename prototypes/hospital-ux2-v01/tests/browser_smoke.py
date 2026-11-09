@@ -18,12 +18,18 @@ with sync_playwright() as p:
         page.goto(BASE,wait_until='networkidle')
         assert page.locator('h1').inner_text()=='퇴원관리 업무'
         assert page.locator('.patient-route[aria-disabled="true"]').count()==4
+        page.wait_for_timeout(240)
+        page.evaluate('window.scrollTo(0,0)')
+        if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'01-home-{label}.png'),full_page=(label!='desktop'))
         if width<=700:
             page.locator('[data-action="menu-open"]').click()
         page.locator('[data-view="patients"]').first.click()
         page.locator('#patient-search').fill('윤미경')
         assert page.locator('tbody tr').count()==1
+        page.wait_for_timeout(240)
+        page.evaluate('window.scrollTo(0,0)')
+        if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'02-patients-{label}.png'),full_page=False)
         page.locator('[data-open="SYN-002"]').first.click()
         assert page.locator('.patient-banner').inner_text().find('윤미경')>=0
@@ -37,12 +43,18 @@ with sync_playwright() as p:
         page.locator('#field-followup').select_option(label='확정됨')
         page.locator('[data-domain="function"]').click()
         assert page.locator('select[data-assessment-key]').count()==5
+        page.wait_for_timeout(240)
+        page.evaluate('window.scrollTo(0,0)')
+        if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'03-assessment-{label}.png'),full_page=False)
         if width<=700:
             page.locator('[data-action="menu-open"]').click()
         page.locator('.patient-route[data-view="plan"]').click()
         page.locator('#plan-textarea').fill('화면 구조 점검용 안내 문구')
         assert page.locator('#preview-text').inner_text()=='화면 구조 점검용 안내 문구'
+        page.wait_for_timeout(240)
+        page.evaluate('window.scrollTo(0,0)')
+        if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'04-plan-{label}.png'),full_page=False)
         if width<=700:
             page.locator('[data-action="menu-open"]').click()
@@ -50,6 +62,9 @@ with sync_playwright() as p:
         page.locator('[data-action="review-info"]').first.click()
         assert page.locator('#info-dialog').is_visible()
         page.locator('#info-dialog .btn-primary').click()
+        page.wait_for_timeout(240)
+        page.evaluate('window.scrollTo(0,0)')
+        if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'05-review-{label}.png'),full_page=False)
         dims=page.evaluate('({vw:innerWidth,scrollWidth:document.documentElement.scrollWidth})')
         assert dims['scrollWidth']<=dims['vw']+1, f'horizontal overflow {dims}'
