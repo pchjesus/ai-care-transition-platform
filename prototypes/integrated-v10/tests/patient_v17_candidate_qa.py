@@ -163,6 +163,7 @@ with sync_playwright() as p:
     patient.locator('.v17-reader-launch').click()
     reader=patient.locator('#v17-reader-dialog')
     assert reader.is_visible()
+    patient.screenshot(path=str(OUT/'patient-v17-reader-sheet-mobile.png'),full_page=False)
     assert reader.locator('[data-v17-font="normal"]').get_attribute('aria-pressed')=='true'
     reader.locator('[data-v17-font="large"]').click()
     assert patient.locator('body').evaluate("(el)=>el.classList.contains('large-font')")
@@ -171,15 +172,21 @@ with sync_playwright() as p:
     assert patient.locator('body').evaluate("(el)=>el.classList.contains('v17-motion-off')")
     assert patient.evaluate("localStorage.getItem('carebridge-patient-v17-reduce-motion')")== '1'
     reader.locator('[data-v17-action="close"]').last.click()
+    assert patient.locator('.v17-reader-launch').is_focused(), 'Reading settings must restore focus to its trigger'
     assert not reader.is_visible()
     assert patient.evaluate('''key=>localStorage.getItem(key)''',KEY)==clinical_at_start
     patient.reload(wait_until='networkidle')
     patient.locator('.v17-home').wait_for()
     assert patient.locator('body.large-font.v17-motion-off').count()==1
+    patient.set_viewport_size({'width':320,'height':820})
+    assert patient.evaluate('document.documentElement.scrollWidth<=innerWidth+1'), 'Large text at 320px must not scroll horizontally'
+    patient.screenshot(path=str(OUT/'patient-v17-320-large.png'),full_page=False)
+    patient.set_viewport_size({'width':390,'height':860})
     require(True,'reader-sheet-font-segments-motion-switch-persist-no-clinical-write')
 
     patient.locator('.v17-primary-cta').click()
     assert patient.locator('.v17-overview').is_visible()
+    patient.screenshot(path=str(OUT/'patient-v17-overview-mobile.png'),full_page=False)
     patient.locator('[data-v17-filter="medication"]').click()
     assert patient.locator('[data-v17-filter="medication"]').get_attribute('aria-pressed')=='true'
     assert patient.locator('.v17-overview-item').count()==1
@@ -188,16 +195,20 @@ with sync_playwright() as p:
     patient.locator('.v17-overview [data-view="today"]').click()
     patient.locator('.v17-schedule-card [data-view="schedule"]').click()
     assert patient.locator('.v17-schedule').is_visible()
+    patient.screenshot(path=str(OUT/'patient-v17-schedule-mobile.png'),full_page=False)
     patient.locator('.v17-two-actions [data-view="reminders"]').click()
     assert patient.locator('.reminders-page').count()==1
+    patient.screenshot(path=str(OUT/'patient-v17-reminders-mobile.png'),full_page=False)
     patient.locator('.bottom-nav [data-view="today"]').click()
     patient.locator('.v17-help-card [data-view="help"]').click()
     assert patient.locator('.v17-help-group').count()==3
+    patient.screenshot(path=str(OUT/'patient-v17-help-mobile.png'),full_page=False)
     patient.locator('[data-action="toggle-help-search"]').click()
     assert patient.locator('#help-search').is_visible()
     patient.locator('.bottom-nav [data-view="today"]').click()
     patient.locator('.v17-task-list [data-item]').first.click()
     assert patient.locator('.detail-wrap').count()==1
+    patient.screenshot(path=str(OUT/'patient-v17-detail-mobile.png'),full_page=False)
     patient.locator('.detail-wrap .back-button').click()
     assert patient.locator('.v17-home').is_visible()
     assert patient.evaluate('''key=>localStorage.getItem(key)''',KEY)==clinical_at_start
