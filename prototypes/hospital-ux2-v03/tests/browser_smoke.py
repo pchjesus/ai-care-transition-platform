@@ -64,6 +64,7 @@ with sync_playwright() as p:
   page.screenshot(path=str(OUT/f'{label}-plan.png'),full_page=False)
   if w<=700:page.locator('[data-action="menu-open"]').click()
   page.locator('.patient-route[data-view="review"]').click()
+  page.locator('.review-steps').first.wait_for(timeout=5000)
   assert '검토 요청' in page.locator('main').inner_text()
   page.wait_for_timeout(250)
   page.screenshot(path=str(OUT/f'{label}-review.png'),full_page=False)
@@ -72,6 +73,25 @@ with sync_playwright() as p:
   assert not errors,errors
   results.append({'size':f'{w}x{h}','result':'PASS','errors':len(errors),'overflow':dims['scrollWidth']-dims['vw']})
   page.close();ctx.close()
+ # Same-origin existing synthetic records are loaded read-only; no app write is allowed.
+ ctx=browser.new_context(viewport={'width':1440,'height':900})
+ page=ctx.new_page()
+ page.goto(HTML,wait_until='load')
+ page.evaluate("""() => {
+  const items=structuredClone(window.CB_CANONICAL.defaults);
+  items['SYN-002'].draft.status='REVIEW_REQUESTED';
+  localStorage.setItem('care-transition-integrated-v10-a3-synthetic-only',JSON.stringify(items));
+ }""")
+ page.reload(wait_until='load')
+ assert '기존 기록 읽기' in page.locator('.prototype-pill').inner_text()
+ page.locator('.nav-item[data-view="patients"]').click()
+ assert '검토 요청됨' in page.locator('tbody').inner_text()
+ before=page.evaluate("localStorage.getItem('care-transition-integrated-v10-a3-synthetic-only')")
+ page.locator('[data-action="density-toggle"]').click()
+ after=page.evaluate("localStorage.getItem('care-transition-integrated-v10-a3-synthetic-only')")
+ assert before==after,'Prototype must never write source records'
+ results.append({'size':'same-origin synthetic store','result':'PASS','readonly':True})
+ page.close();ctx.close()
  browser.close()
 (OUT/'QA_RESULT.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf8')
 print(json.dumps(results,ensure_ascii=False,indent=2))
