@@ -23,7 +23,8 @@ def choose(page, pid):
 
 def no_overflow(page, width, name):
     actual = page.evaluate('document.documentElement.scrollWidth')
-    assert actual <= width+1, (name,width,actual)
+    offenders=page.evaluate('''() => [...document.querySelectorAll('body *')].map(e=>({cls:String(e.className||'').slice(0,80),right:Math.round(e.getBoundingClientRect().right),w:Math.round(e.getBoundingClientRect().width)})).filter(e=>e.right>innerWidth+1 && e.w>0).slice(0,15)''')
+    assert actual <= width+1, (name,width,actual,offenders)
 
 def check(cond, name):
     assert cond, name
