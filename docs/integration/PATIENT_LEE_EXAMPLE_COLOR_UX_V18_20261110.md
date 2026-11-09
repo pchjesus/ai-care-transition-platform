@@ -48,3 +48,13 @@ GitHub Actions `.github/workflows/patient-example-v18-qa.yml`에서 기존 vs �
 - [승인 디자인 지침 v1.3](https://github.com/pchjesus/design-kkakgi/blob/main/guidelines/universal/Universal_Visual_Design_UI_UX_Guidelines_v1.3.md): 사용자 목적/역할과 접근성, 기존 기능 보존
 
 **검증 제한:** 실제 중장노년층·보호자의 이용성/이해도, 실기기 Safari/TalkBack/VoiceOver, 실제 의료기관 보안·효과는 아직 검증하지 않았다.
+
+## v1.8 최종 브라우저 QA 기록
+
+- **PASS:** 2026-11-10 GitHub Actions [run 42658565908](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42658565908).
+- **12개 시나리오 PASS:** 원본/후보 양쪽 `CARE2026` 합성 시연 시작 및 이정희 fixture, 1440/768/390/320px 가로 넘침 점검, 5개 하단 메뉴, 안내 3종, 원본 이해 확인 퀴즈, 기존 PDF 열고 닫기, 일정·도움·알림·내 정보, 글씨 크기·모션 설정 저장/복원과 초점, 320px 큰 글씨, 비교 화면 모바일/PC, 통합 홈 환자 카드 연계.
+- 합성 예시 날짜가 2026-10-27로 현재보다 과거임을 후보 홈에 표시했다.
+- 시각 QA에서 홈 첫 화면의 원본 이동 도구와 신규 읽기 설정이 중복 표시되는 것을 발견. **후보 홈에서만 중복 도구줄을 숨기고** 원본 상세 화면 이동 도구는 보존했다.
+- 비교 페이지에 **두 가상 화면 한 번에 열기** 버튼을 추가하여 실제 안내 화면의 같은 3개 내용을 나란히 비교 가능하도록 변경했다.
+- `main`·`gh-pages`의 배포, 원본 `patient/index.html`, A3 연결형 B 모두 변경 없음.
+- 미검증: 고령층 과업 성공률, 실기기/보조기기 접근성, 실제 의료·돌봄 데이터 연결.
