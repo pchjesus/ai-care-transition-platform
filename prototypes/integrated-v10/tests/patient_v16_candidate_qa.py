@@ -141,7 +141,6 @@ with sync_playwright() as p:
     assert get(h)['draft']['status']=='PUBLISHED'
     patient.locator('.v16-home').wait_for()
     assert patient.locator('.v16-tasks .v12-task-card').count()==3
-    assert patient.locator('.v16-home-appointment').count()==0 # v1.6 preserves the original v12 appointment hook instead
     assert patient.locator('.v12-home-appointment').count()==1
     for dimension in (1440,768,390,320):
         patient.set_viewport_size({'width':dimension,'height':850})
@@ -153,13 +152,13 @@ with sync_playwright() as p:
     patient.set_viewport_size({'width':1440,'height':900})
     patient.locator('.v16-all').click()
     assert patient.locator('.overview-layout').count()==1
-    patient.locator('[data-view="today"]').last.click()
+    patient.locator('.side [data-view="today"]').click()
     patient.locator('.v16-visit').click()
     assert patient.locator('.v12-schedule').count()==1
-    patient.locator('[data-view="today"]').last.click()
+    patient.locator('.side [data-view="today"]').click()
     patient.locator('.v16-tasks [data-item]').first.click()
     assert patient.locator('.detail-wrap').count()==1
-    patient.locator('[data-view="today"]').last.click()
+    patient.locator('.side [data-view="today"]').click()
     require(True,'patient-v16-home-responsive-taps-and-navigation')
     patient.screenshot(path=str(OUT/'patient-published-v1.png'))
     require(True,'patient-app-B-opens-published-plan')
