@@ -244,3 +244,15 @@ body.v17-motion-off .v17-page *,body.v17-motion-off .v17-app-layout .patient-con
  .v17-app-layout .patient-mobile-journey button:disabled{background:#f3f6f4}
  .v17-app-layout .patient-page-tools{display:none}
 }
+
+/* Mobile action-first ordering and discoverable, non-gesture-only filter choices. */
+@container display (min-width:1050px){
+ .v17-home>.v17-welcome{grid-row:1}
+ .v17-home>.v17-first-steps{grid-row:2}
+ .v17-home>.v17-demo-disclaimer{grid-row:5}
+}
+@media(max-width:760px){
+ .v17-home .v17-first-steps{margin-top:0;margin-bottom:13px}
+ .v17-filter-wrap{flex-wrap:wrap;overflow-x:visible;gap:8px;padding-bottom:9px}
+ .v17-filter{min-height:46px;padding:10px 13px}
+}
