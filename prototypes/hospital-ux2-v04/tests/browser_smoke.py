@@ -119,7 +119,9 @@ with sync_playwright() as p:
  assert '발행 v1.0 · 환자 공개 중' in info
  assert '원본 A3 기록' in info
  before=page.evaluate("localStorage.getItem('care-transition-integrated-v10-a3-synthetic-only')")
- page.locator('[data-action="density-toggle"]').click()
+ page.locator('[data-action="review-info"]').first.click()
+ assert page.locator('#info-dialog').is_visible()
+ page.locator('#info-dialog button[value="ok"]').click()
  after=page.evaluate("localStorage.getItem('care-transition-integrated-v10-a3-synthetic-only')")
  assert before==after,'Prototype must never write source records'
  results.append({'size':'same-origin synthetic store','result':'PASS','readonly':True,'historicalPublicationsVisible':True})
