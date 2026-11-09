@@ -1,0 +1,65 @@
+name: CareBridgeLab patient B UX v1.7 mobile-first QA
+on:
+  push:
+    branches: [feat/patient-b-ux-v17]
+    paths:
+      - 'prototypes/integrated-v10/patient/patient-v17-*'
+      - 'prototypes/integrated-v10/patient/v17.html'
+      - 'prototypes/integrated-v10/tests/patient_v17_candidate_qa.py'
+      - '.github/workflows/patient-b-ux-v17-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  patient-v17:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify candidate isolation and JS syntax
+        run: |
+          node --check prototypes/integrated-v10/patient/patient-v17-app.js
+          node --check prototypes/integrated-v10/patient/patient-v17-controls.js
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('prototypes/integrated-v10/patient')
+          live=(p/'index.html').read_text()
+          candidate=(p/'v17.html').read_text()
+          assert 'src="app.js"' in live
+          assert 'patient-v17' not in live
+          for file in ['patient-v17-app.js','patient-v17-controls.js','patient-v17.css']:
+              assert file in candidate and (p/file).is_file()
+          assert 'id="v17-reader-dialog"' in candidate
+          PY
+      - name: Original A3-to-B domain tests
+        run: |
+          node --test prototypes/integrated-v10/a3/tests/*.test.js prototypes/integrated-v10/shared/*.test.js
+      - name: Install Chromium and Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+      - name: A3-to-B publication lifecycle and candidate interaction QA
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/carebridge-v17-http.log 2>&1 &
+          sleep 2
+          python prototypes/integrated-v10/tests/patient_v17_candidate_qa.py
+      - name: Upload actual responsive captures and candidate files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-b-v17-mobile-first-browser-qa
+          path: |
+            /tmp/carebridge-patient-v17-qa/
+            prototypes/integrated-v10/patient/v17.html
+            prototypes/integrated-v10/patient/patient-v17.css
+            prototypes/integrated-v10/patient/patient-v17-controls.js
+            prototypes/integrated-v10/patient/patient-v17-app.js
+          if-no-files-found: warn
