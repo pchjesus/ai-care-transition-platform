@@ -197,3 +197,15 @@ body.v18-less-motion *,body.v18-less-motion *:before,body.v18-less-motion *:afte
  .bottom-nav,.v18-settings-trigger,.v18-setting-dialog,.devbar,.v18-guide-trigger{display:none!important}
  .v18-home-grid{display:block}.v18-home-aside{margin-top:16px}.v18-task{break-inside:avoid}
 }
+
+/* Screenshot QA refinement: show the patient's first actionable guidance sooner. */
+.side-logo svg{color:#fff!important}
+.patient-page-tools{display:none!important}
+@container display (max-width:760px){
+ body.v18-on-home .patient-mobile-toolbar{display:none!important}
+ body.v18-on-home .topline .patient-header-help{display:none!important}
+ .v18-on-home .v18-hero{padding-block:16px;margin-bottom:12px}
+ .v18-on-home .v18-hero-marker{margin-bottom:9px}
+ .v18-on-home .v18-hero>p{margin-bottom:9px}
+ .v18-on-home .main{padding-top:13px}
+}
