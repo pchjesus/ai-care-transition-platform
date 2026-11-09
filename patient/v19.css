@@ -356,3 +356,14 @@
  .v19-theme :where(.service-card,.service-list button,.v12-service-card){transform:none!important}
 }
 .v19-theme.v18-less-motion :where(.service-card,.service-list button,.v12-service-card){transform:none!important}
+
+/* Keep the dialog title legible while a long taxi preview scrolls under its sticky header. */
+.v19-theme .comfort-dialog:not(.comfort-inline) header{
+ top:0!important;display:flex!important;align-items:center!important;min-height:66px;
+}
+.v19-theme .comfort-dialog:not(.comfort-inline) header #comfort-title{
+ display:block!important;opacity:1!important;visibility:visible!important;
+ flex:1 1 180px;min-width:0;margin:0!important;line-height:1.4!important;
+ color:#204d72!important;position:relative;z-index:1;
+}
+.v19-theme .comfort-dialog:not(.comfort-inline) header [data-comfort=close]{margin-left:auto;flex:none}
