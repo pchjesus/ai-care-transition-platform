@@ -25,7 +25,8 @@ const apply=()=>{document.body.classList.toggle('v18-less-motion',reduce);const 
 function updateType(){const large=document.body.classList.contains('large-font');dialog.querySelectorAll('[data-v18-font]').forEach(el=>el.setAttribute('aria-pressed',String((el.dataset.v18Font==='large')===large)));}
 function decorate(){
 const bar=document.querySelector('.app-layout .topline');
-if(!bar){apply();return;}
+if(!bar){document.body.classList.remove('v18-on-home');apply();return;}
+document.body.classList.toggle('v18-on-home',!!document.querySelector('.v18-home'));
 if(!bar.querySelector('.v18-settings-trigger')){
  const b=document.createElement('button');b.type='button';b.className='v18-settings-trigger';b.dataset.v18='reader';b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label','글씨 크기와 화면 움직임 설정');
  b.innerHTML='<svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h8M17 10v8m-3-4h6"/></svg><span>읽기 설정</span>';
