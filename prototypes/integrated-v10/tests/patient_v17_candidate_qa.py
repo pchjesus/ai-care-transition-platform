@@ -172,7 +172,7 @@ with sync_playwright() as p:
     assert patient.locator('body').evaluate("(el)=>el.classList.contains('v17-motion-off')")
     assert patient.evaluate("localStorage.getItem('carebridge-patient-v17-reduce-motion')")== '1'
     reader.locator('[data-v17-action="close"]').last.click()
-    assert patient.locator('.v17-reader-launch').is_focused(), 'Reading settings must restore focus to its trigger'
+    patient.wait_for_function("() => document.activeElement === document.querySelector('.v17-reader-launch')",timeout=4000)
     assert not reader.is_visible()
     assert patient.evaluate('''key=>localStorage.getItem(key)''',KEY)==clinical_at_start
     patient.reload(wait_until='networkidle')
