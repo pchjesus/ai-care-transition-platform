@@ -36,7 +36,7 @@ with sync_playwright() as playwright:
         p=ctx.new_page()
         errors=[]
         p.on('pageerror', lambda error:errors.append(str(error)))
-        p.goto(H,wait_until='networkidle')
+        p.goto(HOST,wait_until='networkidle')
         assert p.locator('h1').inner_text()=='퇴원관리 업무'
         if w<=700:
             p.locator('[data-action="menu-open"]').click()
@@ -65,7 +65,7 @@ with sync_playwright() as playwright:
     p=ctx.new_page()
     errors=[]
     p.on('pageerror',lambda e:errors.append(str(e)))
-    p.goto(H,wait_until='networkidle')
+    p.goto(HOST,wait_until='networkidle')
     choose(p,'SYN-002')
     original=getrecord(p,'SYN-002') if p.evaluate('(key)=>localStorage.getItem(key)!==null',KEY) else None
     assert original is None or original['draft']['status']=='DRAFT'
@@ -159,7 +159,7 @@ with sync_playwright() as playwright:
 
     ctx=browser.new_context()
     p=ctx.new_page()
-    p.goto(H,wait_until='networkidle')
+    p.goto(HOST,wait_until='networkidle')
     p.evaluate('''key=>localStorage.setItem(key,"{bad-json")''',KEY)
     p.reload(wait_until='networkidle')
     choose(p,'SYN-002')
