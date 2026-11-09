@@ -38,3 +38,9 @@ jobs:
           name: hospital-ux2-v01-screenshots
           path: /tmp/carebridge-ux2-qa
           if-no-files-found: warn
+      - name: Upload standalone HTML preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: hospital-ux2-offline-html
+          path: prototypes/hospital-ux2-v01/preview-standalone.html
+          if-no-files-found: error
