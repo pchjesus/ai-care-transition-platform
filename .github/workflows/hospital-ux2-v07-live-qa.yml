@@ -1,0 +1,73 @@
+name: CareBridgeLab UX2 v0.7 public Pages live smoke
+on:
+  push:
+    branches: [feat/hospital-ux2-v07]
+    paths:
+      - '.github/workflows/hospital-ux2-v07-live-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  remote-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install headless browser
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Test publicly deployed static service
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          ROOT='https://pchjesus.github.io/ai-care-transition-platform/'
+          HOME=ROOT+'prototypes/integrated-v10/index.html'
+          HOSP=ROOT+'prototypes/hospital-ux2-v07/index.html'
+          PATIENT=ROOT+'prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO'
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+              ctx=browser.new_context(viewport={'width':1440,'height':900})
+              root=ctx.new_page()
+              response=root.goto(ROOT,wait_until='domcontentloaded',timeout=30000)
+              root.wait_for_url('**/prototypes/integrated-v10/index.html',timeout=20000)
+              assert root.locator('.path-card').count()==2
+              assert '케어브릿지랩' in root.title()
+              print('LIVE_ROOT_HOME_PASS',root.url)
+              med=ctx.new_page()
+              errs=[];med.on('pageerror',lambda e:errs.append(str(e)))
+              response=med.goto(HOSP,wait_until='networkidle',timeout=30000)
+              assert response.status==200,response.status
+              med.locator('h1').wait_for(timeout=7000)
+              med.locator('.nav-item[data-view="patients"]').click()
+              med.locator('[data-open="SYN-002"]').first.click()
+              med.locator('.patient-route[data-view="review"]').click()
+              med.locator('[data-ux7-action="request"]').wait_for(timeout=8000)
+              med.locator('[data-ux7-action="request"]').click()
+              med.wait_for_function('''() => JSON.parse(localStorage.getItem("care-transition-integrated-v10-a3-synthetic-only"))?.["SYN-002"]?.draft?.status==="REVIEW_REQUESTED"''')
+              med.locator('[data-v6-role]').select_option('APPROVER')
+              med.locator('[data-ux7-action="approve"]').click()
+              med.wait_for_function('''() => JSON.parse(localStorage.getItem("care-transition-integrated-v10-a3-synthetic-only"))?.["SYN-002"]?.draft?.status==="APPROVED"''')
+              med.locator('[data-ux7-action="publish"]').click()
+              med.wait_for_function('''() => JSON.parse(localStorage.getItem("care-transition-integrated-v10-a3-synthetic-only"))?.["SYN-002"]?.draft?.status==="PUBLISHED"''')
+              projection=med.evaluate('''async () => {
+                const lib=await import('/ai-care-transition-platform/prototypes/integrated-v10/shared/publication.js');
+                return lib.readPatientPublication(localStorage,'SYN-002','ENC-SYN-002-DEMO');
+              }''')
+              assert projection['status']=='PUBLISHED'
+              assert projection['publication']['planVersion']=='1.0'
+              print('LIVE_MEDICAL_A3_PUBLICATION_PASS')
+              patient=ctx.new_page()
+              response=patient.goto(PATIENT,wait_until='networkidle',timeout=30000)
+              assert response.status==200
+              patient.locator('#demo-code').fill('CARE2026')
+              patient.locator('#demo-login button[type="submit"]').click()
+              patient.locator('.app-layout').wait_for(timeout=7000)
+              assert '나의 퇴원안내' in patient.locator('body').inner_text()
+              print('LIVE_PATIENT_B_PASS',patient.url)
+              assert not errs,errs
+              browser.close()
+          PY
