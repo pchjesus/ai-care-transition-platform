@@ -322,3 +322,37 @@
  .v19-theme .comfort-dialog:not(.comfort-inline),.v19-theme .v18-setting-dialog,.v19-theme .bottom-nav{display:none!important}
  .v19-theme *, .v19-theme *::before, .v19-theme *::after{animation:none!important;box-shadow:none!important}
 }
+
+/* Final whole-app color coherence audit: old forest-green remnants in toolbars / notifications. */
+.v19-theme .patient-header-help,
+.v19-theme .patient-page-tools :where(button,a.patient-demo-return),
+.v19-theme .patient-sidebar-journey button,
+.v19-theme .patient-mobile-journey button{
+ background:#f1f7ff!important;color:#2c608c!important;border:1px solid #d2e3f2!important;
+ border-radius:11px;transition:background 210ms var(--v19-ease),transform 180ms var(--v19-ease);
+}
+.v19-theme .patient-header-help:hover,
+.v19-theme .patient-page-tools :where(button,a.patient-demo-return):hover{
+ background:#e2effc!important;color:#1f5079!important
+}
+.v19-theme :where(.comfort-quick,.comfort-med-link,.integrated-documents) button{
+ background:#eaf4ff!important;color:#285e88!important;border:1px solid #c7deef!important;border-radius:12px;
+}
+.v19-theme .comfort-inline{color:#203d56!important}
+.v19-theme .comfort-inline :where(p,li,small,legend,label,span:not(.state-indicator)):not(.v19-kicker){color:#536d81}
+.v19-theme .comfort-inline :where(h1,h2,h3,h4,strong){color:#244d71}
+.v19-theme .comfort-inline :where(.reminder-group>summary,.reminder-group>summary h2,.reminder-group>summary small){color:#2b628e}
+.v19-theme .comfort-inline .comfort-list li{color:#304d68}
+.v19-theme .comfort-inline [role=status]{color:#2a607e}
+.v19-theme .comfort-dialog:not(.comfort-inline) .travel-choice[aria-pressed=true] strong{color:#20537e}
+.v19-theme :where(.service-card,.service-list button,.v12-service-card){
+ transition:transform 205ms var(--v19-ease),border-color 240ms var(--v19-ease),background 240ms var(--v19-ease),box-shadow 240ms var(--v19-ease)
+}
+.v19-theme :where(.service-card,.service-list button,.v12-service-card):not(:disabled):hover{
+ transform:translateY(-2px);background:#f3f8fd;border-color:#9bbdd9;box-shadow:0 8px 24px #183d5d18
+}
+.v19-theme :where(.service-card,.service-list button,.v12-service-card):not(:disabled):active{transform:scale(.991)}
+@media(prefers-reduced-motion:reduce){
+ .v19-theme :where(.service-card,.service-list button,.v12-service-card){transform:none!important}
+}
+.v19-theme.v18-less-motion :where(.service-card,.service-list button,.v12-service-card){transform:none!important}
