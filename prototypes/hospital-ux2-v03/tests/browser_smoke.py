@@ -34,6 +34,7 @@ with sync_playwright() as p:
   page.locator('[data-open="SYN-002"]').first.click()
   if w<=700:page.locator('[data-action="menu-open"]').click()
   page.locator('.patient-route[data-view="assessment"]').click()
+  page.locator('.domain-btn').first.wait_for(timeout=5000)
   assert page.locator('.domain-btn').count()==6
   assert page.locator('[data-assessment-key]').count()==5
   assert page.locator('[data-assessment-key]').first.is_disabled()
