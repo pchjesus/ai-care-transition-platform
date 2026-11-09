@@ -1,0 +1,85 @@
+name: CareBridgeLab Patient B Lee synthetic example v1.8 UI QA
+on:
+  push:
+    branches: [feat/patient-example-ux-v18]
+    paths:
+      - 'patient/v18*'
+      - 'patient/compare-v18.html'
+      - 'prototypes/integrated-v10/v18-home-preview.html'
+      - '.github/workflows/patient-example-v18-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  example-v18:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify original fixture, self-contained script syntax, new assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          old=Path('patient/index.html').read_text(encoding='utf-8')
+          new=Path('patient/v18.html').read_text(encoding='utf-8')
+          assert "name:'이정희'" in old and "name:'이정희'" in new
+          assert "data-detail=" in old and "data-detail=" in new
+          assert "EMBEDDED_PDF_PREVIEW" in old and "EMBEDDED_PDF_PREVIEW" in new
+          assert 'patient/v18' not in old
+          for f in ['patient/v18.css','patient/v18-controls.js','patient/compare-v18.html','prototypes/integrated-v10/v18-home-preview.html']:
+              assert Path(f).is_file()
+          src=re.search(r'<script>\s*(.*?)\s*</script>',new,re.S)
+          assert src
+          Path('/tmp/v18-embedded.js').write_text(src.group(1),encoding='utf-8')
+          PY
+          node --check /tmp/v18-embedded.js
+          node --check patient/v18-controls.js
+      - name: Install Chromium, Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+      - name: Side-by-side browser UX and original feature regression
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/carebridge-patient-v18-server.log 2>&1 &
+          sleep 2
+          python patient/v18_qa.py
+      - name: Package interactive original-vs-new local HTML demonstration
+        if: success()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          root=Path('.')
+          files=[*Path('patient').glob('*.html'),Path('patient/v18.css'),Path('patient/v18-controls.js'),
+                 Path('prototypes/integrated-v10/v18-home-preview.html')]
+          files.extend([f for f in Path('prototypes/integrated-v10/patient').rglob('*') if f.is_file() and 'test' not in f.parts])
+          files.extend([f for f in Path('prototypes/integrated-v10/a3').rglob('*.js') if 'tests' not in f.parts])
+          files.extend([f for f in Path('prototypes/integrated-v10/shared').rglob('*.js') if 'tests' not in f.parts])
+          readme=Path('/tmp/v18-demo-README.txt')
+          readme.write_text('이정희님 합성 환자 디자인 비교 시안\n\n압축을 해제하고 이 폴더에서 Python 3으로 python -m http.server 8765 실행\n브라우저 주소: http://localhost:8765/patient/compare-v18.html\n가상 체험코드: CARE2026\n원본 독립 시연과 신규 디자인 비교. 실제 의료기관 기록 또는 A3 발행본 연동 아님.\n',encoding='utf8')
+          out=Path('/tmp/carebridge-v18-qa/carebridge-patient-v18-interactive.zip')
+          with ZipFile(out,'w',ZIP_DEFLATED) as archive:
+              for file in dict.fromkeys(files):
+                  if file.is_file():archive.write(file,file.as_posix())
+              archive.write(readme,'README.txt')
+          print('INTERACTIVE_PACKAGE',out,out.stat().st_size)
+          PY
+      - name: Upload responsive captures, QA, interactive ZIP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carebridge-Lee-patient-v18-preview
+          path: |
+            /tmp/carebridge-v18-qa/
+            patient/v18.html
+            patient/v18.css
+            patient/v18-controls.js
+            patient/compare-v18.html
+            prototypes/integrated-v10/v18-home-preview.html
+          if-no-files-found: warn
