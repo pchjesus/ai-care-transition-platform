@@ -28,6 +28,8 @@ with sync_playwright() as p:
         page.locator('[data-open="SYN-002"]').first.click()
         assert page.locator('.patient-banner').inner_text().find('윤미경')>=0
         assert page.locator('.patient-route[aria-disabled="true"]').count()==0
+        if width<=700:
+            page.locator('[data-action="menu-open"]').click()
         page.locator('[data-view="assessment"]').last.click()
         page.locator('.domain-btn').first.wait_for(timeout=5000)
         assert page.locator('.domain-btn').count()==6
