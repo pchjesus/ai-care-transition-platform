@@ -54,7 +54,7 @@ with sync_playwright() as playwright:
         p.screenshot(path=str(OUT/f'{name}-docs.png'))
         if w<=700: p.locator('[data-action="menu-open"]').click()
         p.locator('.patient-route[data-view="review"]').click()
-        assert p.locator('.ux6-review-grid').count()==1
+        p.locator('.ux6-review-grid').wait_for(timeout=6000)
         no_overflow(p,w,name+' review')
         p.screenshot(path=str(OUT/f'{name}-review.png'))
         assert not errors, (name,errors)
