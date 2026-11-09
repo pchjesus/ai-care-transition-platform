@@ -23,7 +23,6 @@ with sync_playwright() as p:
   page.wait_for_function("""() => document.getElementById('ux6-plan-text')?.value==='단일 HTML 시연 검증'""")
   assert not errors, (width,errors)
   print('STANDALONE_HTTP_PASS',width)
-  ctx.close()
  # Direct file:// opening must be an honest, separate capability check.
   local=ctx.new_page()
   local_errors=[]
@@ -39,4 +38,5 @@ with sync_playwright() as p:
   assert local.locator('[data-v6-action="save-text"]').is_enabled(),local_errors
   print('STANDALONE_FILE_PASS',width)
   local.close()
+  ctx.close()
  browser.close()
