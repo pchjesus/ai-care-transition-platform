@@ -41,7 +41,7 @@ with sync_playwright() as pw:
         login(new)
         assert '이정희님' in new.locator('.v18-home h1').inner_text()
         assert new.locator('.v18-task').count()==3
-        names=[b.inner_text().split('\n')[1].strip() for b in new.locator('.v18-task').all()]
+        names=[b.locator('.v18-task-content strong').inner_text() for b in new.locator('.v18-task').all()]
         assert [x in ' '.join(names) for x in ['보행 보조기 안내 확인','퇴원 약 안내 확인','다음 진료 준비하기']]==[True]*3, names
         assert new.locator('.v18-visit-date').count()==1
         assert '2026년 10월 27일' in new.locator('.v18-visit-date').inner_text()
