@@ -148,8 +148,8 @@
     if(!person || !writable()){toast('저장할 수 없습니다. 현재 기록을 확인하세요.');return false;}
     try {
       const box=storage.loadRepository(localStorage,key);
-      if(box.error)throw Error('기존 합성 저장자료가 손상되어 저장을 중지했습니다.');
-      if(box.serialized!==beforeSeen)throw Error('다른 탭에서 기록이 수정되었습니다. 새로고침 후 다시 확인하세요.');
+      if(box.error){ui.stale=true;throw Error('기존 합성 저장자료가 손상되어 저장을 중지했습니다.');}
+      if(box.serialized!==beforeSeen){ui.stale=true;throw Error('다른 탭에서 기록이 수정되었습니다. 새로고침 후 다시 확인하세요.');}
       storage.initializePatients(box.records);
       const prev=box.records[id];
       if(!prev || !editable(prev))throw Error('발행되거나 철회된 계획은 개정 전 편집할 수 없습니다.');
@@ -163,15 +163,14 @@
       }
       workflow.audit(copy,ui.role,event,description);
       box.records[id]=copy;
-      storage.persistRepository(localStorage,key,box);
+      try{storage.persistRepository(localStorage,key,box);}catch(error){ui.stale=true;throw error;}
       ui.stale=false;
       refreshSource();
       render({keepScroll:true});
       toast('합성 기록 저장 완료 · 승인/발행 상태를 확인하세요.');
       return true;
     } catch(error) {
-      ui.stale=true;
-      toast('저장 실패 · 원본 보존: '+(error.message||'오류'));
+      toast('저장 거부 · 원본 보존: '+(error.message||'오류'));
       render({keepScroll:true});
       return false;
     }
