@@ -202,10 +202,10 @@ export function installPatientComfort(adapter){
    const mark=sideBrand.querySelector('.side-logo');
    if(mark)mark.innerHTML='<svg viewBox="0 0 48 48" width="39" height="39" fill="none" aria-hidden="true"><circle cx="24" cy="8" r="4" fill="currentColor"/><path d="M8 38C9 28 16 20 24 20c8 0 15 8 16 18" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/><path d="M18 36c1-6 3-9 6-9s5 3 6 9" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>';
    const heading=sideBrand.querySelector('b'),subtitle=sideBrand.querySelector('small');
-   if(heading)heading.textContent='케어브릿지랩';
-   if(subtitle)subtitle.textContent='CareBridgeLab';
+   if(heading)heading.textContent='나의 퇴원안내';
+   if(subtitle)subtitle.textContent='퇴원 후 필요한 안내';
    const sectionLabel=side.querySelector('.side-cap');
-   if(sectionLabel)sectionLabel.textContent='나의 퇴원 안내';
+   if(sectionLabel)sectionLabel.textContent='나의 퇴원안내';
   }
   header?.querySelector('.top-profile')?.remove();
   if(nav){

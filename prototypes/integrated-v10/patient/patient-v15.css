@@ -1,0 +1,41 @@
+
+/* Patient B v1.5: understandable app name, calm motion, responsive optional navigation.
+   Existing bottom tabs, publication safety and patient records are unchanged. */
+:root{--patient-soft-motion:cubic-bezier(.2,.7,.2,1)}
+.patient-sidebar-toggle{margin-left:auto;background:#fff;border:1px solid #dce9df;border-radius:11px;min-width:44px;min-height:44px;display:grid;place-items:center;color:#256845;font-weight:850;font-size:23px;cursor:pointer}
+.patient-sidebar-toggle:focus-visible,.patient-menu-launch:focus-visible,.side-nav:focus-visible{outline:3px solid #80b995;outline-offset:2px}
+.patient-menu-launch{display:none;min-height:48px;min-width:105px;align-items:center;justify-content:center;gap:8px;padding:8px 10px;background:#f1f8f2;border:1px solid #dcebe0;border-radius:11px;color:#225d3b;font-size:calc(15px * var(--font-scale,1));font-weight:800;cursor:pointer}
+.patient-menu-launch svg{height:21px;width:21px}
+.patient-nav-short{display:none}
+.patient-side-scrim[hidden]{display:none!important}
+.patient-content-enter{animation:patient-gentle-appear 260ms ease-out both}
+@keyframes patient-gentle-appear{from{opacity:.35}to{opacity:1}}
+@container display (min-width:761px){
+ .app-layout{transition:grid-template-columns 270ms var(--patient-soft-motion)}
+ .app-layout.patient-nav-collapsed{grid-template-columns:91px minmax(0,1fr)}
+ .app-layout.patient-nav-collapsed>.side{padding-inline:7px;gap:7px}
+ .patient-nav-collapsed .side-brand{flex-direction:column;align-items:center;padding:0 1px 15px;gap:7px}
+ .patient-nav-collapsed .side-brand>div:last-of-type{display:none}
+ .patient-nav-collapsed .patient-sidebar-toggle{margin:0}
+ .patient-nav-collapsed .side-cap,.patient-nav-collapsed .side-end,.patient-nav-collapsed .patient-sidebar-journey{display:none!important}
+ .patient-nav-collapsed .side-nav{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;min-height:66px;padding:7px 2px;font-size:0;border-radius:10px;text-align:center}
+ .patient-nav-collapsed .side-nav>svg{width:22px;height:22px;flex:none}
+ .patient-nav-collapsed .side-nav .patient-nav-full{display:none}
+ .patient-nav-collapsed .side-nav .patient-nav-short{display:block;font-size:calc(11px * var(--font-scale,1));font-weight:800;line-height:1.2}
+ .patient-nav-collapsed .side-nav[aria-current="page"]{box-shadow:inset 3px 0 #237b48}
+}
+@container display (max-width:760px){
+ .app-layout>.side{display:flex!important;position:fixed!important;inset:0 auto 0 0;max-width:84vw;width:min(292px,84vw);height:100dvh!important;max-height:100dvh!important;transform:translateX(-105%);transition:transform 290ms var(--patient-soft-motion);box-shadow:8px 0 32px rgba(18,48,32,.15);background:#fbfdfb;z-index:42;visibility:hidden;pointer-events:none;overflow-y:auto;overscroll-behavior:contain}
+ .app-layout.patient-menu-open>.side{transform:translateX(0);visibility:visible;pointer-events:auto}
+ .patient-side-scrim:not([hidden]){display:block;position:fixed;inset:0;background:rgba(14,37,26,.28);z-index:40}
+ .patient-sidebar-toggle{display:none}
+ .patient-menu-launch{display:inline-flex;flex:none}
+ .topline{justify-content:space-between;min-height:64px}
+ .topline>.kicker{display:none}
+ .app-layout>.side .side-nav{min-height:54px}
+ .app-layout>.side .side-brand{padding-top:3px}
+}
+@media(prefers-reduced-motion:reduce){
+ .patient-content-enter{animation:none!important}
+ .app-layout,.patient-sidebar-toggle,.app-layout>.side{transition:none!important}
+}
