@@ -41,7 +41,7 @@ def step(page,action,patient='SYN-002',expected=None):
     button=page.locator(f'[data-ux7-action="{action}"]')
     button.click()
     if expected:
-      page.wait_for_function('''([key,id,status]) => JSON.parse(localStorage.getItem(key))?.[id]?.draft?.status===status''',[KEY,patient,expected],timeout=7500)
+      page.wait_for_function('''([key,id,status]) => JSON.parse(localStorage.getItem(key))?.[id]?.draft?.status===status''',arg=[KEY,patient,expected],timeout=7500)
 
 def role(page,name):
     page.locator('[data-v6-role]').select_option(name)
@@ -99,7 +99,7 @@ with sync_playwright() as p:
     h.locator('[data-v6-tab="docs"]').click()
     pdf=b'%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n%%EOF\n'
     h.locator('[data-v6-pdf]').set_input_files({'name':'SYN002-v07-education.pdf','mimeType':'application/pdf','buffer':pdf})
-    h.wait_for_function('''key => JSON.parse(localStorage.getItem(key))?.["SYN-002"]?.draft?.docs?.length===1''',KEY)
+    h.wait_for_function('''key => JSON.parse(localStorage.getItem(key))?.["SYN-002"]?.draft?.docs?.length===1''',arg=KEY)
     h.locator('[data-v6-doc-visibility]').select_option('PATIENT')
     role(h,'APPROVER')
     h.locator('[data-v6-action="review-pdf"]').click()
