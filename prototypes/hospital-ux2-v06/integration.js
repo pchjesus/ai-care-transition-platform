@@ -297,6 +297,11 @@
   views.review=reviewV6;
   const priorRender=render;
   render=function(opts){
+    if(ui.lastPatient!==state.patientId){
+      ui.lastPatient=state.patientId;
+      ui.tab='items';
+      ui.files.clear(); // Never carry session PDF bytes into a different patient.
+    }
     priorRender(opts);
     const snapshot=storage.loadRepository(localStorage,key);
     ui.seen=snapshot.serialized;
