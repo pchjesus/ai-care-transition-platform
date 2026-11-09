@@ -153,9 +153,9 @@ with sync_playwright() as p:
         if dimension<=760:
             assert patient.locator('.bottom-nav').is_visible()
             assert patient.locator('.v17-reader-launch').is_visible()
-            assert patient.locator('.v17-journey').is_visible()
-            assert patient.locator('.v17-journey button').count()==3
-            assert patient.locator('.v17-journey a').count()==1
+            assert patient.locator('.patient-mobile-journey').is_visible()
+            assert patient.locator('.patient-mobile-toolbar .patient-mobile-journey button').count()==3
+            assert patient.locator('.v17-journey').count()==0
         patient.screenshot(path=str(OUT/f'patient-v17-{dimension}.png'),full_page=False)
     require(True,'patient-v17-responsive-four-viewports-and-touch-targets')
 
