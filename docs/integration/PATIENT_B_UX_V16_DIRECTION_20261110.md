@@ -40,3 +40,12 @@
 - 운영 `main`/`gh-pages` 변경 금지. 사용자의 디자인 피드백을 받은 후 환자 앱 후보를 정리한다.
 - 검증되지 않은 디자인·실사용성은 완료라고 표현하지 않는다. 실제 고령환자/보호자, 모바일 실기기, 스크린리더 평가 별도.
 - 의료진 기존 기능 잔여 목록: `docs/integration/HOSPITAL_UX2_V07_PARITY_BACKLOG_20261110.md`. 환자 UX 개선 후 Codex 전체 회귀 검증 때 A/B/C 우선순위대로 판단.
+
+## 1차 구현·검증 기록
+
+- 브랜치: `feat/patient-b-ux-v16` (운영 `main`/`gh-pages` 변경 없음).
+- 후보 HTML: `prototypes/integrated-v10/patient/v16.html`, 후보 CSS: `patient-v16.css`, 후보 렌더러: `patient-v16-app.js`.
+- 기존 `patient/index.html`, `patient/app.js`, 승인 원본, 알림·PDF 모듈은 건드리지 않음.
+- Chromium CI에서 발행 전 비공개·PDF 검증·A3→B 발행·개정 동안 이전 버전·재승인 v2·철회 즉시 숨김 및 새 환자 홈 1440/768/390/320px 총 **17 시나리오 PASS**. 코드 문법 검사 PASS.
+- 사용자 확정/보호자 사용성/실기기·스크린리더/원본 전체 회귀: **NOT VERIFIED / 보류**.
+- 시각 QA에서 기존 SVG 아이콘 사전에 'file' 항목 누락을 발견해 새 후보에서만 표시를 보완. 화면 이동 시 모바일 상단 메뉴가 스크롤 밖으로 밀리는 기존 동작도 후보에서 보완함.
