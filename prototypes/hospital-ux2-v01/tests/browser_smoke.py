@@ -92,7 +92,7 @@ with sync_playwright() as p:
         demo.hover()
         hovered=demo.evaluate('el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color})')
         assert hovered['background']!='rgb(255, 255, 255)' and hovered['color']=='rgb(255, 255, 255)',hovered
-        dims=page.evaluate('({vw:innerWidth,scrollWidth:document.documentElement.scrollWidth})')
+        dims=page.evaluate('''() => ({vw:innerWidth,scrollWidth:document.documentElement.scrollWidth,offenders:[...document.querySelectorAll('*')].filter(el=>el.getBoundingClientRect().right>innerWidth+1).slice(0,12).map(el=>({tag:el.tagName,classes:el.className?.baseVal||el.className,right:Math.round(el.getBoundingClientRect().right)}))})''')
         assert dims['scrollWidth']<=dims['vw']+1, f'horizontal overflow {dims}'
         assert not errors, f'{label} JS errors: {errors}'
         results.append({'viewport':label,'size':f'{width}x{height}','result':'PASS','horizontal_overflow':False,'js_errors':len(errors)})
