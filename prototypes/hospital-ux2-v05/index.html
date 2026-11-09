@@ -3520,8 +3520,13 @@ paintIcons();syncHash({focus:false});
   persistAction('edit',el.dataset.assessmentDomain,el.dataset.assessmentKey,el.value||null);
  },true);
  document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&narrow()&&sidebar.classList.contains('open')){
-   closeMenu();paintRail();document.querySelector('.mobile-menu')?.focus();
+  if(e.key==='Escape'&&narrow()){
+   // The original navigation Escape handler may already have closed the drawer.
+   // Always synchronize ARIA and focus, regardless of listener order.
+   const wasOpen=sidebar.classList.contains('open')||state.menu;
+   if(wasOpen)closeMenu();
+   paintRail();
+   document.querySelector('.mobile-menu')?.focus();
   }
  });
  document.querySelector('.mobile-menu')?.addEventListener('click',()=>requestAnimationFrame(paintRail));
