@@ -18,6 +18,7 @@ with sync_playwright() as p:
   page.screenshot(path=str(OUT/f'{label}-home.png'),full_page=False)
   if w<=700:page.locator('[data-action="menu-open"]').click()
   page.locator('[data-view="patients"]').first.click()
+  page.locator('#patient-search').wait_for(timeout=5000)
   assert page.locator('.screen.page-enter').count()==1
   assert page.locator('.screen.page-enter').evaluate('el=>getComputedStyle(el).animationDuration')=='0.34s'
   assert page.locator('.screen').evaluate('el=>getComputedStyle(el).transform')=='none'
