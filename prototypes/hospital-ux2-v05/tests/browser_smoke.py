@@ -26,6 +26,7 @@ with sync_playwright() as p:
    btn.click()
    assert page.locator('#sidebar.rail-compact').count()==1
    assert page.locator('.nav-item[data-view="home"] .nav-compact-label').inner_text()=='홈'
+   page.wait_for_function("document.getElementById('sidebar').getBoundingClientRect().width<100")
    side_width=page.locator('#sidebar').bounding_box()['width']
    assert side_width<100,side_width
    assert page.locator('.brand-collapse-toggle').get_attribute('aria-expanded')=='false'
