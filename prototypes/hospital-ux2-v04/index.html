@@ -75,6 +75,19 @@ svg{width:20px;height:20px;flex:none;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:700px){.plan-editor-head{gap:11px}.layout-toggle{margin-top:3px}.layout-toggle .btn{font-size:11.5px}.plan-editor-head .section-title{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.screen.page-enter{animation:none!important}}
 
+
+/* v0.4 mobile usability: grid items must shrink instead of clipping inside the viewport. */
+@media(max-width:1160px){
+ .plan-grid{grid-template-columns:minmax(0,1fr)}
+ .plan-grid>.plan-editor,.plan-grid>.preview-panel{min-width:0;width:100%}
+ .plan-editor-head{min-width:0}
+ .plan-editor .tabs,.plan-editor .plan-form{min-width:0;max-width:100%}
+}
+@media(max-width:700px){
+ .plan-editor-head{display:flex;flex-direction:column;align-items:stretch;gap:9px}
+ .layout-toggle{align-self:flex-start;max-width:100%}
+ .plan-editor .field-group,.plan-editor textarea{min-width:0;max-width:100%}
+}
 </style>
 </head>
 <body>

@@ -63,6 +63,9 @@ with sync_playwright() as p:
   page.locator('.patient-route[data-view="plan"]').click()
   page.locator('.plan-editor-head').wait_for(timeout=5000)
   assert page.locator('.plan-editor-head .layout-toggle').count()==1
+  for selector in ['.plan-editor','.plan-editor-head','.layout-toggle']:
+   box=page.locator(selector).bounding_box()
+   assert box['x']>=-1 and box['x']+box['width']<=w+1,(label,selector,box,w)
   assert page.locator('.assessment-toolbar').count()==0
   assert page.locator('[data-action="plan-split"]').get_attribute('aria-pressed')=='true'
   originalY=page.locator('.plan-editor').bounding_box()['y']
