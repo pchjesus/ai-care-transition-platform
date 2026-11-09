@@ -142,6 +142,9 @@ with sync_playwright() as p:
     patient.locator('.v17-home').wait_for()
     assert patient.locator('.v17-task-list .task').count()==3
     assert patient.locator('.v17-first-steps').count()==1
+    patient.set_viewport_size({'width':390,'height':844})
+    assert patient.locator('.v17-tasks-card').evaluate('el=>el.getBoundingClientRect().top') < patient.locator('.v17-first-steps').evaluate('el=>el.getBoundingClientRect().top'), 'Mobile should lead with readable clinical guidance, not onboarding'
+    patient.set_viewport_size({'width':1440,'height':900})
     assert patient.locator('.v17-schedule-card [data-view="schedule"]').is_visible()
     assert patient.locator('.bottom-nav button').count()==5
     clinical_at_start=patient.evaluate('''key=>localStorage.getItem(key)''',KEY)
