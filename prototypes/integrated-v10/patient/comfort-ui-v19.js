@@ -90,7 +90,7 @@ export function installPatientComfort(adapter){
  }
  function inbox(c,data){const events=inboxEvents(c,data);return `<p>발행·변경·철회 이력과 앱을 열었을 때 도래한 알림이에요. 알림 열람은 복약 이행·이해 완료 기록이 아니에요.</p><ul class="comfort-list">${events.map(e=>`<li><strong>${esc(e.title)}</strong><p>${e.version?'v'+esc(e.version):''} ${e.seen?'· 알림 확인함':''}</p>${!e.seen?button('seen','알림 확인',`data-id="${esc(e.id)}"`):''}</li>`).join('')||'<li>새 소식이 없어요. 실제로 제공되지 않은 발행 이벤트는 만들지 않아요.</li>'}</ul>`;}
  function travelSvg(kind){
- const path=kind==='map'?'<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>':kind==='taxi'?'<path d="m5 17 1-8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2l1 8M4 13h16v5H4z"/><path d="M8 18v2m8-2v2M7 10h10M8 4h8"/>':'<path d="M12 2v20M2 12h20"/>';
+ const path=kind==='map'?'<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>':kind==='taxi'?'<path d="m5 17 1-8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2l1 8M4 13h16v5H4z"/><path d="M8 18v2m8-2v2M7 10h10M8 4h8"/>':kind==='assist'?'<circle cx="12" cy="4" r="2"/><path d="M12 7v6h-4M12 10h5l2 6h2"/><circle cx="10" cy="17" r="5"/><path d="m14 20 3 2"/>':'<path d="M12 2v20M2 12h20"/>';
  return '<svg aria-hidden="true" viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round">'+path+'</svg>';
 }
 function maps(c){
@@ -179,7 +179,7 @@ function maps(c){
     <div class="v19-travel-intro"><span class="v19-kicker">가상 체험 · 총 3단계</span><h3>병원에 갈 준비를 정리해요</h3><p>일반 택시 또는 이동지원 확인 중 하나를 선택해 필요한 준비사항을 살펴보세요.</p></div>
     <div class="travel-choice-grid" role="group" aria-label="이동 방법 선택">
       <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="regular" aria-pressed="${taxiChoice==='regular'}"><span class="travel-choice-icon" aria-hidden="true">${travelSvg('taxi')}</span><strong>일반 택시</strong><small>외부 앱에서 직접 호출해요</small></button>
-      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="assisted" aria-pressed="${taxiChoice==='assisted'}"><span class="travel-choice-icon" aria-hidden="true">${travelSvg('map')}</span><strong>이동지원 확인</strong><small>휠체어·부축 등 가능 여부 문의</small></button>
+      <button type="button" class="travel-choice" data-comfort="taxi-option" data-choice="assisted" aria-pressed="${taxiChoice==='assisted'}"><span class="travel-choice-icon" aria-hidden="true">${travelSvg('assist')}</span><strong>이동지원 확인</strong><small>휠체어·부축 등 가능 여부 문의</small></button>
     </div>
     <div data-taxi-steps>${taxiChoiceDetails()}</div>
     ${taxiBuilder(c)}
