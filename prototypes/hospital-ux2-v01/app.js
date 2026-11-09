@@ -86,6 +86,16 @@ function guide(){return `<section class="screen">${renderHeading('사용법 · �
  ['03','퇴원계획 안내 내용 살펴보기','환자에게 보여줄 말과 업무 메타데이터를 구분해 배치했습니다. 문구를 바꾸면 오른쪽 미리보기가 바뀝니다.'],
  ['04','검토·승인·발행 흐름 확인','발행 전에 무엇을 해결해야 하는지, 승인과 발행이 왜 분리되는지 살펴보세요.']
  ].map(s=>`<div class="guide-item"><span class="guide-num">${s[0]}</span><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('')}</section><aside class="surface tip-panel"><h2 class="section-title">예시 환자로 바로 시작</h2><p>윤미경(SYN-002) 사례를 선택해 환자 개요부터 평가·계획·검토 화면까지 따라가 보세요.</p><a href="#/patient/SYN-002/overview" class="btn btn-primary" data-open="SYN-002" data-target="overview">SYN-002 체험하기 ${icon('arrow-right')}</a><p class="subtle-note">이 경로는 디자인 시안입니다. 기존 운영용 환자 기록이나 환자 앱에 반영되지 않습니다.</p></aside></div></section>`;}
+// Keep the active input node intact while filtering; this also protects Korean IME composition.
+function refreshPatientResults(){
+ if(state.view!=='patients')return;
+ const currentRows=document.querySelector('.data-table tbody');
+ if(!currentRows)return;
+ const fragment=document.createElement('template');
+ fragment.innerHTML=patients();
+ const nextRows=fragment.content.querySelector('.data-table tbody');
+ if(nextRows)currentRows.replaceChildren(...nextRows.children);
+}
 const views={home,patients,inbox,overview,assessment,plan,review,guide};
 const names={home:'업무 홈',patients:'환자 목록',inbox:'검토 업무함',overview:'환자 개요',assessment:'돌봄 필요도 평가',plan:'퇴원계획 작성',review:'검토·승인·발행',guide:'사용법·체험 안내'};
 function paintIcons(scope=document){scope.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=icon(el.dataset.icon)});}
@@ -127,9 +137,9 @@ document.addEventListener('change',e=>{
 });
 let searchComposing=false;
 document.addEventListener('compositionstart',e=>{if(e.target.id==='patient-search')searchComposing=true;});
-document.addEventListener('compositionend',e=>{if(e.target.id!=='patient-search')return;searchComposing=false;state.search=e.target.value;render({keepScroll:true});const search=document.getElementById('patient-search');search?.focus();});
+document.addEventListener('compositionend',e=>{if(e.target.id!=='patient-search')return;searchComposing=false;state.search=e.target.value;refreshPatientResults();});
 document.addEventListener('input',e=>{
- if(e.target.id==='patient-search'){state.search=e.target.value;if(searchComposing)return;const cursor=e.target.selectionStart;render({keepScroll:true});const search=document.getElementById('patient-search');search?.focus();search?.setSelectionRange(cursor,cursor);return;}
+ if(e.target.id==='patient-search'){state.search=e.target.value;if(!searchComposing)refreshPatientResults();return;}
  if(e.target.matches('[data-plan-key]')){const key=`${state.patientId}.${e.target.dataset.planKey}`;state.notes[key]=e.target.value;const preview=document.getElementById('preview-text');if(preview)preview.textContent=e.target.value;return;}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.menu)closeMenu();});

@@ -27,6 +27,23 @@ with sync_playwright() as p:
         page.locator('[data-view="patients"]').first.click()
         page.locator('#patient-search').fill('윤미경')
         assert page.locator('tbody tr').count()==1
+        # Typing must keep the same input node and caret, including edits in the middle.
+        search=page.locator('#patient-search')
+        search.evaluate('(el) => { el.dataset.stableSearch="1"; el.setSelectionRange(1,1); }')
+        page.keyboard.type('X')
+        assert search.input_value()=='윤X미경'
+        assert search.evaluate('(el)=>el.selectionStart')==2
+        assert search.evaluate('(el)=>el.dataset.stableSearch')=='1'
+        page.keyboard.press('Backspace')
+        assert search.input_value()=='윤미경'
+        # Korean IME composition should not replace the input mid-composition.
+        search.evaluate('el=>el.dispatchEvent(new CompositionEvent("compositionstart",{bubbles:true}))')
+        search.evaluate('el=>{el.value="이";el.dispatchEvent(new InputEvent("input",{bubbles:true,isComposing:true,data:"이"}))}')
+        assert search.evaluate('(el)=>el.dataset.stableSearch')=='1'
+        search.evaluate('el=>{el.value="이정희";el.dispatchEvent(new CompositionEvent("compositionend",{bubbles:true,data:"이정희"}))}')
+        assert '이정희' in page.locator('tbody').inner_text()
+        search.fill('윤미경')
+        assert '윤미경' in page.locator('tbody').inner_text()
         page.wait_for_timeout(240)
         page.evaluate('window.scrollTo(0,0)')
         if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
@@ -66,6 +83,15 @@ with sync_playwright() as p:
         page.evaluate('window.scrollTo(0,0)')
         if width<=700: assert not page.locator('#sidebar').evaluate("el => el.classList.contains('open')")
         page.screenshot(path=str(OUT/f'05-review-{label}.png'),full_page=False)
+        # Primary demo CTA must be legible before hover, not white-on-white.
+        if width<=700: page.locator('[data-action="menu-open"]').click()
+        page.locator('.nav-item[data-view="guide"]').first.click()
+        demo=page.locator('a.btn-primary[data-open="SYN-002"]')
+        initial=demo.evaluate('el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color})')
+        assert initial=={'background':'rgb(43, 104, 221)','color':'rgb(255, 255, 255)'},initial
+        demo.hover()
+        hovered=demo.evaluate('el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color})')
+        assert hovered['background']!='rgb(255, 255, 255)' and hovered['color']=='rgb(255, 255, 255)',hovered
         dims=page.evaluate('({vw:innerWidth,scrollWidth:document.documentElement.scrollWidth})')
         assert dims['scrollWidth']<=dims['vw']+1, f'horizontal overflow {dims}'
         assert not errors, f'{label} JS errors: {errors}'
