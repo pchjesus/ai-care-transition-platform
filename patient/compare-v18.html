@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>이정희님 — 기존과 새 환자 UX 비교</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;color:#19374c;background:#f3f6fa}
+*{box-sizing:border-box}body{margin:0}button,a{font:inherit}button:focus-visible,a:focus-visible{outline:3px solid #b67d37;outline-offset:3px}
+header{background:#fff;border-bottom:1px solid #dbe5ee;padding:19px max(16px,calc((100vw - 1280px)/2));}
+.head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:clamp(20px,3vw,26px);letter-spacing:-.04em;margin:0}
+header p{margin:6px 0 0;color:#586e83;line-height:1.65;font-size:14px}
+.back{color:#315d86;text-decoration:none;font-weight:750}
+main{max-width:1280px;margin:0 auto;padding:18px 16px 34px}
+.notice{background:#e9f2fa;border:1px solid #d1e2f1;border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.7;color:#2f5578}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:17px 0}
+.controls strong{font-size:14px}
+.tabs{display:flex;gap:5px;padding:4px;border:1px solid #dce5ee;border-radius:12px;background:#eaf1f8}
+.tabs button{border:0;min-height:44px;padding:11px 16px;border-radius:9px;background:transparent;color:#46647f;font-size:14px;font-weight:750;cursor:pointer}
+.tabs button[aria-pressed=true]{background:#fff;box-shadow:0 2px 8px #17384b20;color:#214e76}
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.panel{min-width:0;background:#fff;border:1px solid #dce5ee;border-radius:16px;padding:12px}
+.panel header{border:0;padding:4px 5px 12px;display:flex;align-items:center;justify-content:space-between;gap:7px}
+.panel strong{font-size:15px}.tag{padding:5px 8px;background:#e9f2fb;color:#285c86;border-radius:40px;font-size:11px;font-weight:800}
+.panel:first-child .tag{background:#edf1ec;color:#4d6e55}
+iframe{width:100%;height:680px;border:1px solid #dce5ec;border-radius:12px;background:#fff}
+.foot{font-size:12px;color:#667d8e;line-height:1.65;margin:14px 0}
+@media(max-width:760px){.comparison{display:block}.panel{max-width:480px;margin:auto;padding:9px}.panel[hidden]{display:none}iframe{height:76dvh;min-height:560px}.tabs{width:100%}.tabs button{flex:1;padding-inline:8px}.controls{align-items:stretch}header{padding:18px 16px}.notice{font-size:12px}}
+@media(min-width:761px){.tabs{display:none}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><h1>이정희님 가상 사례 · 화면 비교</h1><p>기존 화면과 새 디자인을 <b>같은 환자·안내 내용</b>으로 비교해 볼 수 있어요.</p></div><a class="back" href="../prototypes/integrated-v10/v18-home-preview.html">색상 변경 통합 홈 시안 보기</a></div></header>
+<main>
+<div class="notice"><b>체험코드 CARE2026</b> · 각각의 앱에서 입력해 주세요. 이정희님은 실제 환자가 아닌 합성 사례이며, 이 화면은 A3 발행본과 연결되지 않습니다. 기존 화면과 새 화면의 자료는 같지만 시각 구성·조작은 다릅니다.</div>
+<div class="controls"><strong>PC는 나란히 비교 · 모바일은 화면 전환</strong><div class="tabs" role="group" aria-label="비교할 디자인"><button data-design="original" aria-pressed="false">기존 화면</button><button data-design="candidate" aria-pressed="true">새 디자인</button></div></div>
+<div class="comparison">
+<section class="panel" data-panel="original"><header><strong>기존 이정희님 예시</strong><span class="tag">원본</span></header><iframe title="기존 이정희님 환자 앱" src="./index.html" loading="eager"></iframe></section>
+<section class="panel" data-panel="candidate"><header><strong>새로운 UX v1.8</strong><span class="tag">오션 블루 · 살구</span></header><iframe title="새로운 이정희님 환자 앱" src="./v18.html" loading="eager"></iframe></section>
+</div>
+<p class="foot">모바일에서 디자인을 바꿔도 각 화면의 상태는 유지됩니다. 인쇄·PDF·이해 확인·프로필 수정·모의 발행·철회 등은 각각의 원래 합성 데모 규칙으로 작동합니다.</p>
+</main>
+<script>
+(function(){
+ const buttons=[...document.querySelectorAll('[data-design]')];
+ const panels=[...document.querySelectorAll('[data-panel]')];
+ const change=(choice)=>{buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.design===choice)));panels.forEach(p=>p.hidden=p.dataset.panel!==choice&&matchMedia('(max-width:760px)').matches)};
+ buttons.forEach(b=>b.addEventListener('click',()=>change(b.dataset.design)));
+ const mq=matchMedia('(max-width:760px)');
+ const sync=()=>change(buttons.find(b=>b.getAttribute('aria-pressed')==='true')?.dataset.design||'candidate');
+ mq.addEventListener('change',sync);sync();
+})();
+</script>
+</body></html>
