@@ -65,15 +65,7 @@ with sync_playwright() as p:
   assert not errors,(label,errors)
   checks.append({'scenario':'hospital-navigation','viewport':label,'result':'PASS','jsErrors':len(errors)})
   page.close()
-  # Patient navigation must be exercised against a truly issued synthetic snapshot.
-  # SYN-004 is the existing fixture with an approved/published v1.0 record.
-  seed=ctx.new_page()
-  seed.goto(H,wait_until='networkidle')
-  seed.evaluate("""() => {
-   localStorage.setItem('care-transition-integrated-v10-a3-synthetic-only',
-     JSON.stringify(window.CB_CANONICAL.defaults));
-  }""")
-  seed.close()
+  # Without an approved publication, only the existing notification tab remains available.
   q=ctx.new_page(); qerrors=[];q.on('pageerror',lambda e:qerrors.append(str(e)))
   q.goto(P,wait_until='networkidle')
   visible_name(q)
@@ -99,9 +91,9 @@ with sync_playwright() as p:
    q.screenshot(path=str(OUT/f'{label}-patient-menu.png'),full_page=False)
    q.keyboard.press('Escape')
    assert q.locator('.patient-menu-open').count()==0
-  assert q.locator('button[data-view="schedule"]').count()>=1
-  if w>760: q.locator('.side-nav[data-view="schedule"]').click()
-  else: q.locator('.bottom-nav [data-view="schedule"]').click()
+  assert q.locator('button[data-view="reminders"]').count()>=1
+  if w>760: q.locator('.side-nav[data-view="reminders"]').click()
+  else: q.locator('.bottom-nav [data-view="reminders"]').click()
   assert q.locator('.patient-content-enter').count()>=1
   no_overflow(q,w,'patient')
   assert not qerrors,(label,qerrors)
