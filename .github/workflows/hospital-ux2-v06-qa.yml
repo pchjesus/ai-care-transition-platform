@@ -44,6 +44,7 @@ jobs:
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux6-server.log 2>&1 &
           sleep 2
           python prototypes/hospital-ux2-v06/tests/browser_smoke.py
+          python prototypes/hospital-ux2-v06/tests/standalone_smoke.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
