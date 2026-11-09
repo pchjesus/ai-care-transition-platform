@@ -1,0 +1,57 @@
+
+/* UX 2.0 v0.6 — intentionally scoped; retain all approved v0.5 shell/rail styling. */
+.ux6-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;margin:0 0 21px;padding:17px 21px;background:#fff;border:1px solid var(--line);border-radius:13px}
+.ux6-toolbar strong{font-size:14px}.ux6-toolbar p{margin:3px 0 0}
+.ux6-role-label,.ux6-visibility label,.ux6-issue label,.ux6-doc label,.ux6-fields label,.ux6-selectgrow{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#52627c}
+.ux6-role-label select,.ux6-form select,.ux6-form input,.ux6-issue select,.ux6-issue textarea,.ux6-doc select,.ux6-fields input{min-height:38px;border:1px solid #d4deea;border-radius:8px;background:#fff;padding:8px 11px;color:var(--ink);max-width:100%}
+.ux6-state{color:#2b5fb2;font-size:12px;font-weight:740;background:#edf3ff;padding:8px 11px;border-radius:8px}
+.ux6-alert{font-size:12px;color:#855c13;background:#fff8e8;border:1px solid #f3e2bb;border-radius:9px;padding:10px 13px;margin:12px 0}
+.ux6-main-tabs{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.ux6-main-tabs button{border:1px solid #dee6f1;border-radius:9px;background:#fff;color:#64748a;padding:11px 16px;min-height:43px;font-size:13px;font-weight:750}
+.ux6-main-tabs button.active{color:#245fc4;background:#edf3ff;border-color:#cbdcf9}
+.ux6-main-tabs .small-muted{margin-left:auto}
+.ux6-section-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 22px}
+.ux6-section-tab{font-size:12px;min-height:37px;border-radius:9px;border:1px solid #dfe7f1;background:#fff;color:#556580;padding:7px 12px;font-weight:650}
+.ux6-section-tab.active{background:#edf3ff;border-color:#bfd3fb;color:#2359bd}
+.ux6-editor{min-width:0}.ux6-form{display:flex;flex-direction:column;gap:17px}
+.ux6-form>label,.ux6-appointment legend{font-weight:740;font-size:13px}
+.ux6-form textarea,.ux6-issue textarea{width:100%;border:1px solid #d4deea;border-radius:9px;padding:14px;resize:vertical;color:var(--ink);background:#fff;font-size:14px;line-height:1.65}
+.ux6-edit-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:5px}
+.ux6-edit-head h3{font-size:15px;font-weight:770;margin:0;line-height:1.5}
+.ux6-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.ux6-actions small{font-size:11px;color:var(--muted)}
+.ux6-appointment,.ux6-source-section,.ux6-verify-row,.ux6-visibility{border:1px solid var(--line);border-radius:11px;padding:16px;background:#fafcff;min-width:0}
+.ux6-appointment legend{padding:0 6px}.ux6-appointment p{color:var(--muted);font-size:12px;margin:2px 0 15px}
+.ux6-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:13px 0}
+.ux6-fields input,.ux6-fields select,.ux6-form select,.ux6-issue select,.ux6-doc select{width:100%}
+.ux6-source-section h3{font-size:13px;margin:0 0 10px}
+.ux6-selectgrow{flex:1;min-width:165px}
+.ux6-linked{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px}
+.ux6-source-detail{padding:7px 0;border-bottom:1px dashed #d8e0ec;font-size:12px}
+.ux6-source-detail summary{cursor:pointer;color:#365d97;font-weight:650}.ux6-source-detail p{margin:6px 0}.ux6-source-detail small{color:var(--muted);overflow-wrap:anywhere}
+.ux6-verify-row{display:flex;flex-direction:column;gap:5px}.ux6-verify-row label{font-size:13px;font-weight:730;display:flex;align-items:center;gap:9px}
+.ux6-preview .phone-preview{max-width:360px;margin:22px auto}.ux6-preview .preview-content p{white-space:pre-wrap;overflow-wrap:anywhere}
+.ux6-original-link{margin-top:23px;display:flex;flex-wrap:wrap;align-items:center;gap:15px}
+.ux6-card{padding:24px;min-width:0}.ux6-card>.section-caption{margin-bottom:20px}
+.ux6-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0 23px}
+.ux6-result{padding:12px;border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.ux6-result strong{font-size:12px}.ux6-result span{color:#315f9d;font-size:12px}.ux6-result small{color:var(--muted)}
+.ux6-issue{border-top:1px solid var(--line);padding:22px 0;display:flex;flex-direction:column;gap:13px}
+.ux6-issue>p{margin:0;color:var(--muted);font-size:12px}
+.ux6-issue textarea{padding:10px;min-height:75px;margin-top:3px}
+.ux6-empty{border:1px dashed #dbe5ef;border-radius:9px;padding:16px;font-size:13px;color:var(--muted)}
+.ux6-file{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:16px;background:#f7faff;border:1px dashed #c9d9f0;border-radius:10px;font-weight:760;font-size:13px;margin:18px 0}
+.ux6-file input{max-width:100%}
+.ux6-doc{border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:12px;min-width:0}
+.ux6-doc .small-muted{overflow-wrap:anywhere}.ux6-doc .ux6-actions{margin-top:12px}
+.ux6-review-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:18px}
+.ux6-review-grid .ux6-card{display:flex;flex-direction:column;gap:13px}
+.ux6-review-grid .ux6-card p{font-size:13px;margin:0}
+.ux6-blockers{padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.ux6-blockers li{display:flex;flex-wrap:wrap;gap:9px;border-bottom:1px solid var(--line);padding:7px 0;font-size:12px}
+.ux6-blockers strong{color:#92610d;min-width:50px}.ux6-blockers span{flex:1}
+.ux6-history{max-height:330px;overflow:auto;padding-left:23px}
+.ux6-history li{margin:8px 0;font-size:12px}.ux6-history small{display:block;color:var(--muted)}
+@media(max-width:1050px){.ux6-review-grid{grid-template-columns:minmax(0,1fr)}.ux6-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.ux6-toolbar{align-items:stretch}.ux6-role-label{width:100%}.ux6-main-tabs{gap:5px}.ux6-main-tabs button{flex:1;padding:10px;font-size:11px}.ux6-main-tabs .small-muted{width:100%;margin-left:0}.ux6-card{padding:16px}.ux6-fields{grid-template-columns:minmax(0,1fr)}.ux6-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ux6-review-grid{grid-template-columns:minmax(0,1fr)}.ux6-appointment,.ux6-source-section,.ux6-verify-row,.ux6-visibility{padding:12px}}
+@media(max-width:350px){.ux6-result-grid{grid-template-columns:minmax(0,1fr)}.ux6-main-tabs button{padding:8px 5px}}
+@media(prefers-reduced-motion:reduce){.ux6-main-tabs button,.ux6-section-tab{transition:none}}
