@@ -49,6 +49,13 @@ jobs:
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux7-server.log 2>&1 &
           sleep 2
           python prototypes/hospital-ux2-v07/tests/integration_v07.py
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('prototypes/hospital-ux2-v06/tests/browser_smoke.py')
+          text=path.read_text().replace('hospital-ux2-v06/index.html','hospital-ux2-v07/index.html')
+          Path('/tmp/ux7-v06-safety-regression.py').write_text(text)
+          PY
+          python /tmp/ux7-v06-safety-regression.py
       - name: Preserve HTML and screenshots
         if: always()
         uses: actions/upload-artifact@v4
