@@ -1,0 +1,46 @@
+name: Hospital UX2 v0.1 preview QA
+on:
+  push:
+    branches: [feat/hospital-ux2-prototype-v01]
+    paths:
+      - 'prototypes/hospital-ux2-v01/**'
+      - '.github/workflows/hospital-ux2-preview-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check syntax and pure rendering logic
+        run: |
+          node --check prototypes/hospital-ux2-v01/app.js
+          node prototypes/hospital-ux2-v01/tests/smoke.cjs
+      - name: Install browser QA tools and Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          if [ ! -x /usr/bin/chromium ] && [ ! -x /usr/bin/google-chrome ]; then python -m playwright install --with-deps chromium; fi
+      - name: Run desktop and mobile browser interactions
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/hospital-ux2-http.log 2>&1 &
+          sleep 2
+          python prototypes/hospital-ux2-v01/tests/browser_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hospital-ux2-v01-screenshots
+          path: /tmp/carebridge-ux2-qa
+          if-no-files-found: warn
+      - name: Upload standalone HTML preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: hospital-ux2-offline-html
+          path: prototypes/hospital-ux2-v01/preview-standalone.html
+          if-no-files-found: error

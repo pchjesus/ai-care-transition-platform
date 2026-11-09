@@ -1,0 +1,69 @@
+name: CareBridgeLab UX2 v0.5 hospital + patient QA
+on:
+  push:
+    branches: [feat/hospital-ux2-v05]
+    paths:
+      - 'prototypes/hospital-ux2-v05/**'
+      - 'prototypes/integrated-v10/patient/**'
+      - 'prototypes/integrated-v10/tests/patient_http.py'
+      - 'prototypes/integrated-v10/tests/comfort_http.py'
+      - '.github/workflows/hospital-ux2-v05-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ui-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate inline script and patient JS
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          h=Path('prototypes/hospital-ux2-v05/index.html').read_text()
+          scripts=re.findall(r'<script>(.*?)</script>',h,re.S)
+          assert len(scripts)>=2, 'hospital main+v05'
+          for n,s in enumerate(scripts): Path(f'/tmp/ux2-v05-{n}.js').write_text(s)
+          assert h.count('localStorage.setItem')>=1  # preferences only in app shell; original patient source retains contracts
+          PY
+          for f in /tmp/ux2-v05-*.js prototypes/integrated-v10/patient/patient-v15.js prototypes/integrated-v10/patient/app.js; do node --check "$f"; done
+      - name: Install Chromium QA
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          if [ ! -x /usr/bin/chromium ]; then python -m playwright install --with-deps chromium; fi
+      - name: Run hospital and patient browser checks
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux2-v05-server.log 2>&1 &
+          sleep 2
+          python prototypes/hospital-ux2-v05/tests/browser_smoke.py
+      - name: Verify existing A3-to-patient and reminder safety regressions
+        run: |
+          python prototypes/integrated-v10/tests/patient_http.py
+          python prototypes/integrated-v10/tests/comfort_http.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-v05-screenshots
+          path: /tmp/ux2-v05-qa
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-v05-hospital-html
+          path: prototypes/hospital-ux2-v05/index.html
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-v05-local-debug
+          path: |
+            prototypes/hospital-ux2-v05/
+            prototypes/integrated-v10/
+          if-no-files-found: error

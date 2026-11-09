@@ -42,7 +42,16 @@
 
 계획 수정 후에는 담당 의사/지정 최종 승인자로 안내를 재확인 → 검토 요청 → 최종 승인자 승인 → 계획 발행 순으로 시연한다. 이미 발행한 계획은 `새 버전 개정`을 눌러 수정해야 하며, 기존 승인본을 덮어쓰지 않는다. 이 일정은 실제 병원 예약이나 환자정보가 아닌 합성 시연이다.
 
-## 통합 합성 MVP 시연 (2026-10-22)
+## 최신 케어브릿지랩 UX 2.0 v0.7 통합 체험 (2026-11-09)
+
+- [통합 홈](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/index.html) — 의료진 / 환자·보호자 진입 분리
+- [의료진 UX 2.0 v0.7](https://pchjesus.github.io/ai-care-transition-platform/prototypes/hospital-ux2-v07/index.html) — A1·A2 평가, A3 계획·근거·문서·검토 요청·승인·발행·개정·철회
+- [나의 퇴원안내 · 환자 앱 B](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO) — 발행된 동일 환자·입원건의 안내만 표시
+- [v0.7 실행 설명 및 검증 범위](prototypes/hospital-ux2-v07/README.md)
+
+실제 환자·의료기관 서비스가 아닌 합성 데이터 기반 체험이다. v0.7 통합 전까지 운영 URL은 기존 안정 버전을 가리킬 수 있다. 아래 이전 시연 링크는 레거시 참고용으로 보존한다.
+
+## 이전 통합 합성 MVP 시연 (2026-10-22 · LEGACY)
 
 - [GitHub Pages 통합 화면](https://pchjesus.github.io/ai-care-transition-platform/)
 - [A1 환자 목록](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/a3/index.html?screen=patients)

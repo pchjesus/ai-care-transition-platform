@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f9fc">
+<title>케어브릿지랩 · 의료진 UX 2.0 시안</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">본문으로 바로 가기</a>
+<div id="app" class="app-shell">
+  <aside class="sidebar" id="sidebar" aria-label="주 메뉴">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 28 28" fill="none"><path d="M6 7.5v13h5.5M22 7.5v13h-5.5M6 7.5h16M11 13.5h6M14 10.5v6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="brand-copy"><strong>케어브릿지랩</strong><small>의료진 워크스페이스</small></div>
+      <button type="button" class="icon-btn sidebar-close" data-action="menu-close" aria-label="메뉴 닫기">×</button>
+    </div>
+    <div class="sidebar-scroll">
+      <p class="nav-caption">전체 업무</p>
+      <nav class="side-nav" aria-label="전체 업무">
+        <a href="#/home" class="nav-item active" data-view="home" aria-current="page"><span class="nav-icon" data-icon="layout-dashboard"></span>업무 홈</a>
+        <a href="#/patients" class="nav-item" data-view="patients"><span class="nav-icon" data-icon="users"></span>환자 목록</a>
+        <a href="#/inbox" class="nav-item" data-view="inbox"><span class="nav-icon" data-icon="inbox"></span>검토 업무함 <span class="nav-counter" id="nav-inbox-count">3</span></a>
+      </nav>
+      <div class="nav-separator"></div>
+      <p class="nav-caption">환자별 업무 <span id="nav-patient-label" class="nav-patient-label">선택 전</span></p>
+      <nav class="side-nav" aria-label="환자별 업무">
+        <a href="#/overview" class="nav-item patient-route" data-view="overview"><span class="nav-icon" data-icon="user-round"></span>환자 개요</a>
+        <a href="#/assessment" class="nav-item patient-route" data-view="assessment"><span class="nav-icon" data-icon="clipboard-list"></span>돌봄 필요도 평가</a>
+        <a href="#/plan" class="nav-item patient-route" data-view="plan"><span class="nav-icon" data-icon="file-text"></span>퇴원계획 작성</a>
+        <a href="#/review" class="nav-item patient-route" data-view="review"><span class="nav-icon" data-icon="shield-check"></span>검토·승인·발행</a>
+      </nav>
+      <div class="nav-separator"></div>
+      <p class="nav-caption">도움말</p>
+      <nav class="side-nav"><a href="#/guide" class="nav-item" data-view="guide"><span class="nav-icon" data-icon="circle-help"></span>사용법·체험 안내</a></nav>
+    </div>
+    <div class="sidebar-footer"><span class="demo-dot"></span><div><strong>독립 UX 프로토타입</strong><small>실제 평가·승인 처리와 분리됨</small></div></div>
+  </aside>
+  <div class="mobile-scrim" id="scrim" hidden></div>
+  <div class="main-column">
+    <header class="topbar">
+      <div class="topbar-leading"><button type="button" class="icon-btn mobile-menu" data-action="menu-open" aria-label="메뉴 열기"><span data-icon="menu"></span></button><div class="workspace-name">퇴원 전환관리 <span class="topbar-divider">/</span> <span id="crumb-current">업무 홈</span></div></div>
+      <div class="topbar-actions"><span class="prototype-pill">UX 2.0 · 설계 시안</span><a href="#/guide" type="button" class="topbar-help" data-view="guide"><span data-icon="circle-help"></span><span>어떻게 사용하나요?</span></a></div>
+    </header>
+    <main id="main-content" tabindex="-1" class="main-content" aria-live="off"></main>
+  </div>
+  <div class="toast-stack" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="info-dialog" class="dialog"><form method="dialog" class="dialog-card"><div class="dialog-top"><span class="dialog-kicker" id="dialog-kicker">안내</span><button class="icon-btn" aria-label="닫기" value="cancel">×</button></div><h2 id="dialog-title"></h2><div class="dialog-body" id="dialog-body"></div><div class="dialog-actions"><button class="btn btn-primary" value="ok">확인했어요</button></div></form></dialog>
+</div>
+<script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+name: Hospital UX 2.0 v0.3 browser QA
+on:
+  push:
+    branches: [feat/hospital-ux2-v03]
+    paths:
+      - 'prototypes/hospital-ux2-v03/**'
+      - '.github/workflows/hospital-ux2-v03-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate standalone script and source mapping
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('prototypes/hospital-ux2-v03/index.html')
+          s=p.read_text(encoding='utf8')
+          scripts=re.findall(r'<script>(.*?)</script>',s,re.S)
+          assert len(scripts)==1
+          assert 'CANONICAL.evaluateAll' in s and 'localStorage.setItem' not in s
+          Path('/tmp/ux2-v03.js').write_text(scripts[0])
+          print('Standalone script extracted; length:',len(scripts[0]))
+          PY
+          node --check /tmp/ux2-v03.js
+      - name: Install browser QA dependencies
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          if [ ! -x /usr/bin/chromium ] && [ ! -x /usr/bin/google-chrome ]; then python -m playwright install --with-deps chromium; fi
+      - name: Test browser workflow
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux2-v03-http.log 2>&1 &
+          sleep 2
+          python prototypes/hospital-ux2-v03/tests/browser_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-ux2-v03-browser-captures
+          path: /tmp/carebridge-ux2-v03-qa
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-ux2-v03-offline-html
+          path: prototypes/hospital-ux2-v03/index.html
+          if-no-files-found: error
