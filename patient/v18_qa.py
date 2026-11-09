@@ -72,6 +72,10 @@ with sync_playwright() as pw:
             assert not d.is_visible()
             check_focus(new,'.v18-settings-trigger')
             new.reload(wait_until='networkidle')
+            # The original standalone demo intentionally does not persist authentication across reloads.
+            assert new.locator('#demo-login').count()==1
+            new.locator('#demo-code').fill('CARE2026')
+            new.locator('#demo-login button[type=submit]').click()
             new.locator('.v18-home').wait_for()
             assert new.locator('body.large-font.v18-less-motion').count()==1
             ok(True,'reader-segments-reduced-motion-persist-focus')
