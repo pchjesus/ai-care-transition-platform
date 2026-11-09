@@ -51,6 +51,7 @@ with sync_playwright() as pw:
             assert new.locator('.bottom-nav button').count()==5
             assert new.locator('.bottom-nav [data-nav=profile]').is_visible()
             assert new.locator('.v18-settings-trigger').is_visible()
+            assert not new.locator('.patient-mobile-toolbar').is_visible(), 'No duplicate history bar above first action'
             task_y=new.locator('.v18-today-card').evaluate('(e)=>e.getBoundingClientRect().top')
             visit_y=new.locator('.v18-visit-card').evaluate('(e)=>e.getBoundingClientRect().top')
             assert task_y<visit_y,('tasks come first',task_y,visit_y)
@@ -85,6 +86,7 @@ with sync_playwright() as pw:
             d.locator('[data-v18=close]').last.click()
             new.locator('.v18-task[data-detail=mobility]').click()
             assert new.locator('.detail-wrap').is_visible()
+            assert new.locator('.patient-mobile-toolbar').is_visible(), 'Original history controls remain available on detail pages'
             new.screenshot(path=str(OUT/'new-detail-mobile.png'))
             new.locator('.detail-wrap [data-action=quiz-start]').click()
             assert new.locator('.quiz-container').is_visible()
