@@ -47,8 +47,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: carebridge-hospital-ux2-v06-preview-and-qa
+          name: carebridge-ux2-v06-runnable-html
           path: |
             prototypes/hospital-ux2-v06/
-            /tmp/carebridge-ux6-qa/
+            prototypes/integrated-v10/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: carebridge-ux2-v06-browser-qa
+          path: /tmp/carebridge-ux6-qa/
           if-no-files-found: warn
