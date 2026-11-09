@@ -65,7 +65,7 @@ with sync_playwright() as p:
         page=ctx.new_page()
         errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(HOME,wait_until='networkidle')
-        assert '퇴원에서 일상까지' in page.locator('h1').inner_text()
+        assert '퇴원 준비부터' in page.locator('h1').inner_text()
         assert page.locator('.path-card').count()==2
         assert 'hospital-ux2-v07' in page.locator('.path-card').first.get_attribute('href')
         no_horizontal(page,width)
