@@ -117,22 +117,22 @@ with sync_playwright() as playwright:
     p.locator('.patient-route[data-view="plan"]').click()
     p.locator('[data-v6-tab="issues"]').click()
     box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
-    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
+    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-02')
     box.locator('[data-v6-resolution]').fill('합성 약물 대조 원본을 확인하여 기록을 보완하였습니다.')
     # Denied attempt from nurse
     p.locator('[data-v6-role]').select_option('NURSE')
     box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
-    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
+    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-02')
     box.locator('[data-v6-resolution]').fill('합성 약물 대조 원본을 확인하여 기록을 보완하였습니다.')
     box.locator('[data-v6-action="resolve"]').click()
     assert next(x for x in getrecord(p,'SYN-001')['draft']['issues'] if x['id']=='ISS-plan-med-original')['status']=='OPEN'
     p.locator('[data-v6-role]').select_option('PHARMACIST')
     box=p.locator('[data-v6-issue="ISS-plan-med-original"]')
-    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-01')
+    box.locator('[data-v6-issue-source]').select_option('SRC-SYN001-MED-02')
     box.locator('[data-v6-resolution]').fill('합성 약물 대조 원본을 확인하여 기록을 보완하였습니다.')
     box.locator('[data-v6-action="resolve"]').click()
     issue=next(x for x in getrecord(p,'SYN-001')['draft']['issues'] if x['id']=='ISS-plan-med-original')
-    assert issue['status']=='RESOLVED' and issue['source']=='SRC-SYN001-MED-01'
+    assert issue['status']=='RESOLVED' and issue['source']=='SRC-SYN001-MED-02'
     check(True,'role-guarded-issue-resolution')
 
     # Published record is immutable. Existing publication status and snapshots remain.
