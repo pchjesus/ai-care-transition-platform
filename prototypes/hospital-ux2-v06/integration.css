@@ -55,3 +55,10 @@
 @media(max-width:700px){.ux6-toolbar{align-items:stretch}.ux6-role-label{width:100%}.ux6-main-tabs{gap:5px}.ux6-main-tabs button{flex:1;padding:10px;font-size:11px}.ux6-main-tabs .small-muted{width:100%;margin-left:0}.ux6-card{padding:16px}.ux6-fields{grid-template-columns:minmax(0,1fr)}.ux6-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ux6-review-grid{grid-template-columns:minmax(0,1fr)}.ux6-appointment,.ux6-source-section,.ux6-verify-row,.ux6-visibility{padding:12px}}
 @media(max-width:350px){.ux6-result-grid{grid-template-columns:minmax(0,1fr)}.ux6-main-tabs button{padding:8px 5px}}
 @media(prefers-reduced-motion:reduce){.ux6-main-tabs button,.ux6-section-tab{transition:none}}
+
+/* The 768px workspace keeps the approved desktop rail: tighten the top bar to avoid horizontal scroll. */
+@media(min-width:701px) and (max-width:850px){
+  .topbar{padding-inline:13px}
+  .topbar-actions{gap:8px}
+  .workspace-name{font-size:12px}
+}
