@@ -24,4 +24,19 @@ with sync_playwright() as p:
   assert not errors, (width,errors)
   print('STANDALONE_HTTP_PASS',width)
   ctx.close()
+ # Direct file:// opening must be an honest, separate capability check.
+  local=ctx.new_page()
+  local_errors=[]
+  local.on('pageerror',lambda e:local_errors.append(str(e)))
+  local.goto(__import__('pathlib').Path('prototypes/hospital-ux2-v06/standalone.html').resolve().as_uri(),wait_until='networkidle')
+  local.locator('h1').wait_for()
+  if width<=700:local.locator('[data-action="menu-open"]').click()
+  local.locator('.nav-item[data-view="patients"]').click()
+  local.locator('[data-open="SYN-002"]').first.click()
+  if width<=700:local.locator('[data-action="menu-open"]').click()
+  local.locator('.patient-route[data-view="plan"]').click()
+  local.locator('[data-v6-action="save-text"]').wait_for(timeout=5000)
+  assert local.locator('[data-v6-action="save-text"]').is_enabled(),local_errors
+  print('STANDALONE_FILE_PASS',width)
+  local.close()
  browser.close()
