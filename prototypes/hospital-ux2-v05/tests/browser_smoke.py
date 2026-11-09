@@ -7,7 +7,16 @@ P=ROOT+'/integrated-v10/patient/index.html?patient=SYN-004&encounter=ENC-SYN-004
 OUT=Path('/tmp/ux2-v05-qa');OUT.mkdir(parents=True,exist_ok=True)
 checks=[]
 def no_overflow(page,w,label):
- dims=page.evaluate('({vw:innerWidth,sw:document.documentElement.scrollWidth})')
+ dims=page.evaluate('''() => ({
+  vw:innerWidth,sw:document.documentElement.scrollWidth,
+  rightOverflow:[...document.querySelectorAll('body *')].filter(e=>{
+    const r=e.getBoundingClientRect();return r.right>innerWidth+1&&r.width>0
+  }).slice(0,15).map(e=>({
+    tag:e.tagName,cls:String(e.className||'').slice(0,100),
+    right:Math.round(e.getBoundingClientRect().right),
+    width:Math.round(e.getBoundingClientRect().width)
+  }))
+ })''')
  assert dims['sw']<=w+1, (label,dims)
 def visible_name(page):
  assert '나의 퇴원안내' in page.locator('body').inner_text()
