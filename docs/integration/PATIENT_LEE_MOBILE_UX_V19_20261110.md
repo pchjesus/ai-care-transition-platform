@@ -46,7 +46,7 @@
 
 ## 실제 실행 결과 (2026-11-10)
 
-- **PASS:** [GitHub Actions #42721980553](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42721980553), Chromium 15/15 시나리오, 0 FAIL.
+- **PASS:** [GitHub Actions #42722554151](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42722554151), Chromium 15/15 시나리오, 0 FAIL.
 - PASS 범위: 원본·후보 동일 이정희 fixture(안내 3개, 2026-10-27 가상 일정), PC/태블릿/390/320px, 큰 글씨·움직임 줄이기 저장/복원, 포커스 복귀, 5개 탭, 선택형 이해 확인, PDF 열기·닫기, 도움·알림·내 정보, 지도 주소 누락 시 외부 링크 차단, 택시/이동지원 선택 및 3단계 준비/미전송 상태.
 - 후보 CSS·JS 문법 검사 및 원본 `patient/index.html` 비변경 검사는 PASS. 기존 A3→B 발행·개정·철회 전체 회귀는 **NOT RUN**(데이터/코드를 변경하지 않은 별도 시안).
 - 대표 캡처: Actions의 `patient-Lee-v19-full-UX-screenshots` 아티팩트.
@@ -54,3 +54,5 @@
 
 - 최종 UI QA에서 긴 택시 미리보기의 제목이 스크롤 위로 가려지는 문제를 발견하여 **고정 헤더 제목 표시를 보완**했다. 브라우저 검사에 3단계 제목의 실제 화면 위치를 추가했고 최신 런에서 PASS.
 - 기존 독립 합성 앱의 원본 상태와 실제 A3 연동형 환자 B는 여전히 그대로 두었다.
+
+- 잔여 색상 검수 후 사용자 안내 투어의 초점 강조·창·버튼에도 v1.9 블루 팔레트를 적용했다. 최종 실행 커밋 `bddb52d3`의 [QA run #42722554151](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42722554151)은 **PASS 15/15**.
