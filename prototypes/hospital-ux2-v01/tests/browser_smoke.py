@@ -29,6 +29,7 @@ with sync_playwright() as p:
         assert page.locator('.patient-banner').inner_text().find('윤미경')>=0
         assert page.locator('.patient-route[aria-disabled="true"]').count()==0
         page.locator('[data-view="assessment"]').last.click()
+        page.locator('.domain-btn').first.wait_for(timeout=5000)
         assert page.locator('.domain-btn').count()==6
         assert page.locator('select[data-assessment-key]').count()==5
         page.locator('#field-followup').select_option(label='확정됨')
