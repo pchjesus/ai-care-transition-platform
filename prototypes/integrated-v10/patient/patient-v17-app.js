@@ -147,6 +147,12 @@ function v17Home(pub,displayName){
    <p>어렵게 찾지 않아도 되도록 필요한 내용을 모았어요.</p>
    ${badge(pub)}
   </header>
+  <section class="v17-tasks-card" aria-labelledby="v17-task-heading">
+   <div class="v17-card-top"><div><span class="v17-eyebrow">01 · 안내 확인</span><h2 id="v17-task-heading">먼저 읽을 안내</h2></div><span class="v17-count">${highlights.length}개</span></div>
+   <p class="v17-muted">아래 항목을 누르면 자세한 내용을 볼 수 있어요.</p>
+   <div class="tasks v17-task-list">${highlights.map((x,i)=>itemCard(x,i,pub.publicationId)).join('')}</div>
+   <button type="button" class="v17-primary-cta" data-view="overview">의료진이 발행한 안내 전체 보기 ${icon('chev',21)}</button>
+  </section>
   <section class="v17-first-steps" aria-labelledby="v17-steps-title">
    <div class="v17-section-heading"><span class="v17-eyebrow">이용 순서</span><h2 id="v17-steps-title">이렇게 사용하면 쉬워요</h2></div>
    <div class="v17-steps-list">
@@ -155,12 +161,6 @@ function v17Home(pub,displayName){
     <span><b>3</b> 필요하면 도움</span>
    </div>
    <button type="button" class="v17-tour-cta" data-comfort="tour">${icon('info',18)} 앱 사용법을 화면에서 안내받기 ${icon('chev',18)}</button>
-  </section>
-  <section class="v17-tasks-card" aria-labelledby="v17-task-heading">
-   <div class="v17-card-top"><div><span class="v17-eyebrow">01 · 안내 확인</span><h2 id="v17-task-heading">먼저 읽을 안내</h2></div><span class="v17-count">${highlights.length}개</span></div>
-   <p class="v17-muted">아래 항목을 누르면 자세한 내용을 볼 수 있어요.</p>
-   <div class="tasks v17-task-list">${highlights.map((x,i)=>itemCard(x,i,pub.publicationId)).join('')}</div>
-   <button type="button" class="v17-primary-cta" data-view="overview">의료진이 발행한 안내 전체 보기 ${icon('chev',21)}</button>
   </section>
   <section class="v17-schedule-card" aria-labelledby="v17-schedule-heading">
     <div class="v17-schedule-icon" aria-hidden="true">${icon('calendar',24)}</div>
