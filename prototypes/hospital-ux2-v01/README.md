@@ -36,6 +36,6 @@ No dependencies, API keys, or network access are needed.
 
 This v0.1 is a **visual/flow candidate**. It uses synthetic sample patients. All inputs are transient, with no backend, no storage, and no patient B integration. The 6×5 labels are illustrative and do not replace the authoritative A2 source.
 
-Node syntax and lightweight screen-generation assertions were checked on the prototype before commit. Browser/visual and device checks are **NOT VERIFIED** because the available container Chromium blocks navigation. Do not mistake this for a clinical, integrated, or approved release.
+Node syntax and lightweight screen-generation assertions passed. GitHub Actions browser QA also **PASS**ed at **1440×900, 768×1024, 390×844 and 320×760 CSS px**: home → patient search/selection → domain entry → plan-text preview → review information dialog, with no JavaScript page errors or horizontal page overflow in the tested flow. Screenshots and `QA_RESULT.json` are retained in the `hospital-ux2-v01-screenshots` workflow artifact. **Actual user study, physical devices, Safari/Firefox, and integration with clinical workflows are NOT VERIFIED / NOT RUN.** Passing these prototype tests does not validate or approve a clinical release.
 
 Safe next step: gather visual/user feedback before wiring the existing assessment engine, source records, role review, approval, publication, revision, retraction, and patient publication contract. Existing `main` and `gh-pages` must remain unchanged pending separate approval.
