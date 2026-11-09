@@ -5,6 +5,8 @@ on:
     paths:
       - 'prototypes/hospital-ux2-v05/**'
       - 'prototypes/integrated-v10/patient/**'
+      - 'prototypes/integrated-v10/tests/patient_http.py'
+      - 'prototypes/integrated-v10/tests/comfort_http.py'
       - '.github/workflows/hospital-ux2-v05-qa.yml'
   workflow_dispatch:
 permissions:
