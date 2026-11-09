@@ -109,6 +109,7 @@ with sync_playwright() as p:
  assert '초안 작성 중' in page.locator('tbody').inner_text()
  page.locator('[data-open="SYN-002"]').first.click()
  page.locator('.patient-route[data-view="review"]').click()
+ page.locator('.review-state').wait_for(timeout=5000)
  info=page.locator('main').inner_text()
  assert '변경된 평가의 A3 인계가 필요합니다.' in info
  assert '발행 v1.0 · 환자 공개 중' in info
