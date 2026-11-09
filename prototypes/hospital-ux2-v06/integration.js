@@ -304,6 +304,13 @@
     const pill=document.querySelector('.prototype-pill');
     if(pill)pill.textContent='UX 2.0 v0.6 · 합성 데이터';
   };
+  // The original hash-based navigation renders asynchronously. Show authoring/review
+  // routes immediately so rapid patient switches never leave the previous screen visible.
+  const priorGoto=goto;
+  goto=function(view){
+    priorGoto(view);
+    if((view==='plan'||view==='review')&&state.view===view)render({focus:false,routeTransition:true});
+  };
   document.addEventListener('click',e=>{
     const tab=e.target.closest('[data-v6-tab]');
     if(tab){e.preventDefault();e.stopImmediatePropagation();ui.tab=tab.dataset.v6Tab;render({keepScroll:true});return;}
