@@ -83,7 +83,8 @@ with sync_playwright() as p:
   q.locator('.app-layout').wait_for(timeout=5000)
   visible_name(q)
   assert q.locator('.bottom-nav button').count()>=5
-  if w>760:
+  small=q.evaluate('document.getElementById("app-frame").clientWidth<=760')
+  if not small:
    toggle=q.locator('.patient-sidebar-toggle')
    toggle.click()
    assert q.locator('.patient-nav-collapsed').count()==1
@@ -101,7 +102,7 @@ with sync_playwright() as p:
    q.keyboard.press('Escape')
    assert q.locator('.patient-menu-open').count()==0
   assert q.locator('button[data-view="reminders"]').count()>=1
-  if w>760: q.locator('.side-nav[data-view="reminders"]').click()
+  if not small: q.locator('.side-nav[data-view="reminders"]').click()
   else: q.locator('.bottom-nav [data-view="reminders"]').click()
   snapshot=q.evaluate('''() => ({
     route:document.querySelector('.side-nav[aria-current="page"]')?.dataset.view,

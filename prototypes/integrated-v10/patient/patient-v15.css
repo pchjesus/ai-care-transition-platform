@@ -31,7 +31,9 @@
  .patient-sidebar-toggle{display:none}
  .patient-menu-launch{display:inline-flex;flex:none}
  .topline{justify-content:space-between;min-height:64px}
- .topline>.kicker{display:none}
+ .topline>.kicker{display:inline-flex!important;align-items:center;white-space:nowrap;font-size:calc(15px * var(--font-scale,1));font-weight:850;margin-right:auto;color:#225d3b}
+ .patient-menu-launch{min-width:75px}
+ @container display (max-width:430px){.topline>.kicker{font-size:calc(14px * var(--font-scale,1))}.topline{gap:8px}}
  .app-layout>.side .side-nav{min-height:54px}
  .app-layout>.side .side-brand{padding-top:3px}
 }
