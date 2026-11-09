@@ -65,6 +65,15 @@ with sync_playwright() as p:
   assert not errors,(label,errors)
   checks.append({'scenario':'hospital-navigation','viewport':label,'result':'PASS','jsErrors':len(errors)})
   page.close()
+  # Patient navigation must be exercised against a truly issued synthetic snapshot.
+  # SYN-004 is the existing fixture with an approved/published v1.0 record.
+  seed=ctx.new_page()
+  seed.goto(H,wait_until='networkidle')
+  seed.evaluate("""() => {
+   localStorage.setItem('care-transition-integrated-v10-a3-synthetic-only',
+     JSON.stringify(window.CB_CANONICAL.defaults));
+  }""")
+  seed.close()
   q=ctx.new_page(); qerrors=[];q.on('pageerror',lambda e:qerrors.append(str(e)))
   q.goto(P,wait_until='networkidle')
   visible_name(q)
