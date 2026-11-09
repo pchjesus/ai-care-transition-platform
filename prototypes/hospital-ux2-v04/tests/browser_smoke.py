@@ -61,6 +61,7 @@ with sync_playwright() as p:
   assert page.locator('[data-assessment-key="gait"]').input_value()=='independent'
   if w<=700:page.locator('[data-action="menu-open"]').click()
   page.locator('.patient-route[data-view="plan"]').click()
+  page.locator('.plan-editor-head').wait_for(timeout=5000)
   assert page.locator('.plan-editor-head .layout-toggle').count()==1
   assert page.locator('.assessment-toolbar').count()==0
   assert page.locator('[data-action="plan-split"]').get_attribute('aria-pressed')=='true'
