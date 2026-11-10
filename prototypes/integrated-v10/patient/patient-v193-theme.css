@@ -312,3 +312,56 @@ body.patient-v193-connected{background:#fcfaf6;color:#203e56}
  .patient-v193-connected .v17-app-layout .main.v193-route-enter>.v17-page{animation:none!important}
 }
 .patient-v193-connected.v17-motion-off .v17-app-layout .main.v193-route-enter>.v17-page{animation:none!important}
+
+/* Contextual discharge guidance and persistent font selection — presentation only. */
+.patient-v193-connected .v193-howto{
+ margin-top:17px;border:1px solid #d4e2e9;border-radius:12px;background:#fffefa;color:#28485f;overflow:hidden
+}
+.patient-v193-connected .v193-howto>summary{
+ cursor:pointer;padding:13px 16px;min-height:48px;color:#286283;font-weight:770;
+}
+.patient-v193-connected .v193-howto>summary:hover{background:#eaf4fa}
+.patient-v193-connected .v193-howto-body{padding:0 16px 14px}
+.patient-v193-connected .v193-howto-body p{font-size:calc(14px * var(--font-scale,1));color:#4d6679;line-height:1.75;margin:11px 0}
+.patient-v193-connected .v193-howto-body strong{color:#255e7e}
+.patient-v193-connected .v193-display-settings{border:1px solid #d9e7e6!important;background:linear-gradient(120deg,#f5faf8,#fffefa)!important;border-radius:17px!important;padding:20px 22px!important}
+.patient-v193-connected .v193-display-settings h2{margin:0 0 9px;color:#20566f;font-size:calc(19px * var(--font-scale,1))}
+.patient-v193-connected .v193-display-settings p{margin:0 0 14px;color:#516b80;line-height:1.7;font-size:calc(14px * var(--font-scale,1))}
+.patient-v193-connected .v193-segments{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px;
+ max-width:540px;min-height:62px;position:relative;background:#e4eef3;border:1px solid #cbdfe5;border-radius:14px;
+}
+.patient-v193-connected .v193-seg-thumb{
+ pointer-events:none;position:absolute;top:5px;bottom:5px;left:5px;width:calc((100% - 15px)/2);
+ border-radius:10px;background:#fffefa;border:1px solid #b6d1df;
+ box-shadow:0 3px 10px #1c4e6c16;
+ transform:translateX(0);transition:transform 190ms cubic-bezier(.22,1,.36,1)
+}
+.patient-v193-connected .v193-segments[data-large=true] .v193-seg-thumb{transform:translateX(calc(100% + 5px))}
+.patient-v193-connected .v193-segments button{
+ position:relative;z-index:1;border:0!important;background:transparent!important;
+ min-height:50px;border-radius:9px;color:#526b7d!important;cursor:pointer;
+ font-size:calc(16px * var(--font-scale,1));font-weight:740;
+}
+.patient-v193-connected .v193-segments button[aria-pressed=true]{color:#205e7e!important;font-weight:820}
+.patient-v193-connected .v193-segments button:hover{color:#225b79!important}
+.patient-v193-connected .v193-display-settings .v193-open-reader{
+ display:inline-flex;min-height:44px;margin:15px 0 9px;padding:10px 14px;
+ border-radius:10px;border:1px solid #c6dce6;color:#245e7f;
+ background:#f3f9fc;font-weight:730;cursor:pointer
+}
+.patient-v193-connected .v193-display-settings .v193-open-reader:hover{background:#e3f1f8;border-color:#99bbce}
+.patient-v193-connected .v193-display-settings .v193-info-note{font-size:calc(12px * var(--font-scale,1));line-height:1.65;color:#627789;margin:0}
+/* A transparent focus ring must never hide underlying tab labels during the tour. */
+.patient-v193-connected .spotlight-tour .spot-ring > button.spot-try-target{
+ background:transparent!important;background-image:none!important;box-shadow:none!important;
+ border:0!important;opacity:1!important;backdrop-filter:none!important;color:transparent!important
+}
+.patient-v193-connected .spotlight-tour .spot-ring{background:transparent!important}
+.patient-v193-connected :where(.v193-howto summary,.v193-segments button,.v193-open-reader):focus-visible{
+ outline:3px solid #ae8258!important;outline-offset:3px
+}
+@media(prefers-reduced-motion:reduce){
+ .patient-v193-connected .v193-seg-thumb{transition:none!important}
+}
+.patient-v193-connected.v17-motion-off .v193-seg-thumb{transition:none!important}
