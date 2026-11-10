@@ -34,3 +34,11 @@
 - 검사: 모바일/PC 상위 메뉴 모션과 화면 내부 토글 모션 분리; 모션 감소; 정보 업데이트 상태와 호버색; 지도/택시 3단계; 원본 PDF·퀴즈·알림·프로필, 320/390/768/1440px.
 - **NOT VERIFIED:** 중장노년층 실제 사용성, 실기기 Safari/스크린리더, 실제 EMR/보안 인증, 의료기관 전달, 정식 임상 성능.
 - 사용자 승인 전 `main` 통합·기본 Pages 교체는 보류.
+
+## 검증·시연 결과
+
+- **PASS:** 2026-11-10 [브라우저 QA run 42726899841](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42726899841) — Chromium **19개 시나리오 PASS**, 320/390/768/1440px.
+- 확인된 동작: PC 사이드바 및 모바일 5탭 전환에서만 진입 모션, 도움 검색 토글/프로필 수정·취소/택시 준비 단계에서 전체 진입 모션 없음, 큰 글씨·운영체제/사용자 모션 감소, 변경 요청 박스·도움 CTA 호버의 블루 컬러, 기존 PDF/퀴즈/지도 주소 누락/택시 3단계/알림/프로필 시나리오.
+- 보존: 공유 A3 발행 데이터·기존 환자 시안 v1.9·메인 진입점 수정하지 않음. 실제 A3→B 임상 워크플로 전수회귀는 **NOT RUN**.
+- 디자인 검토 브랜치: [Draft PR #16](https://github.com/pchjesus/ai-care-transition-platform/pull/16).
+- 별도 GitHub Pages 시안 링크: `/patient/v19-1.html`, 비교 `/patient/compare-v19-1.html`, 통합 홈 `/prototypes/integrated-v10/v19-1-home-preview.html`. 이 경로들은 기존 운영 진입 URL과 다르다.
