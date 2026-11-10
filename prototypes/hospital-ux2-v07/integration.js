@@ -1,14 +1,15 @@
 (async function hospitalUxV07() {
   'use strict';
   const root = new URL('../integrated-v10/', location.href);
-  let storage, workflow, library, publication, documents;
+  let storage, workflow, library, publication, documents, destinations;
   try {
-    [storage, workflow, library, publication, documents] = await Promise.all([
+    [storage, workflow, library, publication, documents, destinations] = await Promise.all([
       import(new URL('a3/storage.js', root).href),
       import(new URL('a3/workflow.js', root).href),
       import(new URL('a3/source-library.js', root).href),
       import(new URL('shared/publication.js', root).href),
-      import(new URL('shared/published-documents.js', root).href)
+      import(new URL('shared/published-documents.js', root).href),
+      import(new URL('shared/destinations.js', root).href)
     ]);
   } catch (error) {
     console.warn('UX2 v0.7 needs the integrated-v10 modules on the same HTTP(S) origin.', error);
@@ -64,7 +65,20 @@
               <label>날짜<input type="date" data-v6-appointment="date" value="${esc(appointment.date||'')}"></label>
               <label>시간<input type="time" data-v6-appointment="time" value="${esc(appointment.time||'')}"></label>
               <label>장소<input type="text" maxlength="160" data-v6-appointment="place" value="${esc(appointment.place||'')}"></label></div>
-            <button type="button" class="btn" data-v6-action="save-appointment">일정 저장</button></fieldset>`:''}
+            <button type="button" class="btn" data-v6-action="save-appointment">일정 저장</button>
+            <details class="ux7-destination-panel"><summary>진료 목적지 세부 정보 (선택)</summary>
+             <p>실제 주소는 자동 생성하지 않습니다. 담당자가 공식 출처·좌표를 확인한 정보만 발행 후 환자 앱에 공개할 수 있어요.</p>
+             <div class="ux6-fields">
+              <label>공식 장소명<input data-v6-dest="name" maxlength="180" value="${esc(appointment.destination?.name||'')}" placeholder="확인된 공식 장소"></label>
+              <label>공식 주소<input data-v6-dest="address" maxlength="180" value="${esc(appointment.destination?.address||'')}" placeholder="확인된 공식 주소"></label>
+              <label>위도<input data-v6-dest="latitude" maxlength="180" value="${esc(appointment.destination?.latitude||'')}" inputmode="decimal"></label>
+              <label>경도<input data-v6-dest="longitude" maxlength="180" value="${esc(appointment.destination?.longitude||'')}" inputmode="decimal"></label>
+              <label>공식 출처 HTTPS 주소<input type="url" data-v6-dest="sourceUrl" maxlength="500" value="${esc(appointment.destination?.sourceUrl||'')}" placeholder="https://..."></label>
+             </div>
+             <label class="ux7-destination-check"><input type="checkbox" data-v6-dest="verified" ${appointment.destination?.verified?'checked':''} ${['PHYSICIAN','APPROVER'].includes(ui.role)?'':'disabled'}> 담당 의사·최종 승인자 출처 확인</label>
+             <p>입력값을 수정하면 기존 확인과 항목 승인 상태가 해제됩니다. 실제 병원·좌표를 임의로 만들어 넣지 마세요.</p>
+             <button type="button" class="btn" data-v6-action="save-destination">목적지 저장 · 필요 시 재검토</button>
+            </details></fieldset>`:''}
           <div class="ux6-source-section"><h3>연결한 원천자료 (${linked(selected).length}건)</h3>
             ${linked(selected).length?linked(selected).map(id=>`<div class="ux6-linked"><span>${esc(refTitle(id))}</span><button type="button" class="btn btn-quiet" data-v6-action="unlink" data-v6-id="${esc(id)}" ${canEdit?'':'disabled'} aria-label="${esc(refTitle(id))} 연결 해제">해제</button></div>`).join(''):'<p class="small-muted">연결된 원천자료가 없습니다.</p>'}
             <div class="ux6-actions"><label class="ux6-selectgrow">확인 자료 추가<select id="ux6-add-source" ${canEdit&&possible.length?'':'disabled'}><option value="">근거 선택</option>${possible.map(s=>`<option value="${esc(s.id)}">${esc(s.title)}</option>`).join('')}</select></label>
@@ -343,6 +357,26 @@
       x.appointment=next;x.verified=false;
     },'SYNTHETIC_APPOINTMENT_EDIT','가상 외래 일정 수정 · 재검토 필요');
   }
+  function saveDestination(){
+    const item=targetItem();if(!item||item.section!=='followup')return;
+    const fields=Object.fromEntries([...document.querySelectorAll('[data-v6-dest]')]
+      .filter(el=>el.dataset.v6Dest!=='verified').map(el=>[el.dataset.v6Dest,el.value.trim()]));
+    const checked=!!document.querySelector('[data-v6-dest="verified"]')?.checked;
+    const next={...fields,verified:checked};
+    commit(r=>{
+      const x=r.draft.items.find(i=>i.id===item.id);
+      const before=x.appointment?.destination;
+      const changed=!before||['name','address','latitude','longitude','sourceUrl'].some(k=>before[k]!==next[k]);
+      if(changed)next.verified=false;
+      else if(checked&&!['PHYSICIAN','APPROVER'].includes(ui.role))throw Error('담당 의사·최종 승인자만 공식 위치 출처를 확인할 수 있습니다.');
+      if(!destinations.validDestination(next))throw Error('공식 위치 출처 또는 좌표 형식을 확인하세요.');
+      if(before&&JSON.stringify(before)===JSON.stringify(next))return false;
+      const original=x.appointment||{status:'PENDING',date:'',time:'',place:''};
+      const candidate={...original,destination:next};
+      if(!workflow.validAppointment(candidate))throw Error('일정 및 목적지의 형식이 올바르지 않습니다.');
+      x.appointment=candidate;x.verified=false;
+    },'DESTINATION_EDIT','가상 공식 진료 목적지 변경 · 담당 역할 재검토 필요');
+  }
   function verify() {
     const item=targetItem(), checked=document.querySelector('[data-v6-verified]')?.checked;
     if(!item)return;
@@ -465,6 +499,7 @@
     e.preventDefault();e.stopImmediatePropagation();
     const name=action.dataset.v6Action;
     if(name==='save-text')saveText();
+    else if(name==='save-destination')saveDestination();
     else if(name==='save-appointment')saveAppointment();
     else if(name==='link')linkSource(document.getElementById('ux6-add-source')?.value);
     else if(name==='unlink')linkSource(action.dataset.v6Id,true);
