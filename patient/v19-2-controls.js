@@ -44,6 +44,7 @@ const makePanel=()=>`<section class="profile-section v192-display-settings" aria
 
 function refresh(){
  document.body.classList.toggle('v18-less-motion',reduceMotion);
+ document.body.classList.toggle('v18-on-home',!!document.querySelector('.v18-home'));
  const meta=document.querySelector('.app-layout .topline .meta');
  if(meta){
   const guideButton=meta.querySelector('.patient-header-help');
