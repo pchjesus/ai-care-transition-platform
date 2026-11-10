@@ -230,13 +230,13 @@ function maps(c){
   }
   header?.querySelector('.top-profile')?.remove();
   if(nav){
-   const home=nav.querySelector('a');if(home){const tools=document.createElement('details');tools.className='demo-tools';tools.innerHTML='<summary>개발·시연</summary>';tools.append(home);side?.querySelector('.side-end')?.append(tools);}
+   // Keep the normal 통합 홈 link in the visible sidebar and mobile journey.
    nav.classList.add('patient-sidebar-journey');for(const b of nav.querySelectorAll('button')){const previous=['back','patient-back'].includes(b.dataset.action),next=['next','patient-next'].includes(b.dataset.action);if(previous||next){const label=previous?'이전':'다음';b.setAttribute('aria-label',label);b.title=label;b.innerHTML=`<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${previous?'m15 5-7 7 7 7':'m9 5 7 7-7 7'}"/></svg>`;}}
    side?.querySelector('.side-brand')?.after(nav);
    const mobile=nav.cloneNode(true);mobile.classList.add('patient-mobile-journey');mobile.classList.remove('patient-sidebar-journey');const toolbar=document.createElement('div');toolbar.className='patient-mobile-toolbar';toolbar.append(mobile);main.prepend(toolbar);
   }
-  const example=header?.querySelector('.independent-demo-link');if(example)side?.querySelector('.demo-tools')?.append(example);
-  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication){const guide=document.createElement('button');guide.type='button';guide.className='patient-header-help';guide.dataset.comfort='tour';guide.textContent='사용 안내';(header?.querySelector('.meta')||tools).append(guide);}const demoHref=context().source==='independent'?'../prototypes/integrated-v10/index.html':'../index.html';tools.insertAdjacentHTML('beforeend',`<a class="patient-demo-return" href="${demoHref}" aria-label="가상 통합 시연 화면으로 이동">통합 시연 ↗</a>`);const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.parentElement.append(tools);else main.prepend(tools);}
+  const example=header?.querySelector('.independent-demo-link');if(example){example.textContent='최신 독립 예시 보기';side?.querySelector('.side-end')?.append(example);}
+  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication){const guide=document.createElement('button');guide.type='button';guide.className='patient-header-help';guide.dataset.comfort='tour';guide.textContent='사용 안내';(header?.querySelector('.meta')||tools).append(guide);}// The patient journey provides the integrated home link without a duplicate preview control.const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.parentElement.append(tools);else main.prepend(tools);}
  }
  function attachNotifications(hub,c){
   if(dialog?.classList.contains('comfort-inline')&&openedPublication===pubKey(c)){hub.append(dialog);refreshHub();}
@@ -273,7 +273,7 @@ function maps(c){
   }
  }
  document.addEventListener('click',e=>{
-  const nav=e.target.closest('[data-nav],[data-view],[data-action=home],[data-action=back],[data-action=next],[data-action=patient-home],[data-action=patient-back],[data-action=patient-next],[data-action=logout],.demo-tools a');if(nav&&!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
+  const nav=e.target.closest('[data-nav],[data-view],[data-action=home],[data-action=back],[data-action=next],[data-action=patient-home],[data-action=patient-back],[data-action=patient-next],[data-action=logout],.patient-sidebar-journey a,.patient-mobile-journey a,.independent-demo-link');if(nav&&!permitNavigation()){e.preventDefault();e.stopImmediatePropagation();return;}
   const b=e.target.closest('[data-comfort]');if(!b||b.disabled)return;e.preventDefault();e.stopImmediatePropagation();const a=b.dataset.comfort,c=context();if(!bound(c))return;
   if(a==='close'){close();return;}
   if(a==='settings'||a==='inbox'){if(!permitNavigation())return;if(c.view!=='reminders')adapter.navigate('reminders');const el=document.querySelector(a==='inbox'?'#reminder-inbox':b.dataset.reminderTarget==='followup'?'#reminder-followup':'#reminder-personal');if(el?.tagName==='DETAILS')el.open=true;el?.scrollIntoView({block:'start'});el?.querySelector('summary,input,button')?.focus({preventScroll:true});return;}
