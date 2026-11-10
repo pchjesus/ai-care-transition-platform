@@ -95,3 +95,24 @@
  .v19-theme.v19-3-theme .detail-wrap .document-cta{transition:none!important}
 }
 .v19-theme.v19-3-theme.v18-less-motion .detail-wrap .document-cta{transition:none!important}
+
+/* On small phones with enlarged font, retain an actual viewport for the first-page preview.
+   Without a minimum flex height the PDF image can collapse to zero while the modal is open. */
+.v19-theme.v19-3-theme .pdf-panel{
+ min-width:0;overflow:hidden;
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-image-scroll{
+ display:block!important;flex:1 1 200px!important;min-height:180px!important;
+ overflow:auto!important;
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-image{
+ width:min(100%,760px)!important;height:auto!important;min-width:1px;
+}
+@container display (max-width:760px){
+ .v19-theme.v19-3-theme .pdf-panel{
+  height:min(92dvh,860px)!important;max-height:92dvh!important;
+  padding:14px!important;
+ }
+ .v19-theme.v19-3-theme .pdf-panel .pdf-image-scroll{min-height:150px!important}
+ .v19-theme.v19-3-theme .pdf-panel .pdf-actions{flex:none!important}
+}
