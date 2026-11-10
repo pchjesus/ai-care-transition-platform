@@ -4,9 +4,11 @@ import {directionsURL} from '../shared/destinations.js';
 import {openPatientTour} from '../a3/tutorial-tour.js';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const steps=[
- {screen:'today',target:'today-task',title:'오늘 확인할 안내를 선택해요',body:'오늘 확인할 안내를 골라 상세 내용을 확인해 보세요.',tryLabel:'이 안내 상세 보기',tryScreen:'detail',tryTarget:'detail',tryBody:'선택한 안내의 상세 화면이에요. 다음에는 일정 탭을 살펴봐요.'},
- {screen:'today',target:'schedule-tab',title:'일정 탭으로 이동해요',body:'일정 탭을 눌러 앞으로의 일정을 확인해 보세요.',tryLabel:'일정 화면 열어보기',tryScreen:'schedule',tryTarget:'schedule',tryBody:'확정 일정의 날짜·장소를 확인하세요. 확인 중인 일정은 예약 확정이 아니에요.'},
- {screen:'schedule',target:'reminders-tab',title:'알림 메뉴에서 설정과 내역을 찾아요',body:'알림 탭을 눌러 알림 설정과 최근 내역을 확인해 보세요.',tryLabel:'알림 메뉴 열어보기',tryScreen:'reminders',tryTarget:'reminders',tryBody:'한 화면에서 개인 준비·외래 알림을 설정하고 최근 안내를 확인할 수 있어요.'}
+ {screen:'today',target:'today-task',title:'오늘: 발행된 안내를 읽어요',body:'먼저 읽을 안내를 눌러 의료진이 발행한 내용을 확인하세요. PDF가 발행되지 않았다면 임의의 문서는 표시하지 않아요.',tryLabel:'안내 상세 화면 살펴보기',tryScreen:'detail',tryTarget:'detail',tryBody:'본문과 발행된 PDF를 확인하세요. 이해 확인 기록은 실제 수행 완료나 의료진 전송이 아니에요.'},
+ {screen:'today',target:'schedule-tab',title:'일정: 진료를 준비해요',body:'일정 메뉴에서 발행된 날짜·시간·장소를 확인하세요. 실제 예약이 완료됐는지는 의료진에게 별도로 확인해야 해요.',tryLabel:'일정 화면 살펴보기',tryScreen:'schedule',tryTarget:'schedule',tryBody:'확인된 목적지가 있을 때만 외부 지도 링크가 열려요. 택시 화면은 준비 안내이며 예약·호출은 하지 않아요.'},
+ {screen:'schedule',target:'help-tab',title:'도움: 의료진에게 질문해요',body:'도움 메뉴에서 발행된 주의사항과 문의 방법을 확인하고, 의료진에게 확인할 질문을 살펴보세요.',tryLabel:'도움 화면 살펴보기',tryScreen:'help',tryTarget:'help',tryBody:'질문 목록은 의료진에게 자동 전송되지 않아요. 실제 연락은 발행된 문의 방법으로 확인하세요.'},
+ {screen:'help',target:'reminders-tab',title:'알림: 개인 준비를 확인해요',body:'알림에서 발행 변경 소식과 개인이 정한 준비 알림을 확인할 수 있어요. 약 복용 시각을 임의로 만들지 않아요.',tryLabel:'알림 화면 살펴보기',tryScreen:'reminders',tryTarget:'reminders',tryBody:'이 브라우저의 알림 설정은 실제 병원에 전송되지 않아요. 예약 확인이나 응급 연락을 대신하지 않아요.'},
+ {screen:'reminders',target:'profile-tab',title:'내 정보: 버전과 글씨를 확인해요',body:'내 정보에서 가상 환자·입원건·발행 버전을 확인하고 필요하면 큰 글씨를 선택하세요.',tryLabel:'내 정보 화면 살펴보기',tryScreen:'profile',tryTarget:'profile',tryBody:'여기서 수정한 가상 연락 정보는 병원 기록에 반영되지 않아요. 의료진의 승인·발행 내용도 바뀌지 않아요.'}
 ];
 export function installPatientComfort(adapter){
  let storage;try{storage=localStorage}catch{}
@@ -283,7 +285,7 @@ function maps(c){
   if(a==='document-open'){const id=b.dataset.id;close();adapter.openDocument(id);return;}
   if(a==='tour'){
    if(!c.publication||!permitNavigation())return;
-   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>{const selectors={'today-task':'.tasks .task',detail:'.detail-wrap',schedule:'.schedule-layout',reminders:'.reminder-sections','schedule-tab':'.side [data-view=schedule],.side [data-nav=schedule]','reminders-tab':'.side [data-view=reminders],.side [data-nav=reminders]'};const navName=name==='schedule-tab'?'schedule':name==='reminders-tab'?'reminders':null;return navName?[...document.querySelectorAll(selectors[name]+`,.bottom-nav [data-view=${navName}],.bottom-nav [data-nav=${navName}]`)].find(e=>e.getClientRects().length):document.querySelector(selectors[name]);},context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:()=>document.querySelector('[data-comfort="tour"]')};
+   const bridge={capture:()=>adapter.capture(),show:s=>adapter.showTour(s.screen),target:name=>{const selectors={'today-task':'.tasks .task',detail:'.detail-wrap',schedule:'.schedule-layout',help:'.v17-help',reminders:'.reminder-sections',profile:'.profile-layout','schedule-tab':'.side [data-view=schedule],.side [data-nav=schedule]','help-tab':'.side [data-view=help],.side [data-nav=help]','reminders-tab':'.side [data-view=reminders],.side [data-nav=reminders]','profile-tab':'.side [data-view=profile],.side [data-nav=profile]'};const navName=({'schedule-tab':'schedule','help-tab':'help','reminders-tab':'reminders','profile-tab':'profile'})[name]||null;return navName?[...document.querySelectorAll(selectors[name]+`,.bottom-nav [data-view=${navName}],.bottom-nav [data-nav=${navName}]`)].find(e=>e.getClientRects().length):document.querySelector(selectors[name]);},context:()=>c.source==='independent'?'독립 합성 예시':'현재 발행된 합성 안내 · v'+c.publication.planVersion,restore:x=>adapter.restore(x),returnTarget:()=>document.querySelector('[data-comfort="tour"]')};
    openPatientTour(b,bridge,{brief:true,steps});return;
   }
   if(a==='seen'){write(next=>next.seen[b.dataset.id]=true);return;}
