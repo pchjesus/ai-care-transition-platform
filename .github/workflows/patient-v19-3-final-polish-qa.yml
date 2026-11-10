@@ -1,7 +1,7 @@
 name: CareBridgeLab Patient Lee v1.9.3 final color and PDF UX regression
 on:
   push:
-    branches: [feat/patient-v19-3-reading-tour-palette]
+    branches: [feat/patient-v19-3-final-polish]
     paths:
       - 'patient/v19-3*'
       - 'patient/v19_3_qa.py'
@@ -9,7 +9,7 @@ on:
       - 'patient/assets/lee-walker-guide-v193.png'
       - 'patient/assets/lee-walker-guide-source.html'
       - 'patient/compare-v19-3.html'
-      - '.github/workflows/patient-v19-3-reading-tour-qa.yml'
+      - '.github/workflows/patient-v19-3-final-polish-qa.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -39,7 +39,7 @@ jobs:
           v18=(p/'v18.html').read_text()
           v19=(p/'v19-3.html').read_text()
           assert 'v19-3-theme' not in original and 'v19-3-theme' not in v18
-          assert 'class="v19-theme v19-1-theme v19-3-theme"' in v19 and 'standalone-comfort-v19.js' in v19
+          assert 'class="v19-theme v19-1-theme v19-2-theme v19-3-theme"' in v19 and 'standalone-comfort-v19.js' in v19
           assert 'v19-3.css' in v19 and 'v19-2-controls.js' in v19 and "name:'이정희'" in v19
           assert 'EMBEDDED_PDF_PREVIEW' in v19
           assert 'v19-3.css' not in original
