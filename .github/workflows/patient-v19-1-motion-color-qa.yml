@@ -66,5 +66,5 @@ jobs:
             patient/v18-controls.js
             patient/compare-v19-1.html
             prototypes/integrated-v10/patient/comfort-ui-v19.js
-            prototypes/integrated-v10/v19-home-preview.html
+            prototypes/integrated-v10/v19-1-home-preview.html
           if-no-files-found: warn
