@@ -394,3 +394,25 @@ body.patient-v193-connected{background:#fcfaf6;color:#203e56}
  .patient-v193-connected .v193-guide-icon{width:39px;height:39px;flex-basis:39px}
  .patient-v193-connected .v193-clinician-questions{padding:17px}
 }
+
+/* UX2 current-version navigation links; no legacy developer menu. */
+.patient-v193-connected .patient-sidebar-journey a,
+.patient-v193-connected .patient-mobile-journey a{
+ display:inline-flex;align-items:center;justify-content:center;min-height:45px;min-width:46px;
+ padding:9px 12px;border:1px solid #d2e3f2;border-radius:11px;
+ background:#f1f7ff;color:#2c608c;text-decoration:none;
+ font-size:calc(13px * var(--font-scale,1));font-weight:730
+}
+.patient-v193-connected .patient-sidebar-journey a:hover,
+.patient-v193-connected .patient-mobile-journey a:hover{background:#e2effc}
+.patient-v193-connected .side-end a.independent-demo-link{
+ display:flex;align-items:center;min-height:47px;margin-top:13px;padding:10px 11px;
+ border:1px solid #d2e3f2;border-radius:11px;color:#2c608c;background:#f1f7ff;
+ font-weight:750;font-size:calc(12px * var(--font-scale,1));text-decoration:none;white-space:normal
+}
+.patient-v193-connected .side-end a.independent-demo-link:hover{background:#e2effc}
+.patient-v193-connected .patient-sidebar-journey a:focus-visible,
+.patient-v193-connected .patient-mobile-journey a:focus-visible,
+.patient-v193-connected .side-end a.independent-demo-link:focus-visible{
+ outline:3px solid #7aa9fa;outline-offset:3px
+}
