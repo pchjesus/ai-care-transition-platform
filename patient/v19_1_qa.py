@@ -58,6 +58,15 @@ with sync_playwright() as pw:
             visit_y=new.locator('.v18-visit-card').evaluate('(e)=>e.getBoundingClientRect().top')
             assert task_y<visit_y,('tasks come first',task_y,visit_y)
         new.screenshot(path=str(OUT/f'new-{label}.png'),full_page=False)
+        if width==1440:
+            new.locator('.side .side-nav[data-nav=help]').click()
+            assert new.locator('.main').evaluate("(e)=>e.classList.contains('v191-top-level-motion')")
+            assert new.locator('.service-page').evaluate("(e)=>getComputedStyle(e).animationName")=='v191-tab-arrive'
+            new.locator('.service-search-launch [data-action=toggle-help-search]').click()
+            assert new.locator('.service-page').evaluate("(e)=>getComputedStyle(e).animationName")=='none'
+            new.locator('.side .side-nav[data-nav=today]').click()
+            assert new.locator('.v18-home').is_visible()
+            ok(True,'desktop-sidebar-navigation-only-entry-motion')
         assert not errs,(label,errs)
         ok(True,'responsive-original-new-'+label)
         if width==390:
@@ -136,6 +145,8 @@ with sync_playwright() as pw:
             travel.locator('[data-comfort=taxi]').click()
             travel_dialog=new.locator('.comfort-dialog:not(.comfort-inline)')
             assert travel_dialog.is_visible()
+            assert travel_dialog.evaluate("(e)=>getComputedStyle(e).animationName")=='none', 'Opening a dialog must not bounce the entire content'
+            assert travel_dialog.locator('.travel-builder').evaluate("(e)=>getComputedStyle(e).animationName")=='none'
             assert travel_dialog.locator('.travel-choice').count()==2
             assert travel_dialog.locator('.travel-choice[aria-pressed=true]').get_attribute('data-choice')=='regular'
             travel_dialog.locator('[data-choice=assisted]').click()
@@ -177,7 +188,8 @@ with sync_playwright() as pw:
             assert not new.locator('.service-card').first.evaluate("(el)=>getComputedStyle(el).animationName") or new.locator('.service-card').first.evaluate("(el)=>getComputedStyle(el).animationName")=='none'
             new.locator('.search-launch').hover()
             new.wait_for_timeout(300)
-            assert new.locator('.search-launch').evaluate("(el)=>getComputedStyle(el).backgroundColor")=='rgb(234, 243, 253)'
+            actual_hover=new.locator('.search-launch').evaluate("(el)=>getComputedStyle(el).backgroundColor")
+            assert actual_hover=='rgb(234, 243, 253)',('Expanded help search hover must remain soft blue',actual_hover)
             ok(True,'sidebar-only-motion-no-in-page-toggle-animation-and-blue-help-hover')
             assert new.locator('.v12-help').is_visible()
             new.screenshot(path=str(OUT/'new-help-mobile.png'))
