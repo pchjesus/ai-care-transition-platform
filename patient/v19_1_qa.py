@@ -6,7 +6,7 @@ BASE='http://127.0.0.1:8765/'
 OLD=BASE+'patient/index.html'
 NEW=BASE+'patient/v19-1.html'
 COMPARE=BASE+'patient/compare-v19-1.html'
-HOME_PREVIEW=BASE+'prototypes/integrated-v10/v19-home-preview.html'
+HOME_PREVIEW=BASE+'prototypes/integrated-v10/v19-1-home-preview.html'
 OUT=Path('/tmp/carebridge-v19-1-qa')
 OUT.mkdir(parents=True, exist_ok=True)
 passed=[]
