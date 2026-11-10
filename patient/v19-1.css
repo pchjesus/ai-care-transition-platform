@@ -218,3 +218,8 @@
 .v19-theme.v19-1-theme.v18-less-motion .main.v191-top-level-motion > *::after{
  animation:none!important;transform:none!important
 }
+
+/* A generic soft-button hover must not override the expanded search's explicit blue state. */
+.v19-theme.v19-1-theme .service-search-launch button.search-launch:not(.primary):not(:disabled):hover{
+ background:#eaf3fd!important;border-color:#c8ddec!important;color:#245780!important;
+}
