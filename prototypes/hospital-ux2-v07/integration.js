@@ -132,7 +132,7 @@
   const stateName=PLAN_STATES[d.status]||d.status;
   const canApprove=can && workflow.mayApprove(r,ui.role,new Set(ui.files.keys()));
   const canPublish=can && workflow.mayPublish(r,ui.role,new Set(ui.files.keys()));
-  const patientUrl = new URL('../integrated-v10/patient/index.html',location.href);
+  const patientUrl = new URL('../integrated-v10/patient/v193-connected.html',location.href);
   patientUrl.searchParams.set('patient',state.patientId);
   patientUrl.searchParams.set('encounter',publication.encounterFor(state.patientId));
   const current=publication.projectCurrentPublication({[state.patientId]:r},state.patientId,publication.encounterFor(state.patientId));
