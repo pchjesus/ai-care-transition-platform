@@ -34,7 +34,7 @@ with sync_playwright() as pw:
     h.locator('[data-v6-dest="verified"]').check()
     h.locator('[data-v6-action="save-destination"]').click()
     h.wait_for_function('''key=>{const r=JSON.parse(localStorage.getItem(key))?.["SYN-002"];
-         return !!r?.draft.items.find(i=>i.section==="followup")?.appointment?.destination;}''',KEY)
+         return !!r?.draft.items.find(i=>i.section==="followup")?.appointment?.destination;}''',arg=KEY)
     record=h.evaluate('''key=>JSON.parse(localStorage.getItem(key))["SYN-002"]''',KEY)
     appointment=next(i["appointment"] for i in record["draft"]["items"] if i["section"]=="followup")
     assert appointment["destination"]["verified"] is False, "An edited destination must invalidate verification"
