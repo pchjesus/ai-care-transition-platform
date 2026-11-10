@@ -5,7 +5,6 @@ on:
     paths:
       - 'patient/v19-2*'
       - 'patient/v19_2_qa.py'
-      - 'patient/v19-2-controls.js'
       - 'patient/compare-v19-2.html'
       - '.github/workflows/patient-v19-2-reading-tour-qa.yml'
   workflow_dispatch:
@@ -37,7 +36,7 @@ jobs:
           v18=(p/'v18.html').read_text()
           v19=(p/'v19-2.html').read_text()
           assert 'v19-2-theme' not in original and 'v19-2-theme' not in v18
-          assert 'class="v19-theme v19-2-theme"' in v19 and 'standalone-comfort-v19.js' in v19
+          assert 'class="v19-theme v19-1-theme v19-2-theme"' in v19 and 'standalone-comfort-v19.js' in v19
           assert 'v19-2.css' in v19 and 'v19-2-controls.js' in v19 and "name:'이정희'" in v19
           assert 'EMBEDDED_PDF_PREVIEW' in v19
           assert 'v19-2.css' not in original
