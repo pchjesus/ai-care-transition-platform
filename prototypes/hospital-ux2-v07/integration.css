@@ -84,3 +84,28 @@
 @media(max-width:400px){.ux7-step{padding:9px;gap:6px}.ux7-step strong{font-size:11px}.ux7-steps{gap:6px}.ux7-audit{padding:14px}.ux7-history li{flex-wrap:wrap}}
 
 @media(min-width:701px) and (max-width:850px){.prototype-pill{display:none}}
+
+/* v0.7 parity: verified official destination stays inside follow-up only. */
+.ux7-destination-panel{margin-top:14px;border:1px solid #d4e1ef;background:#f8fbff;border-radius:12px;padding:15px 16px}
+.ux7-destination-panel>summary{font-size:14px;color:#245a83;font-weight:780;cursor:pointer;min-height:32px}
+.ux7-destination-panel p{font-size:12px;line-height:1.7;color:#586e86;margin:12px 0}
+.ux7-destination-panel .ux6-fields label{font-size:12px;color:#37516c;display:flex;flex-direction:column;gap:5px}
+.ux7-destination-panel :is(input,select){width:100%;padding:9px 12px;border:1px solid #bbccdd;border-radius:9px;background:white;color:#203d5a;min-height:43px;font:inherit}
+.ux7-destination-panel .ux7-destination-check{display:flex;gap:10px;align-items:center;font-weight:680;line-height:1.55;padding:9px 0}
+.ux7-destination-check input{flex:none;width:20px;height:20px;min-height:20px}
+.ux7-destination-panel :where(input,button,summary):focus-visible{outline:3px solid #a6c7df;outline-offset:2px}
+/* Keep print-only content out of ordinary medical staff UI and keyboard tab sequence. */
+#ux7-print-sheet{display:none}
+@media print{
+ @page{size:A4;margin:15mm}
+ body{background:#fff!important;color:#1c364b!important}
+ body>:not(#ux7-print-sheet){display:none!important}
+ #ux7-print-sheet{display:block!important;position:static!important;max-width:none!important;width:100%!important;color:#1c364b!important;background:white!important;font:12pt/1.7 system-ui,"Noto Sans KR",sans-serif}
+ #ux7-print-sheet header{padding:0 0 13mm;border-bottom:2px solid #32698b}
+ #ux7-print-sheet h1{font-size:22pt;margin:8mm 0 2mm}
+ #ux7-print-sheet .ux7-print-watermark{padding:5mm;background:#fff0e5;color:#734f38;font-weight:750;border-left:4px solid #c47a4f}
+ #ux7-print-sheet section{break-inside:avoid;padding:7mm 0;border-bottom:1px solid #d4e1e8}
+ #ux7-print-sheet h2{font-size:14pt;margin:0 0 3mm}
+ #ux7-print-sheet p{white-space:pre-wrap;overflow-wrap:anywhere}
+ #ux7-print-sheet footer{margin-top:10mm;font-size:10pt;color:#566b7c}
+}

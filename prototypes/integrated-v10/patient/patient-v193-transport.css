@@ -1,0 +1,257 @@
+/* Vetted standalone v19 transportation components adapted to approval-backed patient B.
+ * Scope only travel/maps/reminder panes; no routing or publication model changes. */
+.patient-v193-connected{
+ --v19-duration:210ms;
+ --v19-ease:cubic-bezier(.22,1,.36,1);
+ --v19-blue-gradient:linear-gradient(110deg,#286b8c,#266181);
+ --v19-peach-border:#ecd4c1;
+}
+/* Travel entry panels: clear what can be opened vs what only explains limitations. */
+.patient-v193-connected .travel-entry-section{
+ background:linear-gradient(150deg,#f4f8fe,#fff 88%);
+ border:1px solid #dbe6f2;border-radius:20px;padding:23px;margin-top:23px;
+ box-shadow:0 10px 27px #234b7010
+}
+.patient-v193-connected .travel-section-heading{margin-bottom:14px}
+.patient-v193-connected .v19-kicker{display:block;font-size:calc(12px * var(--font-scale,1));letter-spacing:.03em;color:#466b90;font-weight:830;margin-bottom:6px}
+.patient-v193-connected .travel-section-heading h2{font-size:calc(23px * var(--font-scale,1));color:#1c476c}
+.patient-v193-connected .travel-section-heading p{margin:8px 0 0;color:#526e85;font-size:calc(14px * var(--font-scale,1))}
+.patient-v193-connected .travel-entry-grid{gap:12px}
+.patient-v193-connected .travel-entry-section .travel-entry{
+ display:flex;align-items:center;min-height:122px;padding:17px 15px;border:1px solid #cfdeea;border-radius:16px;background:#fff;color:#1f496a;
+ transition:background var(--v19-duration) var(--v19-ease),transform 220ms var(--v19-ease),box-shadow 260ms var(--v19-ease),border-color var(--v19-duration) var(--v19-ease)
+}
+.patient-v193-connected .travel-entry-section .travel-entry:not(:disabled):hover{
+ transform:translateY(-2px);border-color:#8cb0d0;background:#f3f8ff;box-shadow:0 8px 24px #244a6819
+}
+.patient-v193-connected .travel-entry-section .travel-entry:not(:disabled):active{transform:scale(.989)}
+.patient-v193-connected .travel-entry-icon{
+ flex:0 0 52px;width:52px;height:52px;border-radius:14px;
+ display:grid;place-items:center;background:#e7f1fd;color:#285d89
+}
+.patient-v193-connected .travel-taxi .travel-entry-icon{background:#fff0e6;color:#965b34}
+.patient-v193-connected .travel-entry-text{gap:7px}
+.patient-v193-connected .travel-entry-text strong{color:#234766;font-weight:840;font-size:calc(19px * var(--font-scale,1))}
+.patient-v193-connected .travel-entry-text small{color:#5c748a;line-height:1.55;font-size:calc(13px * var(--font-scale,1))}
+.patient-v193-connected .travel-entry-arrow{color:#47799f}
+.patient-v193-connected .travel-section-note{color:#6b7b89;margin:14px 0 0;font-size:calc(12px * var(--font-scale,1));line-height:1.65}
+.patient-v193-connected .travel-no-address{background:#fff7ed;border:1px solid #f1d9bd;color:#785839;border-radius:12px;padding:17px}
+.patient-v193-connected .travel-entry:disabled{opacity:1;color:#637789;background:#f4f7fa;border-color:#e0e7ef;box-shadow:none}
+.patient-v193-connected .travel-entry:disabled .travel-entry-icon{background:#edf1f5;color:#7e92a3}
+/* Dialogs, bottom-sheet mobile layout, and readable empty states. */
+.patient-v193-connected .comfort-dialog:not(.comfort-inline){
+ width:min(690px,calc(100vw - 24px));max-width:calc(100vw - 24px);
+ border:1px solid #d6e3ef;border-radius:22px;background:#fff;color:#203d57;
+ padding:24px;box-shadow:0 22px 80px #17395432;overflow:auto;line-height:1.72
+}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline)::backdrop{background:rgba(19,40,65,.48);backdrop-filter:blur(3px)}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) header{
+ position:sticky;top:-24px;z-index:3;background:#fff;margin:-24px -24px 0;padding:20px 24px 14px;
+ border-bottom:1px solid #e1eaf2;gap:12px
+}
+.patient-v193-connected .comfort-dialog #comfort-title{color:#214b70;font-size:calc(23px * var(--font-scale,1));font-weight:830}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) button[data-comfort=close]{
+ min-width:47px;min-height:47px;background:#f2f7fc;border:1px solid #d6e5f0;color:#2e628a;
+ border-radius:12px;font-weight:830
+}
+.patient-v193-connected .comfort-dialog .comfort-scope,.patient-v193-connected .comfort-dialog .comfort-bound{font-size:calc(13px * var(--font-scale,1));color:#617789}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) :where(button,a):not([data-map-link]){
+ border:1px solid #c9ddea;background:#edf5fc;color:#2b5d85;border-radius:11px;
+ transition:background 220ms var(--v19-ease),border-color 220ms var(--v19-ease),transform 180ms var(--v19-ease)
+}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) :where(button,a):not([data-map-link]):not(:disabled):hover{
+ background:#dfedfb;border-color:#98b8d3
+}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) :where(button,a):not([data-map-link]):not(:disabled):active{transform:scale(.985)}
+.patient-v193-connected .comfort-dialog input:not([type=checkbox]):not([type=hidden]),
+.patient-v193-connected .comfort-dialog select,.patient-v193-connected .comfort-dialog textarea{
+ border:1px solid #bbcfde;border-radius:12px;color:#203f5b;background:#fff;min-height:52px
+}
+.patient-v193-connected .comfort-dialog :where(.travel-options,.travel-check,.travel-destination,.travel-preview-list>div,.travel-share-boundary,.travel-next-action){
+ border-color:#dce6f0
+}
+.patient-v193-connected .comfort-dialog .travel-intro{color:#566e83}
+.patient-v193-connected .v19-travel-intro{padding:15px 17px;background:linear-gradient(130deg,#eff5fd,#fff9f4);border:1px solid #dce8f1;border-radius:16px;margin:8px 0 17px}
+.patient-v193-connected .v19-travel-intro h3{margin:0 0 7px;font-size:calc(22px * var(--font-scale,1));line-height:1.42;color:#1f4d73}
+.patient-v193-connected .v19-travel-intro p{font-size:calc(14px * var(--font-scale,1));margin:0;color:#567188}
+/* Travel transport selection behaves like large segmented cards, not a cosmetic switch. */
+.patient-v193-connected .comfort-dialog .travel-choice-grid{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:14px 0 18px
+}
+.patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice{
+ border:2px solid #d5e2ee;border-radius:16px;min-height:149px;background:white;
+ padding:17px;gap:8px;color:#1d4766;position:relative;
+ transition:background var(--v19-duration) var(--v19-ease),border-color var(--v19-duration) var(--v19-ease),box-shadow var(--v19-duration) var(--v19-ease),transform 200ms var(--v19-ease)
+}
+.patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice[aria-pressed=true]{
+ background:#eaf4fe;border-color:#3f7fae;box-shadow:inset 0 0 0 1px #4a81ad,0 7px 23px #29557d15
+}
+.patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice[aria-pressed=true]:after{
+ content:'선택됨';position:absolute;right:12px;top:12px;color:#245e89;
+ font-size:calc(12px * var(--font-scale,1));font-weight:820;background:#fff;padding:4px 7px;border-radius:7px
+}
+.patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice:active{transform:scale(.987)}
+.patient-v193-connected .travel-choice-icon{display:grid;place-items:center;width:45px;height:45px;border-radius:12px;background:#e5f0fb;color:#315f8b}
+.patient-v193-connected .travel-choice:nth-child(2) .travel-choice-icon{background:#fff1e6;color:#965b33}
+.patient-v193-connected .travel-choice strong{color:#24465f;font-size:calc(17px * var(--font-scale,1));line-height:1.55}
+.patient-v193-connected .travel-choice small{color:#62798d;font-size:calc(13px * var(--font-scale,1))}
+.patient-v193-connected .comfort-dialog .travel-tips{border-color:#dce7f0;background:#f9fbfe;border-radius:12px;margin-bottom:16px}
+.patient-v193-connected .comfort-dialog .travel-tips>summary{color:#305c82;font-weight:810}
+.patient-v193-connected .travel-step-index,.patient-v193-connected .travel-progress .v19-progress-item b{background:#e5f0fc;color:#2d6190}
+.patient-v193-connected .comfort-dialog .travel-builder{border:1px solid #d9e6f1;border-radius:17px;padding:18px;background:#f7faff;margin-top:17px}
+.patient-v193-connected .comfort-dialog .travel-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;justify-content:stretch;align-items:stretch;margin:0 0 24px}
+.patient-v193-connected .travel-progress .v19-progress-item{
+ display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;min-height:55px;
+ width:auto;height:auto;border-radius:12px;color:#5b7185;background:#fff;border:1px solid #dbe5f0;
+ font-size:calc(12px * var(--font-scale,1));font-weight:700;padding:5px 4px
+}
+.patient-v193-connected .travel-progress .v19-progress-item b{border-radius:9px;display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;font-size:12px}
+.patient-v193-connected .travel-progress .v19-progress-item small{font-size:calc(12px * var(--font-scale,1));line-height:1.45}
+.patient-v193-connected .travel-progress .v19-progress-item.current{border-color:#729bc1;color:#205981;background:#e6f2fe}
+.patient-v193-connected .travel-progress .v19-progress-item.current b{background:#275e89;color:#fff}
+.patient-v193-connected .comfort-dialog .travel-stage h3{font-size:calc(18px * var(--font-scale,1));color:#255277;font-weight:830}
+.patient-v193-connected .comfort-dialog .travel-input-label{color:#254f70}
+.patient-v193-connected .comfort-dialog .travel-input-label small,.patient-v193-connected .comfort-dialog .travel-hint{color:#61798b}
+.patient-v193-connected .comfort-dialog fieldset.travel-options legend{color:#234f74}
+.patient-v193-connected .travel-check-grid{gap:9px}
+.patient-v193-connected .comfort-dialog .travel-check{
+ border:1px solid #cedeea;border-radius:12px;background:#fff;min-height:61px;
+ color:#35566e;font-size:calc(14px * var(--font-scale,1));font-weight:720;
+ transition:background 220ms var(--v19-ease),border-color 220ms var(--v19-ease)
+}
+.patient-v193-connected .comfort-dialog .travel-check:has(input:checked){background:#e7f2fd;border-color:#5184ab;color:#1d557f}
+.patient-v193-connected .comfort-dialog .travel-check input[type=checkbox]{accent-color:#326a99}
+.patient-v193-connected .comfort-dialog .travel-stage-actions{margin-top:20px;gap:10px}
+.patient-v193-connected .comfort-dialog .travel-stage-actions [data-comfort=taxi-next]{
+ background:var(--v19-blue-gradient);color:#fff;border-color:#285e8d;min-height:53px;padding-inline:20px;font-weight:820
+}
+.patient-v193-connected .comfort-dialog .travel-stage-actions [data-comfort=taxi-prev]{min-height:53px;padding-inline:17px}
+.patient-v193-connected .travel-pending-text{border-color:var(--v19-peach-border);color:#795136;background:#fff6ed}
+.patient-v193-connected .comfort-dialog .travel-destination{background:#edf5fd;border-color:#cbddeb}
+.patient-v193-connected .travel-preview-list>div{border-bottom:1px solid #dce6f0}
+.patient-v193-connected .travel-preview-list dt{color:#627c92}
+.patient-v193-connected .travel-preview-list dd{color:#294e70}
+.patient-v193-connected .travel-state-summary{border:1px solid #d5e5f1;background:#fff;border-radius:13px;padding:14px}
+.patient-v193-connected .travel-state-summary h4{font-size:calc(16px * var(--font-scale,1));color:#28557e}
+.patient-v193-connected .travel-state-summary ul{padding:0;margin:10px 0 0;list-style:none}
+.patient-v193-connected .travel-state-summary li{display:flex;align-items:flex-start;gap:10px;padding:12px 3px;border-top:1px solid #e5edf5}
+.patient-v193-connected .travel-state-summary li:first-child{border-top:0}
+.patient-v193-connected .travel-state-summary strong{display:block;font-size:calc(14px * var(--font-scale,1));color:#274c6e}
+.patient-v193-connected .travel-state-summary small{display:block;font-size:calc(12px * var(--font-scale,1));color:#6c7c8a;line-height:1.5}
+.patient-v193-connected .travel-state-summary .state-indicator{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:#e7f0fb;color:#2f6696}
+.patient-v193-connected .travel-share-boundary,.patient-v193-connected .travel-next-action{background:#f4f8fd;border:1px solid #d9e6f2;border-radius:13px;padding:15px}
+.patient-v193-connected .travel-share-boundary>strong,.patient-v193-connected .travel-next-action h4{color:#24517a}
+.patient-v193-connected .travel-next-action p,.patient-v193-connected .travel-share-boundary p{color:#57728a}
+.patient-v193-connected .comfort-dialog .travel-limitation{border:1px solid #eed8c6;border-left:4px solid #c99062;border-radius:13px;background:#fff7f0;color:#705338}
+.patient-v193-connected .comfort-dialog .travel-future-action[disabled]{border-color:#b6c9d7;background:#edf1f5;color:#65798b;opacity:1}
+/* Map: no fake coordinates, clear reason for unavailable external map, copy fallback when verified. */
+.patient-v193-connected .v19-map-empty,.patient-v193-connected .v19-map-confirmed{margin:15px 0 0}
+.patient-v193-connected .v19-map-empty{
+ padding:24px;border-radius:17px;border:1px solid #d9e5ee;
+ background:linear-gradient(135deg,#edf5fd,#fff7f0 130%);text-align:left
+}
+.patient-v193-connected .v19-map-illustration{
+ display:grid;place-items:center;width:59px;height:59px;border-radius:17px;
+ background:#deecfa;color:#2e658e;margin-bottom:15px
+}
+.patient-v193-connected .v19-map-illustration svg{width:31px;height:31px}
+.patient-v193-connected .v19-map-empty h3,.patient-v193-connected .v19-map-confirmed h3{font-size:calc(23px * var(--font-scale,1));line-height:1.45;color:#244e72;margin:6px 0 10px}
+.patient-v193-connected .v19-map-empty>p,.patient-v193-connected .v19-map-confirmed>p{color:#4f697e;font-size:calc(15px * var(--font-scale,1));line-height:1.75}
+.patient-v193-connected .v19-explain-steps{display:grid;gap:10px;margin:19px 0}
+.patient-v193-connected .v19-explain-steps>div{display:flex;align-items:flex-start;gap:12px;padding:12px 13px;border:1px solid #d4e2ed;border-radius:11px;background:#fff}
+.patient-v193-connected .v19-explain-steps b{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:9px;background:#e6f1fc;color:#305f86}
+.patient-v193-connected .v19-explain-steps span{color:#345971;font-size:calc(14px * var(--font-scale,1))}
+.patient-v193-connected .v19-boundary-text{font-size:calc(12px * var(--font-scale,1))!important;color:#708193!important}
+.patient-v193-connected .v19-address-card{display:flex;align-items:flex-start;gap:12px;border:1px solid #cfe1ef;border-radius:13px;padding:14px;background:#edf5fd}
+.patient-v193-connected .v19-address-card svg{color:#2e628a;flex:none}
+.patient-v193-connected .v19-address-card p{margin:0;font-size:calc(16px * var(--font-scale,1));font-weight:780;color:#234e75}
+.patient-v193-connected .comfort-dialog a.v19-primary-link{display:flex!important;width:100%;min-height:54px;margin:16px 0;padding:13px 16px;background:var(--v19-blue-gradient);color:#fff;border:1px solid #265b89;border-radius:12px;text-decoration:none;font-size:calc(16px * var(--font-scale,1));font-weight:800}
+.patient-v193-connected .v19-map-fallback{padding:14px;background:#f4f8fc;border:1px solid #d6e5f2;border-radius:12px;margin-top:9px}
+/* External action labels, hints and SVGs harmonized. */
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) :where(.travel-future-action, .travel-tips>summary,.comfort-document-intro){color:#466c87}
+.patient-v193-connected .comfort-document-group{border:1px solid #dce7f2;border-radius:15px;background:#f9fbfe;padding:17px}
+.patient-v193-connected .comfort-document-item{border:1px solid #dce7f0;border-radius:12px;background:#fff;padding:17px}
+.patient-v193-connected .comfort-document-item strong{color:#254b70;font-size:calc(16px * var(--font-scale,1))}
+.patient-v193-connected .comfort-toast{background:#234f7a;color:#fff;border-radius:14px;box-shadow:0 10px 35px #173d5b24}
+/* Patient-first mobile experience. */
+@media(max-width:760px){
+ .patient-v193-connected .main{padding:14px 15px calc(104px + env(safe-area-inset-bottom))}
+ .patient-v193-connected .app-body>.main{padding-top:14px}
+ .patient-v193-connected .bottom-nav{border-color:#d7e3ee;box-shadow:0 -6px 22px #1c486319;background:#fff}
+ .patient-v193-connected .bottom-nav button{min-height:59px}
+ .patient-v193-connected .travel-entry-section{padding:18px 15px;margin-top:16px;border-radius:17px}
+ .patient-v193-connected .travel-entry-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+ .patient-v193-connected .travel-entry-section .travel-entry{min-height:91px;padding:13px 12px}
+ .patient-v193-connected .travel-entry-icon{width:47px;height:47px;flex-basis:47px}
+ .patient-v193-connected .travel-entry-text strong{font-size:calc(17px * var(--font-scale,1))}
+ .patient-v193-connected .travel-entry-text small{font-size:calc(12px * var(--font-scale,1))}
+ .patient-v193-connected .comfort-dialog:not(.comfort-inline){
+  position:fixed;inset:auto 0 0 0;margin:0;width:100%;max-width:none;max-height:87dvh;min-height:280px;
+  border:0;border-top:1px solid #d3e3f0;border-radius:25px 25px 0 0;
+  padding:21px 17px calc(26px + env(safe-area-inset-bottom));box-shadow:0 -14px 50px #162f452e
+ }
+ .patient-v193-connected .comfort-dialog:not(.comfort-inline) header{
+  top:-21px;margin:-21px -17px 0;padding:18px 17px 13px;border-radius:25px 25px 0 0
+ }
+ .patient-v193-connected .comfort-dialog .travel-choice-grid{gap:8px}
+ .patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice{
+  padding:13px;min-height:141px;border-radius:14px
+ }
+ .patient-v193-connected .travel-choice strong{font-size:calc(15px * var(--font-scale,1))}
+ .patient-v193-connected .travel-choice small{font-size:calc(12px * var(--font-scale,1))}
+ .patient-v193-connected .comfort-dialog .travel-builder{padding:14px 12px}
+ .patient-v193-connected .travel-progress .v19-progress-item{gap:4px;padding:5px 2px;min-height:54px}
+ .patient-v193-connected .travel-progress .v19-progress-item small{font-size:calc(11px * var(--font-scale,1))}
+ .patient-v193-connected .v19-map-empty{padding:17px}
+ .patient-v193-connected .comfort-inline .reminder-group>summary{padding:16px 14px}
+ .patient-v193-connected .comfort-inline form{padding:15px}
+ .patient-v193-connected .patient-mobile-journey button{border-color:#d3e2f0;color:#315d82;border-radius:10px}
+ .patient-v193-connected .patient-mobile-journey button:hover{background:#eaf3fc}
+}
+@media(max-width:360px){
+ .patient-v193-connected .comfort-dialog .travel-choice-grid{grid-template-columns:1fr}
+ .patient-v193-connected .comfort-dialog .travel-choice-grid .travel-choice{min-height:102px}
+ .patient-v193-connected .v19-map-empty{padding:14px}
+ .patient-v193-connected .travel-progress .v19-progress-item small{font-size:11px}
+}
+/* Final whole-app color coherence audit: old forest-green remnants in toolbars / notifications. */
+.patient-v193-connected .patient-header-help,
+.patient-v193-connected .patient-page-tools :where(button,a.patient-demo-return),
+.patient-v193-connected .patient-sidebar-journey button,
+.patient-v193-connected .patient-mobile-journey button{
+ background:#f1f7ff!important;color:#2c608c!important;border:1px solid #d2e3f2!important;
+ border-radius:11px;transition:background 210ms var(--v19-ease),transform 180ms var(--v19-ease);
+}
+.patient-v193-connected .patient-header-help:hover,
+.patient-v193-connected .patient-page-tools :where(button,a.patient-demo-return):hover{
+ background:#e2effc!important;color:#1f5079!important
+}
+.patient-v193-connected :where(.comfort-quick,.comfort-med-link,.integrated-documents) button{
+ background:#eaf4ff!important;color:#285e88!important;border:1px solid #c7deef!important;border-radius:12px;
+}
+.patient-v193-connected .comfort-inline{color:#203d56!important}
+.patient-v193-connected .comfort-inline :where(p,li,small,legend,label,span:not(.state-indicator)):not(.v19-kicker){color:#536d81}
+.patient-v193-connected .comfort-inline :where(h1,h2,h3,h4,strong){color:#244d71}
+.patient-v193-connected .comfort-inline :where(.reminder-group>summary,.reminder-group>summary h2,.reminder-group>summary small){color:#2b628e}
+.patient-v193-connected .comfort-inline .comfort-list li{color:#304d68}
+.patient-v193-connected .comfort-inline [role=status]{color:#2a607e}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) .travel-choice[aria-pressed=true] strong{color:#20537e}
+/* Keep the dialog title legible while a long taxi preview scrolls under its sticky header. */
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) header{
+ top:0!important;display:flex!important;align-items:center!important;min-height:66px;
+}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) header #comfort-title{
+ display:block!important;opacity:1!important;visibility:visible!important;
+ flex:1 1 180px;min-width:0;margin:0!important;line-height:1.4!important;
+ color:#204d72!important;position:relative;z-index:1;
+}
+.patient-v193-connected .comfort-dialog:not(.comfort-inline) header [data-comfort=close]{margin-left:auto;flex:none}
+@media(prefers-reduced-motion:reduce){
+ .patient-v193-connected .comfort-dialog,.patient-v193-connected .travel-entry{
+ animation:none!important;transition:none!important;transform:none!important
+ }
+}
+.patient-v193-connected.v17-motion-off .comfort-dialog,
+.patient-v193-connected.v17-motion-off .travel-entry{
+ animation:none!important;transition:none!important;transform:none!important
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#fcfaf6">
+  <title>나의 퇴원안내 — 환자 B v1.9.3 A3 연동형 시안</title>
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="connected.css"><link rel="stylesheet" href="comfort.css">
+<link rel="stylesheet" href="patient-v11.css"><link rel="icon" href="data:,"><link rel="stylesheet" href="patient-v12.css"><link rel="stylesheet" href="patient-v15.css"><link rel="stylesheet" href="patient-v16.css"><link rel="stylesheet" href="patient-v193-theme.css"><link rel="stylesheet" href="patient-v193-transport.css">
+</head>
+<body class="patient-v193-connected">
+<a class="skip" href="#main-content">본문으로 건너뛰기</a>
+<div class="stage" id="stage" data-preview="auto"><div class="app-frame" id="app-frame"><div id="app"></div></div></div>
+<dialog id="v17-reader-dialog" class="v17-reader-dialog" aria-labelledby="v17-dialog-title" aria-describedby="v17-dialog-subtitle">
+ <div class="v17-dialog-head"><h2 id="v17-dialog-title">읽기 편한 화면</h2><button class="v17-dialog-close" type="button" data-v17-action="close" aria-label="읽기 설정 닫기">×</button></div>
+ <p id="v17-dialog-subtitle">글씨 크기와 화면 움직임을 편하게 조절할 수 있어요. 의료진의 안내 내용은 바뀌지 않아요.</p>
+ <span id="v17-font-label" class="v17-setting-label">글씨 크기</span>
+ <div class="v17-segments" role="group" aria-labelledby="v17-font-label">
+  <button class="v17-segment" type="button" data-v17-font="normal" aria-pressed="true">보통 글씨</button>
+  <button class="v17-segment" type="button" data-v17-font="large" aria-pressed="false">큰 글씨</button>
+ </div>
+ <label class="v17-switch-row"><span class="v17-switch-copy"><strong>움직임 줄이기</strong><small>화면 전환과 버튼 애니메이션을 줄여요.</small></span>
+  <input id="v17-reduce-motion" type="checkbox" role="switch"><span class="v17-switch-track" aria-hidden="true"></span>
+ </label>
+ <p class="v17-settings-status" role="status" id="v17-settings-status" aria-live="polite"></p>
+ <button class="v17-reader-done" type="button" data-v17-action="close">설정 닫기</button>
+</dialog>
+<script type="module" src="patient-v193-app.js"></script><script type="module" src="patient-v15.js"></script><script type="module" src="patient-v17-controls.js"></script>
+<script type="module" src="patient-v193-controls.js"></script>
+</body>
+</html>

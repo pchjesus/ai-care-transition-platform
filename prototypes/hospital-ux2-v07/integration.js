@@ -1,14 +1,15 @@
 (async function hospitalUxV07() {
   'use strict';
   const root = new URL('../integrated-v10/', location.href);
-  let storage, workflow, library, publication, documents;
+  let storage, workflow, library, publication, documents, destinations;
   try {
-    [storage, workflow, library, publication, documents] = await Promise.all([
+    [storage, workflow, library, publication, documents, destinations] = await Promise.all([
       import(new URL('a3/storage.js', root).href),
       import(new URL('a3/workflow.js', root).href),
       import(new URL('a3/source-library.js', root).href),
       import(new URL('shared/publication.js', root).href),
-      import(new URL('shared/published-documents.js', root).href)
+      import(new URL('shared/published-documents.js', root).href),
+      import(new URL('shared/destinations.js', root).href)
     ]);
   } catch (error) {
     console.warn('UX2 v0.7 needs the integrated-v10 modules on the same HTTP(S) origin.', error);
@@ -64,7 +65,20 @@
               <label>날짜<input type="date" data-v6-appointment="date" value="${esc(appointment.date||'')}"></label>
               <label>시간<input type="time" data-v6-appointment="time" value="${esc(appointment.time||'')}"></label>
               <label>장소<input type="text" maxlength="160" data-v6-appointment="place" value="${esc(appointment.place||'')}"></label></div>
-            <button type="button" class="btn" data-v6-action="save-appointment">일정 저장</button></fieldset>`:''}
+            <button type="button" class="btn" data-v6-action="save-appointment">일정 저장</button>
+            <details class="ux7-destination-panel"><summary>진료 목적지 세부 정보 (선택)</summary>
+             <p>실제 주소는 자동 생성하지 않습니다. 담당자가 공식 출처·좌표를 확인한 정보만 발행 후 환자 앱에 공개할 수 있어요.</p>
+             <div class="ux6-fields">
+              <label>공식 장소명<input data-v6-dest="name" maxlength="180" value="${esc(appointment.destination?.name||'')}" placeholder="확인된 공식 장소"></label>
+              <label>공식 주소<input data-v6-dest="address" maxlength="180" value="${esc(appointment.destination?.address||'')}" placeholder="확인된 공식 주소"></label>
+              <label>위도<input data-v6-dest="latitude" maxlength="180" value="${esc(appointment.destination?.latitude||'')}" inputmode="decimal"></label>
+              <label>경도<input data-v6-dest="longitude" maxlength="180" value="${esc(appointment.destination?.longitude||'')}" inputmode="decimal"></label>
+              <label>공식 출처 HTTPS 주소<input type="url" data-v6-dest="sourceUrl" maxlength="500" value="${esc(appointment.destination?.sourceUrl||'')}" placeholder="https://..."></label>
+             </div>
+             <label class="ux7-destination-check"><input type="checkbox" data-v6-dest="verified" ${appointment.destination?.verified?'checked':''} ${['PHYSICIAN','APPROVER'].includes(ui.role)?'':'disabled'}> 담당 의사·최종 승인자 출처 확인</label>
+             <p>입력값을 수정하면 기존 확인과 항목 승인 상태가 해제됩니다. 실제 병원·좌표를 임의로 만들어 넣지 마세요.</p>
+             <button type="button" class="btn" data-v6-action="save-destination">목적지 저장 · 필요 시 재검토</button>
+            </details></fieldset>`:''}
           <div class="ux6-source-section"><h3>연결한 원천자료 (${linked(selected).length}건)</h3>
             ${linked(selected).length?linked(selected).map(id=>`<div class="ux6-linked"><span>${esc(refTitle(id))}</span><button type="button" class="btn btn-quiet" data-v6-action="unlink" data-v6-id="${esc(id)}" ${canEdit?'':'disabled'} aria-label="${esc(refTitle(id))} 연결 해제">해제</button></div>`).join(''):'<p class="small-muted">연결된 원천자료가 없습니다.</p>'}
             <div class="ux6-actions"><label class="ux6-selectgrow">확인 자료 추가<select id="ux6-add-source" ${canEdit&&possible.length?'':'disabled'}><option value="">근거 선택</option>${possible.map(s=>`<option value="${esc(s.id)}">${esc(s.title)}</option>`).join('')}</select></label>
@@ -132,7 +146,7 @@
   const stateName=PLAN_STATES[d.status]||d.status;
   const canApprove=can && workflow.mayApprove(r,ui.role,new Set(ui.files.keys()));
   const canPublish=can && workflow.mayPublish(r,ui.role,new Set(ui.files.keys()));
-  const patientUrl = new URL('../integrated-v10/patient/index.html',location.href);
+  const patientUrl = new URL('../integrated-v10/patient/v193-connected.html',location.href);
   patientUrl.searchParams.set('patient',state.patientId);
   patientUrl.searchParams.set('encounter',publication.encounterFor(state.patientId));
   const current=publication.projectCurrentPublication({[state.patientId]:r},state.patientId,publication.encounterFor(state.patientId));
@@ -168,7 +182,7 @@
     <section class="surface ux6-card">
      <h2 class="section-title">검토·승인 작업</h2>
      <p class="section-caption">검토 요청과 승인은 서로 다른 단계입니다. 환자 공개에는 추가 발행이 필요합니다.</p>
-     <div class="ux7-actions">${actions.join('')}</div>
+     <div class="ux7-actions">${actions.join('')}<button type="button" class="btn" data-ux7-print="draft" ${can?'':'disabled'}>검토용 초안 인쇄</button>${current?'<button type="button" class="btn" data-ux7-print="issued">유효 발행본 인쇄</button>':''}</div>
      ${pending?`<div class="ux6-alert"><b>철회 검토 대기</b> · 요청 역할 ${esc(roles[r.revocationRequest.requestedRole])} / ${esc(r.revocationRequest.reason)}. 요청만으로 환자 안내가 숨겨지지 않습니다.</div>`:''}
      <h3 class="section-title ux7-subheading">발행 차단 사유 · ${blocked.length}건</h3>
      ${blocked.length?`<ul class="ux6-blockers">${blocked.map(b=>`<li><strong>${esc(b.group||'확인')}</strong><span>${esc(b.label)}</span></li>`).join('')}</ul>`:'<p class="ux6-empty">기존 A3 차단 조건에 해당하는 항목이 없습니다. 최종 승인자 역할·승인 상태는 별도로 확인합니다.</p>'}
@@ -188,6 +202,28 @@
    <details class="surface ux7-audit"><summary>변경·승인·발행 기록 ${history.length}건 확인</summary><ol class="ux6-history">${history.map(x=>`<li><b>${esc(x.event)}</b> · ${esc(x.role)}<small>${esc(dateLabel(x.at))} · ${esc(x.details)}</small></li>`).join('')}</ol></details>
   </section>`;
 }
+  function printPlan(kind){
+    const r=getRecord();
+    if(!r||ui.stale||!writable()){toast('저장 상태를 확인한 후 인쇄하세요.');return;}
+    const current=publication.projectCurrentPublication({[state.patientId]:r},state.patientId,publication.encounterFor(state.patientId));
+    if(!['draft','issued'].includes(kind)||kind==='issued'&&!current){toast('현재 유효하게 발행된 계획만 인쇄할 수 있습니다.');return;}
+    const draft=kind==='draft';
+    const items=draft?r.draft.items.filter(i=>i.visibility==='PATIENT'):current.items;
+    const heading=draft?'검토용 초안 · 환자에게 발행되지 않음':'유효 발행본 · v'+current.planVersion;
+    document.getElementById('ux7-print-sheet')?.remove();
+    const sheet=document.createElement('article');
+    sheet.id='ux7-print-sheet';sheet.setAttribute('aria-label',heading);
+    sheet.innerHTML='<header><strong>케어브릿지랩 · 합성 데이터 시연</strong><h1>퇴원 전환관리 안내 계획</h1>'
+      +'<p>환자 ID '+esc(state.patientId)+' · 입원건 '+esc(publication.encounterFor(state.patientId))+'</p>'
+      +'<p class="ux7-print-watermark">'+esc(heading)+'</p></header>'
+      +items.map(item=>'<section><h2>'+esc(item.title)+'</h2><p>'+esc(item.text)+'</p></section>').join('')
+      +'<footer>실제 의료기관에서 발급한 문서가 아닙니다. '
+      +(draft?'검토용 초안이며 의료진의 최종 승인·발행을 거치지 않았습니다.':'이 브라우저의 합성 데이터 유효 발행 스냅샷입니다.')+'</footer>';
+    document.body.appendChild(sheet);
+    // Register before opening the browser print dialog; afterprint may fire synchronously.
+    window.addEventListener('afterprint',()=>sheet.remove(),{once:true});
+    window.print();
+  }
   async function workflowTransitionV07(kind){
   if(ui.busy||!writable()||!CANONICAL.cases.some(c=>c.id===state.patientId)){
     toast('현재 기록을 저장할 수 없습니다. 브라우저 상태를 확인하세요.');return;
@@ -343,6 +379,26 @@
       x.appointment=next;x.verified=false;
     },'SYNTHETIC_APPOINTMENT_EDIT','가상 외래 일정 수정 · 재검토 필요');
   }
+  function saveDestination(){
+    const item=targetItem();if(!item||item.section!=='followup')return;
+    const fields=Object.fromEntries([...document.querySelectorAll('[data-v6-dest]')]
+      .filter(el=>el.dataset.v6Dest!=='verified').map(el=>[el.dataset.v6Dest,el.value.trim()]));
+    const checked=!!document.querySelector('[data-v6-dest="verified"]')?.checked;
+    const next={...fields,verified:checked};
+    commit(r=>{
+      const x=r.draft.items.find(i=>i.id===item.id);
+      const before=x.appointment?.destination;
+      const changed=!before||['name','address','latitude','longitude','sourceUrl'].some(k=>before[k]!==next[k]);
+      if(changed)next.verified=false;
+      else if(checked&&!['PHYSICIAN','APPROVER'].includes(ui.role))throw Error('담당 의사·최종 승인자만 공식 위치 출처를 확인할 수 있습니다.');
+      if(!destinations.validDestination(next))throw Error('공식 위치 출처 또는 좌표 형식을 확인하세요.');
+      if(before&&JSON.stringify(before)===JSON.stringify(next))return false;
+      const original=x.appointment||{status:'PENDING',date:'',time:'',place:''};
+      const candidate={...original,destination:next};
+      if(!workflow.validAppointment(candidate))throw Error('일정 및 목적지의 형식이 올바르지 않습니다.');
+      x.appointment=candidate;x.verified=false;
+    },'DESTINATION_EDIT','가상 공식 진료 목적지 변경 · 담당 역할 재검토 필요');
+  }
   function verify() {
     const item=targetItem(), checked=document.querySelector('[data-v6-verified]')?.checked;
     if(!item)return;
@@ -458,6 +514,8 @@
     if(tab){e.preventDefault();e.stopImmediatePropagation();ui.tab=tab.dataset.v6Tab;render({keepScroll:true});return;}
     const action=e.target.closest('[data-v6-action]');
     if(!action){
+      const print=e.target.closest('[data-ux7-print]');
+      if(print){e.preventDefault();e.stopImmediatePropagation();printPlan(print.dataset.ux7Print);return;}
       const flow=e.target.closest('[data-ux7-action]');
       if(flow){e.preventDefault();e.stopImmediatePropagation();workflowTransitionV07(flow.dataset.ux7Action);}
       return;
@@ -465,6 +523,7 @@
     e.preventDefault();e.stopImmediatePropagation();
     const name=action.dataset.v6Action;
     if(name==='save-text')saveText();
+    else if(name==='save-destination')saveDestination();
     else if(name==='save-appointment')saveAppointment();
     else if(name==='link')linkSource(document.getElementById('ux6-add-source')?.value);
     else if(name==='unlink')linkSource(action.dataset.v6Id,true);
