@@ -68,13 +68,13 @@ jobs:
                  "    assert patient.locator('.v193-howto').count()==1\n"
                  "    patient.locator('.v193-connected-quick').click()\n"
                  "    assert patient.locator('body.large-font').count()==1\n"
-                 "    patient.locator('.bottom-nav button[data-view=profile]').click()\n"
+                 "    patient.locator('.side .side-nav[data-view=profile]').click()\n"
                  "    assert patient.locator('.v193-display-settings .v193-segments').count()==1\n"
                  "    assert patient.locator('.v193-segments [data-v193-size=large]').get_attribute('aria-pressed')=='true'\n"
                  "    patient.locator('.v193-segments [data-v193-size=normal]').click()\n"
                  "    assert patient.locator('body.large-font').count()==0\n"
-                 "    patient.locator('.bottom-nav button[data-view=today]').click()\n"
-                 "    patient.locator('.bottom-nav button[data-view=schedule]').click()\n"
+                 "    patient.locator('.side .side-nav[data-view=today]').click()\n"
+                 "    patient.locator('.side .side-nav[data-view=schedule]').click()\n"
                  "    travel=patient.locator('.travel-entry-section')\n"
                  "    assert travel.is_visible()\n"
                  "    travel.locator('[data-comfort=map]').first.click()\n"
@@ -87,7 +87,7 @@ jobs:
                  "    assert dlg.locator('.travel-choice').count()==2\n"
                  "    assert dlg.locator('.v19-progress-item.current').count()==1\n"
                  "    dlg.locator('[data-comfort=close]').click()\n"
-                 "    patient.locator('.bottom-nav button[data-view=today]').click()\n"
+                 "    patient.locator('.side .side-nav[data-view=today]').click()\n"
                  "    patient.locator('.v17-home').wait_for()\n")
           assert needle in s
           s=s.replace(needle,needle+'\n'+extra,1)
