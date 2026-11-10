@@ -1,0 +1,97 @@
+/* Patient B independent synthetic sample v1.9.3 — final color and document-panel audit.
+ * Preserve intentional pale sea-glass sidebar; remove legacy green from actionable/detail panels.
+ * All new UI remains inside isolated v19.3 candidate. */
+.v19-theme.v19-1-theme.v19-2-theme.v19-3-theme{
+ --v193-ink:#203e56;--v193-blue:#286b8c;--v193-blue-deep:#225773;
+ --v193-surface:#fffefa;--v193-border:#d7e4eb;--v193-peach:#c47a4f;
+}
+.v19-theme.v19-3-theme .detail-wrap .document-panel{
+ background:linear-gradient(145deg,#fffefa,#f4f8fb)!important;
+ border:1px solid var(--v193-border)!important;
+ border-radius:18px!important;
+ box-shadow:0 8px 25px rgba(31,78,103,.045)!important;
+ padding:24px 26px!important;
+}
+.v19-theme.v19-3-theme .detail-wrap .document-label{
+ color:#286b8c!important;display:flex;align-items:center;gap:9px;
+}
+.v19-theme.v19-3-theme .detail-wrap .document-label svg,
+.v19-theme.v19-3-theme .detail-wrap .document-meta svg{color:#286b8c!important}
+.v19-theme.v19-3-theme .detail-wrap .document-title{color:#203e56!important}
+.v19-theme.v19-3-theme .detail-wrap .document-desc{color:#536b7c!important}
+.v19-theme.v19-3-theme .detail-wrap .document-meta{color:#355e79!important}
+.v19-theme.v19-3-theme .detail-wrap .document-cta,
+.v19-theme.v19-3-theme .detail-wrap .document-cta:not(:disabled){
+ display:inline-flex;vertical-align:top;align-items:center;justify-content:center;
+ background:linear-gradient(110deg,#286b8c,#266181)!important;
+ color:#fff!important;border:1px solid #266181!important;
+ border-radius:12px!important;min-height:52px;
+ margin:0!important;padding:12px 19px!important;flex:none;
+ max-width:100%;text-align:center;
+ transition:background-color 160ms ease-out,box-shadow 160ms ease-out!important;
+}
+.v19-theme.v19-3-theme .detail-wrap .document-cta:not(:disabled):hover{
+ background:linear-gradient(110deg,#245d7b,#1d506d)!important;
+ box-shadow:0 4px 12px rgba(33,83,111,.13)!important;
+ transform:none!important
+}
+.v19-theme.v19-3-theme .detail-wrap .v193-document-actions{
+ display:flex;flex-direction:column;align-items:flex-start;gap:12px;
+ width:100%;margin-top:18px;
+}
+.v19-theme.v19-3-theme .detail-wrap .source-link-placeholder{
+ display:block!important;position:static!important;margin:0!important;
+ color:#576f81!important;line-height:1.65!important;
+ font-size:calc(14px * var(--font-scale,1))!important;
+ overflow-wrap:anywhere;
+}
+.v19-theme.v19-3-theme .detail-wrap .document-unavailable{
+ background:#f3f7fb!important;color:#46677f!important;
+ border:1px solid #d5e2ed!important;
+}
+/* Consistent blue for synthetic document viewer controls (but not the document itself). */
+.v19-theme.v19-3-theme .pdf-panel .pdf-panel-header h2{color:#234967!important}
+.v19-theme.v19-3-theme .pdf-panel .pdf-panel-header small{color:#597488!important}
+.v19-theme.v19-3-theme .pdf-panel .close-pdf{
+ color:#255e80!important;background:#f1f7fb!important;
+ border:1px solid #c9deea!important
+}
+.v19-theme.v19-3-theme .pdf-panel .close-pdf:hover{
+ color:#1c5274!important;background:#e2eff9!important;
+ border-color:#a8c7d8!important
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-frame,
+.v19-theme.v19-3-theme .pdf-panel .pdf-image-scroll{
+ background:#f4f8fb!important;border-color:#d6e5ed!important
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-fallback{
+ background:#eaf3fa!important;color:#365d78!important;
+ border:1px solid #d6e6f0!important
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-actions .secondary-action{
+ color:#245f86!important;border:1px solid #c7dce9!important;
+ background:#f4f9fd!important;border-radius:11px!important
+}
+.v19-theme.v19-3-theme .pdf-panel .pdf-actions .secondary-action:hover{
+ color:#1e5276!important;background:#e7f2fa!important
+}
+/* Keep calm pale sea-glass only in the navigation area; it is not a success color. */
+.v19-theme.v19-3-theme .app-layout .side{
+ background:#f8fbf9!important;border-right-color:#dbe8e5!important
+}
+.v19-theme.v19-3-theme .side-nav[aria-current=page]{
+ background:#e7f2f4!important;color:#205e7b!important;
+ box-shadow:inset 3px 0 #64a2b8!important
+}
+/* Responsive details: never allow a long CTA/description collision. */
+@container display (max-width:760px){
+ .v19-theme.v19-3-theme .detail-wrap .document-panel{
+  padding:20px 16px!important
+ }
+ .v19-theme.v19-3-theme .detail-wrap .document-cta{width:100%;white-space:normal}
+ .v19-theme.v19-3-theme .detail-wrap .v193-document-actions{align-items:stretch}
+}
+@media(prefers-reduced-motion:reduce){
+ .v19-theme.v19-3-theme .detail-wrap .document-cta{transition:none!important}
+}
+.v19-theme.v19-3-theme.v18-less-motion .detail-wrap .document-cta{transition:none!important}
