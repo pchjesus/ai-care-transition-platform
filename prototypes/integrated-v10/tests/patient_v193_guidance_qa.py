@@ -76,7 +76,10 @@ with sync_playwright() as playwright:
 
     patient.set_viewport_size({"width": 320, "height": 760})
     original_state = hospital.evaluate("(key) => localStorage.getItem(key)", KEY)
-    patient.locator(".v193-connected-tour").click()
+    # Small-screen primary entry is the visible in-page tutorial CTA; the header entry is hidden.
+    tour_button = patient.locator(".v17-home .v17-tour-cta:visible")
+    assert tour_button.count() == 1, "A visible tutorial entry is required at 320px"
+    tour_button.click()
     tour = patient.locator(".spotlight-tour")
     tour.wait_for()
     for step in range(1, 6):
