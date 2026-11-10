@@ -27,14 +27,16 @@ jobs:
           node --check prototypes/integrated-v10/patient/patient-v17-app.js
           node --check prototypes/integrated-v10/patient/patient-v17-controls.js
           node --check prototypes/integrated-v10/patient/patient-v193-controls.js
+          node --check prototypes/integrated-v10/patient/patient-v193-app.js
+          node --check prototypes/integrated-v10/patient/comfort-ui-v193.js
           python - <<'PY'
           from pathlib import Path
           h=Path('prototypes/hospital-ux2-v07/integration.js').read_text()
           b=Path('prototypes/integrated-v10/patient/v193-connected.html').read_text()
           m=Path('prototypes/integrated-v10/patient/patient-v17-app.js').read_text()
           assert "patient/v193-connected.html" in h
-          assert 'patient-v193-theme.css' in b and 'patient-v193-controls.js' in b
-          assert 'readPatientPublication' in m and 'readPublishedDocument' in m
+          assert 'patient-v193-theme.css' in b and 'patient-v193-controls.js' in b and 'patient-v193-app.js' in b and 'patient-v193-transport.css' in b
+          assert 'readPatientPublication' in m and 'readPublishedDocument' in m and 'comfort-ui-v193.js' in Path('prototypes/integrated-v10/patient/patient-v193-app.js').read_text()
           assert 'patient/index.html' in Path('prototypes/integrated-v10/index.html').read_text() # legacy fallback preserved
           assert 'v193-connected.html' in Path('prototypes/integrated-v10/index.html').read_text()
           assert 'patient/v19-3.html' in Path('prototypes/integrated-v10/index.html').read_text()
@@ -71,6 +73,20 @@ jobs:
                  "    assert patient.locator('.v193-segments [data-v193-size=large]').get_attribute('aria-pressed')=='true'\n"
                  "    patient.locator('.v193-segments [data-v193-size=normal]').click()\n"
                  "    assert patient.locator('body.large-font').count()==0\n"
+                 "    patient.locator('.bottom-nav button[data-view=today]').click()\n"
+                 "    patient.locator('.bottom-nav button[data-view=schedule]').click()\n"
+                 "    travel=patient.locator('.travel-entry-section')\n"
+                 "    assert travel.is_visible()\n"
+                 "    travel.locator('[data-comfort=map]').first.click()\n"
+                 "    dlg=patient.locator('.comfort-dialog:not(.comfort-inline)')\n"
+                 "    assert dlg.is_visible() and dlg.locator('.v19-map-empty').count()==1\n"
+                 "    assert not dlg.locator('[data-map-link]').count()\n"
+                 "    dlg.locator('[data-comfort=close]').click()\n"
+                 "    travel.locator('[data-comfort=taxi]').first.click()\n"
+                 "    dlg=patient.locator('.comfort-dialog:not(.comfort-inline)')\n"
+                 "    assert dlg.locator('.travel-choice').count()==2\n"
+                 "    assert dlg.locator('.v19-progress-item.current').count()==1\n"
+                 "    dlg.locator('[data-comfort=close]').click()\n"
                  "    patient.locator('.bottom-nav button[data-view=today]').click()\n"
                  "    patient.locator('.v17-home').wait_for()\n")
           assert needle in s
