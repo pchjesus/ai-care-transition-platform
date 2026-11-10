@@ -31,7 +31,7 @@ jobs:
           p=Path('patient')
           original=(p/'index.html').read_text()
           v18=(p/'v18.html').read_text()
-          v19=(p/'v19.html').read_text()
+          v19=(p/'v19-1.html').read_text()
           assert 'v19-1-theme' not in original and 'v19-1-theme' not in v18
           assert 'class="v19-theme v19-1-theme"' in v19 and 'standalone-comfort-v19.js' in v19
           assert 'v19-1.css' in v19 and "name:'이정희'" in v19
