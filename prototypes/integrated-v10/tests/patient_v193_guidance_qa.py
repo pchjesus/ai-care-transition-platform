@@ -2,7 +2,11 @@
 Run from repository root with an HTTP server on port 8765 and Playwright Chromium.
 No real patient data, medical integrations, reservations, or taxi calls.
 """
+from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+OUT = Path('artifacts/patient-v193-review')
+OUT.mkdir(parents=True, exist_ok=True)
 
 BASE = "http://127.0.0.1:8765/prototypes"
 HOSPITAL = BASE + "/hospital-ux2-v07/index.html"
@@ -50,6 +54,7 @@ with sync_playwright() as playwright:
         "key => JSON.parse(localStorage.getItem(key))?.['SYN-002']?.draft?.status==='PUBLISHED'",
         arg=KEY
     )
+    hospital.screenshot(path=str(OUT / "medical-ux2-published-desktop.png"), animations="disabled")
     patient.reload(wait_until="networkidle")
     patient.locator(".v17-home").wait_for()
     assert patient.locator(".v193-connected-tour").count() == 1, "Avoid duplicate tour entries"
@@ -67,10 +72,14 @@ with sync_playwright() as playwright:
         for button in patient.locator(".v193-guide-copy button").all():
             assert button.bounding_box()["height"] >= 48, "Large menu CTA required"
         ensure_no_horizontal_overflow(patient, width)
+        if width in [320, 390, 1440]:
+            patient.screenshot(path=str(OUT / f"patient-guide-{width}.png"), full_page=True, animations="disabled")
         patient.locator('.v193-guide-item [data-view="help"]').click()
         patient.locator(".v193-clinician-questions").wait_for()
         assert patient.locator(".v193-clinician-questions li").count() == 5
         assert patient.locator('.v193-questions-link[href="#v193-help-published"]').count() == 1
+        if width in [320, 390, 1440]:
+            patient.screenshot(path=str(OUT / f"patient-questions-{width}.png"), full_page=True, animations="disabled")
         ensure_no_horizontal_overflow(patient, width)
         menu(patient, "today", width)
 
@@ -82,6 +91,7 @@ with sync_playwright() as playwright:
     tour_button.click()
     tour = patient.locator(".spotlight-tour")
     tour.wait_for()
+    patient.screenshot(path=str(OUT / "patient-tour-first-step-320.png"), animations="disabled")
     for step in range(1, 6):
         assert tour.locator("#tour-count").inner_text().endswith(f"{step} / 5")
         if step < 5:
