@@ -182,7 +182,7 @@
     <section class="surface ux6-card">
      <h2 class="section-title">검토·승인 작업</h2>
      <p class="section-caption">검토 요청과 승인은 서로 다른 단계입니다. 환자 공개에는 추가 발행이 필요합니다.</p>
-     <div class="ux7-actions">${actions.join('')}</div>
+     <div class="ux7-actions">${actions.join('')}<button type="button" class="btn" data-ux7-print="draft" ${can?'':'disabled'}>검토용 초안 인쇄</button>${current?'<button type="button" class="btn" data-ux7-print="issued">유효 발행본 인쇄</button>':''}</div>
      ${pending?`<div class="ux6-alert"><b>철회 검토 대기</b> · 요청 역할 ${esc(roles[r.revocationRequest.requestedRole])} / ${esc(r.revocationRequest.reason)}. 요청만으로 환자 안내가 숨겨지지 않습니다.</div>`:''}
      <h3 class="section-title ux7-subheading">발행 차단 사유 · ${blocked.length}건</h3>
      ${blocked.length?`<ul class="ux6-blockers">${blocked.map(b=>`<li><strong>${esc(b.group||'확인')}</strong><span>${esc(b.label)}</span></li>`).join('')}</ul>`:'<p class="ux6-empty">기존 A3 차단 조건에 해당하는 항목이 없습니다. 최종 승인자 역할·승인 상태는 별도로 확인합니다.</p>'}
@@ -202,6 +202,28 @@
    <details class="surface ux7-audit"><summary>변경·승인·발행 기록 ${history.length}건 확인</summary><ol class="ux6-history">${history.map(x=>`<li><b>${esc(x.event)}</b> · ${esc(x.role)}<small>${esc(dateLabel(x.at))} · ${esc(x.details)}</small></li>`).join('')}</ol></details>
   </section>`;
 }
+  function printPlan(kind){
+    const r=getRecord();
+    if(!r||ui.stale||!writable()){toast('저장 상태를 확인한 후 인쇄하세요.');return;}
+    const current=publication.projectCurrentPublication({[state.patientId]:r},state.patientId,publication.encounterFor(state.patientId));
+    if(!['draft','issued'].includes(kind)||kind==='issued'&&!current){toast('현재 유효하게 발행된 계획만 인쇄할 수 있습니다.');return;}
+    const draft=kind==='draft';
+    const items=draft?r.draft.items.filter(i=>i.visibility==='PATIENT'):current.items;
+    const heading=draft?'검토용 초안 · 환자에게 발행되지 않음':'유효 발행본 · v'+current.planVersion;
+    document.getElementById('ux7-print-sheet')?.remove();
+    const sheet=document.createElement('article');
+    sheet.id='ux7-print-sheet';sheet.setAttribute('aria-label',heading);
+    sheet.innerHTML='<header><strong>케어브릿지랩 · 합성 데이터 시연</strong><h1>퇴원 전환관리 안내 계획</h1>'
+      +'<p>환자 ID '+esc(state.patientId)+' · 입원건 '+esc(publication.encounterFor(state.patientId))+'</p>'
+      +'<p class="ux7-print-watermark">'+esc(heading)+'</p></header>'
+      +items.map(item=>'<section><h2>'+esc(item.title)+'</h2><p>'+esc(item.text)+'</p></section>').join('')
+      +'<footer>실제 의료기관에서 발급한 문서가 아닙니다. '
+      +(draft?'검토용 초안이며 의료진의 최종 승인·발행을 거치지 않았습니다.':'이 브라우저의 합성 데이터 유효 발행 스냅샷입니다.')+'</footer>';
+    document.body.appendChild(sheet);
+    window.print();
+    // Preserve printed DOM for browser print-dialog lifecycle; clean at completion.
+    window.addEventListener('afterprint',()=>sheet.remove(),{once:true});
+  }
   async function workflowTransitionV07(kind){
   if(ui.busy||!writable()||!CANONICAL.cases.some(c=>c.id===state.patientId)){
     toast('현재 기록을 저장할 수 없습니다. 브라우저 상태를 확인하세요.');return;
@@ -492,6 +514,8 @@
     if(tab){e.preventDefault();e.stopImmediatePropagation();ui.tab=tab.dataset.v6Tab;render({keepScroll:true});return;}
     const action=e.target.closest('[data-v6-action]');
     if(!action){
+      const print=e.target.closest('[data-ux7-print]');
+      if(print){e.preventDefault();e.stopImmediatePropagation();printPlan(print.dataset.ux7Print);return;}
       const flow=e.target.closest('[data-ux7-action]');
       if(flow){e.preventDefault();e.stopImmediatePropagation();workflowTransitionV07(flow.dataset.ux7Action);}
       return;
