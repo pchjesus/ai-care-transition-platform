@@ -220,9 +220,9 @@
       +'<footer>실제 의료기관에서 발급한 문서가 아닙니다. '
       +(draft?'검토용 초안이며 의료진의 최종 승인·발행을 거치지 않았습니다.':'이 브라우저의 합성 데이터 유효 발행 스냅샷입니다.')+'</footer>';
     document.body.appendChild(sheet);
-    window.print();
-    // Preserve printed DOM for browser print-dialog lifecycle; clean at completion.
+    // Register before opening the browser print dialog; afterprint may fire synchronously.
     window.addEventListener('afterprint',()=>sheet.remove(),{once:true});
+    window.print();
   }
   async function workflowTransitionV07(kind){
   if(ui.busy||!writable()||!CANONICAL.cases.some(c=>c.id===state.patientId)){
