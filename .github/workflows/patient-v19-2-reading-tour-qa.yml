@@ -1,0 +1,73 @@
+name: CareBridgeLab Patient Lee v1.9.2 warm palette, font toggle, tour QA
+on:
+  push:
+    branches: [feat/patient-v19-2-reading-tour-palette]
+    paths:
+      - 'patient/v19-2*'
+      - 'patient/v19_2_qa.py'
+      - 'patient/v19-2-controls.js'
+      - 'patient/compare-v19-2.html'
+      - '.github/workflows/patient-v19-2-reading-tour-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  v192-reading-tour:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Candidate JS syntax, isolation, accessibility assets and link verification
+        
+        run: |
+          node --check prototypes/integrated-v10/patient/comfort-ui-v19.js
+          node --check prototypes/integrated-v10/patient/standalone-comfort-v19.js
+          node --check patient/v19-2-controls.js
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('patient')
+          original=(p/'index.html').read_text()
+          v18=(p/'v18.html').read_text()
+          v19=(p/'v19-2.html').read_text()
+          assert 'v19-2-theme' not in original and 'v19-2-theme' not in v18
+          assert 'class="v19-theme v19-2-theme"' in v19 and 'standalone-comfort-v19.js' in v19
+          assert 'v19-2.css' in v19 and 'v19-2-controls.js' in v19 and "name:'이정희'" in v19
+          assert 'EMBEDDED_PDF_PREVIEW' in v19
+          assert 'v19-2.css' not in original
+          source=re.search(r'<script>\s*(.*?)\s*</script>',v19,re.S)
+          assert source is not None
+          Path('/tmp/v191-page.js').write_text(source.group(1),encoding='utf-8')
+          PY
+          node --check /tmp/v191-page.js
+      - name: Install Chromium and Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+      - name: Original versus v19.2 motion, spotlight, font, hover and transport regression
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/carebridge-patient-v19-server.log 2>&1 &
+          sleep 2
+          python patient/v19_2_qa.py
+      - name: Upload screenshots and preview source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-Lee-v19-2-reading-tour-qa
+          path: |
+            /tmp/carebridge-v19-2-qa/
+            patient/v19-2.html
+            patient/v19-2.css
+            patient/v19-2-controls.js
+            patient/compare-v19-2.html
+            prototypes/integrated-v10/patient/comfort-ui-v19.js
+            prototypes/integrated-v10/v19-2-home-preview.html
+          if-no-files-found: warn
