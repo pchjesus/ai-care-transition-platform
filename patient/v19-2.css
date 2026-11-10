@@ -1,0 +1,289 @@
+/* CareBridgeLab patient demo v1.9.2 — Morning Cove palette.
+   Warm ivory surfaces + readable marine blue actions + restrained apricot/sunlit sea-glass accents.
+   The sea-glass tint is decorative only: never the sole indication of selected/medical status. */
+.v19-theme.v19-1-theme.v19-2-theme{
+ --v192-ink:#203e56;
+ --v192-subtext:#516b7e;
+ --v192-blue:#286883;
+ --v192-blue-strong:#215770;
+ --v192-blue-soft:#e9f3fa;
+ --v192-hover:#e9f3fc;
+ --v192-border:#d4e2e8;
+ --v192-ivory:#fcfaf6;
+ --v192-paper:#fffefa;
+ --v192-sun:#c47a4f;
+ --v192-sun-soft:#fff0e4;
+ --v192-glass:#e5f1ee;
+ --v192-ease:cubic-bezier(.22,1,.36,1);
+ --navy:var(--v192-ink);
+ --ink:var(--v192-ink);
+ --blue:var(--v192-blue);
+ --blue-dark:var(--v192-blue-strong);
+ --v191-ocean:var(--v192-blue);
+ --v191-ocean-hover:var(--v192-blue-strong);
+ --v191-ink:var(--v192-ink);
+ --v191-muted:var(--v192-subtext);
+ --v191-apricot:var(--v192-sun);
+ --v19-ink:var(--v192-ink);
+ --v19-navy:var(--v192-blue);
+ background:var(--v192-ivory);
+ color:var(--v192-ink);
+ accent-color:var(--v192-blue)
+}
+.v19-theme.v19-2-theme .app-body,
+.v19-theme.v19-2-theme .main{
+ background:linear-gradient(180deg,#fffdf9 0%,#fbfaf7 100%)!important
+}
+.v19-theme.v19-2-theme .app-layout .side{
+ background:#f8fbf9!important;border-color:#dbe8e5!important
+}
+.v19-theme.v19-2-theme .topline{background:var(--v192-paper)!important;border-color:var(--v192-border)!important}
+.v19-theme.v19-2-theme .v18-hero{
+ background:linear-gradient(115deg,#eaf3f9 0%,#f4f9f7 52%,#fff4e9 100%)!important;
+ border:1px solid #dbe8e4!important;
+ box-shadow:0 5px 22px rgba(36,80,100,.035)
+}
+.v19-theme.v19-2-theme .v18-hero .v18-avatar{
+ background:#deedf1!important;color:#2e6a83!important
+}
+.v19-theme.v19-2-theme .v18-hero h1{color:#1e4961!important}
+.v19-theme.v19-2-theme .v18-hero h1 em{color:#286984!important}
+.v19-theme.v19-2-theme .v18-home .v18-task,
+.v19-theme.v19-2-theme .v18-home .v18-today-card,
+.v19-theme.v19-2-theme .v18-home .v18-mini-card,
+.v19-theme.v19-2-theme .v18-home .v18-visit-card{
+ background:var(--v192-paper)!important;
+ border-color:#dce6e6!important
+}
+.v19-theme.v19-2-theme .v18-home .v18-today-card{box-shadow:0 7px 22px rgba(36,73,89,.035)}
+.v19-theme.v19-2-theme .v18-home .v18-task{
+ border:1px solid #dae5e7!important;
+ transition:background-color 165ms ease-out,border-color 165ms ease-out,box-shadow 165ms ease-out!important
+}
+.v19-theme.v19-2-theme .v18-home .v18-task:is(:hover,:focus-visible){
+ background:#eaf4fb!important;border:1px solid #8eb6cd!important;
+ box-shadow:0 3px 11px rgba(39,91,117,.095)!important;
+ transform:none!important
+}
+.v19-theme.v19-2-theme .v18-home .v18-task:active{background:#e2f0f8!important;transform:none!important}
+.v19-theme.v19-2-theme .v18-task .v18-task-icon{background:#e3eff5;color:#296788}
+.v19-theme.v19-2-theme .v18-task:nth-child(2) .v18-task-icon{background:#fcebdc;color:#a5653c}
+.v19-theme.v19-2-theme .v18-task:nth-child(3) .v18-task-icon{background:#eeebf5;color:#6d6090}
+.v19-theme.v19-2-theme .v18-visit-card{
+ background:linear-gradient(125deg,#fff3e8,#fffcf8)!important;
+ border-color:#efddd0!important
+}
+.v19-theme.v19-2-theme .v18-help-card{
+ background:linear-gradient(145deg,#edf7f4,#fbfdfb)!important;
+ border-color:#d6e8e4!important
+}
+.v19-theme.v19-2-theme .v18-home .v18-usage{
+ background:#f7faf7!important;border-color:#dbe8e3!important
+}
+.v19-theme.v19-2-theme .v18-visit-card .v18-note{
+ background:#fff2e9!important;color:#79543a!important
+}
+.v19-theme.v19-2-theme .v18-task-content strong,
+.v19-theme.v19-2-theme .v18-mini-card h2{color:var(--v192-ink)!important}
+.v19-theme.v19-2-theme .v18-task-content small,
+.v19-theme.v19-2-theme .v18-card-intro{color:var(--v192-subtext)!important}
+.v19-theme.v19-2-theme .v18-inline-cta{color:var(--v192-blue)!important}
+.v19-theme.v19-2-theme .v18-inline-cta:hover{color:var(--v192-blue-strong)!important;background:#f0f8fa!important}
+.v19-theme.v19-2-theme :is(.v18-main-cta,.primary,.v12-open-btn,.document-cta,.v18-modal-save):not(:disabled){
+ background:linear-gradient(110deg,#286b8c,#266181)!important;
+ color:#fff!important;border-color:#24617e!important;
+ box-shadow:none!important
+}
+.v19-theme.v19-2-theme :is(.v18-main-cta,.primary,.v12-open-btn,.document-cta,.v18-modal-save):not(:disabled):hover{
+ background:linear-gradient(110deg,#246080,#21546f)!important;
+ color:#fff!important;
+ box-shadow:0 5px 12px rgba(30,84,112,.13)!important;
+ transform:none!important
+}
+.v19-theme.v19-2-theme :is(.secondary-action,.link-soft,.home-help-shortcuts button,.search-tags button,
+ .search-launch,.service-search-launch button,.v18-guide-trigger):not(:disabled):hover{
+ background:var(--v192-hover)!important;border-color:#a5c5d7!important;
+ color:#225977!important;transform:none!important
+}
+.v19-theme.v19-2-theme :is(.service-card,.v12-service-card):not(:disabled):hover{
+ background:#edf6fa!important;border-color:#8fb6cd!important;color:#245978!important;transform:none!important
+}
+.v19-theme.v19-2-theme .service-search-launch .search-launch:hover{
+ background:#e9f3fc!important;border-color:#aac8d9!important
+}
+.v19-theme.v19-2-theme .profile-layout .transfer-status{
+ background:linear-gradient(95deg,#eef6fa,#fffbf5)!important;
+ color:#315e73!important;border:1px solid #d4e6e9!important;
+ border-left:4px solid var(--v192-sun)!important
+}
+.v19-theme.v19-2-theme :is(.profile-section,.services-panel,.v12-confirmed,.focus-panel,.support-steps){
+ border-color:#dce7e5!important
+}
+.v19-theme.v19-2-theme .profile-section{
+ background:var(--v192-paper)!important
+}
+.v19-theme.v19-2-theme .profile-layout .profile-tag{
+ background:#edf5f8!important;border-color:#d4e7eb!important;color:#2a6883!important
+}
+.v19-theme.v19-2-theme .profile-layout .inline-notice{
+ background:#edf7f7!important;color:#275e73!important;border-color:#c9e2e2!important
+}
+.v19-theme.v19-2-theme .bottom-nav{
+ background:#fffefa!important;border-top-color:#d7e4e5!important
+}
+.v19-theme.v19-2-theme .bottom-nav button[aria-current=page]{
+ color:#245f7c!important;background:#e4f1f5!important;
+ box-shadow:inset 0 -3px #89b5c4!important
+}
+.v19-theme.v19-2-theme .side-nav[aria-current=page]{
+ background:#e7f2f4!important;color:#205e7b!important;
+ box-shadow:inset 3px 0 #64a2b8!important
+}
+/* Header: [사용 안내] [큰 글씨] [가상 환자]. Large-text is a one-click setting. */
+.v19-theme.v19-2-theme .topline .meta{
+ display:flex;align-items:center;flex-wrap:wrap;gap:7px
+}
+.v19-theme.v19-2-theme .topline .meta .patient-header-help{
+ order:3;min-height:44px;border:1px solid #c8dee7!important;
+ background:#f3f9fb!important;color:#276481!important;
+ border-radius:11px;font-weight:790;
+}
+.v19-theme.v19-2-theme .topline .meta .patient-header-help:hover{
+ background:#e3f1f8!important;border-color:#9ec2d3!important
+}
+.v19-theme.v19-2-theme .topline .meta .v192-quick-font{
+ order:4;min-height:44px;padding:9px 15px;
+ border:1px solid #b9d4df;background:#f2f8fa;color:#246180;
+ border-radius:11px;font-size:calc(14px * var(--font-scale,1));
+ font-weight:820;white-space:nowrap;cursor:pointer;
+ transition:background-color 170ms ease-out,border-color 170ms ease-out,color 170ms ease-out
+}
+.v19-theme.v19-2-theme .topline .meta .v192-quick-font:hover{
+ background:#e2f0f7!important;border-color:#8cb8cf!important;color:#1e526c!important
+}
+.v19-theme.v19-2-theme .topline .meta .v192-quick-font[aria-pressed=true]{
+ background:#e1f0f4!important;border:2px solid #3e829b!important;
+ color:#1f5a72!important;padding:8px 14px
+}
+.v19-theme.v19-2-theme .topline .meta .v192-quick-font[aria-pressed=true]::before{
+ content:'✓';font-size:calc(13px * var(--font-scale,1));margin-right:5px
+}
+.v19-theme.v19-2-theme .topline .meta .tiny-pill{order:5;background:#fff5e9;color:#865535!important;border:1px solid #f1dcc5}
+.v19-theme.v19-2-theme .topline .meta .version-meta{order:2}
+.v19-theme.v19-2-theme .topline .meta .patient-journey{order:0}
+.v19-theme.v19-2-theme .topline .meta .top-profile{order:1}
+.v19-theme.v19-2-theme .topline .meta>.top-font:not([data-action=font]){order:1}
+/* Persistent two-choice segmented setting, sliding visual indicator only (buttons always work without dragging). */
+.v19-theme.v19-2-theme .v192-display-settings{
+ background:linear-gradient(120deg,#f5faf9,#fffefa)!important;
+ border-color:#d6e6e2!important
+}
+.v192-display-settings .v192-display-description{
+ font-size:calc(15px * var(--font-scale,1));color:#4f687a;line-height:1.7;margin:3px 0 19px
+}
+.v192-settings-group{margin-bottom:19px}
+.v192-setting-title{font-size:calc(16px * var(--font-scale,1));font-weight:800;color:#294f68;margin-bottom:11px}
+.v192-size-segments{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px;
+ position:relative;padding:5px;
+ background:#e5eff3;border:1px solid #cbdfe6;border-radius:15px;
+ max-width:530px;min-height:61px
+}
+.v192-size-segments .v192-seg-thumb{
+ position:absolute;left:5px;top:5px;bottom:5px;width:calc((100% - 15px)/2);
+ border-radius:10px;background:var(--v192-paper,#fff);
+ border:1px solid #b4d2df;box-shadow:0 3px 9px #244f6b18;
+ pointer-events:none;transform:translateX(0);
+ transition:transform 205ms cubic-bezier(.22,1,.36,1)
+}
+.v192-size-segments[data-large=true] .v192-seg-thumb{
+ transform:translateX(calc(100% + 5px))
+}
+.v192-size-segments button{
+ position:relative;z-index:1;background:transparent!important;
+ border:0!important;border-radius:10px;
+ color:#526a78!important;font-size:calc(16px * var(--font-scale,1));
+ font-weight:780;min-height:49px;cursor:pointer;
+ transition:color 170ms ease-out
+}
+.v192-size-segments button[aria-pressed=true]{color:#245e7c!important;font-weight:850}
+.v192-size-segments button:hover{color:#205675!important}
+.v192-size-segments button:focus-visible,.v192-quick-font:focus-visible{
+ outline:3px solid #af774b!important;outline-offset:3px
+}
+.v192-setting-hint{
+ margin:10px 0 0;font-size:calc(13px * var(--font-scale,1));color:#5a7080;line-height:1.6
+}
+.v192-motion-setting{
+ display:flex;align-items:center;gap:13px;border-top:1px solid #d9e6e6;
+ padding-top:18px;min-height:78px;cursor:pointer
+}
+.v192-motion-setting>span:first-child{flex:1;min-width:0}
+.v192-motion-setting strong{display:block;font-size:calc(15px * var(--font-scale,1));color:#264b61}
+.v192-motion-setting small{display:block;color:#587281;font-size:calc(13px * var(--font-scale,1));line-height:1.6;margin-top:4px}
+.v192-motion-setting input{position:absolute;opacity:0;width:58px;height:40px;cursor:pointer}
+.v192-switch-graphic{
+ width:58px;height:35px;background:#cbd7dc;border:2px solid #bbcdd6;border-radius:999px;
+ flex:none;position:relative;
+ transition:background-color 180ms ease-out,border-color 180ms ease-out
+}
+.v192-switch-graphic::before{
+ content:'';display:block;width:23px;height:23px;position:absolute;top:4px;left:4px;
+ border-radius:50%;background:#fff;box-shadow:0 2px 5px #24495b22;
+ transition:transform 190ms cubic-bezier(.22,1,.36,1)
+}
+.v192-motion-setting input:checked+.v192-switch-graphic{background:#31768c;border-color:#31768c}
+.v192-motion-setting input:checked+.v192-switch-graphic::before{transform:translateX(23px)}
+.v192-motion-setting input:focus-visible+.v192-switch-graphic{outline:3px solid #b97f51;outline-offset:3px}
+.v192-settings-feedback{min-height:19px;font-size:calc(13px * var(--font-scale,1));line-height:1.6;color:#245e79;margin:12px 0 0}
+/* Spotlight bug: generic tour-button background was painting a solid rectangle over the highlighted nav item.
+   The practice target remains click-/keyboard-accessible but its hitbox must be visually transparent. */
+.v19-theme.v19-2-theme #patient-brief-tour .spot-ring,
+.v19-theme.v19-2-theme #patient-learning-tour .spot-ring{
+ background:transparent!important;box-shadow:0 0 0 2px #ffffffb8!important;
+ border:3px solid #8fbbcf!important
+}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-ring > button.spot-try-target,
+.v19-theme.v19-2-theme #patient-learning-tour .spot-ring > button.spot-try-target{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ background:transparent!important;background-image:none!important;border:0!important;
+ box-shadow:none!important;opacity:1!important;padding:0!important;
+ color:transparent!important;backdrop-filter:none!important
+}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-mask{background:rgba(26,43,55,.48)!important}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-tip{
+ border:1px solid #c6dfe6!important;box-shadow:0 18px 40px #183a5030!important
+}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-tip .spot-head strong,
+.v19-theme.v19-2-theme #patient-brief-tour .spot-copy h2{color:#215f7e!important}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-primary{
+ background:#286b8c!important;color:#fff!important;border-color:#286b8c!important
+}
+.v19-theme.v19-2-theme #patient-brief-tour .spot-primary:hover{
+ background:#215b78!important;color:#fff!important
+}
+/* Smartphone header stays legible and targetable. */
+@container display (max-width:760px){
+ .v19-theme.v19-2-theme .topline{padding:9px 11px!important}
+ .v19-theme.v19-2-theme .topline .meta{gap:5px}
+ .v19-theme.v19-2-theme .topline .meta .patient-header-help,
+ .v19-theme.v19-2-theme .topline .meta .v192-quick-font{
+  min-height:44px;padding:8px 10px;font-size:calc(12px * var(--font-scale,1))
+ }
+ .v19-theme.v19-2-theme .topline .meta .tiny-pill{padding:6px 8px}
+ .v192-display-settings{padding:19px 15px!important}
+ .v192-size-segments{width:100%}
+}
+@container display (max-width:360px){
+ .v19-theme.v19-2-theme .topline .meta .tiny-pill{
+  font-size:calc(10px * var(--font-scale,1))
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .v19-theme.v19-2-theme .v192-seg-thumb,
+ .v19-theme.v19-2-theme .v192-switch-graphic,
+ .v19-theme.v19-2-theme .v192-switch-graphic::before{transition:none!important}
+}
+.v19-theme.v19-2-theme.v18-less-motion .v192-seg-thumb,
+.v19-theme.v19-2-theme.v18-less-motion .v192-switch-graphic,
+.v19-theme.v19-2-theme.v18-less-motion .v192-switch-graphic::before{transition:none!important}
