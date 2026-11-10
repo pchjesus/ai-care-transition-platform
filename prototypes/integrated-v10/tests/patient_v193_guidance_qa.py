@@ -91,10 +91,12 @@ with sync_playwright() as playwright:
     assert patient.locator(".v17-home").count() == 1, "Tour must restore previous screen"
     assert hospital.evaluate("(key) => localStorage.getItem(key)", KEY) == original_state, "Tour must not edit A3 publication data"
 
-    patient.locator(".v193-connected-quick").click()
+    # The header font shortcut is hidden on small screens; profile settings are reachable.
+    menu(patient, "profile", 320)
+    patient.locator('.v193-display-settings [data-v193-size="large"]').click()
     assert patient.locator("body.large-font").count() == 1
     ensure_no_horizontal_overflow(patient, 320)
-    patient.locator(".v193-connected-quick").click()
+    patient.locator('.v193-display-settings [data-v193-size="normal"]').click()
     assert patient.locator("body.large-font").count() == 0
 
     patient.emulate_media(reduced_motion="reduce")
