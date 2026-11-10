@@ -40,3 +40,13 @@ Gomez-Hernandez, M., Ferre, X., Moral, C., & Villalba-Mora, E. (2023). Design gu
 Liu, B., & Wang, C. (2025). Elderly-centric chromatics: Unraveling the color preferences and visual needs of the elderly in smart APP interfaces. *International Journal of Human–Computer Interaction, 41*(5), 3527–3536. https://doi.org/10.1080/10447318.2024.2338659
 
 World Wide Web Consortium. (2023). *Web Content Accessibility Guidelines (WCAG) 2.2*. https://www.w3.org/TR/WCAG22/
+
+## 실제 검증 및 브라우저 시연 기록
+
+- **PASS:** [GitHub Actions Chromium QA #42731514961](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42731514961), **20개 시나리오 PASS**. CSS/JS 구문 확인과 원본 앱 비변경 확인 포함.
+- **실제 화면 증거:** [QA 아티팩트](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42731514961) 내 `v19-2-spotlight-step2-desktop.png`에서 강조된 ‘일정’ 메뉴 아이콘/글씨가 직접 보임. `v19-2-blue-card-hover-desktop.png`, `v19-2-warm-profile-segmented-mobile.png`, `new-small-large-font.png` 포함.
+- 검사된 기능: 기존 원본 비교·5탭·진료·도움·알림·PDF·퀴즈·프로필·가상 업데이트 요청·지도 주소 누락·택시 준비 3단계, 320/390/768/1440px, 글씨 크기 저장/복원, 움직임 감소, 새 호버 색상과 사용 안내 2/3 단계 강조 투명성.
+- **PASS:** [GitHub Pages #42732154680](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42732154680), 별도 시연 경로 신규 게시. 운영 기본 진입점과 `main` 변경 없음.
+- 직접 비교 페이지: `patient/compare-v19-2.html`; 새 시안: `patient/v19-2.html`; 통합 홈 색상 시안: `prototypes/integrated-v10/v19-2-home-preview.html`.
+- **NOT VERIFIED:** 한국 고령 환자의 정서 개선·질병 결과, 모바일 실기기/Safari/TalkBack/VoiceOver/전체 WCAG 적합성, 실제 의료기관 인증·발행정보 조회·외부 전송.
+- 디자인 승인·운영 이식·기존 A3→B 발행/개정/철회 통합 회귀는 다음 단계.
