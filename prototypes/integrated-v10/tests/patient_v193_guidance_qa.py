@@ -29,15 +29,42 @@ def ensure_no_horizontal_overflow(page, width):
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
     context = browser.new_context(viewport={"width": 390, "height": 850})
+    # Current default home must offer only the linked and latest independent patient apps.
+    home = context.new_page()
+    for width in [320, 390, 1440]:
+        home.set_viewport_size({"width": width, "height": 900})
+        home.goto(BASE + "/integrated-v10/index.html", wait_until="networkidle")
+        assert home.locator(".patient-mode-link").count() == 2, "Linked/independent choices must be explicit"
+        assert home.locator('.patient-mode-link[href*="v193-connected.html"]').count() == 1
+        assert home.locator('.patient-mode-link[href="../../patient/v19-3.html"]').count() == 1
+        assert home.locator('a[href*="patient/index.html"],a[href*="legacy-home"]').count() == 0
+        ensure_no_horizontal_overflow(home, width)
+        if width in [390, 1440]:
+            home.screenshot(path=str(OUT / f"home-current-patient-choices-{width}.png"), full_page=True, animations="disabled")
+    home.locator('.patient-mode-link.secondary').click()
+    home.locator('body.v19-3-theme').wait_for()
+    assert home.url.endswith("/patient/v19-3.html")
+    home.go_back(wait_until="networkidle")
+    home.locator('.patient-mode-link:not(.secondary)').click()
+    assert "/patient/v193-connected.html" in home.url
+    assert home.locator("#demo-code").count() == 1
+    home.close()
+
     patient = context.new_page()
     failures = []
     patient.on("pageerror", lambda err: failures.append(str(err)))
 
     patient.goto(PATIENT, wait_until="networkidle")
+    assert patient.locator('.demo-mode-option a[href="../../../patient/v19-3.html"]').count() == 1
     patient.locator("#demo-code").fill("CARE2026")
     patient.locator("#demo-login button[type=submit]").click()
     patient.locator(".v17-unpublished").wait_for()
     assert patient.locator(".v193-guide-menu").count() == 0, "Guidance must not fabricate a patient publication"
+    assert "'+availableOtherDemos()+'" not in patient.locator(".v17-unpublished").inner_text()
+    assert patient.locator(".demo-tools").count() == 0, "Old developer/legacy menu must be removed"
+    assert patient.locator('.side-end .independent-demo-link[href="../../../patient/v19-3.html"]').count() == 1
+    assert patient.locator('.patient-mobile-journey a[href="../index.html"]').count() == 1
+    assert patient.locator('a[href*="patient/index.html"]').count() == 0
 
     hospital = context.new_page()
     hospital.set_viewport_size({"width": 1440, "height": 900})
@@ -59,6 +86,8 @@ with sync_playwright() as playwright:
     patient.locator(".v17-home").wait_for()
     assert patient.locator(".v193-connected-tour").count() == 1, "Avoid duplicate tour entries"
     assert patient.locator(".patient-header-help").count() == 0
+    assert patient.locator(".demo-tools").count() == 0
+    assert patient.locator('.side-end .independent-demo-link[href="../../../patient/v19-3.html"]').count() == 1
 
     for width in [320, 390, 768, 1440]:
         patient.set_viewport_size({"width": width, "height": 900})
