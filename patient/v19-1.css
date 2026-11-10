@@ -1,0 +1,225 @@
+/* CareBridgeLab B — v1.9.1
+   60% airy neutrals, 30% ocean-blue meaning/navigation, ≤10% apricot emphasis.
+   Animates only the five major screen destinations, never re-rendered controls. */
+.v19-theme.v19-1-theme {
+ --v191-ink:#1d3c59;
+ --v191-muted:#536d82;
+ --v191-ocean:#285d8b;
+ --v191-ocean-hover:#21537e;
+ --v191-pale:#edf5fd;
+ --v191-pale-hover:#e4effa;
+ --v191-border:#d5e3ee;
+ --v191-apricot:#b66d41;
+ --v191-apricot-pale:#fff3e9;
+ --v191-motion:cubic-bezier(.22,1,.36,1);
+ --v19-ease:var(--v191-motion);
+ color:var(--v191-ink);
+ background:#f7f9fc;
+ accent-color:var(--v191-ocean)
+}
+/* Exact navigation-boundary animations. Other updates may replace DOM but must be still. */
+.v19-theme.v19-1-theme .main > :is(
+ .v18-page,.v12-shell,.detail-wrap,.service-page,.support-detail,
+ .overview-layout,.profile-layout,.reminders-page,.quiz-container,
+ .document-hub,.schedule-layout,.v12-home) {animation:none!important}
+.v19-theme.v19-1-theme .v18-home :is(.v18-hero,.v18-task,.v18-visit-card,.v18-mini-card),
+.v19-theme.v19-1-theme .travel-entry-section .travel-entry,
+.v19-theme.v19-1-theme .comfort-dialog:not(.comfort-inline)[open],
+.v19-theme.v19-1-theme .comfort-dialog .travel-builder {
+ animation:none!important;
+ animation-delay:0ms!important
+}
+@keyframes v191-tab-arrive {
+ 0%{opacity:.76;transform:translate3d(0,7px,0)}
+ 100%{opacity:1;transform:translate3d(0,0,0)}
+}
+.v19-theme.v19-1-theme .main.v191-top-level-motion > :is(
+ .v18-page,.v12-shell,.detail-wrap,.service-page,.support-detail,
+ .overview-layout,.profile-layout,.reminders-page,.quiz-container,
+ .document-hub,.schedule-layout,.v12-home){
+ animation:v191-tab-arrive 390ms var(--v191-motion) both!important
+}
+/* In-place state changes: only quiet visual feedback, no whole-card translations. */
+.v19-theme.v19-1-theme :is(
+ .v18-task,.v18-main-cta,.v18-inline-cta,.v18-guide-trigger,
+ .service-card,.service-list button,.v12-service-card,.choice,
+ .travel-entry,.travel-choice,.travel-check,.v18-segments button,
+ .comfort-dialog button,.comfort-dialog a,.primary,.secondary-action,
+ .link-soft,.search-launch,.search-tags button,.home-help-shortcuts button,
+ .patient-page-tools button,.profile-section button,.modal-actions button,
+ .bottom-nav button){
+ transition:background-color 175ms ease-out,color 175ms ease-out,
+ border-color 175ms ease-out,box-shadow 175ms ease-out!important
+}
+.v19-theme.v19-1-theme :is(
+ .v18-task,.v18-main-cta,.service-card,.service-list button,
+ .v12-service-card,.travel-entry,.travel-choice,.choice,
+ .primary,.secondary-action,.link-soft,.home-help-shortcuts button,
+ .search-launch):is(:hover,:active){
+ transform:none!important
+}
+.v19-theme.v19-1-theme .bottom-nav :is(button,button svg):is(:hover,:active){transform:none!important}
+.v19-theme.v19-1-theme .v18-motion-switch,.v19-theme.v19-1-theme .v18-motion-switch::before{
+ transition:background-color 170ms ease-out,border-color 170ms ease-out,transform 180ms var(--v191-motion)!important
+}
+/* Baseline information & profile, including screenshot's formerly green transfer status. */
+.v19-theme.v19-1-theme .profile-layout{color:var(--v191-ink)}
+.v19-theme.v19-1-theme .profile-layout :is(h1,h2,h3){color:#214b70!important}
+.v19-theme.v19-1-theme .profile-layout :is(.profile-intro,.profile-help,.transfer-section>p:not(.profile-help)){color:var(--v191-muted)!important}
+.v19-theme.v19-1-theme .profile-section{
+ border:1px solid var(--v191-border)!important;background:#fff!important;
+ box-shadow:0 6px 19px rgba(39,75,112,.045)
+}
+.v19-theme.v19-1-theme .profile-section .profile-grid small{color:#59748a!important}
+.v19-theme.v19-1-theme .profile-section .profile-grid strong{color:#264660!important}
+.v19-theme.v19-1-theme .profile-section .profile-tag{
+ color:#32658d!important;background:var(--v191-pale)!important;
+ border:1px solid #d5e6f3!important
+}
+.v19-theme.v19-1-theme .transfer-section .transfer-status {
+ border:1px solid #d4e4f1!important;
+ border-left:4px solid var(--v191-apricot)!important;
+ border-radius:12px!important;
+ background:linear-gradient(100deg,#edf5fd,#f7faff)!important;
+ color:#315b7c!important;
+ padding:15px 16px
+}
+.v19-theme.v19-1-theme .profile-layout .inline-notice{
+ border:1px solid #bfd9ea!important;background:#edf6fd!important;
+ color:#285b80!important;border-radius:11px!important
+}
+.v19-theme.v19-1-theme .profile-layout .logout-btn{
+ color:#396487!important;text-underline-offset:4px;
+ background:transparent
+}
+.v19-theme.v19-1-theme .profile-layout .logout-btn:hover{
+ color:#204e76!important;background:#eef5fb!important
+}
+.v19-theme.v19-1-theme :is(.profile-section,.modal-panel) .primary:disabled{
+ background:#dce5ee!important;border:1px solid #c9d7e3!important;
+ color:#4d6377!important;box-shadow:none!important;
+ cursor:not-allowed!important;opacity:1!important
+}
+/* Common buttons: filled blue, outlined soft blue, neutral disabled.
+   Do not recolor genuine error, unmet booking or medical risk into a success. */
+.v19-theme.v19-1-theme :is(.primary,.home-help-main,.v18-main-cta):not(:disabled){
+ background:linear-gradient(135deg,#2a6293,#285a85)!important;
+ color:white!important;border:1px solid #285a85!important
+}
+.v19-theme.v19-1-theme :is(.primary,.home-help-main,.v18-main-cta):not(:disabled):hover{
+ background:linear-gradient(135deg,#255884,#204d73)!important;
+ box-shadow:0 4px 11px rgba(27,71,111,.12)!important
+}
+.v19-theme.v19-1-theme :is(.secondary-action,.link-soft,.home-help-shortcuts button,.v12-back,.back-button,.search-tags button,.service-search-launch button:not(.primary)){
+ background:#f2f7fd!important;border:1px solid #cbdde9!important;
+ color:#2c5e85!important;border-radius:11px
+}
+.v19-theme.v19-1-theme :is(.secondary-action,.link-soft,.home-help-shortcuts button,.v12-back,.back-button,.search-tags button,.service-search-launch button:not(.primary)):not(:disabled):hover{
+ background:#e4f0fb!important;border-color:#9fbdd5!important;color:#204f76!important
+}
+.v19-theme.v19-1-theme .home-help-shortcuts button:hover svg,
+.v19-theme.v19-1-theme .service-search-launch :is(svg,small),
+.v19-theme.v19-1-theme .service-search-launch strong{color:inherit!important}
+.v19-theme.v19-1-theme .service-search-launch{
+ background:#f7faff!important;border:1px solid var(--v191-border)!important;
+ box-shadow:0 5px 16px #204b7710
+}
+.v19-theme.v19-1-theme .service-search-launch :is(.search-launch,.help-search-body){
+ border-color:var(--v191-border)!important
+}
+.v19-theme.v19-1-theme .service-search-launch .search-launch{
+ min-height:103px;background:#f7faff!important;color:#28577e!important;
+ border:0!important
+}
+.v19-theme.v19-1-theme .service-search-launch .search-launch[aria-expanded=true]{
+ background:#eaf3fd!important;box-shadow:inset 0 -1px #cfe1ef
+}
+.v19-theme.v19-1-theme .service-search-launch .search-launch:not(:disabled):hover{
+ background:#eaf3fd!important
+}
+.v19-theme.v19-1-theme .help-search-body{
+ background:#fff!important;border-color:#d5e3ee!important
+}
+.v19-theme.v19-1-theme .help-search-body :is(.search-input,input){
+ background:#fff!important;color:#213e5a!important;
+ border:1px solid #b6cdde!important;border-radius:11px
+}
+.v19-theme.v19-1-theme .search-empty{border-color:#cdddeb!important;color:#597285!important;background:#f7faff!important}
+.v19-theme.v19-1-theme :is(.service-card,.v12-service-card){
+ background:#fff!important;border-color:#d6e4ee!important;color:#244865!important
+}
+.v19-theme.v19-1-theme :is(.service-card,.v12-service-card):not(:disabled):hover{
+ background:#f0f7fe!important;border-color:#a7c4db!important;
+ box-shadow:0 5px 15px #1f4b7410!important
+}
+.v19-theme.v19-1-theme :is(.service-card,.v12-service-card) :is(svg,small){
+ color:#50718a!important
+}
+.v19-theme.v19-1-theme .service-page :is(.service-title,.service-lead,.help-disclaimer){
+ color:var(--v191-ink)
+}
+.v19-theme.v19-1-theme .service-page :is(.service-lead,.help-disclaimer){
+ color:var(--v191-muted)!important
+}
+.v19-theme.v19-1-theme :is(.focus-panel,.support-steps,.note-block,.v12-quiet-block){
+ background:#f8fbff!important;border-color:#d8e5ef!important;
+ color:#315670
+}
+.v19-theme.v19-1-theme .note-block{
+ background:#fff5ec!important;border-left:4px solid #bb8258!important;
+ color:#6c4e3b!important
+}
+/* Optional understanding question, read state & documents. */
+.v19-theme.v19-1-theme .quiz-context,
+.v19-theme.v19-1-theme .read-marker{color:#366891!important}
+.v19-theme.v19-1-theme .choice{
+ background:#fff!important;border-color:#d4e3ee!important;color:#264c6a!important
+}
+.v19-theme.v19-1-theme .choice:not(:disabled):hover{
+ background:#edf5fd!important;border-color:#a6c6de!important
+}
+.v19-theme.v19-1-theme .choice[aria-pressed=true],
+.v19-theme.v19-1-theme .choice[aria-selected=true]{
+ background:#e7f2fd!important;border-color:#5a8fba!important;color:#214f76!important
+}
+.v19-theme.v19-1-theme .pdf-backdrop,.v19-theme.v19-1-theme .modal-backdrop{
+ background:rgba(25,48,70,.49)!important
+}
+.v19-theme.v19-1-theme :is(.modal-panel,.pdf-panel){
+ background:#fff!important;box-shadow:0 18px 55px #23446330!important;color:#29455f
+}
+.v19-theme.v19-1-theme :is(.modal-panel,.pdf-panel) :is(h2,h3,strong){color:#244b6d}
+.v19-theme.v19-1-theme .modal-panel>p,
+.v19-theme.v19-1-theme .modal-diff :is(small,strong){color:#4e6a82!important}
+.v19-theme.v19-1-theme .modal-diff{border-color:var(--v191-border)!important;background:#f8fbff}
+.v19-theme.v19-1-theme .consent-row{border-color:#d3e2ee!important;background:#f8fbff!important;color:#375b77!important}
+.v19-theme.v19-1-theme .consent-row input{accent-color:var(--v191-ocean)!important}
+.v19-theme.v19-1-theme .pdf-fallback{background:#edf5fd!important;color:#355d7c!important}
+.v19-theme.v19-1-theme .pdf-actions .secondary-action:hover{
+ color:#235784!important;background:#e5f2fd!important
+}
+.v19-theme.v19-1-theme :is(.source-link,.document-meta,.doc-link){color:#2d628e!important}
+.v19-theme.v19-1-theme :is(.source-link,.document-meta,.doc-link):hover{color:#204c73!important}
+/* Small profile UI and read controls keep 44px+ hit targets. */
+.v19-theme.v19-1-theme :is(.profile-section,.modal-panel,.service-page,.pdf-panel)
+ :is(button,a){min-height:44px}
+.v19-theme.v19-1-theme .v18-segment[aria-pressed=true],
+.v19-theme.v19-1-theme .v18-segments button[aria-pressed=true]{
+ background:#fff!important;color:#235980!important;border-color:#a8c9df!important
+}
+/* Only a tab move gets the big motion; OS/user reduction overrides even the gated effect. */
+@media(prefers-reduced-motion:reduce){
+ .v19-theme.v19-1-theme .main.v191-top-level-motion > *,
+ .v19-theme.v19-1-theme .main.v191-top-level-motion > *::before,
+ .v19-theme.v19-1-theme .main.v191-top-level-motion > *::after{animation:none!important;transform:none!important}
+}
+.v19-theme.v19-1-theme.v18-less-motion .main.v191-top-level-motion > *,
+.v19-theme.v19-1-theme.v18-less-motion .main.v191-top-level-motion > *::before,
+.v19-theme.v19-1-theme.v18-less-motion .main.v191-top-level-motion > *::after{
+ animation:none!important;transform:none!important
+}
+
+/* A generic soft-button hover must not override the expanded search's explicit blue state. */
+.v19-theme.v19-1-theme .service-search-launch button.search-launch:not(.primary):not(:disabled):hover{
+ background:#eaf3fd!important;border-color:#c8ddec!important;color:#245780!important;
+}

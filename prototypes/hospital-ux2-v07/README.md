@@ -6,7 +6,7 @@
 
 - **통합 홈:** `../integrated-v10/index.html`
 - **의료진용:** `index.html` (A1 환자 선택 → A2 평가 편집·인계 → A3 계획·근거·문서 → 역할별 검토·승인·발행)
-- **환자용 B:** `../integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO`
+- **환자용 B:** `../integrated-v10/patient/v193-connected.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO` (구형 B `patient/index.html` 별도 보존)
 
 저장소 루트에서 `python -m http.server 8765`를 실행하고 `http://localhost:8765/prototypes/integrated-v10/index.html`로 접속한다. **이 시연은 파일 더블클릭(`file://`)이 아니라 동일 출처 HTTP(S)에서 동작한다.** 코드 원문만 표시되는 GitHub raw URL과 달리, Pages로 배포된 주소는 실제 HTML 페이지를 렌더링한다.
 
@@ -19,8 +19,9 @@
 - **문서:** 4MB 이하 PDF, SHA-256 대조, 검토와 공개범위 분리. 브라우저 세션의 원본 파일이 있어야 새 공개본의 문서를 발행할 수 있음
 - **검토·승인:** 검토 요청, 보완 요청, 지정 최종 승인자 단독 승인, 승인 후 별도 발행
 - **발행·개정·철회:** 발행 스냅샷 불변, 개정 초안 동안 기존 유효 발행본 유지, 재승인 및 새 발행 시 이전 버전 SUPERSEDED, 철회 요청·반려·철회
-- **환자 B:** 동일 환자/입원건/발행 ID/버전을 검증하는 기존 `shared/publication.js`의 allowlist projection 이용. 미발행·철회·오염·저장 실패는 공개하지 않음
-- **통합 홈:** 의료진과 환자/보호자 진입 분리, 응답형, 키보드 포커스/움직임 축소 지원
+- **환자 B v1.9.3:** 따뜻한 아이보리·마린 블루와 쉬운 사용 안내, 큰 글씨/모션 설정, 지도·택시 3단계 안내 시안을 기존 승인 발행본과 연결. 동일 환자/입원건/발행 ID/버전을 검증하는 `shared/publication.js`의 allowlist projection 이용. 미발행·철회·오염·저장 실패는 공개하지 않음
+- **의료진 보완:** 검토용 초안과 유효 발행본 인쇄 구분, 선택형 공식 진료 목적지·출처 확인(수정 시 재검토), 근거 상세/이슈 검토 보존
+- **통합 홈:** 의료진과 A3 연동형 환자/보호자 진입 분리, 이정희님 독립 예시 및 구형 B 복귀 경로, 응답형/키보드 조작/움직임 축소
 - **롤백:** 이전 통합 홈은 `../integrated-v10/legacy-home-v10.html`, 기존 A3 `../integrated-v10/a3/index.html` 유지
 
 ## 개발 안전 경계
@@ -37,3 +38,10 @@
 - 기존 A3/공유 도메인 Node 테스트 94개: **PASS** (GitHub Actions 확인)
 - 실제 의료기관 실사용성, 인증, 의료적 유효성: **NOT VERIFIED**
 - 별도 `main`/Pages 릴리즈 검증 및 HTTP 배포 확인: 이 문서의 개발 단계 결과와 구분한다.
+
+## v1.9.3 시연과 승인 경계
+
+- 독립 합성 환자 예시: `../../patient/v19-3.html` (이정희님 예시/PDF 전용). **A3 연동형 B와 별개이며 실환자 발행본이 아니다.**
+- 정식 의료기관·택시 예약·외부 전송·실제 좌표 조회를 구현하지 않았다. 위치가 검증되지 않으면 외부 지도 링크가 없다.
+- 의료진 작업과 환자 B는 **동일한 브라우저와 출처**의 합성 저장 상태를 공유한다. 다른 기기 동기화·정식 인증은 제공되지 않는다.
+- 상세 검증 및 롤백 경계: `../../docs/integration/UX2_PATIENT_V193_RELEASE_20261110.md`.
