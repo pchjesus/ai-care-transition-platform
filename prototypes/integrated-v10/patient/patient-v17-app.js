@@ -1,0 +1,396 @@
+import {installPatientComfort} from './comfort-ui.js';
+import {publicationEvents} from '../shared/publication-events.js';
+import {createPatientRepository} from './storage.js';
+import {readPublishedDocument} from '../shared/published-documents.js';
+import {readPatientPublication,PUBLICATION_STORAGE_KEY,ENCOUNTERS,syntheticPatientName} from '../shared/publication.js';
+
+// A3-connected B v1.3: same visual shell, but no standalone fixture, mock approval
+// button, fake appointment, medication instruction, or unrelated embedded PDF.
+const root=document.querySelector('#app');
+const stage=document.querySelector('#stage');
+const query=new URLSearchParams(location.search);
+const patientId=query.get('patient'),encounterId=query.get('encounter');
+const FONT_KEY='care-transition-connected-b-font-v1';
+const state={authenticated:false,view:'today',selected:null,large:false,notice:'',editing:false,profileDraft:null,modal:null,consent:false,choice:null,helpQuery:'',helpSearchOpen:false,pdfURL:null,overviewFilter:'ALL'};
+const storage=(()=>{try{return localStorage}catch{return null}})();
+const personalRepository=createPatientRepository(storage,patientId,encounterId);
+let personalResult=personalRepository.load(),personal=personalResult.data;
+const SESSION_KEY='connected-b-session:'+patientId+':'+encounterId;
+let tourReading=false;
+let overlayReturn=null,publicationSignature=null,openingDocument=0;
+try{const saved=JSON.parse(sessionStorage.getItem(SESSION_KEY));if(saved?.authenticated){state.authenticated=true;if(['today','detail','quiz','schedule','help','reminders','profile','overview'].includes(saved.view)){state.view=saved.view;state.selected=typeof saved.selected==='string'?saved.selected:null;}}}catch{}
+let visits=[{view:state.view,selected:state.selected}],position=0;
+try{state.large=localStorage.getItem(FONT_KEY)==='1'}catch{}
+const esc=x=>String(x??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const permitted=new Set(['today','detail','schedule','help','reminders','profile','overview','quiz']);
+const icons={
+ home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+ back:'<path d="m15 18-6-6 6-6"/>',
+ chev:'<path d="m9 18 6-6-6-6"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+ bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6M17 2v6M3 10h18"/>',
+ help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.6 1.3c-.7 1-2.1 1.4-2.1 3M12 17h.01"/>',
+ file:'<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v6h5M9 13h7M9 17h7"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/>'
+};
+const icon=(name,size=20)=>'<svg aria-hidden="true" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+icons[name]+'</svg>';
+function publication(){
+ let storage=null;try{storage=window.localStorage}catch{}
+ return readPatientPublication(storage,patientId,encounterId);
+}
+const routeKey=()=>['detail','overview','quiz'].includes(state.view)?'today':state.view;
+function nav(view,label,symbol,mobile=false){
+ const active=routeKey()===view;
+ return '<button type="button" class="'+(mobile?'':'side-nav')+'" data-view="'+view+'" '+(active?'aria-current="page"':'')+'>'+icon(symbol,mobile?22:21)+label+'</button>';
+}
+function visit(view,selected=null){
+ if(!permitted.has(view))return;
+ closeOverlay(false);state.editing=false;state.profileDraft=null;state.notice='';state.choice=null;
+ state.view=view;state.selected=selected;
+ const entry={view,selected};
+ if(JSON.stringify(visits[position])!==JSON.stringify(entry)){
+  visits=visits.slice(0,position+1);visits.push(entry);position=visits.length-1;
+ }
+ render();focusContent();
+}
+function traverse(offset){
+ const next=position+offset;if(next<0||next>=visits.length)return;
+ closeOverlay(false);state.editing=false;state.profileDraft=null;state.notice='';state.choice=null;
+ position=next;state.view=visits[next].view;state.selected=visits[next].selected;
+ render();focusContent();
+}
+function focusContent(){
+ const el=document.querySelector('#main-content');
+ if(el){el.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
+}
+function badge(pub){return '<div class="updated">'+icon('shield',19)+'<span>의료진 승인 '+esc(pub.approvedAt.slice(0,10))+' · 가상 발행 '+esc(pub.issuedAt.slice(0,10))+' · v'+esc(pub.planVersion)+'</span></div>';}
+function itemCard(x,i,publicationId){
+ return '<button class="task v12-task-card" type="button" data-item="'+esc(x.id)+'"><span class="v12-task-icon" aria-hidden="true">'+icon(x.section==='followup'?'calendar':x.section==='medication'?'file':'info',22)+'</span><span class="task-content v12-card-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.text.slice(0,80))+'</small>'+((personal.understanding[publicationId]?.[x.id])?'<small class="read-state">이해 확인 기록 있음 · 실제 수행 완료가 아니에요</small>':'')+'</span><span class="v12-card-chevron">'+icon('chev',20)+'</span></button>';
+}
+const paragraph=x=>'<p class="connected-text">'+esc(x)+'</p>';
+function rememberRoute(){
+ if(tourReading)return;
+ try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({authenticated:state.authenticated,view:state.view,selected:state.selected}));}catch{}
+}
+function savePersonal(next,notice){
+ try{personalRepository.save(next);personal=next;personalResult.error=null;state.notice=notice;return true;}
+ catch(error){state.notice='저장하지 못했어요. '+error.message;return false;}
+}
+function closeOverlay(redraw=true){
+ openingDocument++;if(state.pdfURL){URL.revokeObjectURL(state.pdfURL);state.pdfURL=null;}
+ const target=overlayReturn;state.modal=null;state.consent=false;
+ if(redraw){render();const el=target&&document.querySelector(target);if(el&&!el.disabled)el.focus();else focusContent();}
+}
+function openOverlay(kind,returnSelector){if(kind==='transfer')state.consent=false;state.modal=kind;overlayReturn=returnSelector;render();}
+function documents(pub){
+ return pub.documents.length?'<div class="v12-document-list">'+pub.documents.map(d=>
+  '<div class="document-unavailable v12-document-card"><span class="v12-document-icon" aria-hidden="true">'+icon('file',23)+'</span><span class="v12-card-copy"><strong>'+esc(d.name)+'</strong><small>'+(d.category==='MEDICATION'?'복약 관련 의료진 발행 안내문입니다.':'의료진이 제공한 상세 안내자료입니다.')+'<br>원문을 열어 확인해 주세요.</small></span><button class="secondary-action v12-open-btn" data-document="'+esc(d.id)+'">안내문 열어보기 (PDF)</button></div>'
+ ).join('')+'</div>':'<div class="document-unavailable">이 발행본에는 열 수 있는 PDF가 없습니다. 독립 시연용 문서를 연결하지 않습니다.</div>';
+}
+function profilePage(pub){
+ const data=state.profileDraft||personal.profile;
+ return '<div class="profile-layout"><div class="eyebrow">합성 데이터 · 시연용</div><h1>내 정보</h1><p class="profile-intro">병원 발행 정보와 이 브라우저에서 입력한 가상 연락 정보를 구분합니다. 실제 개인정보를 입력하지 마세요.</p><section class="profile-section"><div class="profile-section-head"><h2>발행된 계획 정보</h2><span class="profile-tag">읽기 전용</span></div><div class="profile-grid"><div><small>가상 환자 ID</small><strong>'+esc(pub.patientId)+'</strong></div><div><small>가상 입원건</small><strong>'+esc(pub.encounterId)+'</strong></div><div><small>계획 버전</small><strong>v'+esc(pub.planVersion)+'</strong></div><div><small>발행일</small><strong>'+esc(pub.issuedAt.slice(0,10))+'</strong></div></div></section><section class="profile-section"><div class="profile-section-head"><h2>연락·주소 정보</h2><span class="profile-tag">사용자 입력 · 로컬 시연</span></div>'+(state.editing?'<form id="profile-form" class="profile-form"><label for="address">가상 주소</label><input id="address" name="address" data-profile-field="address" maxlength="120" value="'+esc(data.address)+'" required><label for="contact">가상 연락처</label><input id="contact" name="contact" data-profile-field="contact" maxlength="50" value="'+esc(data.contact)+'" required><p class="profile-help">병원 등록 정보나 승인된 진료계획을 변경하지 않습니다.</p><div class="profile-actions"><button class="primary" type="submit">수정 내용 저장</button><button class="link-soft" type="button" data-action="edit-cancel">취소</button></div></form>':'<div class="profile-grid"><div><small>입력한 가상 주소</small><strong>'+esc(personal.profile.address||'입력하지 않음')+'</strong></div><div><small>입력한 가상 연락처</small><strong>'+esc(personal.profile.contact||'입력하지 않음')+'</strong></div></div><button class="secondary-action" data-action="edit-start">주소·연락처 수정하기</button>')+'</section><section class="profile-section transfer-section"><h2>정보 업데이트 요청</h2><p>동의를 확인하고 요청 내역을 이 브라우저에 기록하는 시연입니다. 외부 기관으로 전송되지 않습니다.</p><div class="transfer-status">'+(personal.lastRequest?'모의 요청 '+esc(personal.lastRequest.id)+' · 실제 기관 전송 없음':'기록된 요청 없음')+'</div><button class="primary" data-action="transfer-open" '+(!personal.revision||state.editing||personal.lastRequest?'disabled':'')+'>정보 업데이트 전송 요청</button></section><button class="logout-btn" data-action="logout">가상 계정에서 나가기</button></div>';
+}
+function helpPage(pub){
+ const card=item=>'<button class="service-card v12-service-card" data-item="'+esc(item.id)+'"><span class="v12-service-icon" aria-hidden="true">'+icon(item.section==='contact'?'help':'info',22)+'</span><span class="service-card-text v12-card-copy"><strong>'+esc(item.title)+'</strong><small>'+esc(item.text.slice(0,90))+'</small></span><span class="v12-card-chevron">'+icon('chev',20)+'</span></button>';
+ const primary=pub.items.filter(i=>['warning','contact','support'].includes(i.section));
+ const matches=pub.items.filter(i=>!state.helpQuery||(i.title+' '+i.text).includes(state.helpQuery));
+ return '<div class="service-page v12-shell v12-help"><header class="v12-head"><h1 class="service-title">도움받기</h1><p class="service-lead">의료진이 발행한 문의·지원 안내를 쉽게 확인해 보세요.</p></header><section class="services-panel"><div class="service-list">'+(primary.map(card).join('')||'<p>발행된 문의·지원 안내가 없습니다.</p>')+'</div></section><section class="service-search-launch"><button class="search-launch" data-action="toggle-help-search" aria-expanded="'+state.helpSearchOpen+'" aria-controls="more-help"><span><strong>다른 안내가 필요하신가요?</strong><small>발행된 복약·일정·생활 안내 찾기</small></span>'+icon('chev',20)+'</button><div id="more-help" class="help-search-body" '+(state.helpSearchOpen?'':'hidden')+'><label class="service-search-label" for="help-search">발행된 안내 검색</label><input id="help-search" class="search-input" type="search" value="'+esc(state.helpQuery)+'" placeholder="발행된 내용에서 찾기"><div class="service-search-results" role="status">'+(matches.map(card).join('')||'<p class="search-empty">일치하는 공개 안내가 없습니다. 내용을 임의로 만들지 않습니다.</p>')+'</div></div></section><div class="summary-actions"><button class="secondary-action" data-view="overview">전체 계획 보기</button><button class="secondary-action" data-action="print">종이 안내문 인쇄</button></div><p class="help-disclaimer">지역 서비스 검색·예약·기관 신청·보호자 공유 권한은 연결되지 않았습니다. 승인된 안내 외 별도 의료지시를 제공하지 않습니다.</p></div>';
+}
+function quizPage(pub){
+ const item=pub.items.find(x=>x.id===state.selected);if(!item){state.view='today';return content(pub);}
+ const answer=personal.understanding[pub.publicationId]?.[item.id];
+ return '<div class="quiz-container"><button class="back-button" data-item="'+esc(item.id)+'">안내로 돌아가기</button><div class="quiz-context">안내 이해 확인 · 선택 참여</div><h1 class="quiz-title">'+esc(item.title)+' 안내를 확인했나요?</h1><section class="focus-panel">'+paragraph(item.text)+'</section><p class="quiz-expl">이 답변은 읽은 내용을 스스로 확인하는 기록입니다. 치료 수행이나 임상 이해도를 평가하거나 의료진에게 전송하지 않습니다.</p><div class="choices" role="group" aria-label="이해 확인 선택">'+[['UNDERSTOOD','읽고 이해했어요'],['HELP','설명이 더 필요해요']].map(([id,label])=>'<button class="choice" data-choice="'+id+'" aria-pressed="'+(state.choice===id)+'"><span class="radio"></span><span>'+label+'</span></button>').join('')+'</div><button class="primary" data-action="understanding-save" '+(!state.choice?'disabled':'')+'>확인 내용 저장</button>'+(answer?'<div class="feedback" role="status"><b>'+(answer==='UNDERSTOOD'?'이 발행본의 안내 확인을 기록했어요.':'추가 설명이 필요하다고 기록했어요.')+'</b><p>실제 의료진에게 전송되지 않습니다. 문의 방법은 발행된 도움 안내에서 확인하세요.</p><button class="text-action" data-view="help">도움 안내 보기</button></div>':'')+'</div>';
+}
+function overlay(pub){
+ if(!state.modal)return '';
+ let title='',body='',actions='';
+ if(state.modal==='save'){
+  title='수정한 정보를 저장할까요?';body='<p>가상 주소·연락처를 이 브라우저에 저장합니다. 병원 기록은 변경하지 않습니다.</p><div class="modal-diff"><small>가상 주소</small><strong>'+esc(state.profileDraft?.address)+'</strong><small>가상 연락처</small><strong>'+esc(state.profileDraft?.contact)+'</strong></div>';actions='<button class="primary" data-action="modal-save">변경사항 저장</button>';
+ }else if(state.modal==='transfer'){
+  title='모의 업데이트 요청을 기록할까요?';body='<p>실제 기관 전송 없이, 현재 저장한 변경의 요청 내역만 기록합니다.</p><label class="consent-row"><input id="transfer-consent" type="checkbox" '+(state.consent?'checked':'')+'>가상 정보 제공 요청 시연에 동의합니다.</label><p id="consent-error" role="alert" hidden></p>';actions='<button class="primary" data-action="modal-transfer">모의 전송 요청 기록</button>';
+ }else if(state.modal==='pdf'){
+  title=state.pdfName;body='<p>현재 발행 v'+esc(pub.planVersion)+'에 연결된 PDF입니다. 이미 내려받은 파일은 철회 후 회수할 수 없어요. 미리보기가 비어 있거나 브라우저에서 지원하지 않으면 아래 링크로 열거나 저장하세요.</p><iframe class="pdf-frame" title="발행된 PDF 미리보기" src="'+esc(state.pdfURL)+'"></iframe>';actions='<a class="secondary-action" href="'+esc(state.pdfURL)+'" target="_blank" rel="noopener">PDF 새 창으로 열기</a><a class="secondary-action" href="'+esc(state.pdfURL)+'" download="'+esc(state.pdfName)+'">PDF 파일 저장</a>';
+ }else{title='발행된 안내와 내 기록';body='<p>의료진이 승인·발행한 현재 계획만 안내로 표시합니다. 연락 정보와 이해 확인은 이 브라우저의 개인 시연 기록이며 병원으로 전송하지 않습니다.</p>';}
+ return '<dialog id="patient-dialog" class="connected-dialog '+(state.modal==='pdf'?'pdf-panel':'modal-panel')+'" aria-labelledby="dialog-title"><header class="pdf-panel-header"><h2 id="dialog-title">'+esc(title)+'</h2><button class="top-font" data-action="font">'+(state.large?'글자 기본':'글자 크게')+'</button></header>'+body+'<div class="modal-actions"><button class="link-soft" data-action="modal-close">닫기</button>'+actions+'</div></dialog>';
+}
+function availableOtherDemos(){
+ let found=[];
+ try{
+  const current=window.localStorage;
+  found=Object.entries(ENCOUNTERS).filter(([id])=>id!==patientId)
+   .filter(([id,enc])=>readPatientPublication(current,id,enc).status==='PUBLISHED')
+   .map(([id,enc])=>'<a class="secondary-action" href="?patient='+encodeURIComponent(id)+'&amp;encounter='+encodeURIComponent(enc)+'">'+esc(id)+' 발행본 보기</a>');
+ }catch{}
+ return found.length?'<div class="demo-preview-actions"><p>이 브라우저에 다른 가상 환자의 발행본이 있어요.</p>'+found.join('')+'</div>':'';
+}
+
+function connectedNextVisitCard(pub){
+ const follow=pub.items.find(x=>x.section==='followup');
+ const ap=follow?.appointment;
+ return '<section class="appointment" aria-label="다가오는 외래 일정"><div class="block-overline">가장 가까운 진료 · 발행된 안내</div>'+
+  (ap?'<div class="date-line"><span class="date-big">'+esc(ap.date)+'</span><span class="date-unit">'+esc(ap.time)+'</span></div>'+
+    '<h3 class="ap-title">'+esc(follow.title)+'</h3><p class="ap-desc">'+esc(ap.place)+'<br>합성 일정으로 실제 병원 예약과 연결되지 않아요.</p><div class="ap-state">승인된 가상 일정</div>'
+    :'<h3 class="ap-title">일정 확인 필요</h3><p class="ap-desc">현재 발행된 안내에는 확정된 외래 날짜·시간·장소가 없어요. 담당 의료진에게 확인해 주세요.</p>')+
+   '<div class="ap-bottom"><button class="text-action" data-view="schedule">일정 안내 보기 '+icon('chev',15)+'</button></div></section>';
+}
+function v17Home(pub,displayName){
+ const bySection=['today','medication','warning'];
+ const highlights=[...bySection.map(s=>pub.items.find(i=>i.section===s)).filter(Boolean),...pub.items.filter(i=>!bySection.includes(i.section))].slice(0,3);
+ const follow=pub.items.find(i=>i.section==='followup'&&i.appointment)||pub.items.find(i=>i.section==='followup');
+ const ap=follow?.appointment;
+ return `<div class="v17-page v17-home v12-shell">
+  <header class="v17-welcome">
+   <span class="v17-overline">${icon('shield',17)} 의료진이 발행한 나의 안내</span>
+   <h1>${displayName?esc(displayName)+'님,':'안녕하세요.'}<br><span>오늘은 이것부터 확인해요.</span></h1>
+   <p>어렵게 찾지 않아도 되도록 필요한 내용을 모았어요.</p>
+   ${badge(pub)}
+  </header>
+  <section class="v17-tasks-card" aria-labelledby="v17-task-heading">
+   <div class="v17-card-top"><div><span class="v17-eyebrow">01 · 안내 확인</span><h2 id="v17-task-heading">먼저 읽을 안내</h2></div><span class="v17-count">${highlights.length}개</span></div>
+   <p class="v17-muted">아래 항목을 누르면 자세한 내용을 볼 수 있어요.</p>
+   <div class="tasks v17-task-list">${highlights.map((x,i)=>itemCard(x,i,pub.publicationId)).join('')}</div>
+   <button type="button" class="v17-primary-cta" data-view="overview">의료진이 발행한 안내 전체 보기 ${icon('chev',21)}</button>
+  </section>
+  <section class="v17-first-steps" aria-labelledby="v17-steps-title">
+   <div class="v17-section-heading"><span class="v17-eyebrow">이용 순서</span><h2 id="v17-steps-title">이렇게 사용하면 쉬워요</h2></div>
+   <div class="v17-steps-list">
+    <span><b>1</b> 안내 읽기</span><span aria-hidden="true" class="v17-chevron">›</span>
+    <span><b>2</b> 일정 확인</span><span aria-hidden="true" class="v17-chevron">›</span>
+    <span><b>3</b> 필요하면 도움</span>
+   </div>
+   <button type="button" class="v17-tour-cta" data-comfort="tour">${icon('info',18)} 앱 사용법을 화면에서 안내받기 ${icon('chev',18)}</button>
+  </section>
+  <section class="v17-schedule-card" aria-labelledby="v17-schedule-heading">
+    <div class="v17-schedule-icon" aria-hidden="true">${icon('calendar',24)}</div>
+    <div class="v17-schedule-text"><span class="v17-eyebrow">02 · 일정 확인</span><h2 id="v17-schedule-heading">다음 외래 진료</h2>
+     <strong>${ap?esc(ap.date)+' · '+esc(ap.time):'확정된 일시가 없어요'}</strong>
+     <p>${ap?esc(ap.place)+' · 가상 일정':'의료진이 발행한 일정에서 확인해 주세요.'}</p>
+    </div>
+    <button class="v17-secondary-cta" data-view="schedule" type="button">진료 일정 자세히 보기 ${icon('chev',20)}</button>
+  </section>
+  <div class="v17-support-grid">
+   <section class="v17-support-card" aria-labelledby="v17-doc-heading">
+    <div class="v17-support-heading"><span class="v17-support-icon" aria-hidden="true">${icon('file',23)}</span><h2 id="v17-doc-heading">함께 볼 안내문</h2></div>
+    <p>${pub.documents.length?`의료진이 발행한 PDF ${pub.documents.length}개가 있어요.`:'이번 발행본에 포함된 PDF가 없어요.'}</p>
+    ${pub.documents.length===1?`<button type="button" class="v17-inline-link" data-document="${esc(pub.documents[0].id)}">PDF 안내문 열기 ${icon('chev',19)}</button>`:pub.documents.length?`<button type="button" class="v17-inline-link" data-comfort="documents">안내문 목록 보기 ${icon('chev',19)}</button>`:'<span class="v17-empty">발행되지 않은 문서는 표시하지 않아요.</span>'}
+   </section>
+   <section class="v17-support-card v17-help-card" aria-labelledby="v17-help-heading">
+    <div class="v17-support-heading"><span class="v17-support-icon" aria-hidden="true">${icon('help',23)}</span><h2 id="v17-help-heading">도움이 필요할 때</h2></div>
+    <p>주의사항과 의료진이 제공한 문의 방법을 찾아볼 수 있어요.</p>
+    <button type="button" class="v17-inline-link" data-view="help">도움받기 화면 열기 ${icon('chev',19)}</button>
+   </section>
+  </div>
+  <p class="v17-demo-disclaimer">합성 데이터 시연이에요. 실제 진료 예약·의료지시 또는 기관 전송은 제공하지 않아요.</p>
+ </div>`;
+}
+
+function v17Schedule(pub){
+ const follow=pub.items.filter(x=>x.section==='followup');
+ const confirmed=follow.find(x=>x.appointment), ap=confirmed?.appointment;
+ const other=follow.filter(x=>x!==confirmed);
+ return `<div class="v17-page v17-schedule v12-shell schedule-layout v12-schedule">
+  <header class="v17-page-heading"><span class="v17-overline">${icon('calendar',17)} 내 일정</span><h1>진료 일정</h1>
+   <p>의료진이 확정하고 발행한 일정만 표시해요.</p>${badge(pub)}</header>
+  <section class="v17-schedule-hero" aria-label="다가오는 외래 진료">
+   <span class="v17-eyebrow">${ap?'의료진 발행 일정':'의료진 확인 필요'}</span>
+   <h2>${ap?'다음 외래 진료':'확정된 외래 일정이 없어요'}</h2>
+   ${ap?`<div class="v17-date-display">${esc(ap.date)}</div><strong class="v17-time-display">${esc(ap.time)}</strong><p>${icon('home',19)} ${esc(ap.place)}</p>`:'<p>확정된 날짜·시간·장소가 제공되지 않았어요. 담당 의료진에게 확인해 주세요.</p>'}
+   ${confirmed?`<p class="v17-clinical-note">${esc(confirmed.text)}</p>`:''}
+   <p class="v17-fineprint">이 앱의 날짜는 가상 시연 정보이며 실제 의료기관 예약이 아닙니다.</p>
+  </section>
+  <div class="v17-two-actions">
+   <button type="button" class="v17-secondary-cta" data-view="reminders">${icon('bell',20)} 알림 확인·설정 ${icon('chev',19)}</button>
+   <button type="button" class="v17-secondary-cta" data-comfort="taxi">${icon('home',20)} 병원 이동 준비 ${icon('chev',19)}</button>
+  </div>
+  <section class="v17-more-schedules" aria-labelledby="v17-other-dates"><h2 id="v17-other-dates">추가 진료 안내</h2>
+   ${other.length?other.map(x=>`<button type="button" class="v17-info-row" data-item="${esc(x.id)}"><span><strong>${esc(x.title)}</strong><small>${x.appointment?esc(x.appointment.date)+' · '+esc(x.appointment.time):'확정된 일시 없음'}</small></span>${icon('chev',20)}</button>`).join(''):'<p class="v17-muted">추가로 발행된 진료 일정은 없어요.</p>'}
+  </section>
+ </div>`;
+}
+
+function v17HelpPage(pub){
+ const buckets=[
+  ['warning','주의할 상황','몸 상태와 관련된 의료진 안내'],
+  ['contact','문의 방법','궁금한 내용을 어디에서 확인할지'],
+  ['support','생활·돌봄 지원','퇴원 후 생활과 이동에 필요한 정보']
+ ];
+ const groups=buckets.map(([section,title,hint])=>{
+  const subset=pub.items.filter(x=>x.section===section);
+  return `<section class="v17-help-group" aria-label="${esc(title)}"><div class="v17-help-head"><h2>${esc(title)}</h2><p>${esc(hint)}</p></div>
+   ${subset.length?subset.map(x=>`<button type="button" class="v17-info-row" data-item="${esc(x.id)}"><span><strong>${esc(x.title)}</strong><small>${esc(x.text.slice(0,95))}</small></span>${icon('chev',19)}</button>`).join(''):'<p class="v17-empty-block">현재 발행된 해당 안내가 없어요. 내용을 임의로 추가하지 않아요.</p>'}
+  </section>`;
+ }).join('');
+ const matches=pub.items.filter(i=>!state.helpQuery||(i.title+' '+i.text).includes(state.helpQuery));
+ return `<div class="v17-page v17-help service-page v12-shell">
+  <header class="v17-page-heading"><span class="v17-overline">${icon('help',17)} 필요한 정보를 찾아요</span><h1>도움받기</h1>
+  <p>주의사항이나 문의 방법이 필요할 때 이곳에서 찾아보세요.</p></header>
+  <div class="v17-help-groups">${groups}</div>
+  <section class="v17-help-search"><button type="button" class="v17-search-toggle" data-action="toggle-help-search" aria-expanded="${state.helpSearchOpen}" aria-controls="more-help"><span>${icon('info',20)} 다른 안내에서 찾아보기</span>${icon('chev',20)}</button>
+  <div id="more-help" ${state.helpSearchOpen?'':'hidden'}><label for="help-search">발행된 안내 검색</label>
+   <input type="search" id="help-search" class="search-input" value="${esc(state.helpQuery)}" placeholder="찾는 내용을 입력해 주세요">
+   <div class="v17-search-results" role="status">${matches.length?matches.map(x=>`<button type="button" class="v17-info-row" data-item="${esc(x.id)}"><span><strong>${esc(x.title)}</strong><small>${esc(x.text.slice(0,75))}</small></span>${icon('chev',19)}</button>`).join(''):'<p>일치하는 발행 안내가 없어요.</p>'}</div></div></section>
+  <p class="v17-demo-disclaimer">실제 전화 발신·지역서비스 신청·응급 의료상담은 연결되지 않아요. 이 화면은 의료진이 발행한 합성 안내만 제공합니다.</p>
+ </div>`;
+}
+
+function v17Overview(pub){
+ const groups=[['ALL','전체'],['today','오늘·생활'],['medication','복약'],['followup','일정'],['warning','주의'],['contact','문의']];
+ const chosen=groups.some(x=>x[0]===state.overviewFilter)?state.overviewFilter:'ALL';
+ const filter=x=>chosen==='ALL'||x.section===chosen||(chosen==='today'&&x.section==='support');
+ const items=pub.items.filter(filter);
+ return `<div class="v17-page v17-overview overview-layout v12-shell">
+  <header class="v17-page-heading"><button type="button" class="back-button" data-view="today">${icon('back',18)} 오늘 화면으로</button>
+  <span class="v17-overline">${icon('shield',17)} 의료진 발행 계획 v${esc(pub.planVersion)}</span><h1>내 안내 전체 보기</h1>
+  <p>항목을 종류별로 찾아보세요. 이 목록은 의료진이 발행한 내용이에요.</p></header>
+  <div class="v17-filter-wrap" role="group" aria-label="안내 종류 선택">${groups.map(([id,label])=>`<button type="button" class="v17-filter" data-v17-filter="${id}" aria-pressed="${id===chosen}">${esc(label)}</button>`).join('')}</div>
+  <p class="v17-result-count" role="status">${items.length}개 안내</p>
+  ${items.length?`<div class="v17-overview-list">${items.map(x=>`<button type="button" class="v17-overview-item" data-item="${esc(x.id)}"><span class="v17-mini-icon">${icon(x.section==='followup'?'calendar':x.section==='medication'?'file':'info',23)}</span><span><strong>${esc(x.title)}</strong><small>${esc(x.text.slice(0,130))}</small></span>${icon('chev',20)}</button>`).join('')}</div>`:'<div class="v17-empty-block">이 종류에 발행된 안내는 없어요. 전체 안내를 선택해 다른 내용을 확인해 보세요.</div>'}
+  <p class="v17-explain">안내를 읽었다는 표시와 실제 치료·준비 완료는 별개예요.</p>
+ </div>`;
+}
+
+function content(pub){
+ if(!pub)return `<div class="blocked v17-unpublished" role="status"><div class="v17-empty-icon" aria-hidden="true">${icon('shield',24)}</div><h2>아직 확인할 퇴원안내가 없어요.</h2><p>의료진이 계획을 검토하고 발행하면 이곳에서 안내를 볼 수 있어요. 미승인 내용은 보여주지 않습니다.</p><details><summary>가상 시연에서 안내를 확인하는 방법</summary><p>의료진 시연 화면에서 환자 선택 → 계획 검토 → 최종 승인 → 발행을 순서대로 진행해 주세요. 체험 데이터만 사용합니다.</p></details><p>실제 의료기관 서비스나 본인인증은 제공되지 않아요.</p>'+availableOtherDemos()+'</div>`;
+ const displayName=syntheticPatientName(pub.patientId,pub.encounterId);
+ if(state.view==='detail'){
+  const item=pub.items.find(i=>i.id===state.selected);
+  if(!item){state.view='today';return content(pub);}
+  return '<div class="detail-wrap v12-shell"><button class="back-button" data-view="today">'+icon('back',19)+' 오늘 화면으로</button><div class="detail-heading"><div class="eyebrow">발행된 안내 · v'+esc(pub.planVersion)+'</div><h1>'+esc(item.title)+'</h1></div><section class="focus-panel"><h2 class="focus-title">의료진이 확인한 내용</h2>'+paragraph(item.text)+'</section><section class="document-panel"><div class="document-label">'+icon('info',19)+' 함께 볼 안내문</div><h2 class="document-title">관련 안내문이 있는지 확인해 보세요</h2><p class="document-desc">의료진이 제공한 문서가 있다면 아래에서 PDF 원문을 확인할 수 있어요.</p>'+documents(pub)+'</section><div class="detail-secondary-row"><button class="quiz-optional" data-action="quiz-start">안내 이해 확인 (선택)</button><button class="link-soft" data-action="about">안내·기록 설명</button></div>'+badge(pub)+'</div>';
+ }
+
+ if(state.view==='schedule')return v17Schedule(pub);
+ if(state.view==='help')return v17HelpPage(pub);
+ if(state.view==='reminders')return '<div class="reminders-page" data-reminder-hub></div>';
+ if(state.view==='profile')return profilePage(pub);
+ if(state.view==='quiz')return quizPage(pub);
+ if(state.view==='overview')return v17Overview(pub);
+
+ return v17Home(pub, displayName);
+}
+function login(){
+ return '<main class="login-viewport"><section class="login-panel"><div class="login-mark">D.</div><div class="eyebrow">나의 퇴원안내 · 가상 체험</div><h1>퇴원 후 필요한 관리를<br>확인해 보세요.</h1><p>실제 개인정보를 사용하지 않는 <b>가상 환자 접속 시연</b>입니다.</p><div class="login-flow"><span>1. 체험용 코드 입력</span><span>2. 발행된 안내 확인</span></div><form id="demo-login" class="login-form"><label for="demo-code">체험용 코드 입력</label><input id="demo-code" name="demoCode" autocomplete="off" spellcheck="false" maxlength="20" placeholder="체험 코드" required><div class="demo-code">체험용 코드: <strong>CARE2026</strong></div><p class="demo-mode-option"><a href="../../../patient/index.html">승인 과정 없이 기존 예시 화면 바로 체험하기 →</a></p>'+(state.notice?'<p class="form-error" role="alert">'+esc(state.notice)+'</p>':'')+'<button class="primary" type="submit">내 퇴원안내 열기 '+icon('chev',18)+'</button></form><div class="security-note"><b>개인정보 보호 안내</b><p>이 코드는 본인인증 수단이 아닙니다. 합성 환자와 같은 브라우저에서 저장된 발행 기록만 확인합니다. 실제 이름·생년월일·환자번호를 입력하지 마세요.</p></div></section></main>';
+}
+function render(){
+ document.body.classList.toggle('large-font',state.large);
+ stage.dataset.preview='auto';
+ if(!state.authenticated){root.innerHTML=login();window.dispatchEvent(new Event('patient-render'));return;}
+ const result=publication(),pub=result.publication;
+ const signature=JSON.stringify(result);if(publicationSignature!==null&&signature!==publicationSignature){closeOverlay(false);state.choice=null;state.notice='발행 상태가 변경됐어요. 현재 유효한 계획을 확인해 주세요.';if(!pub){state.view='today';state.selected=null;visits=[{view:'today',selected:null}];position=0;}}publicationSignature=signature;
+ rememberRoute();
+ if(pub&&['detail','quiz'].includes(state.view)&&!pub.items.some(x=>x.id===state.selected)){state.view='today';state.selected=null;}
+ const message=result.status==='MISMATCH'?'<div class="blocked" role="alert"><h2>환자·입원건이 일치하지 않아요.</h2><p>A3에서 같은 가상 환자와 입원건을 선택한 뒤 다시 열어 주세요.</p></div>':result.status==='ERROR'?'<div class="blocked" role="alert"><h2>저장된 계획을 확인할 수 없어요.</h2><p>저장소 접근 실패 또는 자료 오류가 있어 안내를 숨겼습니다. 브라우저 저장 상태를 확인해 주세요.</p></div>':content(pub);
+ const version=pub?'발행 계획 · v'+esc(pub.planVersion):'발행 안내 없음';
+ root.innerHTML='<div class="app-layout v16-app-layout v17-app-layout"><aside class="side" aria-label="주요 메뉴"><div class="side-brand"><div class="side-logo">D.</div><div><b>나의 퇴원안내</b><small>오늘 할 일과 진료 일정</small></div></div><div class="side-cap">나의 계획</div>'+nav('today','오늘','home')+nav('schedule','일정','calendar')+nav('help','도움','help')+nav('reminders','알림','bell')+nav('profile','내 정보','user')+'<div class="side-end"><b>가상 퇴원 안내</b><br>의료진이 발행한 자료만 표시합니다.</div></aside><div class="app-body"><header class="topline"><span class="kicker">나의 퇴원안내</span><div class="meta"><nav class="connected-controls" aria-label="화면 이동"><a class="top-font" href="../index.html">통합 홈</a><button class="top-font" type="button" data-action="home">홈</button><button class="top-font" type="button" data-action="back" '+(position===0?'disabled':'')+'>이전</button><button class="top-font" type="button" data-action="next" '+(position===visits.length-1?'disabled':'')+'>다음</button></nav><button class="top-font v17-old-font-button" type="button" data-action="font">'+(state.large?'글자 기본':'글자 크게')+'</button><a class="top-font independent-demo-link" href="../../../patient/index.html" aria-label="기존 독립 가상 예시 화면 열기">예시 화면</a><span class="version-meta">'+version+'</span><span class="tiny-pill">가상 환자</span></div></header><main id="main-content" class="main" tabindex="-1">'+(state.notice?'<div class="inline-notice" role="status">'+esc(state.notice)+'</div>':'')+(personalResult.error?'<div class="inline-notice" role="alert">개인 시연 기록을 읽지 못했습니다. 기존 자료를 덮어쓰지 않습니다.</div>':'')+message+'</main><nav class="bottom-nav" aria-label="모바일 주요 메뉴">'+nav('today','오늘','home',true)+nav('schedule','일정','calendar',true)+nav('help','도움','help',true)+nav('reminders','알림','bell',true)+nav('profile','내 정보','user',true)+'</nav></div></div>'+(pub?overlay(pub):'');
+ window.dispatchEvent(new Event('patient-render'));
+ const dialog=document.querySelector('#patient-dialog');if(dialog){dialog.addEventListener('cancel',e=>{e.preventDefault();closeOverlay();});dialog.showModal();dialog.querySelector('[data-action="modal-close"]')?.focus();}
+}
+document.addEventListener('submit',event=>{
+ if(event.target.id==='demo-login'){
+  event.preventDefault();const code=String(new FormData(event.target).get('demoCode')||'').trim().toUpperCase();
+  if(code!=='CARE2026'){state.notice='체험용 코드를 확인해 주세요.';render();document.querySelector('#demo-code')?.focus();return;}
+  state.notice='';state.authenticated=true;rememberRoute();render();focusContent();return;
+ }
+ if(event.target.id==='profile-form'){
+  event.preventDefault();const form=new FormData(event.target),address=String(form.get('address')||'').trim(),contact=String(form.get('contact')||'').trim();
+  if(!address||!contact||address.length>120||contact.length>50){state.notice='주소와 연락처를 확인해 주세요.';render();return;}
+  if(address===personal.profile.address&&contact===personal.profile.contact){state.editing=false;state.profileDraft=null;state.notice='변경된 정보가 없어요.';render();return;}
+  state.profileDraft={address,contact};openOverlay('save','#profile-form button[type=submit]');
+ }
+});
+document.addEventListener('input',event=>{
+ if(event.target.matches('[data-profile-field]')&&state.profileDraft)state.profileDraft[event.target.dataset.profileField]=event.target.value;
+ if(event.target.id==='help-search'){const start=event.target.selectionStart;state.helpQuery=event.target.value;render();const input=document.querySelector('#help-search');input?.focus();try{input?.setSelectionRange(start,start)}catch{}}
+});
+document.addEventListener('change',event=>{
+ if(event.target.id==='transfer-consent'){state.consent=event.target.checked;event.target.removeAttribute('aria-invalid');const error=document.querySelector('#consent-error');if(error)error.hidden=true;}
+});
+document.addEventListener('click',async event=>{
+ const button=event.target.closest('button');if(!button||button.disabled)return;
+ const action=button.dataset.action;
+ if(button.dataset.v17Filter && state.view==='overview'){
+  if(!['ALL','today','medication','followup','warning','contact'].includes(button.dataset.v17Filter))return;
+  state.overviewFilter=button.dataset.v17Filter;render();
+  document.querySelector('[data-v17-filter="'+state.overviewFilter+'"]')?.focus({preventScroll:true});return;
+ }
+ if(action==='font'){
+  state.large=!state.large;try{localStorage.setItem(FONT_KEY,state.large?'1':'0')}catch{state.notice='글자 크기를 저장하지 못했어요. 현재 화면에만 적용했습니다.';}
+  render();document.querySelector(state.modal?'#patient-dialog [data-action="font"]':'[data-action="font"]')?.focus();return;
+ }
+ if(!state.authenticated)return;
+ if(action==='logout'){closeOverlay(false);state.authenticated=false;state.notice='';state.view='today';state.selected=null;state.profileDraft=null;state.editing=false;position=0;visits=[{view:'today',selected:null}];rememberRoute();render();return;}
+ if(action==='home'){visit('today');return;}if(action==='back'){traverse(-1);return;}if(action==='next'){traverse(1);return;}
+ // The local publication/revocation inbox remains available without a public plan.
+ if(button.dataset.view==='reminders'){visit('reminders');return;}
+ const pub=publication().publication;
+ if(!pub){render();return;}
+ if(action==='modal-close'){closeOverlay();return;}
+ if(button.dataset.view){visit(button.dataset.view);return;}
+ if(button.dataset.item){if(pub.items.some(i=>i.id===button.dataset.item))visit('detail',button.dataset.item);return;}
+ if(button.dataset.choice){if(['UNDERSTOOD','HELP'].includes(button.dataset.choice)){state.choice=button.dataset.choice;render();document.querySelector('[data-choice="'+state.choice+'"]')?.focus();}return;}
+ if(action==='quiz-start'){visit('quiz',state.selected);return;}
+ if(action==='understanding-save'){
+  if(state.view!=='quiz'||!['UNDERSTOOD','HELP'].includes(state.choice)||!pub.items.some(i=>i.id===state.selected))return;
+  const next=structuredClone(personal);next.understanding[pub.publicationId]??={};next.understanding[pub.publicationId][state.selected]=state.choice;
+  savePersonal(next,'이 발행본의 확인을 기록했어요.');render();return;
+ }
+ if(action==='toggle-help-search'){state.helpSearchOpen=!state.helpSearchOpen;render();if(state.helpSearchOpen)document.querySelector('#help-search')?.focus();return;}
+ if(action==='print'){closeOverlay(false);visit('overview');if(publication().publication?.publicationId===pub.publicationId)window.print();return;}
+ if(action==='about'){openOverlay('about','[data-action="about"]');return;}
+ if(action==='edit-start'){personalResult=personalRepository.load();personal=personalResult.data;state.profileDraft={...personal.profile};state.editing=true;state.notice='';render();document.querySelector('#address')?.focus();return;}
+ if(action==='edit-cancel'){state.profileDraft=null;state.editing=false;personalResult=personalRepository.load();personal=personalResult.data;state.notice='';render();return;}
+ if(action==='modal-save'){
+  if(state.modal!=='save'||!state.profileDraft)return;
+  const next=structuredClone(personal);next.profile={...state.profileDraft};next.revision++;next.lastRequest=null;
+  if(savePersonal(next,'주소·연락처가 이 브라우저에 저장됐어요. 실제 기관으로 전송되지 않았습니다.')){state.profileDraft=null;state.editing=false;}
+  closeOverlay();return;
+ }
+ if(action==='transfer-open'){if(!personal.revision||state.editing||personal.lastRequest)return;openOverlay('transfer','[data-action="transfer-open"]');return;}
+ if(action==='modal-transfer'){
+  if(state.modal!=='transfer'||!personal.revision||state.editing||personal.lastRequest)return;
+  if(!document.querySelector('#transfer-consent')?.checked){const input=document.querySelector('#transfer-consent'),error=document.querySelector('#consent-error');if(error){error.textContent='시연 동의를 확인해 주세요.';error.hidden=false;}input?.setAttribute('aria-invalid','true');input?.focus();return;}
+  const next=structuredClone(personal);next.lastRequest={id:'DEMO-'+crypto.randomUUID(),revision:next.revision,createdAt:new Date().toISOString(),status:'LOCAL_ONLY'};
+  savePersonal(next,'업데이트 요청을 이 브라우저에 기록했어요. 실제 기관으로 전송되지 않았습니다.');closeOverlay();return;
+ }
+ if(button.dataset.document){
+  const token=++openingDocument;button.disabled=true;state.notice='PDF를 확인하고 있어요.';
+  try{
+   const result=await readPublishedDocument(storage,patientId,encounterId,pub.publicationId,button.dataset.document);
+   if(token!==openingDocument||publication().publication?.publicationId!==pub.publicationId)return;
+   state.pdfURL=URL.createObjectURL(result.blob);state.pdfName=result.name;state.notice='';openOverlay('pdf','[data-document="'+CSS.escape(button.dataset.document)+'"]');
+  }catch(error){if(token===openingDocument){state.notice=error.message;render();}}
+ }
+});
+document.addEventListener('keydown',event=>{
+ if(event.key!=='Tab'||!state.modal)return;
+ const dialog=document.querySelector('#patient-dialog');
+ const nodes=[...dialog.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),iframe')].filter(el=>el.getClientRects().length);
+ if(!nodes.length)return;const first=nodes[0],last=nodes.at(-1);
+ if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+ else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+});
+window.addEventListener('storage',event=>{
+ if(event.key===PUBLICATION_STORAGE_KEY||event.key===null){
+  if(JSON.stringify(publication())!==publicationSignature)render();
+ }
+ if(event.key===personalRepository.key||event.key===null){
+  if(state.editing||state.modal){state.notice='다른 탭에서 개인 기록이 변경됐어요. 편집 취소 후 최신 내용을 확인해 주세요.';}
+  else{personalResult=personalRepository.load();personal=personalResult.data;render();}
+ }
+});
+window.addEventListener('pageshow',()=>{if(state.authenticated)render()});
+function refreshWhenVisible(){if(state.authenticated&&JSON.stringify(publication())!==publicationSignature)render();}
+window.addEventListener('focus',refreshWhenVisible);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshWhenVisible();});
+window.addEventListener('pagehide',()=>{openingDocument++;if(state.pdfURL)URL.revokeObjectURL(state.pdfURL);state.pdfURL=null;state.modal=null;});
+installPatientComfort({
+ context(){const result=publication(),pub=state.authenticated?result.publication:null;return {source:'connected',patientId,encounterId,authenticated:state.authenticated,status:state.authenticated?result.status:'EMPTY',publication:pub,events:state.authenticated&&result.status!=='ERROR'&&result.status!=='MISMATCH'?publicationEvents(storage,patientId,encounterId):[],view:state.view,section:pub?.items.find(i=>i.id===state.selected)?.section,understanding:personal.understanding[pub?.publicationId]||{}};},
+ navigate:view=>visit(view),
+ hasUnsaved:()=>state.editing&&JSON.stringify(state.profileDraft)!==JSON.stringify(personal.profile),
+ capture(){tourReading=true;return {state:structuredClone(state),visits:structuredClone(visits),position};},
+ showTour(view){state.view=view;if(view==='detail')state.selected=publication().publication?.items[0]?.id;render();},
+ restore(before){Object.assign(state,before.state);visits=before.visits;position=before.position;render();tourReading=false;},
+ openDocument(id){const pub=publication().publication;if(!pub?.documents.some(d=>d.id===id))return;visit('detail',pub.items.find(i=>i.section==='medication')?.id||pub.items[0].id);document.querySelector('[data-document="'+CSS.escape(id)+'"]')?.click();}
+});
+render();
