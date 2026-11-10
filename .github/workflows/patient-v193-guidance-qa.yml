@@ -41,3 +41,11 @@ jobs:
           python prototypes/hospital-ux2-v07/tests/parity_v193.py
       - name: Connected B guide accessibility and read-only QA
         run: python prototypes/integrated-v10/tests/patient_v193_guidance_qa.py
+      - name: Upload review screenshots (synthetic demo only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-v193-ux2-review-screenshots
+          path: artifacts/patient-v193-review/
+          if-no-files-found: warn
+
