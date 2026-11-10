@@ -57,3 +57,17 @@
 - 기존 `prototypes/integrated-v10/patient/index.html` 안정형 B와 `patient/v19-3.html` 독립 예시를 **별도 경로로 보존**. 운영 릴리즈 후 회귀가 생기면 의료진·통합 홈·환자 진입 링크를 위 기존 SHA 기준으로 복원하고 새 경로는 보존해 분석한다.
 - `gh-pages`는 진입 링크·필수 정적 에셋을 통합 브랜치와 같은 SHA 콘텐츠로 반영하되 임상 공유 로직은 기존 검증 SHA와 동일하게 유지한다.
 - 메인/Pages 릴리즈 후 실제 배포 성공과 필수 URL 및 에셋을 다시 확인하고 **검증하지 않은 기능은 NOT VERIFIED로 기록**한다.
+
+## 정식 운영 반영 결과 (2026-11-10)
+
+- **main: PASS** — [PR #18](https://github.com/pchjesus/ai-care-transition-platform/pull/18) 정식 병합, 병합 SHA `9311c14ce8f36ee283f52f61f79765f4567c2e5a`.
+- **gh-pages: PASS** — 정적 UI 및 PDF 필수 파일 **28개** 반영, HEAD `cfe90d56f7089bffbedaa5ca9416c5641ee393ba`. [Pages 배포 #42763109015](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42763109015) 성공.
+- **SHA 대조: PASS** — 새 통합 홈, 의료진 기존 UI와 변경된 integration.js/CSS, 새 A3연동형 B HTML/JS/CSS, 이정희님 독립 데모와 PDF/PNG, 기존 안정형 B **14개 주요 정적 파일이 운영 `main`과 `gh-pages`에서 동일 Blob SHA**임을 확인.
+- **릴리즈 전 통합 QA: PASS** — [#42762372329](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42762372329), Node **94/94**, A3→B Chromium **16/16**, 의료진 parity **5/5**, 새 연결형 환자 B **20/20**.
+- **의료진 화면**: `https://pchjesus.github.io/ai-care-transition-platform/prototypes/hospital-ux2-v07/index.html`.
+- **A3연동 환자 앱**: `https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/v193-connected.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO`. 유효한 발행 기록이 없으면 환자 내용을 표시하지 않는 것이 정상이다.
+- **독립 이정희님 예시**: `https://pchjesus.github.io/ai-care-transition-platform/patient/v19-3.html`, 공개 합성 시연코드 `CARE2026`.
+- **기존 안정형 B**: `https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO`.
+- **운영 홈**: `https://pchjesus.github.io/ai-care-transition-platform/` (루트 리디렉션 유지).
+- **NOT VERIFIED:** Pages 공개 URL에서 실브라우저로 재접속한 후 클릭/스크린샷을 재확인한 것, iOS/Safari/Android 실기기, 화면낭독기, 실제 고령 사용자 평가, 서버·본인인증·EMR·의료기관/외부 예약·실제 진료정보 전달. GitHub Pages 배포 성공과 코드/파일 SHA 일치는 검증됐지만 이 항목을 대신하지 않는다.
+- **롤백 기준:** 이전 `main@f7964b634e3ee2aee720603a08747f302c4aee77`, 이전 `gh-pages@7353ee9d351358c7e5ccab79e93f766c22ceee15`. 문제가 생겨도 기존 발행/개정/철회 데이터 계약을 임의로 완화하거나 기존 안정형 파일을 삭제하지 않는다.
