@@ -11,8 +11,10 @@ KEY = "care-transition-integrated-v10-a3-synthetic-only"
 
 
 def menu(page, view, width):
-    area = ".bottom-nav" if width <= 700 else ".side"
-    page.locator(f"{area} button[data-view={view}]").click()
+    # Desktop, tablet, and mobile can expose different navigation rails.
+    page.locator(
+        f'.side button[data-view="{view}"]:visible, .bottom-nav button[data-view="{view}"]:visible'
+    ).first.click()
 
 
 def ensure_no_horizontal_overflow(page, width):
@@ -34,6 +36,7 @@ with sync_playwright() as playwright:
     assert patient.locator(".v193-guide-menu").count() == 0, "Guidance must not fabricate a patient publication"
 
     hospital = context.new_page()
+    hospital.set_viewport_size({"width": 1440, "height": 900})
     hospital.on("pageerror", lambda err: failures.append(str(err)))
     hospital.goto(HOSPITAL, wait_until="networkidle")
     hospital.locator('.nav-item[data-view="patients"]').click()
