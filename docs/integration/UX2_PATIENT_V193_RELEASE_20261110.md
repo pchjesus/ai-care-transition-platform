@@ -71,3 +71,14 @@
 - **운영 홈**: `https://pchjesus.github.io/ai-care-transition-platform/` (루트 리디렉션 유지).
 - **NOT VERIFIED:** Pages 공개 URL에서 실브라우저로 재접속한 후 클릭/스크린샷을 재확인한 것, iOS/Safari/Android 실기기, 화면낭독기, 실제 고령 사용자 평가, 서버·본인인증·EMR·의료기관/외부 예약·실제 진료정보 전달. GitHub Pages 배포 성공과 코드/파일 SHA 일치는 검증됐지만 이 항목을 대신하지 않는다.
 - **롤백 기준:** 이전 `main@f7964b634e3ee2aee720603a08747f302c4aee77`, 이전 `gh-pages@7353ee9d351358c7e5ccab79e93f766c22ceee15`. 문제가 생겨도 기존 발행/개정/철회 데이터 계약을 임의로 완화하거나 기존 안정형 파일을 삭제하지 않는다.
+
+## 환자 B v1.9.3 사용 안내 보강 · 정식 기본 앱 확정 (2026-11-10)
+
+- **승인:** 사용자 시연 검토 후 기본 앱 반영 승인. 별도 개발 PR [#19](https://github.com/pchjesus/ai-care-transition-platform/pull/19) 병합.
+- **main PASS:** 기능 병합 SHA `49586f5fce36b4a606b1f9244768d779e1b47521`.
+- **gh-pages PASS:** 배포 SHA `393e17bda46b28b8e3040bc48c130bca4d71eb19`, [Pages build/deploy #42768885114](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42768885114) 전체 성공.
+- **QA PASS:** [환자 안내 CI #42767531677](https://github.com/pchjesus/ai-care-transition-platform/actions/runs/42767531677): 도메인 테스트·의료진/A3→B 브라우저 회귀·새 5단계 튜토리얼/320~1440px 가독성·키보드·큰 글씨·읽기전용 저장 불변 확인, 화면 캡처 artifact 보존. 주요 홈/의료진/환자 HTML과 변경 JS·CSS 6개 main↔Pages Blob SHA 일치.
+- **공식 기본 앱:** 루트 통합 홈→ 의료진 `prototypes/hospital-ux2-v07/index.html`, 환자 `prototypes/integrated-v10/patient/v193-connected.html`; 독립 이정희 합성 예시 및 구형 B는 비교/복구용 유지.
+- **의료 안전 경계:** A1/A2/A3 승인·발행·개정·철회·환자 및 입원건 식별·PDF/저장 실패 차단·합성 데이터만 사용 규칙 유지. 실제 병원 서비스/인증/EMR/외부 예약이 아님.
+- **NOT VERIFIED:** 공개 Pages에서 실제 기기로 상호작용한 사용자 수동 검수, iOS/Safari/화면낭독기/고령층 관찰. 배포 Actions 성공과 SHA 일치로 대체하지 않음.
+- **환자 안내 개선 롤백:** 직전 Pages `cfe90d56f7089bffbedaa5ca9416c5641ee393ba` (UX2·B v1.9.3 최초 정식 릴리즈는 그대로 포함).
