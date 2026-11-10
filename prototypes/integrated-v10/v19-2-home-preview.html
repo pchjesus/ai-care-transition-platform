@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8fafc">
+<meta name="description" content="케어브릿지랩 — 의료진의 퇴원 전환관리와 환자·보호자의 퇴원안내를 잇는 합성 데이터 기반 서비스 체험">
+<link rel="icon" href="data:,">
+<title>케어브릿지랩 — v1.9.2 환자 디자인 연동 홈 시안</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;color:#15243a;background:#f7f9fc}
+*{box-sizing:border-box}
+body{margin:0;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible{outline:3px solid #7aa9fa;outline-offset:4px}
+.skip{position:absolute;top:-100px;left:18px;background:#fff;padding:12px 16px;z-index:10}.skip:focus{top:14px}
+.container{max-width:1220px;padding:0 26px;margin:auto}
+header{background:#fff;border-bottom:1px solid #e5eaf2}
+.top{min-height:80px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.mark{height:41px;width:41px;display:grid;place-items:center;color:#fff;font-weight:800;border-radius:12px;background:#2458a8;font-size:18px}
+.brand strong{display:block;font-size:17px;letter-spacing:-.05em}.brand small{display:block;font-size:11px;color:#71829a;margin-top:2px}
+.top>span{font-size:12px;color:#61718b;border:1px solid #e3e9f3;padding:7px 12px;border-radius:40px}
+main{padding:0 0 90px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center;padding-top:76px;padding-bottom:60px}
+.eyebrow{font-size:12px;color:#2b68dd;font-weight:820;letter-spacing:.055em;margin:0 0 13px}
+.hero h1{font-size:clamp(32px,4.2vw,58px);line-height:1.22;letter-spacing:-.065em;margin:0;font-weight:820}
+.hero h1 em{font-style:normal;color:#2766d1}
+.lead{font-size:16px;line-height:1.9;color:#64758d;margin:23px 0 0;max-width:625px}
+.hero-graphic{min-height:300px;background:linear-gradient(155deg,#e8f0fc,#f7fafc 72%);border:1px solid #dbe6f5;border-radius:24px;padding:30px;display:flex;justify-content:center;flex-direction:column;gap:14px}
+.graphic-badge{align-self:flex-start;color:#315f9d;border-radius:50px;padding:7px 12px;background:#fff;font-size:11px;font-weight:760}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px}
+.flow>div{background:#fff;border:1px solid #dce6f5;border-radius:15px;padding:22px 10px;text-align:center;min-width:0}
+.flow strong{display:block;font-size:14px;letter-spacing:-.02em}.flow small{display:block;color:#78879b;font-size:11px;margin-top:6px}
+.arrow{font-size:22px;color:#7799ce}
+.flow-note{font-size:11px;color:#74849b;margin:4px 0 0}
+.choose-head{margin:0 0 23px}
+.choose-head h2{font-size:26px;letter-spacing:-.045em;margin:0}
+.choose-head p{color:#687891;margin:7px 0 0;font-size:14px}
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.path-card{display:flex;flex-direction:column;gap:19px;background:#fff;padding:34px;min-height:320px;border:1px solid #e1e8f2;border-radius:20px;text-decoration:none;box-shadow:0 8px 36px #173b6807;transition:transform .18s,border-color .18s,box-shadow .18s}
+.path-card:hover{transform:translateY(-3px);border-color:#b4cbef;box-shadow:0 14px 42px #173b6811}
+.path-card .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.path-card .glyph{display:grid;place-items:center;font-size:22px;height:49px;width:49px;border-radius:13px;background:#edf3ff;color:#245db6}
+.path-card.patient .glyph{background:#fff0e7;color:#965a36;border:1px solid #f5d8c4}
+.path-card .arrow-link{font-size:22px;color:#7991b2}
+.path-card h3{font-size:22px;letter-spacing:-.05em;margin:0}.path-card p{font-size:14px;color:#64748b;line-height:1.75;margin:0}
+.path-card .meta{margin-top:auto;font-size:12px;font-weight:740;color:#2863c9}
+.path-card.patient .meta{color:#315f8c}
+.process{margin-top:57px}
+.process h2{font-size:20px;letter-spacing:-.04em}
+.process ol{padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+.process li{background:#fff;border:1px solid #e3eaf3;padding:17px 18px;border-radius:12px}
+.process li span{display:block;font-size:11px;color:#3368b3;font-weight:820}.process li strong{display:block;font-size:13px;margin-top:7px}.process li small{display:block;font-size:11px;color:#77869b;margin-top:4px;line-height:1.55}
+.disclaimer{font-size:12px;line-height:1.8;background:#edf3fc;border:1px solid #d7e4f5;color:#566e8e;border-radius:12px;padding:17px 20px;margin-top:32px}
+footer{margin-top:35px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:#79869a;font-size:11px}
+footer a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:980px){.hero{grid-template-columns:1fr;gap:25px;padding-top:52px}.hero-graphic{min-height:220px}.process ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.container{padding-inline:19px}.top{min-height:70px}.top>span{font-size:10px}.hero{padding-top:39px;padding-bottom:46px}.hero h1{font-size:clamp(29px,9vw,42px)}.lead{font-size:14px}.hero-graphic{padding:22px}.paths{grid-template-columns:1fr;gap:13px}.path-card{padding:25px;min-height:255px;gap:13px}.path-card h3{font-size:20px}.choose-head h2{font-size:23px}.process{margin-top:36px}.process ol{gap:9px}.process li{padding:14px}.flow strong{font-size:11px}.flow small{font-size:10px}}
+@media(max-width:350px){.top>span{display:none}.flow{gap:3px}.flow>div{padding:16px 4px}.arrow{font-size:17px}.flow-note{line-height:1.6}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#paths">서비스 선택으로 이동</a>
+<header><div class="container top"><a class="brand" href="./index.html" aria-label="케어브릿지랩 홈"><span class="mark" aria-hidden="true">C</span><span><strong>케어브릿지랩</strong><small>CAREBRIDGE LAB · 퇴원 전환관리</small></span></a><span>UX v1.9.2 색상 연계 검토 시안</span></div></header>
+<main>
+<section class="container hero">
+ <div><p class="eyebrow">CARE TRANSITION, MADE CLEAR</p><h1>퇴원 준비부터<br><em>집에서의 일상</em>까지.</h1><p class="lead">퇴원 전 의료진이 돌봄 필요도를 확인하고, 근거가 있는 계획을 검토·승인합니다. 환자와 보호자는 <b>발행된 안내</b>만 간단하게 확인할 수 있습니다.</p></div>
+ <div class="hero-graphic" role="img" aria-label="환자 발굴, 다영역 평가, 의료진 승인, 환자 안내로 이어지는 절차"><span class="graphic-badge">퇴원 전환을 잇는 하나의 흐름</span><div class="flow"><div><strong>환자 발굴</strong><small>A1</small></div><span class="arrow">›</span><div><strong>필요도 평가</strong><small>A2</small></div><span class="arrow">›</span><div><strong>의료진 발행</strong><small>A3 → B</small></div></div><p class="flow-note">검토되지 않은 내용은 환자에게 자동으로 공개되지 않습니다.</p></div>
+</section>
+<section class="container" id="paths">
+ <div class="choose-head"><h2>어떤 화면을 이용하시나요?</h2><p>이용자의 목적에 따라 서로 다른 화면으로 연결됩니다.</p></div>
+ <div class="paths">
+  <a class="path-card" href="../hospital-ux2-v07/index.html#/patients"><div class="head"><span class="glyph" aria-hidden="true">✚</span><span class="arrow-link" aria-hidden="true">↗</span></div><h3>의료진용 퇴원 전환관리</h3><p>가상 환자 목록부터 다영역 평가, 계획 작성·근거 검토, 역할별 승인, 발행·개정·철회를 하나의 작업 공간에서 진행합니다.</p><span class="meta">의료진 업무 화면 열기 →</span></a>
+  <a class="path-card patient" href="../../patient/v19-2.html"><div class="head"><span class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v6h5"/><path d="m9 15 2.5 2.5L16 13"/></svg></span><span class="arrow-link" aria-hidden="true">↗</span></div><h3>환자용 나의 퇴원안내 · 이정희님 예시</h3><p>과제용 합성 환자 이정희님의 안내·일정·PDF·도움받기 화면을 새로운 색상과 사용성으로 비교합니다. <b>실제 A3 발행본과 연결되지 않은 독립 예시</b>입니다.</p><span class="meta">새 환자 디자인 시안 체험하기 →</span></a>
+ </div>
+</section>
+<section class="container process"><h2>서비스는 이렇게 연결됩니다</h2><ol>
+<li><span>STEP 01</span><strong>환자·입원건 확인</strong><small>합성 환자와 해당 입원건 선택</small></li>
+<li><span>STEP 02</span><strong>다영역 평가</strong><small>6개 영역의 업무 검토 우선도 확인</small></li>
+<li><span>STEP 03</span><strong>근거·승인·발행</strong><small>직종별 확인과 최종 승인 후 발행</small></li>
+<li><span>STEP 04</span><strong>나의 퇴원안내</strong><small>유효한 발행본을 환자 화면에 제공</small></li>
+</ol>
+<div class="disclaimer"><b>비공개 디자인 미리보기 — 운영 홈 아님</b> · 환자 카드의 살구색 안내 아이콘과 차분한 오션 블루는 v1.9.2 전체 시각 언어를 시연합니다. A3 통합형 B는 기존 운영 경로에서 별도로 확인하세요.<p><a href="./patient/index.html?patient=SYN-002&amp;encounter=ENC-SYN-002-DEMO">기존 A3 연동형 환자 앱 열기</a></p><b>합성 데이터 시연용</b> · 실제 환자정보, 의료기관 인증, EMR 연동, 임상적 정확성 검증 또는 공식적인 진료·예약이 아닙니다. 동일 브라우저·출처에서 저장·발행 상태가 연결되며, 실제 환자 공개나 서버 데이터 동기화 기능은 제공하지 않습니다.</div>
+<footer><span>© CareBridgeLab · 간호 창업 MVP 시연</span><a href="./legacy-home-v10.html">이전 안정 버전 진입 페이지</a></footer>
+</section>
+</main>
+</body>
+</html>
