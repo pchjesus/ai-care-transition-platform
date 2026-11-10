@@ -1,0 +1,78 @@
+name: CareBridgeLab UX2 and patient v1.9.3 same-origin integration
+on:
+  push:
+    branches: [feat/ux2-v193-patient-integration]
+    paths:
+      - 'prototypes/hospital-ux2-v07/integration.js'
+      - 'prototypes/integrated-v10/patient/v193-connected.html'
+      - 'prototypes/integrated-v10/patient/patient-v193-*'
+      - 'prototypes/integrated-v10/index.html'
+      - '.github/workflows/ux2-v193-integration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hospital-and-patient:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Static safety and javascript syntax
+        run: |
+          node --check prototypes/hospital-ux2-v07/integration.js
+          node --check prototypes/integrated-v10/patient/patient-v17-app.js
+          node --check prototypes/integrated-v10/patient/patient-v17-controls.js
+          node --check prototypes/integrated-v10/patient/patient-v193-controls.js
+          python - <<'PY'
+          from pathlib import Path
+          h=Path('prototypes/hospital-ux2-v07/integration.js').read_text()
+          b=Path('prototypes/integrated-v10/patient/v193-connected.html').read_text()
+          m=Path('prototypes/integrated-v10/patient/patient-v17-app.js').read_text()
+          assert "patient/v193-connected.html" in h
+          assert 'patient-v193-theme.css' in b and 'patient-v193-controls.js' in b
+          assert 'readPatientPublication' in m and 'readPublishedDocument' in m
+          assert 'patient/index.html' in Path('prototypes/integrated-v10/index.html').read_text() # legacy fallback preserved
+          assert 'v193-connected.html' in Path('prototypes/integrated-v10/index.html').read_text()
+          assert 'patient/v19-3.html' in Path('prototypes/integrated-v10/index.html').read_text()
+          assert 'patient-v193' not in Path('prototypes/integrated-v10/patient/index.html').read_text()
+          PY
+      - name: Existing A3 and publication persistence domain tests
+        run: node --test prototypes/integrated-v10/a3/tests/*.test.js prototypes/integrated-v10/shared/*.test.js
+      - name: Install Chromium and Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+      - name: Browser regression existing B + new connected B + clinician
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux-v193-server.log 2>&1 &
+          sleep 2
+          python prototypes/hospital-ux2-v07/tests/integration_v07.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('prototypes/integrated-v10/tests/patient_v17_candidate_qa.py')
+          s=p.read_text().replace('patient/v17.html','patient/v193-connected.html')
+          s=s.replace('carebridge-patient-v17-qa','carebridge-patient-v193-integration-qa')
+          needle="    patient.locator('.v17-home').wait_for()"
+          extra=("    assert patient.locator('.v193-connected-quick').count()==1\n"
+                 "    assert patient.locator('.v193-connected-tour').count()==1\n"
+                 "    assert patient.locator('body.patient-v193-connected').count()==1\n")
+          assert needle in s
+          s=s.replace(needle,needle+'\n'+extra,1)
+          Path('/tmp/ux2-v193-B-regression.py').write_text(s,encoding='utf8')
+          PY
+          python /tmp/ux2-v193-B-regression.py
+      - name: Preserve screens and QA result artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carebridge-ux2-v193-clinician-B-browser-regression
+          path: |
+            /tmp/carebridge-v07-qa/
+            /tmp/carebridge-patient-v193-integration-qa/
+            prototypes/integrated-v10/patient/v193-connected.html
+          if-no-files-found: warn
