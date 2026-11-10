@@ -8,6 +8,7 @@ on:
       - 'prototypes/integrated-v10/patient/patient-v193-*'
       - 'prototypes/integrated-v10/index.html'
       - '.github/workflows/ux2-v193-integration.yml'
+      - 'prototypes/hospital-ux2-v07/tests/parity_v193.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -52,6 +53,7 @@ jobs:
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/ux-v193-server.log 2>&1 &
           sleep 2
           python prototypes/hospital-ux2-v07/tests/integration_v07.py
+          python prototypes/hospital-ux2-v07/tests/parity_v193.py
           python - <<'PY'
           from pathlib import Path
           p=Path('prototypes/integrated-v10/tests/patient_v17_candidate_qa.py')
@@ -60,7 +62,17 @@ jobs:
           needle="    patient.locator('.v17-home').wait_for()"
           extra=("    assert patient.locator('.v193-connected-quick').count()==1\n"
                  "    assert patient.locator('.v193-connected-tour').count()==1\n"
-                 "    assert patient.locator('body.patient-v193-connected').count()==1\n")
+                 "    assert patient.locator('body.patient-v193-connected').count()==1\n"
+                 "    assert patient.locator('.v193-howto').count()==1\n"
+                 "    patient.locator('.v193-connected-quick').click()\n"
+                 "    assert patient.locator('body.large-font').count()==1\n"
+                 "    patient.locator('.bottom-nav button[data-view=profile]').click()\n"
+                 "    assert patient.locator('.v193-display-settings .v193-segments').count()==1\n"
+                 "    assert patient.locator('.v193-segments [data-v193-size=large]').get_attribute('aria-pressed')=='true'\n"
+                 "    patient.locator('.v193-segments [data-v193-size=normal]').click()\n"
+                 "    assert patient.locator('body.large-font').count()==0\n"
+                 "    patient.locator('.bottom-nav button[data-view=today]').click()\n"
+                 "    patient.locator('.v17-home').wait_for()\n")
           assert needle in s
           s=s.replace(needle,needle+'\n'+extra,1)
           Path('/tmp/ux2-v193-B-regression.py').write_text(s,encoding='utf8')
@@ -73,6 +85,7 @@ jobs:
           name: carebridge-ux2-v193-clinician-B-browser-regression
           path: |
             /tmp/carebridge-v07-qa/
+            /tmp/carebridge-parity-v193/
             /tmp/carebridge-patient-v193-integration-qa/
             prototypes/integrated-v10/patient/v193-connected.html
           if-no-files-found: warn
