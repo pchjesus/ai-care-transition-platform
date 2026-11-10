@@ -89,6 +89,11 @@ with sync_playwright() as pw:
             assert new.locator('.v18-task').first.evaluate("(e)=>getComputedStyle(e).animationName")=='none'
             ok(True,'reduced-motion-off-preserves-contents')
             ok(True,'reader-segments-reduced-motion-persist-focus')
+            # Restore default motion before checking that top-level navigation really animates.
+            new.locator('.v18-settings-trigger').click()
+            d.locator('#v18-less-motion').uncheck(force=True)
+            d.locator('[data-v18=close]').last.click()
+            assert not new.locator('body.v18-less-motion').count()
             new.locator('.v18-guide-trigger').click()
             assert new.locator('#v18-guide-panel').is_visible()
             new.screenshot(path=str(OUT/'new-guide-mobile.png'))
