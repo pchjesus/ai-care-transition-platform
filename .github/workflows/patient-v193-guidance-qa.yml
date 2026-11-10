@@ -1,0 +1,51 @@
+name: CareBridgeLab Patient v1.9.3 guidance regression
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'prototypes/integrated-v10/patient/patient-v193-controls.js'
+      - 'prototypes/integrated-v10/patient/patient-v193-theme.css'
+      - 'prototypes/integrated-v10/patient/comfort-ui-v193.js'
+      - 'prototypes/integrated-v10/tests/patient_v193_guidance_qa.py'
+      - '.github/workflows/patient-v193-guidance-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  patient-guidance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patient scripts syntax
+        run: |
+          node --check prototypes/integrated-v10/patient/patient-v193-controls.js
+          node --check prototypes/integrated-v10/patient/comfort-ui-v193.js
+          node --check prototypes/integrated-v10/patient/patient-v193-app.js
+      - name: Publication domain tests (existing contract)
+        run: node --test prototypes/integrated-v10/a3/tests/*.test.js prototypes/integrated-v10/shared/*.test.js
+      - name: Install browser and Korean fonts
+        run: |
+          python -m pip install playwright
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+      - name: Existing clinician and A3-to-B browser regression
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/carebridge-guidance-http.log 2>&1 &
+          sleep 2
+          python prototypes/hospital-ux2-v07/tests/integration_v07.py
+          python prototypes/hospital-ux2-v07/tests/parity_v193.py
+      - name: Connected B guide accessibility and read-only QA
+        run: python prototypes/integrated-v10/tests/patient_v193_guidance_qa.py
+      - name: Upload review screenshots (synthetic demo only)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: patient-v193-ux2-review-screenshots
+          path: artifacts/patient-v193-review/
+          if-no-files-found: warn
+

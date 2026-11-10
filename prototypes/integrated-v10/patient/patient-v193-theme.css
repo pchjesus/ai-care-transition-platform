@@ -365,3 +365,32 @@ body.patient-v193-connected{background:#fcfaf6;color:#203e56}
  .patient-v193-connected .v193-seg-thumb{transition:none!important}
 }
 .patient-v193-connected.v17-motion-off .v193-seg-thumb{transition:none!important}
+
+/* v1.9.3 connected-only: readable, actionable guidance without altering published content. */
+.patient-v193-connected .v193-guide-intro{font-size:calc(16px * var(--font-scale,1))!important;color:#294b61!important}
+.patient-v193-connected .v193-guide-menu{list-style:none;margin:16px 0;padding:0;display:grid;gap:12px}
+.patient-v193-connected .v193-guide-item{display:flex;gap:14px;align-items:flex-start;min-width:0;border:1px solid #d8e5ea;background:#fff;border-radius:14px;padding:16px}
+.patient-v193-connected .v193-guide-icon{flex:0 0 46px;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:#eaf4f9;color:#286582}
+.patient-v193-connected .v193-guide-copy{flex:1;min-width:0}
+.patient-v193-connected .v193-guide-copy h3{margin:0 0 3px;font-size:calc(19px * var(--font-scale,1));line-height:1.35}
+.patient-v193-connected .v193-guide-copy p{margin:4px 0!important;color:#31566e!important;font-size:calc(15px * var(--font-scale,1))!important;line-height:1.65}
+.patient-v193-connected .v193-guide-copy small{display:block;font-size:calc(13px * var(--font-scale,1));color:#536e81;line-height:1.6;margin:5px 0 11px}
+.patient-v193-connected .v193-guide-copy button{display:block;width:100%;min-height:52px;padding:11px 14px;border-radius:11px;border:1px solid #266181;background:#286b8c;color:#fff;font:inherit;font-size:calc(16px * var(--font-scale,1));font-weight:780;cursor:pointer;text-align:left}
+.patient-v193-connected .v193-guide-copy button:hover{background:#215773}
+.patient-v193-connected .v193-guide-boundary{border-top:1px solid #d7e5e8;padding-top:15px;color:#32566c}
+.patient-v193-connected .v193-guide-boundary strong{font-size:calc(16px * var(--font-scale,1))}
+.patient-v193-connected .v193-guide-boundary p{font-size:calc(14px * var(--font-scale,1))!important}
+.patient-v193-connected .v193-clinician-questions{padding:22px;margin:0 0 18px;background:#fff9f1;border:1px solid #ecdccc;border-radius:17px}
+.patient-v193-connected .v193-clinician-questions h2{font-size:calc(22px * var(--font-scale,1));margin:0 0 8px}
+.patient-v193-connected .v193-clinician-questions p{font-size:calc(15px * var(--font-scale,1));margin:0 0 12px;color:#355970;line-height:1.7}
+.patient-v193-connected .v193-clinician-questions ul{margin:0 0 16px;padding-left:24px;display:grid;gap:12px}
+.patient-v193-connected .v193-clinician-questions li{font-size:calc(16px * var(--font-scale,1));line-height:1.65;padding-left:3px;color:#264961}
+.patient-v193-connected .v193-questions-link{display:flex;align-items:center;min-height:52px;padding:12px 16px;border-radius:12px;background:#286b8c;color:white;font-weight:780;text-decoration:none;font-size:calc(15px * var(--font-scale,1))}
+.patient-v193-connected .v193-clinician-questions .v193-questions-note{margin:13px 0 0;color:#52687b;font-size:calc(13px * var(--font-scale,1));line-height:1.7}
+.patient-v193-connected :is(.v193-guide-copy button,.v193-questions-link):focus-visible{outline:3px solid #ae8258!important;outline-offset:3px}
+@media(max-width:430px){
+ .patient-v193-connected .v193-howto-body{padding:0 12px 12px}
+ .patient-v193-connected .v193-guide-item{padding:13px;gap:10px}
+ .patient-v193-connected .v193-guide-icon{width:39px;height:39px;flex-basis:39px}
+ .patient-v193-connected .v193-clinician-questions{padding:17px}
+}
