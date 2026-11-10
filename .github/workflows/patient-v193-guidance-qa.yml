@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'prototypes/integrated-v10/index.html'
+      - 'prototypes/integrated-v10/patient/patient-v193-app.js'
       - 'prototypes/integrated-v10/patient/patient-v193-controls.js'
       - 'prototypes/integrated-v10/patient/patient-v193-theme.css'
       - 'prototypes/integrated-v10/patient/comfort-ui-v193.js'
