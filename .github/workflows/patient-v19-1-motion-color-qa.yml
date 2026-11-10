@@ -4,6 +4,7 @@ on:
     branches: [feat/patient-v19-1-motion-color]
     paths:
       - 'patient/v19-1*'
+      - 'patient/v19_1_qa.py'
       - 'patient/compare-v19-1.html'
       - '.github/workflows/patient-v19-1-motion-color-qa.yml'
   workflow_dispatch:
