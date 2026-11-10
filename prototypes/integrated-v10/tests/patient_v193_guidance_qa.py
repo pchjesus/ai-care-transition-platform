@@ -47,7 +47,7 @@ with sync_playwright() as playwright:
     home.go_back(wait_until="networkidle")
     home.locator('.patient-mode-link:not(.secondary)').click()
     assert "/patient/v193-connected.html" in home.url
-    assert home.locator("#demo-code").count() == 1
+    home.locator("#demo-code").wait_for(timeout=15000)
     home.close()
 
     patient = context.new_page()
