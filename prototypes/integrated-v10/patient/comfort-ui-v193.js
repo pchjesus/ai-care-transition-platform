@@ -236,7 +236,7 @@ function maps(c){
    const mobile=nav.cloneNode(true);mobile.classList.add('patient-mobile-journey');mobile.classList.remove('patient-sidebar-journey');const toolbar=document.createElement('div');toolbar.className='patient-mobile-toolbar';toolbar.append(mobile);main.prepend(toolbar);
   }
   const example=header?.querySelector('.independent-demo-link');if(example){example.textContent='최신 독립 예시 보기';side?.querySelector('.side-end')?.append(example);}
-  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication){const guide=document.createElement('button');guide.type='button';guide.className='patient-header-help';guide.dataset.comfort='tour';guide.textContent='사용 안내';(header?.querySelector('.meta')||tools).append(guide);}// The patient journey provides the integrated home link without a duplicate preview control.const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.parentElement.append(tools);else main.prepend(tools);}
+  const font=header?.querySelector('[data-action=font]');if(font){const tools=document.createElement('div');tools.className='patient-page-tools';tools.append(font);if(context().publication){const guide=document.createElement('button');guide.type='button';guide.className='patient-header-help';guide.dataset.comfort='tour';guide.textContent='사용 안내';(header?.querySelector('.meta')||tools).append(guide);}const mobile=main.querySelector('.patient-mobile-journey');if(mobile)mobile.parentElement.append(tools);else main.prepend(tools);}
  }
  function attachNotifications(hub,c){
   if(dialog?.classList.contains('comfort-inline')&&openedPublication===pubKey(c)){hub.append(dialog);refreshHub();}
