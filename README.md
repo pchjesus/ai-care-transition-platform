@@ -8,6 +8,17 @@
 
 **현재 한계:** 실제 의료기관 제휴·유료 고객·실환자정보·임상 성능 검증은 없습니다. 현재는 A1→A2→A3→환자용 B가 합성 데이터와 동일 출처 브라우저 저장소로 연결되는 연구용 MVP 시연입니다. Firebase·실제 의료기관/EMR 연동·실환자 인증·임상 예측모델은 구현되지 않았습니다.
 
+## 공식 사업계획서·IR 발표자료 (최신 기준본)
+
+- [사업계획서 PDF (12쪽)](docs/official/business-plan.pdf) · [인터랙티브 IR HTML (12장)](docs/official/ir-deck.html)
+- [공식 자료 관리 및 교체 규칙](docs/official/README.md): 발전할 때마다 **동일 경로의 파일을 교체**하며 Git 커밋으로 이전 버전 보존. 두 첨부 파일은 업로드 원본 그대로 등록한 2026-11-10 제출 기준본이며, 2026-11-12 추가 피드백은 [확정 개발 로드맵](docs/USER_FEEDBACK_PRODUCT_ROADMAP_20261112.md)에 반영.
+- 실제 의료기관·유료 고객·EMR 실연동·임상 성능 검증·차량/기관 제휴가 이루어진 것으로 표기하지 않음.
+
+## 2026-11-12 사용자·교수 피드백 반영 개발 방향
+
+- **최신 개발 우선순위/기능별 검토사항:** [사용자·교수 피드백 통합 개발 로드맵 v1.0](docs/USER_FEEDBACK_PRODUCT_ROADMAP_20261112.md) — 병원 내부 지도·실내 내비게이션, EMR 표준 연동과 병원별 UI 적응, 복약·증상 확인, 보호자 공유, 음성 안내, 지역사회 기관 및 이동·생활지원 연계, 수익모델 등을 **P0~P3**로 구분. 모든 항목은 계획이며 기능 구현·제휴·임상 검증을 의미하지 않음.
+- 기존 **합성 데이터 MVP의 발행/개정/철회·접근 차단**과 현재 승인된 의료진·환자 UI를 유지한 채 단계적 개발. 기존 연구·아키텍처 초안의 작성 당시 상태와 최신 제품 구현 상태는 분리해서 해석.
+
 ## 현재 기준 문서 (ACTIVE DRAFT)
 
 1. [환자 중심 사업계획서 — 교수님 기본정보 5개 + 필수정보 12개](docs/ASSIGNMENT_BM_PATIENT_FIRST_DRAFT_v0.2.md)
@@ -46,10 +57,10 @@
 
 - [통합 홈](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/index.html) — 의료진 / 환자·보호자 진입 분리
 - [의료진 UX 2.0 v0.7](https://pchjesus.github.io/ai-care-transition-platform/prototypes/hospital-ux2-v07/index.html) — A1·A2 평가, A3 계획·근거·문서·검토 요청·승인·발행·개정·철회
-- [나의 퇴원안내 · 환자 앱 B](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/index.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO) — 발행된 동일 환자·입원건의 안내만 표시
+- [나의 퇴원안내 · 환자 앱 B v1.9.3](https://pchjesus.github.io/ai-care-transition-platform/prototypes/integrated-v10/patient/v193-connected.html?patient=SYN-002&encounter=ENC-SYN-002-DEMO) — 발행된 동일 환자·입원건의 안내만 표시
 - [v0.7 실행 설명 및 검증 범위](prototypes/hospital-ux2-v07/README.md)
 
-실제 환자·의료기관 서비스가 아닌 합성 데이터 기반 체험이다. v0.7 통합 전까지 운영 URL은 기존 안정 버전을 가리킬 수 있다. 아래 이전 시연 링크는 레거시 참고용으로 보존한다.
+실제 환자·의료기관 서비스가 아닌 합성 데이터 기반 체험이다. 의료진→환자 앱 연결은 같은 출처·브라우저의 유효 발행본에 한하며, 미발행 상태는 환자 안내를 표시하지 않는 것이 정상이다. 아래 이전 시연 링크는 레거시 참고용으로 보존한다.
 
 ## 이전 통합 합성 MVP 시연 (2026-10-22 · LEGACY)
 
