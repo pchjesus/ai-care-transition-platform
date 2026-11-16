@@ -12,6 +12,7 @@ export function priorityDomains(record){
 }
 
 const auditEventNames={
+ INIT:'최초 계획 초안 생성',
  EVALUATION_EDITED:'평가 수정',ASSESSMENT_IMPORTED:'평가 A3 반영',
  PLAN_EDIT:'계획 수정',APPROVAL_INVALIDATED:'기존 승인 무효화',
  ISSUE_RESOLVED:'미해결 항목 검토',REVIEW_REQUESTED:'의료진 검토 요청',
@@ -20,6 +21,7 @@ const auditEventNames={
  REVOCATION_REJECTED:'발행 철회 요청 반려',REVOKED:'발행 철회',
  PDF_ATTACHED:'PDF 첨부',PDF_REMOVED:'PDF 제외',PDF_REVIEWED:'PDF 검토 완료',
  PDF_RESTORED:'PDF 원본 복원',PDF_SCOPE_CHANGED:'PDF 공개 범위 변경',
+ PDF_CATEGORY_CHANGED:'PDF 문서 구분 변경',PDF_EDIT:'PDF 공개 범위·분류 변경',
  DESTINATION_EDIT:'연계 목적지 수정',SYNTHETIC_APPOINTMENT_EDIT:'가상 일정 수정',
  SYNTHETIC_REPLY_RECEIVED:'가상 회신 수신',EVIDENCE_LINKED:'근거자료 연결',
  EVIDENCE_UNLINKED:'근거자료 연결 해제'
