@@ -58,7 +58,7 @@
         <div class="ux6-form">
           <div class="ux6-edit-head"><h3>${esc(selected.title)}</h3>${statBadge(verified?'근거·검토 확인':'재검토 필요',verified?'green':'amber')}</div>
           <label for="ux6-plan-text">환자에게 공개할 안내 문구</label>
-          <textarea id="ux6-plan-text" rows="6" data-v6-text ${canEdit?'':'disabled'}>${esc(selected.text)}</textarea>
+          <textarea id="ux6-plan-text" rows="6" maxlength="4000" data-v6-text ${canEdit?'':'disabled'}>${esc(selected.text)}</textarea>
           <div class="ux6-actions"><button type="button" class="btn btn-primary" data-v6-action="save-text" ${canEdit?'':'disabled'}>안내문 저장</button><small>저장 후 해당 항목의 검토 확인은 다시 필요합니다.</small></div>
           ${appointment?`<fieldset class="ux6-appointment" ${canEdit?'':'disabled'}><legend>가상 외래 일정 (선택)</legend><p>실제 예약이 아닙니다. 모든 값과 담당 역할 확인 후 발행되어야 환자 앱에 나타납니다.</p>
             <div class="ux6-fields"><label>상태<select data-v6-appointment="status">${options(appointment.status,[['PENDING','미확정'],['CONFIRMED','확정됨 (가상)']])}</select></label>
@@ -216,7 +216,8 @@
     sheet.innerHTML='<header><strong>케어브릿지랩 · 합성 데이터 시연</strong><h1>퇴원 전환관리 안내 계획</h1>'
       +'<p>환자 ID '+esc(state.patientId)+' · 입원건 '+esc(publication.encounterFor(state.patientId))+'</p>'
       +'<p class="ux7-print-watermark">'+esc(heading)+'</p></header>'
-      +items.map(item=>'<section><h2>'+esc(item.title)+'</h2><p>'+esc(item.text)+'</p></section>').join('')
+      +items.map(item=>{const a=item.appointment,show=a&&(draft?a.status==='CONFIRMED'&&workflow.validAppointment(a):true);
+        return '<section><h2>'+esc(item.title)+'</h2><p>'+esc(item.text)+'</p>'+(show?'<p><strong>확정 일정</strong> '+esc(a.date)+' '+esc(a.time)+' · '+esc(a.place)+(a.destination?.verified?' · '+esc(a.destination.name)+' ('+esc(a.destination.address)+')':'')+'</p>':'')+'</section>';}).join('')
       +'<footer>실제 의료기관에서 발급한 문서가 아닙니다. '
       +(draft?'검토용 초안이며 의료진의 최종 승인·발행을 거치지 않았습니다.':'이 브라우저의 합성 데이터 유효 발행 스냅샷입니다.')+'</footer>';
     document.body.appendChild(sheet);
@@ -225,7 +226,8 @@
     window.print();
   }
   async function workflowTransitionV07(kind){
-  if(ui.busy||!writable()||!CANONICAL.cases.some(c=>c.id===state.patientId)){
+  if(ui.busy){toast('이전 작업을 처리하고 있습니다. 잠시 후 다시 확인하세요.');return;}
+  if(!writable()||!CANONICAL.cases.some(c=>c.id===state.patientId)){
     toast('현재 기록을 저장할 수 없습니다. 브라우저 상태를 확인하세요.');return;
   }
   const owner=state.patientId, role=ui.role, beforeSeen=ui.seen;
@@ -237,7 +239,7 @@
   }
   if(kind==='revoke'&&!confirm('현재 발행본을 철회할까요? 환자 앱 B에서 즉시 숨겨집니다.'))return;
   if(kind==='reject-revocation'&&!confirm('철회 요청을 반려하고 기존 발행본을 유지할까요?'))return;
-  ui.busy=true;
+  ui.busy=true;render({keepScroll:true});
   try{
     const box=storage.loadRepository(localStorage,key);
     if(box.error)throw Error('기존 합성 기록을 읽을 수 없습니다. 원본을 보호하기 위해 중단했습니다.');
@@ -349,14 +351,31 @@
     }
   }
   function targetItem() { return getRecord()?.draft.items.find(i=>i.id===state.planTab)||getRecord()?.draft.items[0]; }
+  // Every commit re-renders from storage; refuse instead of silently dropping unsaved inputs.
+  function unsavedPlanEdits(){
+    const item=targetItem();if(!item)return [];
+    const pending=[],text=document.getElementById('ux6-plan-text');
+    if(text&&!text.matches(':disabled')&&text.value!==item.text)pending.push('안내 문구');
+    const stored=item.appointment||{status:'PENDING',date:'',time:'',place:''};
+    if([...document.querySelectorAll('[data-v6-appointment]')].some(x=>!x.matches(':disabled')&&x.value!==(stored[x.dataset.v6Appointment]||'')))pending.push('외래 일정');
+    return pending;
+  }
+  function keepUnsaved(allowed=null){
+    const pending=unsavedPlanEdits().filter(x=>x!==allowed);
+    if(!pending.length)return false;
+    toast('저장하지 않은 '+pending.join('·')+' 변경이 있습니다. 먼저 저장한 뒤 다시 시도하세요.');
+    return true;
+  }
   function saveText() {
     const item=targetItem(), text=document.getElementById('ux6-plan-text')?.value;
     if(!item || typeof text!=='string')return;
     if(text===item.text){toast('변경된 내용이 없습니다.');return;}
+    if(text.length>4000){toast('환자 안내 문구는 4000자 이내로 입력하세요.');return;}
+    if(keepUnsaved('안내 문구'))return;
     commit(r=>{const x=r.draft.items.find(i=>i.id===item.id);x.text=text;x.verified=false;},'PLAN_EDIT',item.title+' · 안내문');
   }
   function linkSource(id,remove=false) {
-    const item=targetItem();if(!item || !id)return;
+    const item=targetItem();if(!item || !id||keepUnsaved())return;
     commit(r=>{
       const x=r.draft.items.find(i=>i.id===item.id), existing=linked(x);
       if(remove&&!existing.includes(id))return false;
@@ -368,7 +387,7 @@
     },remove?'EVIDENCE_UNLINKED':'EVIDENCE_LINKED',item.title+' · '+id);
   }
   function saveAppointment() {
-    const item=targetItem();if(!item||item.section!=='followup')return;
+    const item=targetItem();if(!item||item.section!=='followup'||keepUnsaved('외래 일정'))return;
     const fields={};
     for(const x of document.querySelectorAll('[data-v6-appointment]')) fields[x.dataset.v6Appointment]=x.value;
     commit(r=>{
@@ -380,7 +399,7 @@
     },'SYNTHETIC_APPOINTMENT_EDIT','가상 외래 일정 수정 · 재검토 필요');
   }
   function saveDestination(){
-    const item=targetItem();if(!item||item.section!=='followup')return;
+    const item=targetItem();if(!item||item.section!=='followup'||keepUnsaved())return;
     const fields=Object.fromEntries([...document.querySelectorAll('[data-v6-dest]')]
       .filter(el=>el.dataset.v6Dest!=='verified').map(el=>[el.dataset.v6Dest,el.value.trim()]));
     const checked=!!document.querySelector('[data-v6-dest="verified"]')?.checked;
@@ -400,8 +419,9 @@
     },'DESTINATION_EDIT','가상 공식 진료 목적지 변경 · 담당 역할 재검토 필요');
   }
   function verify() {
-    const item=targetItem(), checked=document.querySelector('[data-v6-verified]')?.checked;
+    const item=targetItem(), box=document.querySelector('[data-v6-verified]'), checked=box?.checked;
     if(!item)return;
+    if(keepUnsaved()){if(box)box.checked=item.verified;return;}
     commit(r=>{
       const x=r.draft.items.find(i=>i.id===item.id);
       if(checked && !itemPermitted(x.section))throw Error('해당 항목을 확인할 담당 역할이 아닙니다.');
@@ -412,6 +432,7 @@
   function setVisibility(value) {
     const item=targetItem();
     if(!item||!['PATIENT','INTERNAL'].includes(value))return;
+    if(keepUnsaved()){const select=document.querySelector('[data-v6-visibility]');if(select)select.value=item.visibility;return;}
     commit(r=>{
       const x=r.draft.items.find(i=>i.id===item.id);
       if(x.visibility===value)return false;
@@ -451,8 +472,9 @@
       const file=ui.files.get(id);
       if(!file){toast('PDF 원본을 다시 첨부하세요.');return;}
       const u=URL.createObjectURL(file);
-      const opened=window.open(u,'_blank','noopener,noreferrer');
-      if(!opened)toast('팝업이 차단되었을 수 있습니다.');
+      // 'noopener' makes window.open return null even on success; detach the opener manually instead.
+      const opened=window.open(u,'_blank');
+      if(opened)opened.opener=null;else toast('팝업이 차단되었을 수 있습니다.');
       setTimeout(()=>URL.revokeObjectURL(u),60000);
       return;
     }
@@ -471,6 +493,7 @@
     if(!writable()||!editable(getRecord())){toast('현재 계획에는 첨부할 수 없습니다.');return;}
     try {
       if(!file.name.toLowerCase().endsWith('.pdf')||file.size>4*1024*1024||file.size<5)throw Error('4MB 이하 PDF만 첨부 가능합니다.');
+      if(file.name.length>250)throw Error('파일 이름은 250자 이내여야 환자에게 발행할 수 있습니다.');
       if(!crypto.subtle)throw Error('SHA-256을 사용할 수 없는 환경입니다.');
       const buffer=await file.arrayBuffer();
       if(new TextDecoder().decode(buffer.slice(0,5))!=='%PDF-')throw Error('PDF 원본의 형식이 올바르지 않습니다.');
