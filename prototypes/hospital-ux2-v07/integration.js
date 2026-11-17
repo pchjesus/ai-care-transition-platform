@@ -40,6 +40,12 @@
       ${!writable()?'<p class="ux6-alert">저장 기능을 사용할 수 없습니다. 저장 기록/실행 환경을 확인하세요. 안전을 위해 편집을 중지했습니다.</p>':''}
       ${!editable(r)?'<p class="ux6-alert">발행·철회된 계획은 수정하지 않습니다. 원본 A3에서 새 버전 개정을 시작하세요.</p>':''}`;
   }
+  // SYN-003's conflicting medication lists only clear once the (synthetic) pharmacist reply arrives,
+  // the same unlock A3 offers in study mode. Show which locked replies would satisfy this target.
+  const lockedFor = (type,target) => sourcesFor().filter(s=>s.verificationStatus==='LOCKED'&&library.usableSource({...s,verificationStatus:'CONFIRMED'},type,target,state.patientId));
+  function replyPanel(list,canEdit) {
+    return list.map(s=>`<div class="ux6-alert ux6-reply"><p><strong>${esc(s.title)} · 회신 대기</strong> ${esc(s.detail)}</p><button type="button" class="btn" data-v6-action="receive-reply" data-v6-id="${esc(s.id)}" ${canEdit?'':'disabled'}>가상 담당자 회신 받기</button></div>`).join('');
+  }
   function sourceDetail(s) {
     return `<details class="ux6-source-detail"><summary>${esc(s.title)} · ${esc(s.verificationStatus)}</summary><p>${esc(s.summary)} ${esc(s.detail)}</p><small>${esc(s.id)} · ${esc(s.encounterId)} · ${esc(s.observedAt)}</small></details>`;
   }
@@ -83,6 +89,7 @@
             ${linked(selected).length?linked(selected).map(id=>`<div class="ux6-linked"><span>${esc(refTitle(id))}</span><button type="button" class="btn btn-quiet" data-v6-action="unlink" data-v6-id="${esc(id)}" ${canEdit?'':'disabled'} aria-label="${esc(refTitle(id))} 연결 해제">해제</button></div>`).join(''):'<p class="small-muted">연결된 원천자료가 없습니다.</p>'}
             <div class="ux6-actions"><label class="ux6-selectgrow">확인 자료 추가<select id="ux6-add-source" ${canEdit&&possible.length?'':'disabled'}><option value="">근거 선택</option>${possible.map(s=>`<option value="${esc(s.id)}">${esc(s.title)}</option>`).join('')}</select></label>
             <button type="button" class="btn" data-v6-action="link" ${canEdit&&possible.length?'':'disabled'}>자료 연결</button></div>
+            ${replyPanel(lockedFor('item',selected.section),canEdit)}
             ${sourcesFor().filter(s=>linked(selected).includes(s.id)).map(sourceDetail).join('')}
           </div>
           <div class="ux6-verify-row"><label><input type="checkbox" data-v6-verified ${selected.verified?'checked':''} ${canEdit?'':'disabled'}> 담당 역할로 안내 내용 검토 완료</label><span class="small-muted">${itemPermitted(selected.section)?'현재 역할에서 검토 가능':'이 항목은 다른 담당 역할의 검토가 필요합니다.'}</span></div>
@@ -104,6 +111,7 @@
         const resolved=issue.status==='RESOLVED';
         return `<article class="ux6-issue" data-v6-issue="${esc(issue.id)}"><div class="ux6-edit-head"><h3>${esc(issue.title)}</h3>${statBadge(resolved?'해결 기록됨':'확인 필요',resolved?'green':'amber')}</div><p>${esc(issue.reason)}</p>
           <label>확인한 원천자료<select data-v6-issue-source ${canEdit&&!resolved?'':'disabled'}><option value="">선택하세요</option>${choices.map(s=>`<option value="${esc(s.id)}" ${issue.source===s.id?'selected':''}>${esc(s.title)}</option>`).join('')}</select></label>
+          ${resolved?'':replyPanel(lockedFor('issue',issue),canEdit)}
           <label>검토 내용 (최소 10자)<textarea rows="3" data-v6-resolution ${canEdit&&!resolved?'':'disabled'}>${esc(issue.resolution)}</textarea></label>
           ${resolved?`<p class="small-muted">확인 역할: ${esc(issue.reviewer)} · 근거: ${esc(refTitle(issue.source))}</p>`:`<button type="button" class="btn btn-primary" data-v6-action="resolve" ${canEdit?'':'disabled'}>근거 확인·해결 저장</button>`}
           <p class="small-muted">${issuePermitted(issue.domain)?'현재 역할에서 해결 가능':'이 항목은 담당 역할의 확인이 필요합니다.'}</p>
@@ -386,6 +394,16 @@
       x.source=next[0]||''; x.verified=false;
     },remove?'EVIDENCE_UNLINKED':'EVIDENCE_LINKED',item.title+' · '+id);
   }
+  function receiveReply(id) {
+    if(!id||keepUnsaved())return;
+    if(!library.SOURCE_LIBRARY.some(s=>s.id===id&&s.patientId===state.patientId&&s.verificationStatus==='LOCKED')){toast('이 환자의 회신 대기 자료가 아닙니다.');return;}
+    const done=commit(r=>{
+      const list=Array.isArray(r.unlockedSources)?r.unlockedSources:(r.unlockedSources=[]);
+      if(list.includes(id))return false;
+      list.push(id);
+    },'SYNTHETIC_REPLY_RECEIVED','약료 담당자의 가상 회신을 수신 · '+id);
+    if(done)toast('가상 확인 회신을 받았습니다. 근거로 연결한 뒤 A2 평가도 수정해 인계하세요.');
+  }
   function saveAppointment() {
     const item=targetItem();if(!item||item.section!=='followup'||keepUnsaved('외래 일정'))return;
     const fields={};
@@ -550,6 +568,7 @@
     else if(name==='save-appointment')saveAppointment();
     else if(name==='link')linkSource(document.getElementById('ux6-add-source')?.value);
     else if(name==='unlink')linkSource(action.dataset.v6Id,true);
+    else if(name==='receive-reply')receiveReply(action.dataset.v6Id);
     else if(name==='resolve')resolveIssue(action.closest('[data-v6-issue]'));
     else if(['open-pdf','review-pdf','remove-pdf'].includes(name))docAction(action,name);
   },true);
