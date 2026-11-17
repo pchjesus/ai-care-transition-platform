@@ -9,6 +9,7 @@ on:
       - 'prototypes/integrated-v10/patient/patient-v193-theme.css'
       - 'prototypes/integrated-v10/patient/comfort-ui-v193.js'
       - 'prototypes/integrated-v10/tests/patient_v193_guidance_qa.py'
+      - 'prototypes/integrated-v10/tests/bugfix_pr22_regression.py'
       - '.github/workflows/patient-v193-guidance-qa.yml'
   workflow_dispatch:
 permissions:
@@ -42,6 +43,8 @@ jobs:
           python prototypes/hospital-ux2-v07/tests/parity_v193.py
       - name: Connected B guide accessibility and read-only QA
         run: python prototypes/integrated-v10/tests/patient_v193_guidance_qa.py
+      - name: PR22 focused bug replays: reminder and unsaved clinician text
+        run: python prototypes/integrated-v10/tests/bugfix_pr22_regression.py
       - name: Upload review screenshots (synthetic demo only)
         if: always()
         uses: actions/upload-artifact@v4
