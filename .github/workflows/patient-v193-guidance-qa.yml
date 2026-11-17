@@ -43,7 +43,7 @@ jobs:
           python prototypes/hospital-ux2-v07/tests/parity_v193.py
       - name: Connected B guide accessibility and read-only QA
         run: python prototypes/integrated-v10/tests/patient_v193_guidance_qa.py
-      - name: PR22 focused bug replays: reminder and unsaved clinician text
+      - name: "PR22 focused bug replays - reminder and unsaved clinician text"
         run: python prototypes/integrated-v10/tests/bugfix_pr22_regression.py
       - name: Upload review screenshots (synthetic demo only)
         if: always()
