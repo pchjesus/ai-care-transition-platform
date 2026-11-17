@@ -270,7 +270,7 @@ async function addDoc(file){if(!file||!protectEdit())return;
  audit(get(),role,'PDF_ATTACHED',file.name+' · 임시 파일');save();render();announce('PDF를 첨부했습니다. 공개 전 검토 및 공개범위를 설정하세요.');
 }
 function docAction(action,button){const root=button.closest('[data-doc]');const id=root?.dataset.doc;const d=get().draft.docs.find(x=>x.id===id);if(!d)return;
- if(action==='open-doc'){const file=fileStore.get(id);if(file){const url=URL.createObjectURL(file);const wnd=window.open(url,'_blank','noopener');if(!wnd)announce('브라우저에서 팝업이 차단되었습니다.');setTimeout(()=>URL.revokeObjectURL(url),60000)}return}
+ if(action==='open-doc'){const file=fileStore.get(id);if(file){const url=URL.createObjectURL(file);const wnd=window.open(url,'_blank');/* 'noopener' always returns null, which made every open look blocked. */if(wnd)wnd.opener=null;else announce('브라우저에서 팝업이 차단되었습니다.');setTimeout(()=>URL.revokeObjectURL(url),60000)}return}
  if(action==='review-doc'&&role!=='APPROVER'&&role!=='PHYSICIAN'){announce('PDF 검토 확인은 담당 의사 또는 최종 승인자 역할이 필요합니다.');return}
  if(action==='review-doc'&&!fileStore.has(d.id)){announce('PDF 원본 파일이 현재 브라우저 세션에 없습니다.');return}
  if(!mutateBeforeEdit())return;
