@@ -138,7 +138,10 @@ with sync_playwright() as playwright:
     form.locator('[name="label"]').fill("알림A2")
     form.locator('button[type="submit"]').click()
     patient.locator("#reminder-personal .comfort-list li").filter(has_text="알림A2").wait_for()
-    assert form.locator('[name="id"]').input_value() == "", "Edited reminder id survived form reset"
+    patient.wait_for_function(
+        "() => document.querySelector('form[data-comfort-form=personal] input[name=id]')?.value === ''",
+        timeout=4000
+    )
     fill_reminder("알림B")
     form.locator('button[type="submit"]').click()
     patient.locator("#reminder-personal .comfort-list li").filter(has_text="알림B").wait_for()
