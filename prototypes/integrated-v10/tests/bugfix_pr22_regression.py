@@ -42,6 +42,17 @@ with sync_playwright() as playwright:
     ctx = browser.new_context(viewport={"width": 1440, "height": 900}, timezone_id="Asia/Seoul")
     patient = ctx.new_page()
     patient.on("pageerror", lambda e: errors.append(str(e)))
+    patient.goto(B, wait_until="networkidle")
+    patient.locator("#demo-code").fill("CARE")
+    other = ctx.new_page()
+    other.goto(H, wait_until="networkidle")
+    other.evaluate("(key) => localStorage.setItem(key, JSON.stringify({demoEvent: Date.now()}))", KEY)
+    assert patient.locator("#demo-code").input_value() == "CARE", "Storage event wiped login input"
+    # Use a fresh browser context for the unpublished state to avoid synthetic storage corruption.
+    ctx.close()
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, timezone_id="Asia/Seoul")
+    patient = ctx.new_page()
+    patient.on("pageerror", lambda e: errors.append(str(e)))
     patient_login(patient)
     patient.locator(".v17-unpublished").wait_for()
     patient_menu(patient, "reminders")
@@ -49,14 +60,6 @@ with sync_playwright() as playwright:
     patient_menu(patient, "schedule")
     patient.locator(".v17-unpublished").wait_for()
     assert patient.locator("[data-reminder-hub]").count() == 0, "Unpublished reminder screen is a navigation trap"
-    # Cross-tab A3 storage writes should not erase a code being typed at login.
-    patient.locator('.side button[data-view="today"]').click()
-    patient.locator('[data-action="logout"]').click()
-    patient.locator("#demo-code").fill("CARE")
-    other = ctx.new_page()
-    other.goto(H, wait_until="networkidle")
-    other.evaluate("(key) => localStorage.setItem(key, JSON.stringify({demoEvent: Date.now()}))", KEY)
-    assert patient.locator("#demo-code").input_value() == "CARE", "Storage event wiped login input"
     ctx.close()
     print("PASS unpublished navigation + cross-tab login input")
 
