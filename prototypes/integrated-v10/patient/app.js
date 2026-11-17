@@ -63,7 +63,9 @@ function focusContent(){
  const el=document.querySelector('#main-content');
  if(el){el.focus({preventScroll:true});el.scrollIntoView({behavior:'instant',block:'start'});}
 }
-function badge(pub){return '<div class="updated">'+icon('shield',19)+'<span>의료진 승인 '+esc(pub.approvedAt.slice(0,10))+' · 가상 발행 '+esc(pub.issuedAt.slice(0,10))+' · v'+esc(pub.planVersion)+'</span></div>';}
+// Stored instants are UTC ISO strings; show the calendar day on the viewer's own clock (YYYY-MM-DD).
+const localDay=iso=>{const d=new Date(iso);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d):String(iso).slice(0,10);};
+function badge(pub){return '<div class="updated">'+icon('shield',19)+'<span>의료진 승인 '+esc(localDay(pub.approvedAt))+' · 가상 발행 '+esc(localDay(pub.issuedAt))+' · v'+esc(pub.planVersion)+'</span></div>';}
 function itemCard(x,i,publicationId){
  return '<button class="task v12-task-card" type="button" data-item="'+esc(x.id)+'"><span class="v12-task-icon" aria-hidden="true">'+icon(x.section==='followup'?'calendar':x.section==='medication'?'file':'info',22)+'</span><span class="task-content v12-card-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.text.slice(0,80))+'</small>'+((personal.understanding[publicationId]?.[x.id])?'<small class="read-state">이해 확인 기록 있음 · 실제 수행 완료가 아니에요</small>':'')+'</span><span class="v12-card-chevron">'+icon('chev',20)+'</span></button>';
 }
@@ -89,7 +91,7 @@ function documents(pub){
 }
 function profilePage(pub){
  const data=state.profileDraft||personal.profile;
- return '<div class="profile-layout"><div class="eyebrow">합성 데이터 · 시연용</div><h1>내 정보</h1><p class="profile-intro">병원 발행 정보와 이 브라우저에서 입력한 가상 연락 정보를 구분합니다. 실제 개인정보를 입력하지 마세요.</p><section class="profile-section"><div class="profile-section-head"><h2>발행된 계획 정보</h2><span class="profile-tag">읽기 전용</span></div><div class="profile-grid"><div><small>가상 환자 ID</small><strong>'+esc(pub.patientId)+'</strong></div><div><small>가상 입원건</small><strong>'+esc(pub.encounterId)+'</strong></div><div><small>계획 버전</small><strong>v'+esc(pub.planVersion)+'</strong></div><div><small>발행일</small><strong>'+esc(pub.issuedAt.slice(0,10))+'</strong></div></div></section><section class="profile-section"><div class="profile-section-head"><h2>연락·주소 정보</h2><span class="profile-tag">사용자 입력 · 로컬 시연</span></div>'+(state.editing?'<form id="profile-form" class="profile-form"><label for="address">가상 주소</label><input id="address" name="address" data-profile-field="address" maxlength="120" value="'+esc(data.address)+'" required><label for="contact">가상 연락처</label><input id="contact" name="contact" data-profile-field="contact" maxlength="50" value="'+esc(data.contact)+'" required><p class="profile-help">병원 등록 정보나 승인된 진료계획을 변경하지 않습니다.</p><div class="profile-actions"><button class="primary" type="submit">수정 내용 저장</button><button class="link-soft" type="button" data-action="edit-cancel">취소</button></div></form>':'<div class="profile-grid"><div><small>입력한 가상 주소</small><strong>'+esc(personal.profile.address||'입력하지 않음')+'</strong></div><div><small>입력한 가상 연락처</small><strong>'+esc(personal.profile.contact||'입력하지 않음')+'</strong></div></div><button class="secondary-action" data-action="edit-start">주소·연락처 수정하기</button>')+'</section><section class="profile-section transfer-section"><h2>정보 업데이트 요청</h2><p>동의를 확인하고 요청 내역을 이 브라우저에 기록하는 시연입니다. 외부 기관으로 전송되지 않습니다.</p><div class="transfer-status">'+(personal.lastRequest?'모의 요청 '+esc(personal.lastRequest.id)+' · 실제 기관 전송 없음':'기록된 요청 없음')+'</div><button class="primary" data-action="transfer-open" '+(!personal.revision||state.editing||personal.lastRequest?'disabled':'')+'>정보 업데이트 전송 요청</button></section><button class="logout-btn" data-action="logout">가상 계정에서 나가기</button></div>';
+ return '<div class="profile-layout"><div class="eyebrow">합성 데이터 · 시연용</div><h1>내 정보</h1><p class="profile-intro">병원 발행 정보와 이 브라우저에서 입력한 가상 연락 정보를 구분합니다. 실제 개인정보를 입력하지 마세요.</p><section class="profile-section"><div class="profile-section-head"><h2>발행된 계획 정보</h2><span class="profile-tag">읽기 전용</span></div><div class="profile-grid"><div><small>가상 환자 ID</small><strong>'+esc(pub.patientId)+'</strong></div><div><small>가상 입원건</small><strong>'+esc(pub.encounterId)+'</strong></div><div><small>계획 버전</small><strong>v'+esc(pub.planVersion)+'</strong></div><div><small>발행일</small><strong>'+esc(localDay(pub.issuedAt))+'</strong></div></div></section><section class="profile-section"><div class="profile-section-head"><h2>연락·주소 정보</h2><span class="profile-tag">사용자 입력 · 로컬 시연</span></div>'+(state.editing?'<form id="profile-form" class="profile-form"><label for="address">가상 주소</label><input id="address" name="address" data-profile-field="address" maxlength="120" value="'+esc(data.address)+'" required><label for="contact">가상 연락처</label><input id="contact" name="contact" data-profile-field="contact" maxlength="50" value="'+esc(data.contact)+'" required><p class="profile-help">병원 등록 정보나 승인된 진료계획을 변경하지 않습니다.</p><div class="profile-actions"><button class="primary" type="submit">수정 내용 저장</button><button class="link-soft" type="button" data-action="edit-cancel">취소</button></div></form>':'<div class="profile-grid"><div><small>입력한 가상 주소</small><strong>'+esc(personal.profile.address||'입력하지 않음')+'</strong></div><div><small>입력한 가상 연락처</small><strong>'+esc(personal.profile.contact||'입력하지 않음')+'</strong></div></div><button class="secondary-action" data-action="edit-start">주소·연락처 수정하기</button>')+'</section><section class="profile-section transfer-section"><h2>정보 업데이트 요청</h2><p>동의를 확인하고 요청 내역을 이 브라우저에 기록하는 시연입니다. 외부 기관으로 전송되지 않습니다.</p><div class="transfer-status">'+(personal.lastRequest?'모의 요청 '+esc(personal.lastRequest.id)+' · 실제 기관 전송 없음':'기록된 요청 없음')+'</div><button class="primary" data-action="transfer-open" '+(!personal.revision||state.editing||personal.lastRequest?'disabled':'')+'>정보 업데이트 전송 요청</button></section><button class="logout-btn" data-action="logout">가상 계정에서 나가기</button></div>';
 }
 function helpPage(pub){
  const card=item=>'<button class="service-card v12-service-card" data-item="'+esc(item.id)+'"><span class="v12-service-icon" aria-hidden="true">'+icon(item.section==='contact'?'help':'info',22)+'</span><span class="service-card-text v12-card-copy"><strong>'+esc(item.title)+'</strong><small>'+esc(item.text.slice(0,90))+'</small></span><span class="v12-card-chevron">'+icon('chev',20)+'</span></button>';
@@ -235,8 +237,11 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('input',event=>{
  if(event.target.matches('[data-profile-field]')&&state.profileDraft)state.profileDraft[event.target.dataset.profileField]=event.target.value;
- if(event.target.id==='help-search'){const start=event.target.selectionStart;state.helpQuery=event.target.value;render();const input=document.querySelector('#help-search');input?.focus();try{input?.setSelectionRange(start,start)}catch{}}
+ if(event.target.id==='help-search'){state.helpQuery=event.target.value;if(!event.isComposing)refreshHelpSearch(event.target);}
 });
+// Re-rendering replaces the search box, which would break Korean IME composition mid-syllable.
+document.addEventListener('compositionend',event=>{if(event.target.id==='help-search'){state.helpQuery=event.target.value;refreshHelpSearch(event.target);}});
+function refreshHelpSearch(field){const start=field.selectionStart;render();const input=document.querySelector('#help-search');input?.focus();try{input?.setSelectionRange(start,start)}catch{}}
 document.addEventListener('change',event=>{
  if(event.target.id==='transfer-consent'){state.consent=event.target.checked;event.target.removeAttribute('aria-invalid');const error=document.querySelector('#consent-error');if(error)error.hidden=true;}
 });
@@ -253,7 +258,8 @@ document.addEventListener('click',async event=>{
  // The local publication/revocation inbox remains available without a public plan.
  if(button.dataset.view==='reminders'){visit('reminders');return;}
  const pub=publication().publication;
- if(!pub){render();return;}
+ // Without a current publication every other menu shows the same notice; keep 오늘 reachable.
+ if(!pub){if(button.dataset.view)visit('today');else render();return;}
  if(action==='modal-close'){closeOverlay();return;}
  if(button.dataset.view){visit(button.dataset.view);return;}
  if(button.dataset.item){if(pub.items.some(i=>i.id===button.dataset.item))visit('detail',button.dataset.item);return;}
@@ -300,6 +306,8 @@ document.addEventListener('keydown',event=>{
  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
 });
 window.addEventListener('storage',event=>{
+ // The login form has nothing to refresh; re-rendering it would wipe the code being typed.
+ if(!state.authenticated)return;
  if(event.key===PUBLICATION_STORAGE_KEY||event.key===null){
   if(JSON.stringify(publication())!==publicationSignature)render();
  }
