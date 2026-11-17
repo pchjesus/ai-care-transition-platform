@@ -189,6 +189,17 @@ with sync_playwright() as p:
     assert h.locator('[data-ux7-action="approve"]').is_disabled()
     require(True,'missing-conflicting-assessment-blocks-approval')
 
+    # The synthetic pharmacist reply (A3 study-mode parity) unlocks SYN-003 medication evidence here.
+    switch(h,'plan')
+    h.locator('[data-plan-tab="medication"]').click()
+    assert 'SRC-SYN003-MED-C' not in h.locator('#ux6-add-source option').evaluate_all('os=>os.map(o=>o.value)')
+    h.locator('[data-v6-action="receive-reply"]').click()
+    h.wait_for_function('''([key,id]) => (JSON.parse(localStorage.getItem(key))?.[id]?.unlockedSources||[]).includes('SRC-SYN003-MED-C')''',arg=[KEY,'SYN-003'],timeout=7500)
+    assert 'SRC-SYN003-MED-C' in h.locator('#ux6-add-source option').evaluate_all('os=>os.map(o=>o.value)')
+    assert h.locator('[data-v6-action="receive-reply"]').count()==0
+    assert get(h,'SYN-003')['audit'][0]['event']=='SYNTHETIC_REPLY_RECEIVED'
+    require(True,'syn003-synthetic-reply-unlocks-medication-evidence')
+
     # Stale same-origin state must not be overwritten by workflow actions.
     navigate(h,'SYN-001','review')
     h.evaluate('''key=>{const d=JSON.parse(localStorage.getItem(key));d["SYN-001"].audit.unshift({at:new Date().toISOString(),role:"system",event:"OTHER_TAB",details:"simulated"});localStorage.setItem(key,JSON.stringify(d));}''',KEY)
